@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body onload='start("{{character.alignment}}","{{character.tier}}","{{character.char_class.hit_die}}","{{character.skill_names}}","{{character.char_class.armor}}","{{character.dex}}")'>
+  <div class="fluid-container">
+    <div class="row row-flex px-1">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 px-1">
+        <div class="character_info">
+          <h1 class="header">Character Info</h1>
+          <div class="box content info">
+            <div class="info_item">
+              <label>Name</label>
+              <div class="fill">{{character.name}}</div>
+            </div>
+            <div class="info_item">
+              <label>Class</label>
+              <div class="fill">{{character.char_class.name}}</div>
+            </div>
+            <div class="info_item">
+              <label>Backgrounds</label>
+              <div class="fill">{{character.backgrounds[0].name}}</div>
+              <div class="fill">{{character.backgrounds[1].name}}</div>
+            </div>
+            <div class="info_item">
+              <label>Alignment</label>
+              <select name="Alignment" id="alignment" class="fill">
+                <option value="lg">Lawful Good</option>
+                <option value="ng">Neutral Good</option>
+                <option value="cg">Chaotic Good</option>
+                <option value="ln">Lawful Neutral</option>
+                <option value="tn">True Neutral</option>
+                <option value="cn">Chaotic Neutral</option>
+                <option value="le">Lawful Evil</option>
+                <option value="ne">Chaotic Evil</option>
+              </select>
+            </div>
+
+            <div class="info_item">
+              <label>Tier</label>
+              <input type="radio" id="tier_1" name="tier" value="1">
+              <label for="tier1">1</label>
+              <input type="radio" id="tier_2" name="tier" value="2">
+              <label for="tier2">2</label>
+              <input type="radio" id="tier_3" name="tier" value="3">
+              <label for="tier3">3</label>
+              <input type="radio" id="tier_4" name="tier" value="4">
+              <label for="tier4">4</label>
+            </div>
+            <div class="info_item">
+              <label>XP earned</label>
+              <input type="number" id="XP_earned" value="{{character.xp_earned}}" class="mod">
+              <label>XP spent</label>
+              <input type="number" id="xp_spent" value="{{character.xp_spent}}" class="mod">
+            </div>
+            <div class="info_item">
+              <div title="proficiency">
+                <label>Proficiency Bonus: +</label><label id="proficiency_bonus">2</label>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 px-1">
+        <div class="hp_wrapper">
+          <h1 class="header">HP</h1>
+          <div class="hit_points box content">
+            <div class="hp_tracking">
+              <input type=number id="hp_left" class="hp">
+              <label for="hp_left">Current</label><br>
+              <input type=number id="hp_max" class="hp" value="{{character.hp_max}}">
+              <label for="hp_max">Max</label>
+            </div>
+          </div>
+        </div>
+        <div class="injuries_wrapper">
+          <h1 class="header">Injuries</h1>
+          <div class="box content">
+            <select name="injuries" id="injuries" class="injuries">
+              <option value="">Select an injury</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-8 col-xs-7 px-1">
+        <div class="hd_wrapper">
+          <h1 class="header">Hit Dice</h1>
+          <div class="hit_dice box content">
+            <table>
+              <th>
+                <div name="hd_type">
+                  <input type="radio" id="d2" name="hit_die">
+                  <label for="d2">d2</label><br>
+                  <input type="radio" id="d3" name="hit_die">
+                  <label for="d3">d3</label><br>
+                  <input type="radio" id="d4" name="hit_die">
+                  <label for="d4">d4</label><br>
+                  <input type="radio" id="d6" name="hit_die">
+                  <label for="d6">d6</label><br>
+                  <input type="radio" id="2d4" name="hit_die">
+                  <label for="2d4">2d4</label><br>
+                </div>
+              </th>
+              <th>
+
+                <div class="hd_tracking">
+                  <input type="number" id="hd_used" class="hd">
+                  <label for="hd_used">Used</label><br>
+                  <input type="number" id="hd_available" class="hd">
+                  <label for="hp_current"> Available</label>
+                </div>
+              </th>
+            </table>
+          </div>
+        </div>
+        <div class="conditions_wrapper">
+          <h1 class="header">Conditions</h1>
+          <div class="box content">
+            <textarea id="conditions" class="conditions"></textarea>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row row-flex">
+      <div class="col-md-5 col-lg-4 col-sm-6 col-xl-3 px-1">
+        <div class="ability_score_wrapper">
+          <h1 class="header">Ability Scores</h1>
+          <div class="box content">
+            <h2 class="header">STR</h2>
+
+            <div class="box content skills" title="str_skills">
+              <table>
+                <tr>
+                  <th class="score" id="str">
+                      {{character.str}}
+                  </th>
+                  <th class="skillList">
+                    <input type="number" class="skill_bonus mod" name="athletics" id="athletics_bonus" data-stat="str">
+                    <input type="checkbox" class="is_proficient" name="athletics" id="Athletics"
+                      data-stat="str" onClick="setSkill('athletics_proficiency','athletics_bonus')">
+                    <label>Athletics</label> <br><br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <h2 class="header">DEX</h2>
+
+            <div class="box content skills" title="dex_skills">
+
+              <table>
+                <tr>
+                  <th class="score" id="dex">
+                     {{character.dex}}
+                  </th>
+                  <th class=skillList>
+                    <input type="number" class="skill_bonus mod" name="acrobatics" id="acrobatics_bonus"
+                      data-stat="dex">
+                    <input type="checkbox" class="is_proficient" name="acrobatics" id="Acrobatics"
+                      data-stat="dex">
+                    <label>Acrobatics</label> <br>
+                    <input type="number" class="skill_bonus mod" name="sleightofhand" id="sleightofhand_bonus"
+                      data-stat="dex">
+                    <input type="checkbox" class="is_proficient" name="sleightofhand" id="Sleight of Hand"
+                      data-stat="dex">
+                    <label>Sleight of Hand</label> <br>
+                    <input type="number" class="skill_bonus mod" name="stealth" id="stealth_bonus" data-stat="dex">
+                    <input type="checkbox" class="is_proficient" name="stealth" id="Stealth"
+                      data-stat="dex">
+                    <label>Stealth</label> <br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <h2 class="header">CON</h2>
+
+            <div class="box content skills" title="con_skills">
+
+              <table>
+                <tr>
+                  <th class="score" id="con">
+                    {{character.con}}
+                  </th>
+                  <th class=skillList>
+                    <input type="number" class="skill_bonus mod" name="endurance" id="endurance_bonus" data-stat="con">
+                    <input type="checkbox" class="is_proficient" name="endurance" id="Endurance"
+                      data-stat="con">
+                    <label>Endurance</label> <br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <h2 class="header">INT</h2>
+
+            <div class="box content skills" title="int_skills">
+
+              <table>
+                <tr>
+                  <th class="score" id="int">
+                    {{character.int}}
+                </th>
+                  <th class=skillList>
+                    <input type="number" class="skill_bonus mod" name="investigation" id="investigation_bonus"
+                      data-stat="int">
+                    <input type="checkbox" class="is_proficient" name="investigation" id="Investigation"
+                      data-stat="int">
+                    <label>Investigation</label> <br>
+                    <input type="number" class="skill_bonus mod" name="magecraft" id="magecraft_bonus" data-stat="int">
+                    <input type="checkbox" class="is_proficient" name="magecraft" id="Magecraft"
+                      data-stat="int">
+                    <label>Magecraft</label> <br>
+                    <input type="number" class="skill_bonus mod" name="medicine" id="medicine_bonus" data-stat="int">
+                    <input type="checkbox" class="is_proficient" name="medicine" id="Medicine"
+                      data-stat="int">
+                    <label>Medicine</label> <br>
+                    <input type="number" class="skill_bonus mod" name="tinker" id="tinker_bonus" data-stat="int">
+                    <input type="checkbox" class="is_proficient" name="tinker" id="Tinker" data-stat="int">
+                    <label>Tinker</label> <br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <h2 class="header">WIS</h2>
+
+            <div class="box content skills" title="wis_skills">
+
+              <table>
+                <tr>
+                  <th class="score" id="wis">
+                    {{character.wis}}
+                </th>
+                  <th class="skillList">
+                    <input type="number" class="skill_bonus mod" name="animalhandling" id="animalhandling_bonus"
+                      data-stat="wis">
+                    <input type="checkbox" class="is_proficient" name="animalhandling" id="Animal Handling"
+                      data-stat="wis">
+                    <label>Animal Handling</label> <br>
+                    <input type="number" class="skill_bonus mod" name="insight" id="insight_bonus" data-stat="wis">
+                    <input type="checkbox" class="is_proficient" name="insight" id="Insight"
+                      data-stat="wis">
+                    <label>Insight</label> <br>
+                    <input type="number" class="skill_bonus mod" name="perception" id="perception_bonus"
+                      data-stat="wis">
+                    <input type="checkbox" class="is_proficient" name="perception" id="Perception"
+                      data-stat="wis">
+                    <label>Perception</label> <br>
+                    <input type="number" class="skill_bonus mod" name="streetwise" id="streetwise_bonus"
+                      data-stat="wis">
+                    <input type="checkbox" class="is_proficient" name="streetwise" id="Streetwise"
+                      data-stat="wis">
+                    <label>Streetwise</label> <br>
+                    <input type="number" class="skill_bonus mod" name="survival" id="survival_bonus" data-stat="wis">
+                    <input type="checkbox" class="is_proficient" name="survival" id="Survival"
+                      data-stat="wis">
+                    <label>Survival</label> <br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+            <h2 class="header">CHA</h2>
+
+            <div class="box content skills" title="cha_skills">
+
+              <table>
+                <tr>
+                  <th class="score" id="cha">
+                    {{character.cha}}
+                </th>
+                  <th class=skillList>
+                    <input type="number" class="skill_bonus mod" name="composure" id="composure_bonus" data-stat="cha">
+                    <input type="checkbox" class="is_proficient" name="composure" id="Composure"
+                      data-stat="cha">
+                    <label>Composure</label> <br>
+                    <input type="number" class="skill_bonus mod" name="deception" id="deception_bonus" data-stat="cha">
+                    <input type="checkbox" class="is_proficient" name="deception" id="Deception"
+                      data-stat="cha">
+                    <label>Insight</label> <br>
+                    <input type="number" class="skill_bonus mod" name="intimidation" id="intimidation_bonus"
+                      data-stat="cha">
+                    <input type="checkbox" class="is_proficient" name="intimidation" id="Intimidation"
+                      data-stat="cha">
+                    <label>Intimidation</label> <br>
+                    <input type="number" class="skill_bonus mod" name="persuasion" id="persuasion_bonus"
+                      data-stat="cha">
+                    <input type="checkbox" class="is_proficient" name="persuasion" id="Persuasion"
+                      data-stat="cha">
+                    <label>Persuasion</label> <br>
+                  </th>
+                </tr>
+              </table>
+            </div>
+          </div>
+          </section>
+        </div>
+      </div>
+      <div class="col-md-7 col-lg-8 col-sm-6 col-xl-9 px-1">
+        <div class="combat_wrapper">
+          <div class="row row-flex">
+            <div class="col-lg-2 col-md-6 col-xl-2">
+              <div class="init_wrapper">
+                <h1 class="header">Initiative</h1>
+                <div class="box content init">
+                  <input type="number" class="bignum" id="initiative" value="{{character.dex}}">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-xl-2">
+              <div class="ac_wrapper">
+                <h1 class="header">AC</h1>
+                <div class="box content ac">
+                  <input type="number" class="bignum" id="ac">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="atk_wrapper">
+                <h1 class="header">Attacks</h1>
+                <div class="box content attacks">
+                  <table>
+                    <tr>
+                      <th>Name</th>
+                      <th>+</th>
+                      <th>Pwr</th>
+                      <th>Rng</th>
+                      <th>Dmg</th>
+                    </tr>
+                    <tr id="atk_1">
+                      <td><input class="atk_name" type="text" id="atk_1_name"></td>
+                      <td><input class="atk_bon" type="number" id="atk_1_bonus"></td>
+                      <td><input class="atk_pwr" type="number" id="atk_1_pwr"></td>
+                      <td><input class="atk_rng" type="number" id="atk_1_rng"></td>
+                      <td><input class="atk_dmg" type="text" id="atk_1_dmg"></td>
+                    </tr>
+                    <tr id="atk_2">
+                      <td><input class="atk_name" type="text" id="atk_2_name"></td>
+                      <td><input class="atk_bon" type="number" id="atk_2_bonus"></td>
+                      <td><input class="atk_pwr" type="number" id="atk_2_pwr"></td>
+                      <td><input class="atk_rng" type="number" id="atk_2_rng"></td>
+                      <td><input class="atk_dmg" type="text" id="atk_2_dmg"></td>
+                    </tr>
+                    <tr id="atk_3">
+                      <td><input class="atk_name" type="text" id="atk_3_name"></td>
+                      <td><input class="atk_bon" type="number" id="atk_3_bonus"></td>
+                      <td><input class="atk_pwr" type="number" id="atk_3_pwr"></td>
+                      <td><input class="atk_rng" type="number" id="atk_3_rng"></td>
+                      <td><input class="atk_dmg" type="text" id="atk_3_dmg"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="features_wrapper">
+          <div class="row row-flex">
+            <div class="col-lg-5">
+              <div class="bg_wrapper">
+                <h1 class="header">Background Features</h1>
+                <div class="box content bg">
+                  <table>
+                    <tr>
+                      <table>
+                        <tr>
+                        <td><div class="input">{{character.backgrounds[0].feature_name}}
+                        </div></td>
+                        </tr>
+                        <tr>
+                          <td> <textarea id="bg_feature_1">{{character.backgrounds[0].feature_desc}}</textarea></td>
+                          </tr>
+                        </tr>
+                      </table>
+                    </tr>
+                    <tr>
+                      <table>
+                        <tr>
+                          <td><div class="input">{{character.backgrounds[1].feature_name}}
+                          </div></td>
+                          </tr>
+                        <tr>
+                        <td> <textarea id="bg_feature_2">{{character.backgrounds[1].feature_desc}}</textarea></td>
+                        </tr>
+                        </tr>
+                      </table>
+    
+                      
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7 px-1">
+              <div class="class_wrapper">
+                <h1 class="header">Class Features</h1>
+                <div class="box content class_features">
+                  <table>
+                    <tr>
+                      <th>
+                        <div class="class_feature" name="class_feature_1">
+                          <input type="text" id="class_feature_1_name">
+                          <textarea id="class_feature_1_description"></textarea>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="class_feature" name="class_feature_2">
+                          <input type="text" id="class_feature_2_name">
+                          <textarea id="class_feature_2_description"></textarea>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="class_feature" name="class_feature_3">
+                          <input type="text" id="class_feature_3_name">
+                          <textarea id="class_feature_3_description"></textarea>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="class_feature" name="class_feature_4">
+                          <input type="text" id="class_feature_4_name">
+                          <textarea id="class_feature_4_description"></textarea>
+                      </td>
+                </div>
+                </tr>
+                </table>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="powers_wrapper">
+          <div class="row row-flex">
+            <div class="col">
+              <div class="tab powers">
+                <button class="tablinks" onclick="openTab(event, 'favs')"> Powers</button>
+                <button class="tablinks" onclick="openTab(event, 'range')">Ranges</button>
+                <button class="tablinks" onclick="openTab(event, 'duration')">Durations</button>
+                <button class="tablinks" onclick="openTab(event, 'effects')">Effects</button>
+                <button class="tablinks" onclick="openTab(event, 'tags')">Tags</button>
+              </div>
+              <div id="favs" class="tabcontent box content">
+                <h3>London</h3>
+                some text
+              </div>
+
+              <div id="range" class="tabcontent box content">
+                <div id="range_buffs">
+                  <h6>Buffs</h6>
+                <div id="range_b_1">
+                  <input type="number" id="range_b_1_cost" class="mod">
+                      <input type="text" id="range_b_1_name">
+                      
+                </div>
+                </div>
+                <div id="range_debuffs">
+                  <h6>Debuffs</h6>
+                <div id="range_db_1">
+                  <input type="number" id="range_db_1_cost" class="mod">
+                      <input type="text" id="range_db_1_name">
+                      
+                </div>
+                </div>
+                <div id="range_dh">
+                  <h6>Damage & Healing</h6>
+                <div id="range_dh_1">
+                  <input type="number" id="range_dh_1_cost" class="mod">
+                      <input type="text" id="range_dh_1_name">
+                      
+                </div>
+                </div>
+              </div>
+
+              <div id="duration" class="tabcontent box content">
+                <div id="duration_buffs">
+                  <h6>Buffs</h6>
+                <div id="duration_b_1">
+                  <input type="number" id="duration_b_1_cost" class="mod">
+                      <input type="text" id="duration_b_1_name">
+                      
+                </div>
+                </div>
+                <div id="duration_debuffs">
+                  <h6>Debuffs</h6>
+                <div id="duration_db_1">
+                  <input type="number" id="duration_db_1_cost" class="mod">
+                      <input type="text" id="duration_db_1_name">
+                      
+                </div>
+                </div>
+                <div id="duration_dh">
+                  <h6>Damage & Healing</h6>
+                <div id="duration_dh_1">
+                  <input type="number" id="duration_dh_1_cost" class="mod">
+                      <input type="text" id="duration_dh_1_name">
+                      
+                </div>
+                </div>
+              </div>
+
+              <div id="effects" class="tabcontent box content">
+                <h3>Tokyo</h3>
+                <p>Tokyo is the capital of Japan.</p>
+              </div>
+
+              <div id="tags" class="tabcontent box content">
+                <div id="tags_wrapper">
+                  <div class="row content">
+                    <div class="col-5 px-0">
+                      <ul class="tags_magic" style="list-style-type: none;">
+                        <li><input type="checkbox" id="conj">
+                          <label for="conj">Conjuration</label>
+                        </li>
+                        <li>
+                          <input type="checkbox" id="abj">
+                          <label for="abj">Abjuration</label>
+                        </li>
+                        <li>
+                          <input type="checkbox" id="trans">
+                          <label for="trans">Transmutation</label>
+                        </li>
+                        <li>
+                          <input type="checkbox" id="evoc">
+                          <label for="evoc">Evocation</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-4 px-0">
+                      <ul class="tags_domain" style="list-style-type:none;">
+                        <li><input type="checkbox" id="rel">
+                          <label for="rel">Religion</label>
+                        </li>
+                        <li><input type="checkbox" id="nature">
+                          <label for="nature">Nature</label>
+                        </li>
+                        <li><input type="checkbox" id="plant">
+                          <label for="plant">Plant</label>
+                        </li>
+                        <li><input type="checkbox" id="mind">
+                          <label for="mind">Mind</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col px-0">
+                      <ul class="tags_elemental" style="list-style-type: none;">
+
+                        <li><input type="checkbox" id="fire">
+                          <label for="fire">Fire</label>
+                        </li>
+                        <li><input type="checkbox" id="ice">
+                          <label for="ice">Ice</label>
+                        </li>
+                        <li><input type="checkbox" id="earth">
+                          <label for="earth">Earth</label>
+                        </li>
+                        <li><input type="checkbox" id="air">
+                          <label for="air">Air</label>
+                        </li>
+
+                      </ul>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col px-0">
+                      <ul class="tags_weaponry" style="list-style-type:none;">
+                        <li><input type="checkbox" id="bludg">
+                          <label for="bludg">Bludgeoning</label>
+                        </li>
+                        <li><input type="checkbox" id="pierc">
+                          <label for="pierc">Piercing</label>
+                        </li>
+                        <li><input type="checkbox" id="slash">
+                          <label for="slash">Slashing</label>
+                        </li>
+                      </ul>
+
+                    </div>
+                    <div class="col px-0">
+
+                      <ul class="tags_attr" style="list-style-type: none;">
+
+                        <li><input type="checkbox" id="dex_tag">
+                          <label for="dex_tag">Dexterty</label>
+                        </li>
+                        <li><input type="checkbox" id="con_tag">
+                          <label for="con_tag">Constitution</label>
+                        </li>
+                        <li><input type="checkbox" id="int_tag">
+                          <label for="int_tag">Intelligence</label>
+                        </li>
+                        <li><input type="checkbox" id="cha_tag">
+                          <label for="cha_tag">Charisma</label>
+                        </li>
+
+                      </ul>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/static/script.js"></script>
+</body>
+</html>

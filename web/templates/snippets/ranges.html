@@ -1,0 +1,14 @@
+{% macro render_range(index,range) %}
+    <span id="range_{{index}}_data">
+        <input type="text" id="range_{{index}}_name" value="{{range.title}}">
+        <label for="range_cost">Cost</label>
+        <input type="number" id="effect_{{index}}_pwr" class="mod" value="{{range.power}}">
+        <label>Tree</label>
+        <select class="fill dropdown">
+            <option id="range_{{index}}_buff" {{'selected' if range.tree=="Buffs"}} value="Buff">Buff</option>
+            <option id="range_{{index}}_debuff" {{'selected' if range.tree=="Debuffs"}} value="Debuff">Debuff</option>
+            <option id="range_{{index}}_damage_healing" {{'selected' if range.tree=="Damage/Healing"}} value="Damage/Healing">Damage</option>
+        </select>
+        </span>
+    <p id="range_{{index}}_description">{{range.description}}</p>
+{% endmacro %}

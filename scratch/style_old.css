@@ -1,0 +1,308 @@
+p, label {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  border-bottom:none;
+}
+
+.fill {
+  font-size:small;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.info_item label {
+  font-size:small;
+  font-weight: bold;
+}
+
+label input[type="radio"] {
+  font-weight: normal;
+}
+input[type="number"] {
+  border-style: none;
+  border-bottom:1px solid #000;
+}
+.header {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  z-index: 1;
+  position:absolute;
+  border:#000 solid 1px;
+  background-color: #fff;
+  padding:2px;
+  margin-top: -1ch;
+  margin-left: 2ch;
+}
+
+
+.box {
+  border:1px solid var(--dark);
+  color:#000;
+  background-color: #fff;
+  padding:1ch;
+  margin-bottom:2ch;
+  margin-top:1ch;
+  z-index: 0;
+}
+
+.hit_points {
+  width:content;
+}
+
+.conditions_wrapper textarea {
+  height:6ch;
+  
+}
+.hp_wrapper input[type="number"], .hd_wrapper input[type="number"] {
+  font-size:30px;
+  width:3ch;
+  margin-bottom:5%; 
+}
+
+.ac_wrapper input[type="number"], .init_wrapper input[type="number"] {
+  font-size:30px;
+}
+
+.hit_dice th {
+  font-weight:normal;
+  vertical-align: top;
+  line-height: 30%;  
+}
+
+.hit_points {
+  line-height: 30%;
+}
+
+.content {
+  padding-top:2ch;
+}
+.info {
+  width:100%;
+  height:auto;
+
+}
+
+.hp_wrapper {
+  height:60%;
+}
+
+
+
+
+.ability_score_wrapper{
+  min-width: max-content;
+  width:100%;
+}
+
+.score {
+  font-size: xx-large;
+  text-align: right;
+  padding-right: 10%;
+}
+.skills {
+  width:max;
+  min-width: max-content;
+  margin-bottom:20px;
+  justify-content: left;
+}
+.mod {
+  width:20%;
+  max-width: 5em;
+  min-width: 3em;
+}
+:root{
+  --dark: black;
+}
+table th {
+  font-weight:normal;
+  justify-items: left;
+}
+table th.score {
+  width:30%;
+  max-width: 5rem;
+}
+.ability_score {
+  width:5rem;
+  height:75px;
+  font-size:50px;
+}
+
+table {
+        width:100%;
+        vertical-align: top;
+  justify-items:left;
+      }
+  .skillList {
+    font-weight:normal;
+    text-align:left;
+    padding-left:10px;
+    vertical-align:top;
+  }
+.score {
+  vertical-align:top;
+  
+}
+.init, .ac {
+  max-width:fit-content;
+  min-width: fit-content;
+}
+
+.bignum {
+  width:5rem;
+  height:75px;
+  font-size:50px;
+  
+}
+
+.atk_name {
+  min-width: 20ch;
+  width:auto;
+}
+
+.atk_dmg {
+  min-width: 8ch;
+  width:auto;
+}
+
+.atk_pwr, .atk_rng, .atk_bon {
+  min-width:3rem;
+  width:3rem;
+  max-width: 3rem;
+}
+
+.attacks table {
+  font-size: 10px;
+
+}
+
+.attacks {
+  width:100%;
+}
+
+.bg_wrapper textarea {
+  font-size: 10px;
+  min-height:3ch;
+  height:12ch;
+  width:100%;
+}
+.box.bg table tr {
+  height:100%;
+}
+
+.class_feature input{
+  font-size: 12px;
+  width:100%;
+  margin-bottom:3px;
+}
+
+.class_feature textarea {
+  font-size:10px;
+  width:100%;
+  height:auto;
+  min-height:3ch;
+}
+
+ /* Style the tab */
+.tab {
+  overflow: hidden;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button:first-child {
+
+  font-family: Bahnschrift;
+  font-size: 14px;
+  border:1px solid #000;
+  background-color: #fff;
+  padding:3px;
+  position: absolute;
+  z-index:1;
+  margin-top: -1ch;
+  margin-left: 2ch;
+}
+
+.tab button:nth-child(2) {
+
+  font-family: Bahnschrift;
+  font-size: 14px;
+  border:1px solid #000;
+  background-color: #fff;
+  padding:3px;
+  position: absolute;
+  z-index:1;
+  margin-top: -1ch;
+  margin-left: 10ch;
+}
+
+.tab button:nth-child(3) {
+
+  font-family: Bahnschrift;
+  font-size: 14px;
+  border:1px solid #000;
+  background-color: #fff;
+  padding:3px;
+  position: absolute;
+  z-index:1;
+  margin-top: -1ch;
+  margin-left: 18ch;
+}
+
+.tab button:nth-child(4) {
+
+  font-family: Bahnschrift;
+  font-size: 14px;
+  border:1px solid #000;
+  background-color: #fff;
+  padding:3px;
+  position: absolute;
+  z-index:1;
+  margin-top: -1ch;
+  margin-left: 28ch;
+}
+
+.tab button:last-child {
+
+  font-family: Bahnschrift;
+  font-size: 14px;
+  border:1px solid #000;
+  background-color: #fff;
+  padding:3px;
+  position: absolute;
+  z-index:1;
+  margin-top: -1ch;
+  margin-left: 35.5ch;
+}
+
+.bg_wrapper td {
+  font-size: small;
+
+}
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #000;
+  color:#fff;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #000;
+  color:#fff;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  border: 1px solid #000;
+} 
+
+#tags {
+  font-size:9px;
+}
+
+.tags_wrapper {
+  padding-top:20px;
+}
+
+#meta table tr:first-child {
+  width:0ch;
+} 

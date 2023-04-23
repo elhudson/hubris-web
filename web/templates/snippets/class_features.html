@@ -1,0 +1,4 @@
+{% macro render_class_feature(index,class_feature) %}
+<label for="class_feature_{{index}}">{{class_feature.title}}</label>
+<p id="class_feature_{{index}}">{{class_feature.description}}</p>      
+{% endmacro %}

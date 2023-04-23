@@ -1,0 +1,85 @@
+@import "HUBRIS.css";
+
+/* label styling */
+.box>div>div>label:not(.buttons>label, .skillList>label), #ability_scores>div>div>label, .box>div>label {
+  font-weight: bold;
+}
+
+/* input styling */
+
+input, textarea, select {
+  background-color: #fdf6e3;
+  border-style: none;
+}
+
+input[type="number"], .mod {
+  -moz-appearance: textfield;
+  border-bottom:1px solid #002b36;
+  min-width:3ch;
+  max-width: 5ch;
+}
+
+input[type="text"] {
+  border-bottom:1px solid #002b36;
+  max-width: 40%;
+  min-width: 25%;
+  
+}
+
+.dropdown {
+  border: 1px solid #002b36;
+  margin-top:3px;
+  margin-bottom: 3px;
+}
+
+.notepad {
+  min-width:30%;
+  outline:1px solid var(--base03)
+}
+input[type="radio"], input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width:15px;
+  height: 15px;
+  border:1px solid #002b36;
+}
+
+input[type="radio"]:checked, input[type="checkbox"]:checked {
+  background-color: #93a1a1;
+}
+
+/* removing browser defaults for boxes */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* box styling */
+
+.box {
+  max-width: 70%;
+  margin-left:10px;
+  margin-bottom: 15px;
+  padding:5px;
+  max-height: fit-content;
+}
+
+.border {
+  border-left: 2px solid #002b36;
+  margin-left: -10px;
+  padding-left: 10px;
+}
+.border>div, .border>span {
+  margin-top: 5px;
+}
+
+.skillList, .weapon {
+  margin-left:10px;
+  margin-top:5px;
+  padding: 2px;
+  border-left:1px solid #002b36;
+  vertical-align: bottom;
+  padding-left:10px;
+}

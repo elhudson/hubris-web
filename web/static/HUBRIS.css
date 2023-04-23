@@ -1,0 +1,29 @@
+:root {
+    --base03:#002b36;
+    --base3:#fdf6e3;
+  
+  }
+  
+  body {
+    background-color: #fdf6e3 !important;
+  }
+  
+  /* general text styling */
+  
+  div, span {
+    font-family:Inter,Hack,monospace;
+    color:var(--base03);
+    font-size:12px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 150%;
+  }
+  
+  /* header styling */
+  
+  h1 {
+    width: fit-content;
+    font-size:16px !important;
+    font-weight: bold !important;
+    border-bottom: 3px solid;
+  }

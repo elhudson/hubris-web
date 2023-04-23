@@ -1,0 +1,47 @@
+{% macro render_effect(index,effect) %} 
+        <span id="effect_{{index}}_data">
+            <label for="effect_{{index}}_name">Name</label>
+            <input type="text" id="effect_{{index}}_name" value="{{effect.title}}">
+            <label for="effect_cost">Cost</label>
+            <input type="number" id="effect_{{index}}_pwr" class="mod" value="{{effect.power}}">
+            <label>Tree</label>
+            <select class="fill dropdown">
+                <option id="effect_{{index}}_buff" {{'selected' if effect.tree=="Buff"}} value="Buff">Buff</option>
+                <option id="effect_{{index}}_debuff" {{'selected' if effect.tree=="Debuff"}} value="Debuff">Debuff</option>
+                <option id="effect_{{index}}_damage_healing" {{'selected' if effect.tree=="Damage/Healing"}} value="Damage/Healing">Damage</option>
+            </select>
+            <label>Tag</label>
+            <select class="fill dropdown">
+                <optgroup label="Magic">
+                    <option id="effect_{{index}}_abj" {{'selected' if effect.tag=="Abjuration"}} value="Abjuration">Abjuration</option>
+                    <option id="effect_{{index}}_conj" {{'selected' if effect.tag=="Conjuration"}} value="Conjuration">Conjuration</option>
+                    <option id="effect_{{index}}_evoc" {{'selected' if effect.tag=="Evocation"}} value="Evocation">Evocation</option>
+                    <option id="effect_{{index}}_trans" {{'selected' if effect.tag=="Transmutation"}} value="Transmutation">Transmutation</option>
+                </optgroup>
+                <optgroup label="Domain">
+                    <option id="effect_{{index}}_nature" {{'selected' if effect.tag=="Nature"}} value="Nature">Nature</option>
+                    <option id="effect_{{index}}_religion" {{'selected' if effect.tag=="Religion"}} value="Religion">Religion</option>
+                    <option id="effect_{{index}}_mind" {{'selected' if effect.tag=="Mind"}} value="Mind">Mind</option>
+                </optgroup>
+                <optgroup label="Elemental">
+                    <option id="effect_{{index}}_fire" {{'selected' if effect.tag=="Fire"}} value="Fire">Fire</option>
+                    <option id="effect_{{index}}_ice" {{'selected' if effect.tag=="Ice"}} value="Ice">Ice</option>
+                    <option id="effect_{{index}}_earth" {{'selected' if effect.tag=="Earth"}} value="Earth">Earth</option>
+                    <option id="effect_{{index}}_air" {{'selected' if effect.tag=="Air"}} value="Air">Air</option>
+                </optgroup>
+                <optgroup label="Weaponry">
+                    <option id="effect_{{index}}_bludg" {{'selected' if effect.tag=="Bludgeoning"}} value="Bludgeoning">Bludgeoning</option>
+                    <option id="effect_{{index}}_pierc" {{'selected' if effect.tag=="Piercing"}} value="Piercing">Piercing</option>
+                    <option id="effect_{{index}}_slash" {{'selected' if effect.tag=="Slashing"}} value="Slashing">Slashing</option>
+                </optgroup>
+                <optgroup label="Attributes">
+                    <option id="effect_{{index}}_int" {{'selected' if effect.tag=="Intelligence"}} value="Intelligence">Intelligence</option>
+                    <option id="effect_{{index}}_cha" {{'selected' if effect.tag=="Charisma"}} value="Charisma">Charisma</option>
+                    <option id="effect_{{index}}_str" {{'selected' if effect.tag=="Strength"}} value="Strength">Strength</option>
+                    <option id="effect_{{index}}_agi" {{'selected' if effect.tag=="Agility"}} value="Agility">Agility</option>
+                    <option id="effect_{{index}}_con" {{'selected' if effect.tag=="Constitution"}} value="Constitution">Constitution</option>
+                </optgroup>
+            </select>
+            </span>
+        <div id="effect_{{index}}_desc">{{effect.description}}</div>      
+{% endmacro %}

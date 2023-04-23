@@ -1,0 +1,14 @@
+.ipynb_checkpoints
+__pycache__
+.code-workspace
+.hintrc
+.editorconfig
+.vscode/
+
+package.json
+package-lock.json
+
+environment/
+node_modules/
+
+README.md
