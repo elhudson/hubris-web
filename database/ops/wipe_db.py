@@ -2,7 +2,7 @@ import sqlalchemy as sqa
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="/home/el_hudson/Projects/HUBRIS-1/sticky_note.env")
+load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
 engine=sqa.create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
 con=engine.connect()
 

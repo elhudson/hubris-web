@@ -1,1 +1,34 @@
-@import "HUBRIS.css"
+@import "HUBRIS.css";
+@import "walkthrough.css";
+
+form {
+    display:flex;
+    flex-direction: column;
+    margin-top:15px;
+}
+
+label {
+    font-weight:bold;
+    font-size:14px;
+}
+
+.opt {
+    border:1px solid var(--base03);
+    width: 70%;
+    margin-bottom:15px;
+}
+
+.explainer.sub {
+    margin-left:26px;
+}
+
+table {
+    margin-left:26px;
+}
+
+td:first-child {
+    font-style: italic;
+    text-decoration: underline;
+    width: 70px;
+    vertical-align: top;
+}

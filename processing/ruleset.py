@@ -1,28 +1,25 @@
-from processing.db import find_source,generate_abilities,get_tables,fetch_by_id,feature,pcclass,skill_proficiency,duration,rng,background,tag_feature,class_feature,effect,power
+from dotenv import load_dotenv
+import os
+import sqlalchemy as sqa
 import pandas as pd
-import itertools
-import sqlite3
+from db import create_entry, get_tables
 
-path="/storage/HUBRIS.db"
-con=sqlite3.Connection(path)
+load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
-tables=get_tables(con,'prop')
-id_lists=[]
-for table in tables:
-    sql=f'''SELECT id FROM {table}'''
-    res=pd.read_sql(sql,con)
-    id_lists.append(res)
+db_path=f"sqlite:///{os.getenv('DB_PATH')}"
+engine=sqa.create_engine(db_path)
+con=engine.connect()
+all_tables=get_tables(con)
+tables=[table for table in all_tables if "__" not in table and "characters" not in table]
 
-id_tables={}
-
-for i in range(len(tables)):
-    id_tables[tables[i]]=id_lists[i]
-
-big_list_of_ids=[]
-
-for table in id_tables.keys():
-    ids=id_tables[table]
-    for id in ids.values:
-        big_list_of_ids.append(id[0])
-
-a=generate_abilities(big_list_of_ids,con)
+def all_in_table(table_name, con):
+    query=sqa.text(f'''SELECT id FROM {table_name}''')
+    entries=[]
+    result=pd.read_sql(query,con)
+    ids=[id[0] for id in result.values]
+    for id in ids:
+        entry=create_entry(table_name,id,con)
+        entry.build_single_relations(con)
+        entry.build_plural_relations(con)
+        entries.append(entry)
+    return entries

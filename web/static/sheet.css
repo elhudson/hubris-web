@@ -7,17 +7,7 @@
 
 /* input styling */
 
-input, textarea, select {
-  background-color: #fdf6e3;
-  border-style: none;
-}
 
-input[type="number"], .mod {
-  -moz-appearance: textfield;
-  border-bottom:1px solid #002b36;
-  min-width:3ch;
-  max-width: 5ch;
-}
 
 input[type="text"] {
   border-bottom:1px solid #002b36;
@@ -36,18 +26,7 @@ input[type="text"] {
   min-width:30%;
   outline:1px solid var(--base03)
 }
-input[type="radio"], input[type="checkbox"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width:15px;
-  height: 15px;
-  border:1px solid #002b36;
-}
 
-input[type="radio"]:checked, input[type="checkbox"]:checked {
-  background-color: #93a1a1;
-}
 
 /* removing browser defaults for boxes */
 input::-webkit-outer-spin-button,

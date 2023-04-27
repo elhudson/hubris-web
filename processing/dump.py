@@ -1,7 +1,7 @@
 import json
 import numpy as np
 
-home="/home/el_hudson/Projects/HUBRIS-1"
+home="/home/el_hudson/projects/HUBRIS"
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):

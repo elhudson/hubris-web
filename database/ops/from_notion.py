@@ -279,7 +279,7 @@ class PivotTable:
         name+=name.join(n)
         return name
     
-load_dotenv(dotenv_path="/home/el_hudson/Projects/HUBRIS-1/sticky_note.env")
+load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
 token="secret_TrlevNz6r9aY0bTxYzu2ytLwSbkIkibkbTDUfpTCiHI"
 link=create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
 map=Directory()

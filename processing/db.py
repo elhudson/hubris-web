@@ -6,9 +6,8 @@ import os
 from dump import NpEncoder
 import json
 from dotenv import load_dotenv
-from pprint import PrettyPrinter
 
-load_dotenv(dotenv_path="/home/el_hudson/Projects/HUBRIS-1/sticky_note.env")
+load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 engine=sqa.create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
 con=engine.connect()
@@ -19,10 +18,26 @@ class Character:
         self.name=char_name
         self.basic_info(con)
         self.set_tier()
+        self.attributes(con)
+        self.designate_tag()
     
     def __repr__(self):
         return self.to_JSON()
     
+    def designate_tag(self):
+        for e in self.effects:
+            e.tag=self.get_tag_overlap(e)
+
+    def get_tag_overlap(self,effect):
+        char_tags=[getattr(item,"title") for item in self.classes[0].tags]
+        char_tags.append("Agility")
+        char_tags.append("Conjuration")
+        char_tags.append("Abjuration")
+        effect_tags=[str.capitalize(getattr(item,"title")) for item in effect.tags]
+        for i in char_tags:
+            if i in effect_tags:
+                return i
+            
     def set_tier(self):
         if self.xp_spent<25:
             self.tier=1
@@ -130,9 +145,6 @@ class Entry:
         self.id=id
         self.build_core(con)
 
-    # def __repr__(self):
-    #     return self.to_JSON()
-
     def query(self,con):
         sql=sqa.text(f'''SELECT * FROM {self.table} WHERE id='{self.id}' ''')
         result=pd.read_sql(sql,con)
@@ -156,7 +168,7 @@ class Entry:
     def build_single_relations(self,con):
         for table in self.relate.keys():
             if table!="requires" and table!="required_for":
-                setattr(self,table,Entry(table,self.relate[table],con))
+                setattr(self,table,create_entry(table,self.relate[table],con))
 
     def build_plural_relations(self,con):
         tables=get_tables(con)
@@ -172,7 +184,7 @@ class Entry:
             res=res.drop(columns=[f"{self.table}","index"]).values.tolist()
             res=list(chain(*res))
             for r in res:
-                rs.append(Entry(rel_name,r,con))
+                rs.append(create_entry(rel_name,r,con))
             setattr(self,rel_name,rs)
             res=None
     
@@ -203,7 +215,7 @@ class Entry:
                 table=self.table
             pre_res=pd.read_sql(sqa.text(pre_query),con).values.tolist()
             for r in pre_res:
-                pre_reqs.append(Entry(table,r,con))
+                pre_reqs.append(create_entry(table,r,con))
             setattr(self,"requires",pre_reqs)
         if type=="post":
             post_reqs=[]
@@ -216,7 +228,7 @@ class Entry:
                 table=self.table
             post_res=pd.read_sql(sqa.text(post_query),con).values.tolist()
             for r in post_res:
-                post_reqs.append(Entry(table,r,con))
+                post_reqs.append(create_entry(table,r,con))
             setattr(self,"required_for",post_reqs)
         
     def locate_pre_and_postreqs(self,tables):
@@ -252,7 +264,6 @@ class Entry:
                     e[i]=entry[i].to_JSON()
                 base[item]=e
         return base
-        j=json.dumps(base,separators=(",",":"),indent=None,cls=NpEncoder)
 
 def get_tables(con):
     tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()
