@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="static/char_creation.css">
+    <script src="static/char_creation.js"></script>
+
+</head>
+
+<body>
+    {% import 'choices.html' as choices %}
+    {{ choices.header(character) }}
+    <div id="class_features">
+        <h1>Class Features</h1>
+        {% for i in range(class_features|length) %}
+        <div>
+            <input type="checkbox" id="{{class_features[i].id}}">
+        <label for="{{class_features[i].id}}">{{class_features[i].title}}</label>
+                <input type="number" value="{{class_features[i].xp}}"> XP
+            </span><br>
+            <span>
+                {% if class_features[i].requires|length>0 %}
+                <b>Requires:</b>
+                    {% for j in range(class_features[i].requires|length) %}
+                        {{class_features[i].requires[j].title}}
+                    {% endfor %}
+                {% endif %}
+            {% if class_features[i].required_for|length>0 %}
+                <b>Required for:</b>
+                    {% for j in range(class_features[i].required_for|length) %}
+                        {{class_features[i].required_for[j].title}}
+                    {% endfor %}
+                {% endif %}
+            </span>
+            <div>{{class_features[i].description}}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="tag_features">
+        <h1>Tag Features</h1>
+        {% for i in range(tag_features|length) %}
+        <div>
+            <input type="checkbox" id="{{tag_features[i].id}}">
+        <label for="{{tag_features[i].id}}">{{tag_features[i].title}}</label>
+                <input type="number" value="{{tag_features[i].xp}}"> XP
+            </span><br>
+            <span>
+                {% if tag_features[i].requires|length>0 %}
+                <b>Requires:</b>
+                    {% for j in range(tag_features[i].requires|length) %}
+                        {{tag_features[i].requires[j].title}}
+                    {% endfor %}
+                {% endif %}
+            {% if tag_features[i].required_for|length>0 %}
+                <b>Required for:</b>
+                    {% for j in range(tag_features[i].required_for|length) %}
+                        {{tag_features[i].required_for[j].title}}
+                    {% endfor %}
+                {% endif %}
+            </span>
+            <div>{{tag_features[i].description}}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="effects">
+        <h1>Effects</h1>
+        {% for i in range(effects|length) %}
+        <div>
+            <input type="checkbox" id="{{effects[i].id}}">
+        <label for="{{effects[i].id}}">{{effects[i].title}}</label>
+                <input type="number" value="{{effects[i].xp}}"> XP
+            </span><br>
+            <span>
+                {% if effects[i].requires|length>0 %}
+                <b>Requires:</b>
+                    {% for j in range(effects[i].requires|length) %}
+                        {{effects[i].requires[j].title}}
+                    {% endfor %}
+                {% endif %}
+            {% if effects[i].required_for|length>0 %}
+                <b>Required for:</b>
+                    {% for j in range(effects[i].required_for|length) %}
+                        {{effects[i].required_for[j].title}}
+                    {% endfor %}
+                {% endif %}
+            </span>
+            <div>{{effects[i].description}}</div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+
+</html>

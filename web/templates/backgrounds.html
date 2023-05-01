@@ -4,56 +4,44 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="static/char_creation.css">
-    <script src="static/char_creation.js"></script>
+    <link rel="stylesheet" href="/static/char_creation.css">
+    <script src="/static/char_creation.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 
 </head>
 <body>
-<h1>Choose your class</h1>
-<div class="explainer">When creating a HUBRIS character, the first thing you need to decide on is your character's class. There are 8 base classes in HUBRIS, detailed below.</div>
-<form method="post" action="/backgrounds">
-    {% for class in classes %}
+    {% import 'choices.html' as choices %}
+    {{ choices.header(character) }}
+<h1>Choose your background</h1>
+<div class="explainer"></div>
+<form name="backgrounds" method="post">
+    {% for background in backgrounds %}
     <div class="opt">
-        <input type="radio" name="class" id="{{class['title']}}">
-        <label for="{{class['title']}}">{{class["title"]}}</label>
+        <input type="checkbox" onClick="limit_selections('background',2)" name="background" id="{{background['id']}}" value="{{background['id']}}" >
+        <label for="{{background['id']}}">{{background["title"]}}</label>
         <div class="info">
             <table>
-                <tr>
-                    <td>Paths</td>
-                    <td></td>
-                </tr>
                 <tr>
                     <td>Attribute</td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Skills</td>
-                    <td>{% for skill in class["skills"] %}
-                        {{skill}}
-                    {% endfor %} </td>
+                    <td>Skill</td>
+                    <td>{{background["skills"].title}}</td>
                 </tr>
                 <tr>
-                    <td>Tags</td>
-                    <td>{% for tag in class["tags"] %}
-                        {{tag}}
-                    {% endfor %}</td>
-                </tr>
-                <tr>
-                    <td>Hit Die</td>
-                    <td>{{class["hit_die"]}}</td>
-                </tr>
-                <tr>
-                    <td>Armor</td>
-                    <td></td>
+                    <td>Feature</td>
+                    <td>{{background["feature_name"]}} {{background["feature_desc"]}}</td>
                 </tr>
             </table>
         </div>
         <div class="explainer sub">
-            {{class["description"]}}
+            {{background["description"]}}
         </div>
     </div>
     {% endfor %}
-    <input type="submit" value="Submit Class">
+    <input type="submit" value="Submit background">
 </form>
 </body>
 </html>

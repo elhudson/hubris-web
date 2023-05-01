@@ -11,4 +11,5 @@ package-lock.json
 environment/
 node_modules/
 
-README.md
+ssh_config
+web/flask_session/
