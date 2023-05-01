@@ -1,4 +1,3 @@
-import sqlite3
 import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
@@ -11,18 +10,67 @@ load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 engine=sqa.create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
 con=engine.connect()
-name="Archie Radcliffe"
+
+def create_character(char_id,con):
+    char=Character(char_id)
+    if exists(char_id,con):
+        char.basic_info(con)
+        char.build_entries(con)
+        char.set_tier()
+        char.designate_tag()
+    return char
+
+def deserialize_character(d):
+    me=Character(d["id"])
+    for item in d.keys():
+        if type(d[item])==dict:
+            down=deserialize_entry(d[item])
+            setattr(me,down)
+        elif type(d[item])==list:
+            e=[]
+            for i in range(len(d[item])):
+                e.append(deserialize_entry(d[item][i]))
+            setattr(me,item,e)
+        else:
+            setattr(me,item,d[item])
+    return me
+
+def deserialize_entry(d):
+    me=Entry()
+    for item in d.keys():
+        if type(d[item])==dict:
+            down=deserialize_entry(d[item])
+            setattr(me,item,down)
+        elif type(d[item])==list:
+            e=[]
+            for i in range(len(d[item])):
+                e.append(deserialize_entry(d[item][i]))
+            setattr(me,item,e)
+        else:
+            setattr(me,item,d[item])
+    return me
+
+def exists(char_id,con):
+    sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id="{char_id}" ''') 
+    r=pd.read_sql(sql,con)
+    if r.empty:
+        return False
+    else:
+        return True
 
 class Character:
-    def __init__(self,char_name,con):
-        self.name=char_name
-        self.basic_info(con)
-        self.set_tier()
-        self.attributes(con)
-        self.designate_tag()
-    
-    def __repr__(self):
-        return self.to_JSON()
+    def __init__(self,char_id):
+        self.id=char_id
+        self.name=None
+        self.str=None
+        self.dex=None
+        self.con=None
+        self.int=None
+        self.wis=None
+        self.cha=None
+        self.xp_earned=None
+        self.xp_spent=None
+        self.alignment=None
     
     def designate_tag(self):
         for e in self.effects:
@@ -49,9 +97,9 @@ class Character:
             self.tier=4
 
     def basic_info(self,con):
-        sql=sqa.text(f'''SELECT id, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE name='{self.name}' ''') 
+        sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id='{self.id}' ''') 
         r=pd.read_sql(sql,con)
-        self.id=r["id"][0]
+        self.name=r["name"][0]
         self.str=r["str"][0]
         self.dex=r["dex"][0]
         self.con=r["con"][0]
@@ -62,7 +110,7 @@ class Character:
         self.xp_spent=int(r["xp_spent"][0])
         self.alignment=r["alignment"][0]
 
-    def attributes(self,con):
+    def build_entries(self,con):
         res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
         names=[names[0] for names in res if "__characters" in names[0]]
         r={}
@@ -81,20 +129,30 @@ class Character:
                 entry.build_single_relations(con)
                 entry.build_plural_relations(con)
                 if entry.is_independent(con)==False:
-                    entry.build_pre_and_postreqs(con)
-                    entry.build_pre_and_postreqs(con,type="post")
+                    entry.build_prereqs(con)
+                    entry.build_postreqs(con)
                 abilities.append(entry)
             setattr(self,table,abilities)
-    
-    def to_JSON(self,out=False,fp=None):
+
+    def add_entry(self,con,id,table):
+        if hasattr(self,table)==False:
+            setattr(self,table,[])
+        getattr(self,table).append(create_entry(table,id,con))
+
+    def to_dict(self):
         base= self.__dict__.copy()
         for item in self.__dict__:
             entry=getattr(self,item)
+            if type(entry)==dict:
+                base[item]=entry
             if type(entry)==list:
-                e={}
+                e=[]
                 for i in range(len(entry)):
-                    e[i]=entry[i].to_JSON()
+                    e.append(entry[i].to_dict())
                 base[item]=e
+        return base
+
+    def to_JSON(self,base,out=False,fp=None):
         if out==True:
             json.dump(base,fp=fp,cls=NpEncoder,separators=(",",":"),indent=None)
         else:
@@ -112,7 +170,7 @@ class Character:
         with open(char_path) as f:
             char=json.load(f)
         return char
-    
+
     def write_to_database(self,j,con):
         res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
         names=[names[0] for names in res if "__characters" in names[0]]
@@ -140,10 +198,11 @@ class Character:
                 con.commit()
 
 class Entry:
-    def __init__(self,table,id,con):
+    def __init__(self,table=None,id=None,con=None):
         self.table=table
         self.id=id
-        self.build_core(con)
+        if con!=None:
+            self.build_core(con)
 
     def query(self,con):
         sql=sqa.text(f'''SELECT * FROM {self.table} WHERE id='{self.id}' ''')
@@ -202,34 +261,34 @@ class Entry:
                         return False
         return True
 
-    def build_pre_and_postreqs(self,con,type="pre"):
+    def build_prereqs(self,con):
         tables=get_tables(con)
-        if type=="pre":
-            pre_reqs=[]
-            pre=self.locate_pre_and_postreqs(tables)[0]
-            if self.is_table(pre):
-                pre_query=f'''SELECT requires FROM {pre} WHERE {self.table}= '{self.id[0]}' '''
-                table=pre
-            else:
-                pre_query=f'''SELECT id FROM {self.table} WHERE {pre}='{self.id[0]}' '''
-                table=self.table
-            pre_res=pd.read_sql(sqa.text(pre_query),con).values.tolist()
-            for r in pre_res:
-                pre_reqs.append(create_entry(table,r,con))
-            setattr(self,"requires",pre_reqs)
-        if type=="post":
-            post_reqs=[]
-            post=self.locate_pre_and_postreqs(tables)[1]
-            if self.is_table(post):
-                post_query=f'''SELECT required_for FROM {post} WHERE {self.table}='{self.id[0]}' '''
-                table=post
-            else:
-                post_query=f'''SELECT id FROM {self.table} WHERE {post}='{self.id[0]}' '''
-                table=self.table
-            post_res=pd.read_sql(sqa.text(post_query),con).values.tolist()
-            for r in post_res:
-                post_reqs.append(create_entry(table,r,con))
-            setattr(self,"required_for",post_reqs)
+        pre_reqs=[]
+        pre=self.locate_pre_and_postreqs(tables)[0]
+        post=self.locate_pre_and_postreqs(tables)[1]
+        if self.is_table(pre):
+            pre_query=f"SELECT requires FROM {pre} WHERE {self.table}='{self.id}'"
+        else:
+            pre_query=f'''SELECT {self.table} FROM {post} WHERE required_for='{self.id}' '''
+        pre_res=list(chain(*pd.read_sql(sqa.text(pre_query),con).values.tolist()))
+        for r in pre_res:
+            print(r)
+            pre_reqs.append(create_entry(self.table,r,con))
+        setattr(self,"requires",pre_reqs)
+    
+    def build_postreqs(self,con):
+        tables=get_tables(con)
+        post_reqs=[]
+        post=self.locate_pre_and_postreqs(tables)[1]
+        if self.is_table(post):
+            post_query=f'''SELECT required_for FROM {post} WHERE {self.table}='{self.id}' '''
+        else:
+            post_query=f'''SELECT id FROM {self.table} WHERE {post}='{self.id}' '''
+        post_res=list(chain(*pd.read_sql(sqa.text(post_query),con).values.tolist()))
+        print(post_res)
+        for r in post_res:
+            post_reqs.append(create_entry(self.table,r,con))
+        setattr(self,"required_for",post_reqs)
         
     def locate_pre_and_postreqs(self,tables):
         pre_tables=[item for item in tables if "requires" in item]
@@ -252,26 +311,30 @@ class Entry:
         else:
             return False        
     
-    def to_JSON(self):
+    def to_dict(self):
         base= self.__dict__.copy()
         for item in self.__dict__:
             entry=getattr(self,item)
             if entry.__class__==Entry or entry.__class__ in Entry.__subclasses__():
-                base[item]=entry.to_JSON()
+                base[item]=entry.to_dict()
             if type(entry)==list:
-                e={}
+                e=[]
                 for i in range(len(entry)):
-                    e[i]=entry[i].to_JSON()
+                    e.append(entry[i].to_dict())
                 base[item]=e
         return base
+
 
 def get_tables(con):
     tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()
     return list(chain(*tables))
         
-def create_entry(table,id,con):
+def create_entry(table=None,id=None,con=None):
     if table=="classes":
-        return Class(table,id,con)
+        ret=Class(table,id,con)
+        ret.build_single_relations(con)
+        ret.build_plural_relations(con)
+        return ret
     if table=="class_features":
         return ClassFeature(table,id,con)
     if table=="tags":
@@ -279,7 +342,9 @@ def create_entry(table,id,con):
     if table=="tag_features":
         return TagFeature(table,id,con)
     if table=="backgrounds":
-        return Background(table,id,con)
+        ret=Background(table,id,con)
+        ret.split_feat()
+        return ret
     if table=="effects":
         return Effect(table,id,con)
     if table=="durations":
@@ -311,7 +376,9 @@ class Skill(Entry):
 
 class Background(Entry):
     def _init__(self,id,con):
-        super().__init__(id,con)
+        Entry.__init__(table="backgrounds",id=id,con=con)
+        print("HEY")
+    def split_feat(self):
         self.feature_name=self.feature.split(":")[0]
         self.feature_desc=self.feature.split(":")[1]
 

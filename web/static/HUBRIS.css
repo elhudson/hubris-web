@@ -35,7 +35,6 @@ input, textarea, select {
   background-color: #fdf6e3;
   border-style: none;
   border-bottom: #002b36 1px solid;
-  -moz-appearance: textfield;
 }
 
 input, textarea, select {

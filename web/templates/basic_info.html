@@ -4,43 +4,58 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="static/char_creation.css">
+    <link rel="stylesheet" href="/static/char_creation.css">
     <script src="static/char_creation.js"></script>
 
 </head>
-<body>
+<body onload="setup()">
+    {% import 'choices.html' as choices %}
+    {{ choices.header(character) }}
 <div class="status">
     <label for="pts_remaining">Points Remaining:</label>
-    <input class="left" type="number" id="remaining">
+    <input type="number" id="pts_remaining" value="">
 </div>
-<form>
+<form method="post" action="stats">
     <table>
         <tr>
             <td><label for="str">Strength</label></td>
-            <td><input type="number" id="str"></td>
+            <td><input type="number" id="str" onchange="update('str')"></td>
         </tr>
         <tr>
             <td><label for="dex">Dexterity</label></td>
-            <td><input type="number" id="dex"></td>
+            <td><input type="number" id="dex" onchange="update('dex')"></td>
         </tr>
         <tr>
             <td><label for="con">Constitution</label></td>
-            <td><input type="number" id="con"></td>
+            <td><input type="number" id="con" onchange="update('con')"></td>
         </tr>
         <tr>
             <td><label for="int">Intelligence</label></td>
-            <td><input type="number" id="int"></td>
+            <td><input type="number" id="int" onchange="update('int')"></td>
         </tr>
         <tr>
             <td><label for="wis">Wisdom</label></td>
-            <td><input type="number" id="wis"></td>
+            <td><input type="number" id="wis" onchange="update('wis')"></td>
         </tr>
         <tr>
             <td><label for="cha">Charisma</label></td>
-            <td><input type="number" id="cha"></td>
+            <td><input type="number" id="cha" onchange="update('cha')"></td>
         </tr>
     </table>
+    <input type="text" id="return">
+    <input type="submit" value="Submit ability scores">
 </form>
-
+<div class="samples">
+    Sample Arrays:
+    <ul>
+        <li>[4,3,0,0,0,0]</li>
+        <li>[4,4,0,0,-2,-2]</li>
+    <li>[4,3,3,-2,-2,-2]</li>
+    <li>[4,3,2,0,-1,-2]</li>
+    <li>[3,3,3,0,-1,-1]</li>
+    <li>[3,2,2,2,1,0]</li>
+    <li>[2,2,2,2,2,1]</li>
+    </ul>
+</div>
 </body>
 </html>
