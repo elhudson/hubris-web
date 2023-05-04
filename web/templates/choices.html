@@ -1,14 +1,18 @@
 {% macro header(char) %}
 <div class="box">
     {% if char.classes|length>0 %}
-    <p>{{char.classes[0].title}}</p>
+    <p><b>Class: </b>{{char.classes[0].title}}</p>
     {% endif %}
     {% if char.backgrounds|length>0 %}
-    <p>{{char.backgrounds[0].title}}</p>
-    <p>{{char.backgrounds[1].title}}</p>
+    <p><b>Backgrounds: </b>{{char.backgrounds[0].title}} & {{char.backgrounds[1].title}}</p>
     {% endif %}
     {% if char.str!=None %}
-    {{char.str}},{{char.dex}},{{char.con}},{{char.int}},{{char.wis}},{{char.cha}}
+    <b>STR:</b><span id="str">{{char.str}}</span>
+    <b>DEX:</b><span id="dex">{{char.dex}}</span>
+    <b>CON:</b><span id="con">{{char.con}}</span>
+    <b>INT:</b><span id="int">{{char.int}}</span>
+    <b>WIS:</b><span id="wis">{{char.wis}}</span>
+    <b>CHA:</b><span id="cha">{{char.cha}}</span>
     {% endif %}
 </div>
 {% endmacro %}

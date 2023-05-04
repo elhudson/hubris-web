@@ -8,10 +8,11 @@
     <script src="static/char_creation.js"></script>
 
 </head>
-<body onload="setup()">
+<body onload="setup('{{boost1}}','{{boost2}}')">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
 <div class="status">
+    {{out}}
     <label for="pts_remaining">Points Remaining:</label>
     <input type="number" id="pts_remaining" value="">
 </div>
@@ -42,7 +43,6 @@
             <td><input type="number" id="cha" onchange="update('cha')"></td>
         </tr>
     </table>
-    <input type="text" id="return">
     <input type="submit" value="Submit ability scores">
 </form>
 <div class="samples">
