@@ -211,18 +211,22 @@ class Entry:
     
     def build_core(self,con):
         r=self.query(con)
+        vals=[]
         self.relate={}
         for field in r.columns:
             if len(r[field])>0:
-                if field!="id":
+                if field!="id" and field!="index":
                     val=r[field][0]
+                    vals.append(val)
                     if isinstance(val,str):
                         if val.count("-")==4:
-                            self.relate[field]=val
+                                return True
+                                self.relate[field]=val
                         else:
                             setattr(self,field,val)
                     else:
                         setattr(self,field,val)
+        return vals
 
     def build_single_relations(self,con):
         for table in self.relate.keys():
@@ -331,10 +335,7 @@ def get_tables(con):
         
 def create_entry(table=None,id=None,con=None):
     if table=="classes":
-        ret=Class(table,id,con)
-        ret.build_single_relations(con)
-        ret.build_plural_relations(con)
-        return ret
+        return Class(table,id,con)
     if table=="class_features":
         return ClassFeature(table,id,con)
     if table=="tags":

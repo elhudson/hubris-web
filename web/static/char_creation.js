@@ -42,16 +42,23 @@ function points_remaining(scores) {
         return 28-val
     }
 
-function setup() {
+function setup(boost1,boost2) {
     let scores=new abilityScores()
+    let stats=Object.keys(scores)
+    for (item in stats) {
+        if (stats[item]==boost1 || stats[item]==boost2)
+        scores[stats[item]]+=1
+    }
     localStorage.setItem("a",JSON.stringify(scores))
     let left=document.getElementById("pts_remaining")
-    left.setAttribute("value",points_remaining(scores))
+    left.setAttribute("value",28)
     let form=document.forms[0]
     for (var item in form) {
         form[item].value=scores[form[item].id]
     }
 }
+
+
 
 function update(attr) {
     let new_value=document.getElementById(attr).value
@@ -71,10 +78,12 @@ function update(attr) {
     }
     else {
         localStorage.setItem("a",JSON.stringify(new_scores))
+        document.cookie=localStorage.getItem("a")
+
     }
     
 }
-
+write()
 function write() {
     document.cookie=localStorage.getItem("a")
 }
@@ -92,3 +101,5 @@ function limit_selections(elem_name,max_selections) {
         }
     }
 }
+
+
