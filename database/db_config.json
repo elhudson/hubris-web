@@ -1,0 +1,14 @@
+{
+    "MANY_TO_MANY": [
+    ["Classes","Tags"], 
+    ["Classes","Skills"],
+    ["Tags","Effects"]
+    ],
+   "HAS_PREREQS": [
+    "Effects",
+    "Durations",
+    "Ranges",
+    "Class Features",
+    "Tag Features"
+   ]
+}

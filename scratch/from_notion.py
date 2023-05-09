@@ -1,5 +1,5 @@
 import pandas as pd
-from notion_client import Client, RequestTimeoutError
+from key_generator.key_generator import generate
 from sqlalchemy import create_engine
 import sqlite3
 import sqlalchemy as sqa
@@ -7,25 +7,46 @@ import httpx
 from dotenv import load_dotenv
 from itertools import chain
 import os
-from dotenv import load_dotenv
+from notion import NotionClient
 
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
-notion=Client(auth=os.getenv("NOTION_TOKEN"))
 
 class Database:
-    def __init__(self,id):
-        self.id=id
 
-    def define_tables(self,notion):
-        res=notion.blocks.children.list("0e2c8717f10341a2a2d30f48eb2c6677")["results"]
-        l=[(r["id"],r[tuple(r.keys())[10]]["title"]) for r in res if r["type"]=="child_page" or r["type"]=="child_database"]
-        for item in l:
-            table=PropertyTable(item[0])
-            setattr(self,item[1],table)
-
+    def __init__(self,token,directory):
+        self.notion=NotionLink(token,directory)
+        self.properties={}
+        self.pivots={}
+        self.fails=[]
+        
+    def generate_property_table(self,name,con):
+        db=self.notion.db(name)
+        table=PropertyTable(db)
+        self.properties[table.name]=table
+        self.pivots[table.name]=table.pivs
+        self.output(table,con)
+        
     def write_table(self,table,con):
         table.data.to_sql(table.name,con,if_exists="replace")
         print(f'Table {table.name} written to database.')
+        
+    def generate_properties(self,con,targets=None):
+        if targets==None:
+            targets=self.notion.directory.__dict__.keys()
+        for t in targets:
+            try:
+                self.generate_property_table(t,con)
+            except httpx.ReadTimeout:
+                self.fails.append(t)
+        self.handle_fails(con)
+            
+    def handle_fails(self,con):
+        for fail in self.fails:
+            for i in range(1000):
+                try:
+                    self.generate_property_table(fail,con)
+                    break
+                except:
+                    pass
         
     def generate_relationships(self,con,targets=None):
         pairs=self.get_relationships()
@@ -62,10 +83,10 @@ class Database:
     
     def is_updated(self,table,con):
         extant=self.from_sql(table.name,con)
-        if extant.equals(table.data) and extant.columns==table.columns:
-            return True
-        else:
+        if extant.equals(table.data):
             return False
+        else:
+            return True
     
     def output(self,table,con):
         exists=self.table_names(con)
@@ -94,21 +115,23 @@ class Database:
             for title in drop:
                 q=sqa.text(f"DROP TABLE {title}")
                 try:
-                    c=link.connect()
-                    c.execute(q)
-                    c.commit()
+                    link.connect().execute(q)
                 except sqlite3.OperationalError:
                     continue
 
 class PropertyTable:
 
-    def __init__(self,id,notion):
-        self.id=id
-        self.data=self.read_db(id,notion)
+    def __init__(self,notion):
+        self.notion=notion
+        self.name=txt_processing(self.notion.title)
+        self.data=self.read_db()
+        self.from_notion=self.data.copy()
         self.related_to=self.define_relations()
         self.pivs=self.pivots() 
+        self.sanitize_names()
+        # self.drop_relations()
 
-    def sanitize_names(self):
+    def sanitize_names(self,ignore=["none"]):
         new_names=[]
         for f in self.data.columns:
             if f!="title" and f!="id" and f not in ignore:
@@ -232,6 +255,10 @@ class PivotTable:
         return name
     
 load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
-token="secret_TrlevNz6r9aY0bTxYzu2ytLwSbkIkibkbTDUfpTCiHI"
+token=os.getenv("NOTION_TOKEN")
 link=create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
+map=Directory()
 
+hubris=Database(token,map)
+
+hubris.generate_properties(link,targets=["classes"])
