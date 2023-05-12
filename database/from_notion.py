@@ -34,6 +34,17 @@ class Database:
                     setattr(self,it[k].title,frame)
         self.cleanup()
 
+    def write_tables(self,con):
+        exists=self.table_names(con)
+        for item in self.__dict__:
+            if item not in ("configs","id"):
+                table=self.__getattribute__(item)
+                if item not in exists or self.is_updated(item,table,con)==False:
+                    table.to_sql(item,con,if_exists="replace",index=False)
+                    print(f'Table {item} written to database.')
+                else:
+                    print(f"Table {item} is up to date.")
+                
     def cleanup(self):
         del self.property_tables
         del self.m2m_tables
@@ -74,9 +85,9 @@ class Database:
             else:
                 records.append(item.__dict__)
         fr=pd.DataFrame.from_records(records)
-        return self.format_dataframe(fr)
+        return self.format_dataframe(fr,table.title)
 
-    def format_dataframe(self,frame):
+    def format_dataframe(self,frame,title):
         frame.columns=[f.replace(" ","_").lower() for f in frame.columns]
         sus=self.get_suspicious_columns(frame)
         dels=[]
@@ -89,9 +100,9 @@ class Database:
                 elif len(frame[l][i])>1:
                     dels.append(l)
         frame=frame.drop(columns=dels)
-        if "requires" in frame.columns:
+        if "requires" in frame.columns and "requires" not in title:
             frame=frame.drop(columns="requires")
-        if "required_for" in frame.columns:
+        if "required_for" in frame.columns and "required_for" not in title:
             frame=frame.drop(columns="required_for")
         return frame
         
@@ -102,34 +113,22 @@ class Database:
                 lists.append(frame.columns[i])
         return lists
     
-    def write_table(self,table,con):
-        table.data.to_sql(table.name,con,if_exists="replace")
-        print(f'Table {table.name} written to database.')
-
     def from_sql(self, tbl_name,con):
         with con.connect() as c:
             ext=pd.read_sql(sqa.text(f'''SELECT * FROM {tbl_name}'''),c)
             c.close()
         return ext
     
-    def is_updated(self,table,con):
-        extant=self.from_sql(table.name,con)
-        if extant.equals(table.data) and extant.columns==table.columns:
+    def is_updated(self,title,table,con):
+        extant=self.from_sql(title,con)
+        if extant.equals(table) and extant.columns==table.columns:
             return True
         else:
             return False
     
-    def output(self,table,con):
-        exists=self.table_names(con)
-        if table.name not in exists or self.is_updated(table,con)==False:
-            self.write_table(table,con)
-        else:
-            print(f'Table {table.name} is up to date.')
-    
     def table_names(self,con):
         with con.connect() as c:
             tabls=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),c).values.tolist()
-            c.close()
         tabls=list(chain(*tabls))
         return tabls
 
@@ -186,16 +185,17 @@ class RequirementTable:
     def __init__(self,parent,rel,table):
         self.parent=parent
         self.relation=rel
-        self.data=self.get_data(table)
         self.title=self.define_title(parent,rel)
+        self.data=self.get_data(table)
 
     def get_data(self,table):
         rows=[]
         for entry in table.data:
-            elem=getattr(entry,self.relation)
+            elem=entry.__dict__[self.relation]
             for e in elem:
                 row={}
-                row[entry.id]=e
+                row[self.parent]=entry.id
+                row[self.relation]=e
                 rows.append(row)
         return rows
     
@@ -217,7 +217,8 @@ class BridgeTable:
             if len(rel_id)>0:
                 for item in rel_id:
                     row={}
-                    row[item]=prop_id
+                    row[pair[0]]=prop_id
+                    row[pair[1]]=item
                     rows.append(row)
         return rows
 
@@ -234,3 +235,5 @@ dbid="0e2c8717f10341a2a2d30f48eb2c6677"
 
 hubris=Database(dbid,configs)
 hubris.populate(notion)
+hubris.sqlify()
+hubris.write_tables(link)
