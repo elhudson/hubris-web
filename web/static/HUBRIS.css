@@ -1,18 +1,19 @@
 :root {
-    --base03:#002b36;
-    --base3:#fdf6e3;
+    --text:#1b1b1b;
+    --fill:#a9a9a9;
+    --background:#efefef;
   
   }
   
   body {
-    background-color: #fdf6e3 !important;
+    background-color: var(--background) !important;
   }
   
   /* general text styling */
   
   div, span, form {
     font-family:Inter,Hack,monospace;
-    color:var(--base03);
+    color:var(--text);
     font-size:12px;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -32,19 +33,19 @@
   /* input styling */
 
 input, textarea, select {
-  background-color: #fdf6e3;
+  background-color: var(--background);
   border-style: none;
-  border-bottom: #002b36 1px solid;
+  border-bottom: var(--text) 1px solid;
 }
 
 input, textarea, select {
-  background-color: #fdf6e3;
+  background-color: var(--background);
   border-style: none;
 }
 
 input[type="number"], .mod {
   -moz-appearance: textfield;
-  border-bottom:1px solid #002b36;
+  border-bottom:1px solid var(--text);
   min-width:3ch;
   max-width: 5ch;
 }
@@ -55,9 +56,9 @@ input[type="radio"], input[type="checkbox"] {
   appearance: none;
   width:15px;
   height: 15px;
-  border:1px solid #002b36;
+  border:1px solid var(--text);
 }
 
 input[type="radio"]:checked, input[type="checkbox"]:checked {
-  background-color: #93a1a1;
+  background-color: var(--fill);
 }

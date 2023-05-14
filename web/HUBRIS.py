@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import pandas as pd
 import sqlalchemy as sqa
+import uuid
 import random
 import string
 import json
@@ -58,10 +59,10 @@ def choose_class():
         classes=all_in_table("classes",con)
         con.close()
         classes_markup=templatify(classes)
-        return render_template("class.html",classes=classes_markup)
+        return render_template("class.html",classes=classes)
     if request.method=="POST":
         con=engine.connect()
-        new=create_character(new_char_id(),con)
+        new=create_character(uuid.uuid4(),con)
         session["new_character"]=new
         class_id=request.form.get("class")
         new.add_entry(con,class_id,"classes")
@@ -75,9 +76,9 @@ def choose_backgrounds():
     if request.method=="GET":
         con=engine.connect()
         backgrounds=all_in_table("backgrounds",con)
-        backgrounds_markup=templatify(backgrounds)
+        # backgrounds_markup=[entry.to_dict() for entry in backgrounds]
         con.close()
-        return render_template("backgrounds.html",backgrounds=backgrounds_markup,character=session.get('new_character'))
+        return render_template("backgrounds.html",backgrounds=backgrounds,character=session.get('new_character'))
     if request.method=="POST":
         con=engine.connect()
         char=session.get('new_character')
@@ -142,7 +143,6 @@ def spend_xp():
         c=character.classes[0].build_core(con)
         character.classes[0].build_plural_relations(con)
         char_tags=[tag.id for tag in character.classes[0].tags]
-        return render_template("output.html",output=c)
         tag_features={}
         for tag in char_tags:
             features=[]
@@ -155,8 +155,7 @@ def spend_xp():
             result=list(chain(*pd.read_sql(tag_query,con).values.tolist()))
             for r in result:
                 entry=create_entry("tag_features",r,con)
-                entry.build_prereqs(con)
-                entry.build_postreqs(con)
+                entry.build_plural_relation(con)
                 features.append(entry)
             tag_name=list(chain(*pd.read_sql(sqa.text(f'''
             SELECT title
@@ -179,15 +178,12 @@ def spend_xp():
             result=list(chain(*pd.read_sql(effect_query,con).values.tolist()))
             for r in result:
                 f=create_entry("effects",r,con)
-                f.build_prereqs(con)
-                f.build_postreqs(con)
+                f.build_plural_relations(con)
                 for tree in effects.keys():
                     if hasattr(f,"tree"):
                         if f.tree==tree:
                             effects[tree].append(f)
         return render_template("spend_xp.html",effects=effects,tag_features=tag_features,class_features=class_features,character=character)
-
-
 
 ## helper functions 
 
@@ -195,7 +191,7 @@ def templatify(entries):
     entries_markup=[]
     for entry in entries:
         markup={}
-        for attr in entry.__dir__():
+        for attr in entry.__dict__.keys():
             item=getattr(entry,attr)
             if type(item)!=list:
                 markup[attr]=item
@@ -204,12 +200,8 @@ def templatify(entries):
                 for sub in item:
                     if type(sub)==list:
                         markup[attr].append(templatify(sub))
-                    if hasattr(sub,"title"):
-                        markup[attr].append(sub.title)
+                    if hasattr(sub,"name"):
+                        markup[attr].append(sub.name)
         entries_markup.append(markup)
     return entries_markup
 
-def new_char_id():
-    letters = string.ascii_letters
-    result_str = ''.join(random.choice(letters) for i in range(19))
-    return result_str

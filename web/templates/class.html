@@ -14,13 +14,17 @@
 <form method="post" action="class">
     {% for class in classes %}
     <div class="opt">
-        <input type="radio" name="class" value="{{class['id']}}">
-        <label for="{{class['title']}}">{{class["title"]}}</label>
+        <input type="radio" name="class" value="{{class.id}}">
+        <label for="{{class.name}}">{{class.name}}</label>
         <div class="info">
             <table>
                 <tr>
                     <td>Paths</td>
-                    <td></td>
+                    <td>
+                        {% for path in class.class_paths %}
+                        {{path.name}}
+                        {% endfor %}
+                    </td>
                 </tr>
                 <tr>
                     <td>Attribute</td>
@@ -28,14 +32,14 @@
                 </tr>
                 <tr>
                     <td>Skills</td>
-                    <td>{% for skill in class["skills"] %}
-                        {{skill}}
+                    <td>{% for skill in class.skills %}
+                        {{skill.name}}
                     {% endfor %} </td>
                 </tr>
                 <tr>
                     <td>Tags</td>
-                    <td>{% for tag in class["tags"] %}
-                        {{tag}}
+                    <td>{% for tag in class.tags %}
+                        #{{tag.name}}
                     {% endfor %}</td>
                 </tr>
                 <tr>

@@ -13,7 +13,7 @@ label {
 }
 
 .opt {
-    border:1px solid var(--base03);
+    border:1px solid var(--text);
     width: 70%;
     margin-bottom:15px;
 }

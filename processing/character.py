@@ -1,16 +1,15 @@
-import sqlalchemy as sqa
-import pandas as pd
-from itertools import chain
-import uuid
-import os
-from dump import NpEncoder
 import json
-from dotenv import load_dotenv
+import os
+from itertools import chain
 
-load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
+import pandas as pd
+import sqlalchemy as sqa
+from entry import Entry, create_entry
 
-engine=sqa.create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
-con=engine.connect()
+from db_toolbox import NpEncoder, has_prereqs
+
+con=sqa.create_engine("sqlite:////home/el_hudson/projects/HUBRIS/database/HUBRIS.db").connect()
+id="e5231255-5dbb-4d02-8133-fe23dcac6599"
 
 def create_character(char_id,con):
     char=Character(char_id)
@@ -19,7 +18,6 @@ def create_character(char_id,con):
         char.build_entries(con)
         char.xp_spent=char.count_xp()
         char.set_tier()
-        char.designate_tag()
     return char
 
 def deserialize_character(d):
@@ -75,10 +73,7 @@ class Character:
         self.alignment=None
     
     def count_xp(self):
-        features=[]
-        for k in self.__dict__.keys():
-            if type(getattr(self,k))==list:
-                features.append(k)
+        features=self.fetch_attrs()
         xp=0
         for f in features:
             items=getattr(self,f)
@@ -86,7 +81,14 @@ class Character:
                 if hasattr(item,"xp"):
                     xp+=item.xp
         return xp
-
+    
+    def fetch_attrs(self):
+        features=[]
+        for k in self.__dict__.keys():
+            if type(getattr(self,k))==list:
+                features.append(k)
+        return features
+    
     def designate_tag(self):
         for e in self.effects:
             e.tag=self.get_tag_overlap(e)
@@ -107,6 +109,57 @@ class Character:
             self.tier=3
         if 150<=self.xp_spent:
             self.tier=4
+
+    def fetch_fulfilled_prereqs(self,con):
+        self.extend_entries(con)
+        q={}
+        for a in self.fetch_attrs():
+            if len(getattr(self,a))>0:
+                quals=[]
+                for item in getattr(self,a):
+                    if hasattr(item,"required_for"):
+                        for it in item.required_for:
+                            quals.append(it)
+                if len(quals)>0:
+                    q[a]=quals
+        return q
+    
+    def fetch_quals_from_class(self,con):
+        q={}
+        q["skills"]=self.classes[0].skills
+        fx={}
+        tx={}
+        for t in self.classes[0].tags:
+            t.build_extensions(con)
+            fx[t.name]=[e for e in t.effects if len(e.requires)==0 and e.tier=="T"+self.tier]
+            tx[t.name]=[ta for ta in t.tag_features if len(ta.requires)==0 and ta.tier=="T"+self.tier]
+        q["effects"]=fx
+        q["tag_features"]=tx
+        q["class_features"]=[c for c in self.classes[0].class_features if len(c.requires)==0 and c.tier=="T"+self.tier]
+        return q
+
+    def fetch_metadata_quals(self,con):
+        trees=[e.tree for e in self.effects]
+        trees=set(trees)
+        metadata={}
+        for e in trees:
+            durs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE tree='{e}' AND tier='T{self.tier}'"),con).values))
+            durs=[d for d in durs if not has_prereqs(d,"durations",con)]
+            rngs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM ranges WHERE tree='{e}' AND tier='T{self.tier}'"),con).values))
+            rngs=[r for r in rngs if not has_prereqs(r,"ranges",con)]
+            metadata[e]={}
+            metadata[e]["durations"]=[]
+            for d in durs:
+                metadata[e]["durations"].append(create_entry("durations",d,con))
+            metadata[e]["ranges"]=[]
+            for r in rngs:
+                metadata[e]["ranges"].append(create_entry("ranges",r,con))
+        return metadata
+
+
+
+    def fetch_quals_from_bg(self,con):
+        pass
 
     def basic_info(self,con):
         sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id='{self.id}' ''') 
@@ -138,10 +191,17 @@ class Character:
             abilities=[]
             for id in ids:
                 entry=create_entry(table,id,con)
-                entry.build_single_relations(con)
-                entry.build_plural_relations(con)
                 abilities.append(entry)
             setattr(self,table,abilities)
+
+    def extend_entries(self,con):
+        categories=self.fetch_attrs()
+        for c in categories:
+            entries=getattr(self,c)
+            for e in entries:
+                e.build_single_relations(con)
+                e.build_plural_relations(con)
+                e.build_other_relations(con)
 
     def add_entry(self,con,id,table):
         if hasattr(self,table)==False:
@@ -205,147 +265,3 @@ class Character:
                 sql=sqa.text(f'''INSERT INTO {q} (character_id, {prop_name}) VALUES('{pair[0]}','{pair[1]}') WHERE NOT EXISTS(SELECT (character_id, {prop_name} FROM {q}))''')
                 con.execute(sql)
                 con.commit()
-
-class Entry:
-    def __init__(self,table=None,id=None,con=None):
-        self.table=table
-        self.id=id
-        if con!=None:
-            self.build_core(con)
-
-    def query(self,con):
-        sql=sqa.text(f'''SELECT * FROM {self.table} WHERE id='{self.id}' ''')
-        result=pd.read_sql(sql,con)
-        return result
-    
-    def build_core(self,con):
-        r=self.query(con)
-        self.relate={}
-        for field in r.columns:
-            if len(r[field])>0:
-                if field!="id":
-                    val=r[field][0]
-                    if "name" in field:
-                        self.name=val
-                    elif isinstance(val,str):
-                        if val.count("-")==4:
-                                self.relate[field]=val
-                        else:
-                            setattr(self,field,val)
-                    else:
-                        setattr(self,field,val)
-
-    def build_single_relations(self,con):
-        for table in self.relate.keys():
-            setattr(self,table,create_entry(table,self.relate[table],con))
-        del self.relate
-
-    def build_plural_relations(self,con):
-        tables=get_tables(con)
-        targets=[t for t in tables if self.table in t and "characters" not in t and "__" in t]
-        for t in targets:
-            col_name=t.replace(self.table,"").replace("__","",2)
-            sql=sqa.text(f"SELECT {col_name} FROM {t} WHERE {self.table}='{self.id}'")
-            ids=list(chain(*pd.read_sql(sql,con).values))
-            entries=[]
-            for id in ids:
-                if "require" in col_name:
-                    e=create_entry(self.table,id,con)
-                else:
-                    e=create_entry(col_name,id,con)
-                entries.append(e)
-            setattr(self,col_name,entries)     
-    
-    def to_dict(self):
-        base= self.__dict__.copy()
-        for item in self.__dict__:
-            entry=getattr(self,item)
-            if entry.__class__==Entry or entry.__class__ in Entry.__subclasses__():
-                base[item]=entry.to_dict()
-            if type(entry)==list:
-                e=[]
-                for i in range(len(entry)):
-                    e.append(entry[i].to_dict())
-                base[item]=e
-        return base
-
-def get_tables(con):
-    tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()
-    return list(chain(*tables))
-        
-def create_entry(table=None,id=None,con=None):
-    if table=="classes":
-        return Class(table,id,con)
-    if table=="class_features":
-        return ClassFeature(table,id,con)
-    if table=="tags":
-        return Tag(table,id,con)
-    if table=="tag_features":
-        return TagFeature(table,id,con)
-    if table=="backgrounds":
-        return Background(table,id,con)
-    if table=="effects":
-        return Effect(table,id,con)
-    if table=="durations":
-        return Duration(table,id,con)
-    if table=="ranges":
-        return Range(table,id,con)
-    else:
-        return Entry(table,id,con)
-
-class Class(Entry):
-    def __init__(self,table,id,con):
-        super().__init__(table,id,con)
-        self.define_hd()
-    def define_hd(self):
-        if self.name=="Barbarian":
-            self.hit_die="2d4"
-        if self.name in ["Sharpshooter","Knight","Fighter"]:
-            self.hit_die="d6"
-        if self.name in ["Rogue","Priest"]:
-            self.hit_die="d4"
-        if self.name in ["Elementalist","Beguiler"]:
-            self.hit_die="d3"
-        if self.name=="Wizard":
-            self.hit_die="d2"
-
-class Skill(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Background(Entry):
-    def _init__(self,id,con):
-        Entry.__init__(table="backgrounds",id=id,con=con)
-        print("HEY")
-    def split_feat(self):
-        self.feature_name=self.feature.split(":")[0]
-        self.feature_desc=self.feature.split(":")[1]
-
-class ClassFeature(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Effect(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Duration(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Range(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Tag(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class TagFeature(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
-class Attribute(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
-
