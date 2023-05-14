@@ -1,6 +1,7 @@
 import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
+import uuid
 import os
 from dump import NpEncoder
 import json
@@ -16,6 +17,7 @@ def create_character(char_id,con):
     if exists(char_id,con):
         char.basic_info(con)
         char.build_entries(con)
+        char.xp_spent=char.count_xp()
         char.set_tier()
         char.designate_tag()
     return char
@@ -72,16 +74,26 @@ class Character:
         self.xp_spent=None
         self.alignment=None
     
+    def count_xp(self):
+        features=[]
+        for k in self.__dict__.keys():
+            if type(getattr(self,k))==list:
+                features.append(k)
+        xp=0
+        for f in features:
+            items=getattr(self,f)
+            for item in items:
+                if hasattr(item,"xp"):
+                    xp+=item.xp
+        return xp
+
     def designate_tag(self):
         for e in self.effects:
             e.tag=self.get_tag_overlap(e)
 
     def get_tag_overlap(self,effect):
-        char_tags=[getattr(item,"title") for item in self.classes[0].tags]
-        char_tags.append("Agility")
-        char_tags.append("Conjuration")
-        char_tags.append("Abjuration")
-        effect_tags=[str.capitalize(getattr(item,"title")) for item in effect.tags]
+        char_tags=[getattr(item,"name") for item in self.classes[0].tags]
+        effect_tags=[str.capitalize(getattr(item,"name")) for item in effect.tags]
         for i in char_tags:
             if i in effect_tags:
                 return i
@@ -116,7 +128,7 @@ class Character:
         r={}
         for name in names:
             prop_name=name[14::]
-            q=sqa.text(f'''SELECT {prop_name}_id FROM {name} WHERE character_id='{self.id}' ''')
+            q=sqa.text(f'''SELECT {prop_name}_id FROM {name} WHERE char_id='{self.id}' ''')
             res=pd.read_sql(q,con)
             l=res.values.tolist()
             l=frozenset(list(chain(*l)))
@@ -128,9 +140,6 @@ class Character:
                 entry=create_entry(table,id,con)
                 entry.build_single_relations(con)
                 entry.build_plural_relations(con)
-                if entry.is_independent(con)==False:
-                    entry.build_prereqs(con)
-                    entry.build_postreqs(con)
                 abilities.append(entry)
             setattr(self,table,abilities)
 
@@ -211,109 +220,41 @@ class Entry:
     
     def build_core(self,con):
         r=self.query(con)
-        vals=[]
         self.relate={}
         for field in r.columns:
             if len(r[field])>0:
-                if field!="id" and field!="index":
+                if field!="id":
                     val=r[field][0]
-                    vals.append(val)
-                    if isinstance(val,str):
+                    if "name" in field:
+                        self.name=val
+                    elif isinstance(val,str):
                         if val.count("-")==4:
-                                return True
                                 self.relate[field]=val
                         else:
                             setattr(self,field,val)
                     else:
                         setattr(self,field,val)
-        return vals
 
     def build_single_relations(self,con):
         for table in self.relate.keys():
-            if table!="requires" and table!="required_for":
-                setattr(self,table,create_entry(table,self.relate[table],con))
+            setattr(self,table,create_entry(table,self.relate[table],con))
+        del self.relate
 
     def build_plural_relations(self,con):
         tables=get_tables(con)
-        ts=[]
-        for table in tables:
-            if "__" in table and "characters" not in table and self.table in table and "require" not in table:
-                ts.append(table)
-        for tabl in ts:
-            rs=[]
-            q=sqa.text(f'''SELECT * FROM {tabl} WHERE {self.table}='{self.id}' ''')
-            res=pd.read_sql(q,con)
-            rel_name=[item for item in res.columns if self.table not in item and "index" not in item][0]
-            res=res.drop(columns=[f"{self.table}","index"]).values.tolist()
-            res=list(chain(*res))
-            for r in res:
-                rs.append(create_entry(rel_name,r,con))
-            setattr(self,rel_name,rs)
-            res=None
-    
-    def is_independent(self,con):
-        t=get_tables(con)
-        rs=[]
-        for r in self.relate:
-            l={r,self.table}
-            rs.append(l)
-        rel_tables=[item for item in t if "__" in item and "characters" not in item]
-        if "requires" not in self.__dict__.keys() and "required_for" not in self.__dict__.keys():
-            for table in rel_tables:
-                for pair in rs:
-                    if list(pair)[0] in table and list(pair)[1] in table:
-                        return False
-        return True
-
-    def build_prereqs(self,con):
-        tables=get_tables(con)
-        pre_reqs=[]
-        pre=self.locate_pre_and_postreqs(tables)[0]
-        post=self.locate_pre_and_postreqs(tables)[1]
-        if self.is_table(pre):
-            pre_query=f"SELECT requires FROM {pre} WHERE {self.table}='{self.id}'"
-        else:
-            pre_query=f'''SELECT {self.table} FROM {post} WHERE required_for='{self.id}' '''
-        pre_res=list(chain(*pd.read_sql(sqa.text(pre_query),con).values.tolist()))
-        for r in pre_res:
-            print(r)
-            pre_reqs.append(create_entry(self.table,r,con))
-        setattr(self,"requires",pre_reqs)
-    
-    def build_postreqs(self,con):
-        tables=get_tables(con)
-        post_reqs=[]
-        post=self.locate_pre_and_postreqs(tables)[1]
-        if self.is_table(post):
-            post_query=f'''SELECT required_for FROM {post} WHERE {self.table}='{self.id}' '''
-        else:
-            post_query=f'''SELECT id FROM {self.table} WHERE {post}='{self.id}' '''
-        post_res=list(chain(*pd.read_sql(sqa.text(post_query),con).values.tolist()))
-        print(post_res)
-        for r in post_res:
-            post_reqs.append(create_entry(self.table,r,con))
-        setattr(self,"required_for",post_reqs)
-        
-    def locate_pre_and_postreqs(self,tables):
-        pre_tables=[item for item in tables if "requires" in item]
-        post_tables=[item for item in tables if "required_for" in item]
-        pre="requires"
-        post="required_for"
-        for item in pre_tables:
-            if self.table in item:
-                pre=item
-                break
-        for item in post_tables:
-            if self.table in item:
-                post=item
-                break
-        return (pre,post)
-    
-    def is_table(self,req):
-        if "__" in req:
-            return True
-        else:
-            return False        
+        targets=[t for t in tables if self.table in t and "characters" not in t and "__" in t]
+        for t in targets:
+            col_name=t.replace(self.table,"").replace("__","",2)
+            sql=sqa.text(f"SELECT {col_name} FROM {t} WHERE {self.table}='{self.id}'")
+            ids=list(chain(*pd.read_sql(sql,con).values))
+            entries=[]
+            for id in ids:
+                if "require" in col_name:
+                    e=create_entry(self.table,id,con)
+                else:
+                    e=create_entry(col_name,id,con)
+                entries.append(e)
+            setattr(self,col_name,entries)     
     
     def to_dict(self):
         base= self.__dict__.copy()
@@ -327,7 +268,6 @@ class Entry:
                     e.append(entry[i].to_dict())
                 base[item]=e
         return base
-
 
 def get_tables(con):
     tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()
@@ -343,9 +283,7 @@ def create_entry(table=None,id=None,con=None):
     if table=="tag_features":
         return TagFeature(table,id,con)
     if table=="backgrounds":
-        ret=Background(table,id,con)
-        ret.split_feat()
-        return ret
+        return Background(table,id,con)
     if table=="effects":
         return Effect(table,id,con)
     if table=="durations":
@@ -360,15 +298,15 @@ class Class(Entry):
         super().__init__(table,id,con)
         self.define_hd()
     def define_hd(self):
-        if self.title=="Barbarian":
+        if self.name=="Barbarian":
             self.hit_die="2d4"
-        if self.title in ["Sharpshooter","Knight","Fighter"]:
+        if self.name in ["Sharpshooter","Knight","Fighter"]:
             self.hit_die="d6"
-        if self.title in ["Rogue","Priest"]:
+        if self.name in ["Rogue","Priest"]:
             self.hit_die="d4"
-        if self.title in ["Elementalist","Beguiler"]:
+        if self.name in ["Elementalist","Beguiler"]:
             self.hit_die="d3"
-        if self.title=="Wizard":
+        if self.name=="Wizard":
             self.hit_die="d2"
 
 class Skill(Entry):
@@ -410,3 +348,4 @@ class TagFeature(Entry):
 class Attribute(Entry):
     def _init__(self,id,con):
         super().__init__(id,con)
+
