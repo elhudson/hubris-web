@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import os
 import sqlalchemy as sqa
 import pandas as pd
-from db import create_entry, get_tables
+from entry import create_entry
+from tools import get_tables
 
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
@@ -12,14 +13,15 @@ con=engine.connect()
 all_tables=get_tables(con)
 tables=[table for table in all_tables if "__" not in table and "characters" not in table]
 
-def all_in_table(table_name, con):
+def all_in_table(table_name, con, icons=False):
     query=sqa.text(f'''SELECT id FROM {table_name}''')
     entries=[]
     result=pd.read_sql(query,con)
     ids=[id[0] for id in result.values]
     for id in ids:
         entry=create_entry(table_name,id,con)
-        entry.build_single_relations(con)
-        entry.build_plural_relations(con)
+        entry.build_extensions(con)
+        if icons==True:
+            entry.load_icon()
         entries.append(entry)
     return entries

@@ -4,8 +4,6 @@ import os
 import pandas as pd
 import sqlalchemy as sqa
 import uuid
-import random
-import string
 import json
 from itertools import chain
 
@@ -15,17 +13,18 @@ sys.path.append(os.getenv("PROCESSING_PATH"))
 import jinja2 as j
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
-from db import create_character, create_entry
-from dump import NpEncoder
+from character import create_character, Character
+from entry import create_entry, Entry
 from ruleset import all_in_table
+from tools import NpEncoder
 engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
 
-
 app = Flask(__name__)
-app.config['SECRET_KEY']=os.urandom(19)
-app.config['SESSION_TYPE']="filesystem"
+app.secret_key=os.urandom(19)
+app.config["SESSION_TYPE"]='filesystem'
 app.json_encoder=NpEncoder
 Session(app)
+
 
 ## serve the character sheet
         
@@ -56,9 +55,8 @@ def wizard():
 def choose_class():
     if request.method=="GET":
         con=engine.connect()
-        classes=all_in_table("classes",con)
+        classes=all_in_table("classes",con,icons=True)
         con.close()
-        classes_markup=templatify(classes)
         return render_template("class.html",classes=classes)
     if request.method=="POST":
         con=engine.connect()
@@ -76,7 +74,6 @@ def choose_backgrounds():
     if request.method=="GET":
         con=engine.connect()
         backgrounds=all_in_table("backgrounds",con)
-        # backgrounds_markup=[entry.to_dict() for entry in backgrounds]
         con.close()
         return render_template("backgrounds.html",backgrounds=backgrounds,character=session.get('new_character'))
     if request.method=="POST":

@@ -1,11 +1,9 @@
 import pandas as pd
 from notion_client import Client
 import json
+import requests
 from sqlalchemy import create_engine
-import sqlite3
 import sqlalchemy as sqa
-import httpx
-from dotenv import load_dotenv
 from itertools import chain
 import os
 from dotenv import load_dotenv
@@ -35,15 +33,11 @@ class Database:
         self.cleanup()
 
     def write_tables(self,con):
-        exists=self.table_names(con)
         for item in self.__dict__:
             if item not in ("configs","id"):
                 table=self.__getattribute__(item)
-                if item not in exists or self.is_updated(item,table,con)==False:
-                    table.to_sql(item,con,if_exists="replace",index=False)
-                    print(f'Table {item} written to database.')
-                else:
-                    print(f"Table {item} is up to date.")
+                table.to_sql(item,con,if_exists="replace",index=False)
+                print(f'Table {item} written to database.')
                 
     def cleanup(self):
         del self.property_tables
@@ -121,7 +115,7 @@ class Database:
     
     def is_updated(self,title,table,con):
         extant=self.from_sql(title,con)
-        if extant.equals(table) and extant.columns==table.columns:
+        if extant.compare(table) and extant.columns==table.columns:
             return True
         else:
             return False
@@ -163,20 +157,32 @@ class PropertyTable:
     def extract_data(self,page,field):
         property=page["properties"][field]
         if property["type"]=="title":
-            return property["title"][0]["text"]["content"]
+            title=property["title"][0]["text"]["content"]
+            if page["icon"]!=None:
+                self.save_icon(page,title)
+            return title
         if property["type"]=="relation":
             r=[p["id"] for p in property["relation"]]
             return r
-        if property["type"]==["rich_text"]:
-            s=""
-            return property["rich_text"].join(s)
-        if property["type"]==["plain_text"]:
-            return property["plain_text"]
+        if property["type"]=="rich_text":
+            if len(property["rich_text"])>0:
+                return property["rich_text"][0]["plain_text"]
         if property["type"]=="select":
             return property["select"]["name"]
         if property["type"]=="number":
             return property["number"]
         
+    def save_icon(self,page,title):
+        url=page["icon"]["file"]["url"]
+        t=title.lower().replace(" ","_")
+        loc=self.title.lower().replace(" ","_")
+        path=os.getenv("ROOT_PATH")+f"/icons/{loc}__{t}.svg"
+        bytes=requests.get(url)
+        if "svg" in str(bytes._content):
+            file=open(path,"wb")
+            file.write(bytes._content)
+            file.close()
+            
 class Entry:
     def __init__(self,id):
         self.id=id

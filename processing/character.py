@@ -6,7 +6,7 @@ import pandas as pd
 import sqlalchemy as sqa
 from entry import Entry, create_entry
 
-from db_toolbox import NpEncoder, has_prereqs
+from tools import NpEncoder, has_prereqs
 
 con=sqa.create_engine("sqlite:////home/el_hudson/projects/HUBRIS/database/HUBRIS.db").connect()
 id="e5231255-5dbb-4d02-8133-fe23dcac6599"
@@ -155,11 +155,6 @@ class Character:
             for r in rngs:
                 metadata[e]["ranges"].append(create_entry("ranges",r,con))
         return metadata
-
-
-
-    def fetch_quals_from_bg(self,con):
-        pass
 
     def basic_info(self,con):
         sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id='{self.id}' ''') 

@@ -1,7 +1,7 @@
 {% macro header(char) %}
 <div class="box">
     {% if char.classes|length>0 %}
-    <p><b>Class: </b>{{char.classes[0].title}}</p>
+    <p><b>Class: </b>{{char.classes[0].name}}</p>
     {% endif %}
     {% if char.backgrounds|length>0 %}
     <p><b>Backgrounds: </b>{{char.backgrounds[0].title}} & {{char.backgrounds[1].title}}</p>

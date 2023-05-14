@@ -1,8 +1,11 @@
 from itertools import chain
+import os
+from dotenv import load_dotenv
 
 import pandas as pd
 import sqlalchemy as sqa
-from db_toolbox import get_schema, get_tables
+from tools import get_schema, get_tables
+load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 
 class Entry:
@@ -11,6 +14,11 @@ class Entry:
         self.id=id
         if con!=None:
             self.build_core(con)
+
+    def load_icon(self):
+        l=self.name.lower().replace(" ","_")
+        path=os.getenv("ROOT_PATH")+f"/icons/{self.table}__{l}.svg"
+        self.icon=open(path,"r")
 
     def query(self,con):
         sql=sqa.text(f'''SELECT * FROM {self.table} WHERE id='{self.id}' ''')
@@ -34,7 +42,7 @@ class Entry:
                     else:
                         setattr(self,field,val)
 
-    def build_extensions(self,con):
+    def build_extensions(self,con,icons=False):
         self.build_single_relations(con)
         self.build_plural_relations(con)
         self.build_other_relations(con)
@@ -130,8 +138,8 @@ class Skill(Entry):
 
 class Background(Entry):
     def _init__(self,id,con):
-        Entry.__init__(table="backgrounds",id=id,con=con)
-        print("HEY")
+        super().__init__(id,con)
+        self.split_feat()
     def split_feat(self):
         self.feature_name=self.feature.split(":")[0]
         self.feature_desc=self.feature.split(":")[1]
