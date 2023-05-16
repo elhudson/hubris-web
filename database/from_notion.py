@@ -168,7 +168,10 @@ class PropertyTable:
             if len(property["rich_text"])>0:
                 return property["rich_text"][0]["plain_text"]
         if property["type"]=="select":
-            return property["select"]["name"]
+            if property["select"]==None:
+                return property["select"]
+            else:
+                return property["select"]["name"]
         if property["type"]=="number":
             return property["number"]
         

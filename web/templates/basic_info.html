@@ -4,17 +4,18 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/char_creation.css">
+    <link rel="stylesheet" href="static/char_creation.css">
     <script src="static/char_creation.js"></script>
 
 </head>
 <body onload="setup('{{boost1}}','{{boost2}}')">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
+    <h1>Allocate your ability scores</h1>
 <div class="status">
     {{out}}
     <label for="pts_remaining">Points Remaining:</label>
-    <input type="number" id="pts_remaining" value="">
+    <input type="number" class="counter" id="pts_remaining" value="">
 </div>
 <form method="post" action="stats">
     <table>

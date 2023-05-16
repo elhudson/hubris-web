@@ -18,9 +18,52 @@ label {
     margin-bottom:15px;
 }
 
+.tracker>* {
+    margin-left:5px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.cost::-webkit-outer-spin-button,
+.cost::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.cost {
+  -moz-appearance: textfield;
+}
+svg,img {
+    width:13px;
+    height:13px;
+    vertical-align: baseline;
+}
+
+
+input[type="checkbox"] {
+    vertical-align: baseline;
+    margin-bottom:-1px;
+}
+
 .explainer.sub {
     margin-left:26px;
 }
+
+span {
+    white-space: nowrap;
+}
+
+td:last-child {
+    max-width: fit-content;
+    min-width:100px;
+}
+
+label>svg {
+    height:17px;
+    width: 17px;
+}
+
+
 
 table {
     margin-left:26px;
@@ -29,6 +72,6 @@ table {
 td:first-child {
     font-style: italic;
     text-decoration: underline;
-    width: 70px;
+    width: 90px;
     vertical-align: top;
 }

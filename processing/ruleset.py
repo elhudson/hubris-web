@@ -13,7 +13,7 @@ con=engine.connect()
 all_tables=get_tables(con)
 tables=[table for table in all_tables if "__" not in table and "characters" not in table]
 
-def all_in_table(table_name, con, icons=False):
+def all_in_table(table_name, con):
     query=sqa.text(f'''SELECT id FROM {table_name}''')
     entries=[]
     result=pd.read_sql(query,con)
@@ -21,7 +21,7 @@ def all_in_table(table_name, con, icons=False):
     for id in ids:
         entry=create_entry(table_name,id,con)
         entry.build_extensions(con)
-        if icons==True:
-            entry.load_icon()
+        if table_name=="backgrounds":
+            entry.split_feat()
         entries.append(entry)
     return entries

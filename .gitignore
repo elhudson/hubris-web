@@ -16,3 +16,4 @@ web/flask_session/
 .venv/
 Dockerfile
 icons/
+assets

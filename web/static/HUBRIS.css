@@ -1,7 +1,10 @@
 :root {
     --text:#1b1b1b;
-    --fill:#a9a9a9;
-    --background:#f5f5f5;
+    --fill:#1b1b1b;
+    --bg2:#efefef
+    --background:#fff;
+    --font:Arial, Helvetica, sans-serif;
+
   
   }
   
@@ -12,10 +15,9 @@
   /* general text styling */
   
   div, span, form {
-    font-family:Inter,Hack,monospace;
+    font-family:var(--font);
     color:var(--text);
-    font-size:12px;
-    padding-top: 2px;
+    font-size:14px;
     padding-bottom: 2px;
     line-height: 150%;
   }
@@ -24,7 +26,7 @@
   
   h1 {
     width: fit-content;
-    font-family: Inter,Hack,monospace;
+    font-family: var(--font);
     font-size:16px !important;
     font-weight: bold !important;
     border-bottom: 3px solid;
@@ -44,7 +46,6 @@ input, textarea, select {
 }
 
 input[type="number"], .mod {
-  -moz-appearance: textfield;
   border-bottom:1px solid var(--text);
   min-width:3ch;
   max-width: 5ch;
@@ -61,4 +62,8 @@ input[type="radio"], input[type="checkbox"] {
 
 input[type="radio"]:checked, input[type="checkbox"]:checked {
   background-color: var(--fill);
+}
+
+.tracker {
+
 }

@@ -14,11 +14,16 @@ class Entry:
         self.id=id
         if con!=None:
             self.build_core(con)
+        if table in ("classes","class_paths","tags","backgrounds","skills","attributes", "effects"):
+            self.load_icon()
 
     def load_icon(self):
-        l=self.name.lower().replace(" ","_")
-        path=os.getenv("ROOT_PATH")+f"/icons/{self.table}__{l}.svg"
-        self.icon=open(path,"r")
+        if type(self)==Effect:
+            l="tree__"+self.tree.lower()+".svg"
+        else:
+            l=f"{self.table}__"+self.name.lower().replace(" ","_")+".svg"
+        path=os.getenv("ROOT_PATH")+f"/icons/{l}"
+        self.icon=open(path,"r").read()
 
     def query(self,con):
         sql=sqa.text(f'''SELECT * FROM {self.table} WHERE id='{self.id}' ''')
@@ -42,10 +47,11 @@ class Entry:
                     else:
                         setattr(self,field,val)
 
-    def build_extensions(self,con,icons=False):
+    def build_extensions(self,con):
         self.build_single_relations(con)
         self.build_plural_relations(con)
         self.build_other_relations(con)
+
 
     def build_single_relations(self,con):
         if hasattr(self,"relate"):
@@ -88,7 +94,7 @@ class Entry:
             entry=getattr(self,item)
             if entry.__class__==Entry or entry.__class__ in Entry.__subclasses__():
                 base[item]=entry.to_dict()
-            if type(entry)==list:
+            if type(entry)==list and len(entry)>0:
                 e=[]
                 for i in range(len(entry)):
                     e.append(entry[i].to_dict())
@@ -98,23 +104,27 @@ class Entry:
         
 def create_entry(table=None,id=None,con=None):
     if table=="classes":
-        return Class(table,id,con)
+        return Class("classes",id,con)
     if table=="class_features":
-        return ClassFeature(table,id,con)
+        return ClassFeature("class_features",id,con)
     if table=="tags":
-        return Tag(table,id,con)
+        return Tag("tags",id,con)
     if table=="tag_features":
-        return TagFeature(table,id,con)
+        return TagFeature("tag_features",id,con)
     if table=="backgrounds":
-        return Background(table,id,con)
+        return Background("backgrounds",id,con)
     if table=="effects":
-        return Effect(table,id,con)
+        return Effect("effects",id,con)
     if table=="durations":
-        return Duration(table,id,con)
+        return Duration("durations",id,con)
     if table=="ranges":
-        return Range(table,id,con)
-    else:
-        return Entry(table,id,con)
+        return Range("ranges",id,con)
+    if table=="class_paths":
+        return ClassPath("class_paths",id,con)
+    if table=="attributes":
+        return Attribute("attributes",id,con)
+    if table=="skills":
+        return Skill("skills",id,con)
 
 class Class(Entry):
     def __init__(self,table,id,con):
@@ -132,43 +142,49 @@ class Class(Entry):
         if self.name=="Wizard":
             self.hit_die="d2"
 
-class Skill(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+
 
 class Background(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
         self.split_feat()
     def split_feat(self):
         self.feature_name=self.feature.split(":")[0]
         self.feature_desc=self.feature.split(":")[1]
 
 class ClassFeature(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
+
+class Skill(Entry):
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
 class Effect(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
 class Duration(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
 class Range(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
 class Tag(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
+        
 
 class TagFeature(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
 class Attribute(Entry):
-    def _init__(self,id,con):
-        super().__init__(id,con)
+    def _init__(self,table,id,con):
+        super().__init__(table,id,con)
 
+class ClassPath(Entry):
+    def __init__(self,table,id,con):
+        super().__init__(table,id,con)

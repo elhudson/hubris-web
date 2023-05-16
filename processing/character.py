@@ -127,15 +127,29 @@ class Character:
     def fetch_quals_from_class(self,con):
         q={}
         q["skills"]=self.classes[0].skills
-        fx={}
-        tx={}
+        fx=[]
+        tx=[]
+        cx=[]
         for t in self.classes[0].tags:
             t.build_extensions(con)
-            fx[t.name]=[e for e in t.effects if len(e.requires)==0 and e.tier=="T"+self.tier]
-            tx[t.name]=[ta for ta in t.tag_features if len(ta.requires)==0 and ta.tier=="T"+self.tier]
+            for e in t.effects:
+                e.build_extensions(con)
+                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
+                    if e.id not in [a.id for a in fx]:
+                        fx.append(e)
+            for e in t.tag_features:
+                e.build_extensions(con)
+                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
+                    tx.append(e)
+        for cl in self.classes[0].class_paths:
+            cl.build_extensions(con)
+            for e in cl.class_features:
+                e.build_extensions(con)
+                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
+                    cx.append(e)
+        q["class_features"]=cx
         q["effects"]=fx
         q["tag_features"]=tx
-        q["class_features"]=[c for c in self.classes[0].class_features if len(c.requires)==0 and c.tier=="T"+self.tier]
         return q
 
     def fetch_metadata_quals(self,con):
@@ -143,9 +157,9 @@ class Character:
         trees=set(trees)
         metadata={}
         for e in trees:
-            durs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE tree='{e}' AND tier='T{self.tier}'"),con).values))
+            durs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE tree='{e}' AND tier='T{str(self.tier)}'"),con).values))
             durs=[d for d in durs if not has_prereqs(d,"durations",con)]
-            rngs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM ranges WHERE tree='{e}' AND tier='T{self.tier}'"),con).values))
+            rngs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM ranges WHERE tree='{e}' AND tier='T{str(self.tier)}'"),con).values))
             rngs=[r for r in rngs if not has_prereqs(r,"ranges",con)]
             metadata[e]={}
             metadata[e]["durations"]=[]

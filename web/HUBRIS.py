@@ -55,7 +55,7 @@ def wizard():
 def choose_class():
     if request.method=="GET":
         con=engine.connect()
-        classes=all_in_table("classes",con,icons=True)
+        classes=all_in_table("classes",con)
         con.close()
         return render_template("class.html",classes=classes)
     if request.method=="POST":
@@ -93,8 +93,8 @@ def allocate_stats():
         character=session.get("new_character")
         character.backgrounds[0].build_single_relations(con)
         character.backgrounds[1].build_single_relations(con)
-        boost1=str.lower(character.backgrounds[0].attributes.title[0:3])
-        boost2=str.lower(character.backgrounds[1].attributes.title[0:3])
+        boost1=str.lower(character.backgrounds[0].attributes.name[0:3])
+        boost2=str.lower(character.backgrounds[1].attributes.name[0:3])
         return render_template("basic_info.html",character=character,boost1=boost1,boost2=boost2)
     if request.method=="POST":
         stats=json.loads(list(request.cookies.keys())[-1])
@@ -109,78 +109,12 @@ def spend_xp():
     if request.method=="GET":
         con=engine.connect()
         character=session.get("new_character")
-        paths_query=sqa.text(f'''
-        SELECT class_paths.id as path
-        FROM class_paths
-        JOIN classes ON class_paths.classes=classes.id
-        WHERE classes.title='{character.classes[0].title}'
-        ''')
-        paths=list(chain(*pd.read_sql(paths_query,con).values.tolist()))
-        class_features={}
-        for path in paths:
-            path_name=list(chain(*pd.read_sql(sqa.text(f'''
-            SELECT title
-            FROM class_paths
-            WHERE id='{path}'
-            '''),con).values.tolist()))[0]
-            classes_query=sqa.text(f'''
-            SELECT DISTINCT class_features.id AS feature_id
-            FROM class_features 
-            WHERE class_features.classes='{character.classes[0].id}' 
-            AND class_features.class_paths='{path}'
-            AND tier='T1' ''')
-            classes_ids=list(chain(*pd.read_sql(classes_query,con).values.tolist()))
-            features=[]
-            for class_id in classes_ids:
-                ent=create_entry("class_features",class_id,con)
-                ent.build_prereqs(con)
-                ent.build_postreqs(con)
-                features.append(ent)
-            class_features[path_name]=features
-        c=character.classes[0].build_core(con)
-        character.classes[0].build_plural_relations(con)
-        char_tags=[tag.id for tag in character.classes[0].tags]
-        tag_features={}
-        for tag in char_tags:
-            features=[]
-            tag_query=sqa.text(f'''
-            SELECT id 
-            FROM tag_features 
-            WHERE tag='{tag}' 
-            AND tier='T1' 
-            ORDER BY xp asc''')
-            result=list(chain(*pd.read_sql(tag_query,con).values.tolist()))
-            for r in result:
-                entry=create_entry("tag_features",r,con)
-                entry.build_plural_relation(con)
-                features.append(entry)
-            tag_name=list(chain(*pd.read_sql(sqa.text(f'''
-            SELECT title
-            FROM tags
-            WHERE id='{tag}'
-            '''),con).values.tolist()))[0]
-            tag_features[tag_name]=features
-        effects={}
-        effects["Buffs"]=[]
-        effects["Debuffs"]=[]
-        effects["Damage/Healing"]=[]
-        for tag in char_tags:
-            effect_query=sqa.text(f'''
-            SELECT id, title
-            FROM effects
-            JOIN __effects__tags ON effects.id=__effects__tags.effects
-            WHERE tier='T1'
-            AND tags='{tag}'
-            ''')
-            result=list(chain(*pd.read_sql(effect_query,con).values.tolist()))
-            for r in result:
-                f=create_entry("effects",r,con)
-                f.build_plural_relations(con)
-                for tree in effects.keys():
-                    if hasattr(f,"tree"):
-                        if f.tree==tree:
-                            effects[tree].append(f)
-        return render_template("spend_xp.html",effects=effects,tag_features=tag_features,class_features=class_features,character=character)
+        character.xp_earned=6
+        character.xp_spent=0
+        character.set_tier()
+        character.extend_entries(con)
+        quals=character.fetch_quals_from_class(con)
+        return render_template("spend_xp.html",effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
 
 ## helper functions 
 
