@@ -103,24 +103,25 @@ function limit_selections(elem_name,max_selections) {
 }
 
 function track_xp_spent(feature_id) {
-    let checkbox=document.getElementById(feature_id)
-    let xp_in=document.getElementById(`${feature_id}_xp`).value
-    if (checkbox.checked==true) {
-        console.log(xp_in)
-        let current_xp=document.getElementById("xp_spent").value
-        let xp_budget=document.getElementById("xp_earned").value
-        if (current_xp+xp_in<=xp_budget) {
-            document.getElementById("xp_spent").setAttribute("value",Number(current_xp)+Number(xp_in))
-        }
-        else {
-            alert("XP budget exceeded.")
-            checkbox.checked=false
-        }
-    if (checkbox.checked==false) {
-        let current_xp=document.getElementById("xp_spent").value
-        if (current_xp-xp_in>0) {
-            current_xp=current_xp-xp_in
-        }
-    }
-}
+    // let checkbox=document.getElementById(feature_id)
+    // let xp_in=document.getElementById(`${feature_id}_xp`).value
+    // if (checkbox.checked==true) {
+    //     console.log(xp_in)
+    //     let current_xp=document.getElementById("xp_spent").value
+    //     let xp_budget=document.getElementById("xp_earned").value
+    //     if (current_xp+xp_in<=xp_budget) {
+    //         document.getElementById("xp_spent").setAttribute("value",Number(current_xp)+Number(xp_in))
+    //     }
+    //     else {
+    //         alert("XP budget exceeded.")
+    //         checkbox.checked=false
+    //     }
+    // }
+    // if (checkbox.checked==false) {
+    //     console.log("here")
+    //     let current_xp=document.getElementById("xp_spent").value
+    //     if (current_xp-xp_in>=0) {
+    //         document.getElementById("xp_spent").setAttribute("value",Number(current_xp)-Number(xp_in))
+    //     }
+    // }
 }
