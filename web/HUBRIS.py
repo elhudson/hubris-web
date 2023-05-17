@@ -16,7 +16,7 @@ from flask_session import Session
 from character import create_character, Character
 from entry import create_entry, Entry
 from ruleset import all_in_table
-from tools import NpEncoder
+from tools import NpEncoder,find_table
 engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
 
 app = Flask(__name__)
@@ -115,6 +115,35 @@ def spend_xp():
         character.extend_entries(con)
         quals=character.fetch_quals_from_class(con)
         return render_template("spend_xp.html",effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
+    if request.method=="POST":
+        con=engine.connect()
+        character=session.get("new_character")
+        choices=json.loads(list(request.cookies.keys())[-1])
+        chose_effects=False
+        for c in choices:
+            table=find_table(c,con)
+            if table=="effects":
+                chose_effects=True
+            character.add_entry(con,c,table)
+        session["new_character"]=character
+        if chose_effects:
+            meta_quals=character.fetch_metadata_quals(con)
+            return render_template("spend_metadata.html",character=character,meta=meta_quals)
+        else:
+            return redirect(url_for("addtl_info"))
+        
+@app.route("/savemeta",methods=("POST"))
+def save_meta():
+    
+
+
+@app.route("/fluff",methods=("GET","POST"))
+def addtl_info():
+    if request.method=="GET":
+        con=engine.connect()
+        character=session.get("new_character")
+
+
 
 ## helper functions 
 

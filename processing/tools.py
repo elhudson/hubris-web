@@ -37,3 +37,10 @@ def has_prereqs(id,table,con):
         return False
     else:
         return list(chain(*r.values))
+
+def find_table(id,con):
+    tables=[t for t in get_tables(con) if "__" not in t and "characters" not in t]
+    for table in tables:
+        sql=sqa.text(f"SELECT id FROM {table} WHERE id='{id}'")
+        if pd.read_sql(sql,con).empty==False:
+            return table

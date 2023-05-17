@@ -1,52 +1,55 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="static/char_creation.css">
     <script src="static/char_creation.js"></script>
 </head>
-<body>
+
+<body onload="reset_selections()">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
-    <div>
-        <label for="xp_earned">XP Earned </label><input id= "xp_earned" type="number" class="cost" value="6">
-        <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" class="cost" value="0">
-    </div>
-    <div id="class_features">
-        <h1>Class Features</h1>
-        {% for feature in class_features %}
-        <div class="opt">
-            <input type="checkbox" id="{{feature.id}}" onchange="track_xp_spent('{{feature.id}}')">
-            <label for="{{feature.id}}">{{feature.name}}</label>
-            <div class="info">
-                <table>
-                    <tr>
-                        <td>
-                            Path
-                        </td>
-                        <td>
-                            <span>
-                                {{feature.class_paths.icon|safe}} {{feature.class_paths.name}}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>XP</td>
-                        <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
-                    </tr>
+    <form method="post" action="xp">
+        <div>
+            <label for="xp_earned">XP Earned </label><input id="xp_earned" type="number" value="6">
+            <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" value="0">
+        </div>
+        <div id="class_features">
+            <h1>Class Features</h1>
+            {% for feature in class_features %}
+            <div class="opt">
+                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
+                <label for="{{feature.id}}">{{feature.name}}</label>
+                <div class="info">
+                    <table>
+                        <tr>
+                            <td>
+                                Path
+                            </td>
+                            <td>
+                                <span>
+                                    {{feature.class_paths.icon|safe}} {{feature.class_paths.name}}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>XP</td>
+                            <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
+                        </tr>
                         {% if feature.required_for and feature.required_for|length>=1%}
                         <tr>
-                        <td>Required For</td>
-                        <td>
-                            {% for j in range(feature.required_for|length) %}
-                            {{feature.required_for[j].name}}
-                            {% endfor %}
-                        </td>
+                            <td>Required For</td>
+                            <td>
+                                {% for j in range(feature.required_for|length) %}
+                                {{feature.required_for[j].name}}
+                                {% endfor %}
+                            </td>
                         </tr>
                         {% endif %}
                     </table>
-            </div>
-            <div class="explainer sub">{{feature.description}}</div>
+                </div>
+                <div class="explainer sub">{{feature.description}}</div>
             </div>
             {% endfor %}
         </div>
@@ -55,7 +58,7 @@
             <h1>Tag Features</h1>
             {% for feature in tag_features %}
             <div class="opt">
-                <input type="checkbox" id="{{feature.id}}" onchange="track_xp_spent('{{feature.id}}')">
+                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
                 <label for="{{feature.id}}">
                     {{feature.name}}</label>
                 <div class="info">
@@ -74,66 +77,65 @@
                             <td>XP</td>
                             <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
                         </tr>
-                            {% if feature.required_for %}
-                            <tr>
+                        {% if feature.required_for %}
+                        <tr>
                             <td>Required For</td>
                             <td>
                                 {% for j in range(feature.required_for|length) %}
                                 {{feature.required_for[j].name}}
                                 {% endfor %}
                             </td>
-                            </tr>
-                            {% endif %}
-                        </table>
+                        </tr>
+                        {% endif %}
+                    </table>
                 </div>
                 <div class="explainer sub">{{feature.description}}</div>
-                </div>
-                {% endfor %}
             </div>
-            {%endif%}
-            <div id="effects">
-                <h1>Effects</h1>
-                {% for feature in effects %}
-                <div class="opt">
-                    <input type="checkbox" id="{{feature.id}}" onchange="track_xp_spent('{{feature.id}}')">
-                    <label for="{{feature.id}}">
-                        {{feature.name}}</label>
-                    <div class="info">
-                        <table>
-                            <tr>
-                                <td>
-                                    Tree
-                                </td>
-                                <td>
-                                    <span>
-                                        {{feature.icon|safe}} {{feature.tree}}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>XP</td>
-                                <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
-                            </tr>
-                                {% if feature.required_for %}
-                                <tr>
-                                <td>Required For</td>
-                                <td>
-                                    {% for j in range(feature.required_for|length) %}
-                                    {{feature.required_for[j].name}}
-                                    {% endfor %}
-                                </td>
-                                </tr>
-                                {% endif %}
-                            </table>
-                    </div>
-                    <div class="explainer sub">{{feature.description}}</div>
-                    </div>
-                    {% endfor %}
+            {% endfor %}
+        </div>
+        {%endif%}
+        <div id="effects">
+            <h1>Effects</h1>
+            {% for feature in effects %}
+            <div class="opt">
+                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
+                <label for="{{feature.id}}">
+                    {{feature.name}}</label>
+                <div class="info">
+                    <table>
+                        <tr>
+                            <td>
+                                Tree
+                            </td>
+                            <td>
+                                <span>
+                                    {{feature.icon|safe}} {{feature.tree}}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>XP</td>
+                            <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
+                        </tr>
+                        {% if feature.required_for %}
+                        <tr>
+                            <td>Required For</td>
+                            <td>
+                                {% for j in range(feature.required_for|length) %}
+                                {{feature.required_for[j].name}}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
                 </div>
-        
-        
-    
-    
+                <div class="explainer sub">{{feature.description}}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <input type="submit" value="Submit choices" onclick="">
+    </form>
+
 
 </body>
 
