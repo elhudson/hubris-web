@@ -18,3 +18,25 @@ JOIN class_paths ON class_features.classes=class_paths.classes
 SELECT class_paths.title as path
 FROM class_paths
 JOIN classes ON class_paths.classes=classes.id
+
+CREATE TABLE __characters__ranges(char_id varchar(255), ranges_id varchar(255))
+
+
+CREATE TABLE __characters__durations(char_id varchar(255), durations_id varchar(255))
+
+
+CREATE TABLE __characters__class_features(char_id varchar(255), class_features_id varchar(255))
+
+
+CREATE TABLE __characters__classes(char_id varchar(255), class_id varchar(255))
+
+
+CREATE TABLE __characters__tag_features(char_id varchar(255), tag_features_id varchar(255))
+
+
+CREATE TABLE __characters__skills(char_id varchar(255), skills_id varchar(255))
+
+
+CREATE TABLE __characters__backgrounds(char_id varchar(255), backgrounds_id varchar(255))
+
+ALTER TABLE characters DROP skills

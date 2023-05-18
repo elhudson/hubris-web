@@ -18,21 +18,24 @@
 <form name="backgrounds" method="post">
     {% for background in backgrounds %}
     <div class="opt">
-        <input type="checkbox" onClick="limit_selections('background',2)" name="background" id="{{background['id']}}" value="{{background['id']}}" >
-        <label for="{{background['id']}}">{{background["title"]}}</label>
+        <input type="checkbox" onClick="limit_selections('background',2)" name="background" id="{{background.id}}" value="{{background.id}}" >
+        <label for="{{background.id}}">{{background.icon|safe}} {{background.name}}</label>
         <div class="info">
             <table>
                 <tr>
                     <td>Attribute</td>
-                    <td>{{background["attributes"].title}}</td>
+                    <td>{{background.attributes.icon|safe}}
+                        {{background.attributes.name}}</td>
                 </tr>
                 <tr>
                     <td>Skill</td>
-                    <td>{{background["skills"].title}}</td>
+                    <td>
+                        {{background.skills[0].icon|safe}}
+                        {{background.skills[0].name}}</td>
                 </tr>
                 <tr>
                     <td>Feature</td>
-                    <td><b>{{background["feature_name"]}}:</b>  {{background["feature_desc"]}}</td>
+                    <td><b>{{background.feature_name}}:</b>{{background.feature_desc}}</td>
                 </tr>
             </table>
         </div>

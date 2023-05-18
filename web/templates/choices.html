@@ -1,18 +1,18 @@
 {% macro header(char) %}
-<div class="box">
+<div>
     {% if char.classes|length>0 %}
-    <p><b>Class: </b>{{char.classes[0].title}}</p>
+    <b>Class </b>{{char.classes[0].icon|safe}} {{char.classes[0].name}}
     {% endif %}
     {% if char.backgrounds|length>0 %}
-    <p><b>Backgrounds: </b>{{char.backgrounds[0].title}} & {{char.backgrounds[1].title}}</p>
+    <b>Backgrounds </b>{{char.backgrounds[0].icon|safe}} {{char.backgrounds[0].name}} {{char.backgrounds[1].icon|safe}} {{char.backgrounds[1].name}}
     {% endif %}
     {% if char.str!=None %}
-    <b>STR:</b><span id="str">{{char.str}}</span>
-    <b>DEX:</b><span id="dex">{{char.dex}}</span>
-    <b>CON:</b><span id="con">{{char.con}}</span>
-    <b>INT:</b><span id="int">{{char.int}}</span>
-    <b>WIS:</b><span id="wis">{{char.wis}}</span>
-    <b>CHA:</b><span id="cha">{{char.cha}}</span>
+    <img src="static/assets/attributes__strength.svg"><b> STR </b><span id="str">{{char.str}}</span>
+    <img src="static/assets/attributes__dexterity.svg"><b> DEX </b><span id="dex">{{char.dex}}</span>
+    <img src="static/assets/attributes__constitution.svg"><b> CON </b><span id="con">{{char.con}}</span>
+    <img src="static/assets/attributes__intelligence.svg"><b> INT </b><span id="int">{{char.int}}</span>
+    <img src="static/assets/attributes__wisdom.svg"><b> WIS </b><span id="wis">{{char.wis}}</span>
+    <img src="static/assets/attributes__charisma.svg"><b> CHA </b><span id="cha">{{char.cha}}</span>
     {% endif %}
 </div>
 {% endmacro %}

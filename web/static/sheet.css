@@ -10,21 +10,21 @@
 
 
 input[type="text"] {
-  border-bottom:1px solid #002b36;
+  border-bottom:1px solid var(--text);
   max-width: 40%;
   min-width: 25%;
   
 }
 
 .dropdown {
-  border: 1px solid #002b36;
+  border: 1px solid var(--text);
   margin-top:3px;
   margin-bottom: 3px;
 }
 
 .notepad {
   min-width:30%;
-  outline:1px solid var(--base03)
+  outline:1px solid var(--text)
 }
 
 
@@ -46,7 +46,7 @@ input::-webkit-inner-spin-button {
 }
 
 .border {
-  border-left: 2px solid #002b36;
+  border-left: 2px solid var(--background);
   margin-left: -10px;
   padding-left: 10px;
 }
@@ -58,7 +58,7 @@ input::-webkit-inner-spin-button {
   margin-left:10px;
   margin-top:5px;
   padding: 2px;
-  border-left:1px solid #002b36;
+  border-left:1px solid var(--background);
   vertical-align: bottom;
   padding-left:10px;
 }

@@ -1,1 +1,0 @@
-source /home/el_hudson/projects/HUBRIS/environment/bin/activate
