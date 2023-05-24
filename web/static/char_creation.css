@@ -14,7 +14,6 @@ label {
 
 .opt {
     border:1px solid var(--text);
-    width: 70%;
     margin-bottom:15px;
 }
 
@@ -27,6 +26,17 @@ label {
 .cost::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.features {
+    position:absolute;
+    width:60%;
+}
+
+.metadata {
+    position:absolute;
+    left:65%;
+    width:35%;
 }
 
 /* Firefox */

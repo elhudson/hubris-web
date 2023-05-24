@@ -102,7 +102,61 @@ function limit_selections(elem_name, max_selections) {
     }
 }
 
-function track_xp_spent(checkbox_id) {
+function display_metadata(r,d) {
+    let range=JSON.parse(he.unescape(r))
+    let duration=JSON.parse(he.unescape(d))
+    if (document.getElementById(range.tree)==undefined) {
+        rng=load_default_metadata(range)
+        dur=load_default_metadata(duration)
+        tree=document.createElement("div")
+        tree.appendChild(rng)
+        tree.appendChild(dur)
+        tree.id=range.tree
+        rng=
+    }
+}
+
+
+function load_default_metadata(data) {
+        let category=data.table
+        header=document.createElement("h2")
+        body=document.createElement("div")
+        header.innerHTML=category.charAt(0).toUpperCase()+category.slice(1)
+        item=document.createElement("div")
+        item.appendChild(header)
+        const opt=`<div class="opt">
+        <input type="checkbox" id="${data.id}">
+        <label for="${data.id}">${data.name}</label>
+        <div class="info">
+            <table>
+                <tr>
+                    <td>
+                        Tree
+                    </td>
+                    <td>
+                        ${data.tree}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        XP
+                    </td>
+                    <td>
+                        ${data.xp}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="explainer sub">
+        ${data.description}
+        </div>
+        </div>`
+        o=new DOMParser().parseFromString(opt,"text/html").body.firstElementChild
+        item.append(o)
+        return item
+}
+
+function track_xp_spent(checkbox_id,range=null,duration=null) {
     box = document.getElementById(checkbox_id)
     v = document.getElementById(checkbox_id + "_xp").value
     if (box.checked == true) {
@@ -111,10 +165,24 @@ function track_xp_spent(checkbox_id) {
             alert("XP budget exceeded")
         }
         mark_selected(box, v)
+        if (range!=null) {
+            display_metadata(range,duration)
+        }
     }
     if (box.checked == false) {
         mark_unselected(box, v)
+        if (range!=null) {
+            remove_metadata(range)
+        }
     }
+    
+}
+
+function remove_metadata(range) {
+    let v=JSON.parse((he.unescape(range)))
+    let doc=document.getElementById(v.tree)
+    console.log(doc)
+
 }
 
 function mark_selected(checkbox, value) {

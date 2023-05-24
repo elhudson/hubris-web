@@ -15,7 +15,7 @@ from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
 from character import create_character, Character
 from entry import create_entry, Entry
-from ruleset import all_in_table
+from ruleset import all_in_table,fetch_metadata
 from tools import NpEncoder,find_table
 engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
 
@@ -113,28 +113,21 @@ def spend_xp():
         character.xp_spent=0
         character.set_tier()
         character.extend_entries(con)
-        quals=character.fetch_quals_from_class(con)
-        return render_template("spend_xp.html",effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
+        quals=character.fetch_quals(con)
+        all_meta=fetch_metadata(con)
+        for i in range(len(quals["effects"])):
+            quals["effects"][i].range=json.dumps(quals["effects"][i].range.to_dict(),cls=NpEncoder)
+            quals["effects"][i].duration=json.dumps(quals["effects"][i].duration.to_dict(),cls=NpEncoder)
+        return render_template("spend_xp.html",meta=all_meta,effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
     if request.method=="POST":
         con=engine.connect()
         character=session.get("new_character")
         choices=json.loads(list(request.cookies.keys())[-1])
-        chose_effects=False
         for c in choices:
             table=find_table(c,con)
-            if table=="effects":
-                chose_effects=True
             character.add_entry(con,c,table)
         session["new_character"]=character
-        if chose_effects:
-            meta_quals=character.fetch_metadata_quals(con)
-            return render_template("spend_metadata.html",character=character,meta=meta_quals)
-        else:
-            return redirect(url_for("addtl_info"))
-        
-@app.route("/savemeta",methods=("POST"))
-def save_meta():
-    
+        return redirect(url_for(addtl_info))
 
 
 @app.route("/fluff",methods=("GET","POST"))
@@ -142,26 +135,3 @@ def addtl_info():
     if request.method=="GET":
         con=engine.connect()
         character=session.get("new_character")
-
-
-
-## helper functions 
-
-def templatify(entries):
-    entries_markup=[]
-    for entry in entries:
-        markup={}
-        for attr in entry.__dict__.keys():
-            item=getattr(entry,attr)
-            if type(item)!=list:
-                markup[attr]=item
-            else:
-                markup[attr]=[]
-                for sub in item:
-                    if type(sub)==list:
-                        markup[attr].append(templatify(sub))
-                    if hasattr(sub,"name"):
-                        markup[attr].append(sub.name)
-        entries_markup.append(markup)
-    return entries_markup
-

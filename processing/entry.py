@@ -7,6 +7,9 @@ import sqlalchemy as sqa
 from tools import get_schema, get_tables
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
+db_path=f"sqlite:///{os.getenv('DB_PATH')}"
+engine=sqa.create_engine(db_path)
+con=engine.connect()
 
 class Entry:
     def __init__(self,table=None,id=None,con=None):
@@ -16,6 +19,15 @@ class Entry:
             self.build_core(con)
         if table in ("classes","class_paths","tags","backgrounds","skills","attributes", "effects"):
             self.load_icon()
+    
+    def has_prerequisites(self,con):
+        if self.tier!="T1":
+            return True
+        query=sqa.text(f"SELECT {self.table} FROM __{self.table}__requires WHERE {self.table}='{self.id}'")
+        if pd.read_sql(query,con).empty==True:
+            return False
+        else:
+            return True
 
     def load_icon(self):
         if type(self)==Effect:
@@ -51,6 +63,7 @@ class Entry:
         self.build_single_relations(con)
         self.build_plural_relations(con)
         self.build_other_relations(con)
+
 
 
     def build_single_relations(self,con):
@@ -114,7 +127,9 @@ def create_entry(table=None,id=None,con=None):
     if table=="backgrounds":
         return Background("backgrounds",id,con)
     if table=="effects":
-        return Effect("effects",id,con)
+        e=Effect("effects",id,con)
+        e.default_metadata(con)
+        return e
     if table=="durations":
         return Duration("durations",id,con)
     if table=="ranges":
@@ -141,9 +156,7 @@ class Class(Entry):
             self.hit_die="d3"
         if self.name=="Wizard":
             self.hit_die="d2"
-
-
-
+            
 class Background(Entry):
     def _init__(self,table,id,con):
         super().__init__(table,id,con)
@@ -163,6 +176,18 @@ class Skill(Entry):
 class Effect(Entry):
     def _init__(self,table,id,con):
         super().__init__(table,id,con)
+        self.default_metadata(self,con)
+    def default_metadata(self,con):
+        if self.tree=="Damage" or self.tree=="Healing":
+            tree="Damage/Healing"
+        else:
+            tree=self.tree
+        range_id=pd.read_sql(sqa.text(f"SELECT id FROM ranges WHERE xp=1 AND tree='{tree}'"),con).values.tolist()[0][0]
+        duration_id=pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE xp=1 AND tree='{tree}'"),con).values.tolist()[0][0]
+        self.range=create_entry("ranges",range_id,con)
+        self.duration=create_entry("durations",duration_id,con)
+
+
 
 class Duration(Entry):
     def _init__(self,table,id,con):
