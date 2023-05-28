@@ -138,9 +138,13 @@ class Character:
             t.build_extensions(con)
             for e in t.effects:
                 if self.is_qualified(e,con)==True and e.id not in [i.id for i in q["effects"]]:
+                    e.build_extensions(con)
+                    e.range.build_extensions(con)
+                    e.duration.build_extensions(con)
                     q["effects"].append(e)
             for tf in t.tag_features:
                 if self.is_qualified(tf,con)==True:
+                    tf.build_extensions(con)
                     q["tag_features"].append(tf)
         for f in self.classes[0].class_features:
             f.build_extensions(con)
@@ -148,9 +152,11 @@ class Character:
                 q["class_features"].append(f)
         for r in all_in_table("ranges",con):
             if self.is_qualified(r,con)==True and r.id not in [i.id for i in q["ranges"]]:
+                r.build_extensions(con)
                 q["ranges"].append(r)
         for d in all_in_table("durations",con):
             if self.is_qualified(d,con)==True and d.id not in [i.id for i in q["durations"]]:
+                d.build_extensions(con)
                 q["durations"].append(d)
         return q
     
@@ -241,10 +247,26 @@ class Character:
                 e.build_other_relations(con)
         self.tags=self.classes[0].tags
 
-    def add_entry(self,con,id,table):
+    def add_entry(self,table,id,con):
         if hasattr(self,table)==False:
             setattr(self,table,[])
-        getattr(self,table).append(create_entry(table,id,con))
+        properties=getattr(self,table)
+        prop_ids=[p.id for p in properties]
+        if id not in prop_ids:
+            if table=="effects":
+                ent=create_entry("effects",id,con)
+                self.add_entry("ranges",ent.duration.id,con)
+                self.add_entry("durations",ent.duration.id,con)
+                if ent.id not in [e.id for e in self.effects]:
+                    self.effects.append(ent)
+            if table=="backgrounds":
+                bg=create_entry("backgrounds",id,con)
+                self.add_entry("skills",bg.relate["skills"],con)
+                self.backgrounds.append(bg)
+            else:
+                properties.append(create_entry(table,id,con))
+        
+        
 
     def to_dict(self):
         base= self.__dict__.copy()

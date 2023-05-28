@@ -63,7 +63,7 @@ def choose_class():
         new=create_character(uuid.uuid4(),con)
         session["new_character"]=new
         class_id=request.form.get("class")
-        new.add_entry(con,class_id,"classes")
+        new.add_entry("classes",class_id,con)
         con.close()
         return redirect(url_for('choose_backgrounds'))
     
@@ -81,8 +81,8 @@ def choose_backgrounds():
         char=session.get('new_character')
         background_1_id=request.form.getlist("background")[0]
         background_2_id=request.form.getlist("background")[1]
-        char.add_entry(con,background_1_id,"backgrounds")
-        char.add_entry(con,background_2_id,"backgrounds")
+        char.add_entry("backgrounds",background_1_id,con)
+        char.add_entry("backgrounds",background_2_id,con)
         session["new_character"]=char
         return redirect(url_for("allocate_stats"))
 
@@ -114,20 +114,21 @@ def spend_xp():
         character.set_tier()
         character.extend_entries(con)
         quals=character.fetch_quals(con)
-        all_meta=fetch_metadata(con)
         for i in range(len(quals["effects"])):
             quals["effects"][i].range=json.dumps(quals["effects"][i].range.to_dict(),cls=NpEncoder)
             quals["effects"][i].duration=json.dumps(quals["effects"][i].duration.to_dict(),cls=NpEncoder)
-        return render_template("spend_xp.html",meta=all_meta,effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
+        skills=all_in_table("skills",con)
+        untaken_skills=[skill for skill in skills if skill.id not in [s.id for s in character.skills]]
+        return render_template("spend_xp.html",skills=untaken_skills,effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
     if request.method=="POST":
         con=engine.connect()
         character=session.get("new_character")
-        choices=json.loads(list(request.cookies.keys())[-1])
+        choices=set(json.loads(list(request.cookies.keys())[-1]))
         for c in choices:
             table=find_table(c,con)
-            character.add_entry(con,c,table)
+            character.add_entry(table,c,con)
         session["new_character"]=character
-        return redirect(url_for(addtl_info))
+        return redirect(url_for("addtl_info"))
 
 
 @app.route("/fluff",methods=("GET","POST"))
@@ -135,3 +136,4 @@ def addtl_info():
     if request.method=="GET":
         con=engine.connect()
         character=session.get("new_character")
+        return render_template("fluff.html",character=character)

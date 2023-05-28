@@ -8,49 +8,46 @@
     <script src="static/char_creation.js"></script>
 
 </head>
-<body onload="setup('{{boost1}}','{{boost2}}')">
+<body onload="fresh_start('stats');setup('{{boost1}}','{{boost2}}')">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
     <h1>Allocate your ability scores</h1>
 <div class="status">
-    {{out}}
     <label for="pts_remaining">Points Remaining:</label>
-    <input type="number" class="counter" id="pts_remaining" value="">
+    <input type="number" class="counter" id="pts_remaining" value="28" min="0" max="28">
 </div>
-<form method="post" action="stats">
+<form name="stats" method="post" action="stats" id="stats">
     <table>
         <tr>
             <td><label for="str">Strength</label></td>
-            <td><input type="number" id="str" onchange="update('str')"></td>
+            <td><input type="number" id="str" value="-2" onchange="update('str')"></td>
         </tr>
         <tr>
             <td><label for="dex">Dexterity</label></td>
-            <td><input type="number" id="dex" onchange="update('dex')"></td>
+            <td><input type="number" id="dex" value="-2" onchange="update('dex')"></td>
         </tr>
         <tr>
             <td><label for="con">Constitution</label></td>
-            <td><input type="number" id="con" onchange="update('con')"></td>
+            <td><input type="number" id="con" value="-2" onchange="update('con')"></td>
         </tr>
         <tr>
             <td><label for="int">Intelligence</label></td>
-            <td><input type="number" id="int" onchange="update('int')"></td>
+            <td><input type="number" id="int" value="-2" onchange="update('int')"></td>
         </tr>
         <tr>
             <td><label for="wis">Wisdom</label></td>
-            <td><input type="number" id="wis" onchange="update('wis')"></td>
+            <td><input type="number" id="wis" value="-2" onchange="update('wis')"></td>
         </tr>
         <tr>
             <td><label for="cha">Charisma</label></td>
-            <td><input type="number" id="cha" onchange="update('cha')"></td>
+            <td><input type="number" id="cha" value="-2" onchange="update('cha')"></td>
         </tr>
     </table>
-    <input type="submit" value="Submit ability scores">
-</form>
 <div class="samples">
     Sample Arrays:
     <ul>
-        <li>[4,3,0,0,0,0]</li>
-        <li>[4,4,0,0,-2,-2]</li>
+    <li>[4,3,0,0,0,0]</li>
+    <li>[4,4,0,0,-2,-2]</li>
     <li>[4,3,3,-2,-2,-2]</li>
     <li>[4,3,2,0,-1,-2]</li>
     <li>[3,3,3,0,-1,-1]</li>
@@ -58,5 +55,7 @@
     <li>[2,2,2,2,2,1]</li>
     </ul>
 </div>
+<input type="submit" value="Submit">
+</form>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="static/char_creation.css">
+    <script src="static/char_creation.js"></script>
+
+</head>
+<body onload="clear_selections()">
+    {% import 'choices.html' as choices %}
+    {{ choices.header(character) }}
+    <form method="post" action="fluff">
+    <div class="bio">
+        <label for="char_name">Name</label>
+        <input type="text" id="char_name"></br>
+        <label for="char_alignment">Alignment</label>
+        <select class="dropdown" id="char_alignment">
+            <option id="lg">Lawful Good</option>
+            <option id="ng">Neutral Good</option>
+            <option id="cg">Chaotic Good</option>
+            <option id="ln">Lawful Neutral</option>
+            <option id="tn">True Neutral</option>
+            <option id="cn">Chaotic Neutral</option>
+            <option id="le">Lawful Evil</option>
+            <option id="ne">Neutral Evil</option>
+            <option id="ce">Chaotic Evil</option>
+        </select>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

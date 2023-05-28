@@ -176,7 +176,6 @@ class Skill(Entry):
 class Effect(Entry):
     def _init__(self,table,id,con):
         super().__init__(table,id,con)
-        self.default_metadata(self,con)
     def default_metadata(self,con):
         if self.tree=="Damage" or self.tree=="Healing":
             tree="Damage/Healing"
@@ -186,8 +185,6 @@ class Effect(Entry):
         duration_id=pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE xp=1 AND tree='{tree}'"),con).values.tolist()[0][0]
         self.range=create_entry("ranges",range_id,con)
         self.duration=create_entry("durations",duration_id,con)
-
-
 
 class Duration(Entry):
     def _init__(self,table,id,con):
