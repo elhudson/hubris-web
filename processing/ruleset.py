@@ -22,10 +22,11 @@ def all_in_table(table_name, con):
     ids=[id[0] for id in result.values]
     for id in ids:
         entry=create_entry(table_name,id,con)
-        entry.build_extensions(con)
-        if table_name=="backgrounds":
-            entry.split_feat()
-        entries.append(entry)
+        if entry!=None:
+            entry.build_extensions(con)
+            if table_name=="backgrounds":
+                entry.split_feat()
+            entries.append(entry)
     return entries
 
 def fetch_metadata(con):
