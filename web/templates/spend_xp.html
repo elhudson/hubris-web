@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="static/char_creation.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="static/char_creation.js"></script>
     <script src="static/he.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
 
 
 </head>
 
-<body onload="fresh_start('xp')">
+<body>
+    <template>
+        <div id="app">{% raw %} {{ message }} {% endraw %} </div>
+    </template>
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
     <div>
@@ -43,16 +49,12 @@
             </div>
             <div class="tabcontent" id="hit_dice">
                 <h1>Hit Dice</h1>
-                <span class="track">
-                    <button type="button" onclick="add_hit_die('{{character.classes[0]}}')">
-                        <i class="fa fa-arrow-up"></i>
-                    </button>
-                    <button type="button" onclick="remove_hit_die('{{character.classes[0]}}')">
-                        <i class="fa fa-arrow-down"></i>
-                    </button>
-                <input type="number" id="hit_dice" value="1">
-                </span>
-                <label for="hit_dice">{{character.classes[0].hit_die}}</label>
+        
+        
+                      <button type="button" @click="count++">Count</button>
+                        {{ count }}
+                      <button type="button" @click="count--">Countdown
+                      </button>
             </div>
             <div class="tabcontent" id="class_features">
                 <h1>Class Features</h1>

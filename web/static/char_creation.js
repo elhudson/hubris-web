@@ -7,6 +7,14 @@ const score_values = {
     "3": 8,
     "4": 12
 }
+const {createApp} = Vue;
+createApp({
+    data() {
+      return {
+        message: 'Hello Vue!'
+      }
+    }
+  }).mount('#app')
 
 const sample_arrays = [
     [4, 3, 0, 0, 0, 0],
@@ -17,6 +25,18 @@ const sample_arrays = [
     [3, 2, 2, 2, 1, 0],
     [2, 2, 2, 2, 2, 1]
 ]
+
+const base_hit_die_cost={
+    "Wizard":3,
+    "Elementalist":3,
+    "Beguiler":3,
+    "Rogue":2,
+    "Priest":2,
+    "Barbarian":1,
+    "Knight":1,
+    "Sharpshooter":1,
+    "Fighter":1
+}
 
 class abilityScores {
     constructor(boost1, boost2) {
@@ -239,19 +259,44 @@ function fresh_start(form_id) {
     form.reset()
 }
 
-function track_hit_dice_xp(char_class) {
-    current_hd_count=document.getElementById("hit_dice").value
-    if (Array("Wizard","Elementalist","Beguiler").includes(char_class)) {
-        next_hd_cost=current_hd_count+2
+/* Analyzed bindings: {
+  "count": "data"
+} */
+
+const __sfc__ = {
+    data() {
+      return {
+        count: 0
+      }
     }
-    if (Array("Rogue","Priest").includes(char_class)) {
-        next_hd_cost=current_hd_count+1
-    }
-    if (Array("Barbarian","Fighter","Sharpshooter","Knight").includes(char_class)) {
-        next_hd_cost=current_hd_count
-    }
-    xp_spent=document.getElementById("xp_spent")
-}
+  }
+  
+
+
+
+
+// function increment_hd_xp(char_class) {
+//     hd_base_value=base_hit_die_cost[char_class];
+//     current_hd=Number(document.getElementById("counting").innerHTML)-1;
+//     next_hd_cost=hd_base_value+current_hd;
+//     if (document.getElementById("xp_spent").value+next_hd_cost<=document.getElementById("xp_earned").value) {
+//         document.getElementById("xp_spent").value=Number(document.getElementById("xp_spent").value)+Number(next_hd_cost);
+//         document.get    }
+//     else {
+//         alert("Max XP exceeded.")
+//     }
+// }
+
+// function decrement_hd_xp(char_class) {
+//     hd_base_value=base_hit_die_cost[char_class];
+//     current_hd=Number(document.getElementById("counting").innerHTML)-1;
+//     current_hd_cost=hd_base_value+current_hd;
+//     console.log(current_hp_cost)
+//     if (document.getElementById("xp_spent").value-current_hd_cost>=1) {
+//         document.getElementById("xp_spent").value-=current_hd_cost;
+//         decrement()
+//     }
+// }
 
 function count_columns() {
     trees=document.getElementsByClassName("tree")

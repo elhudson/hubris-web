@@ -61,6 +61,35 @@ span {
     min-width:100px;
 }
 
+.container {
+    justify-content: left;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    width: 40px;
+}
+
+.container button {
+    font-size: 14px;
+    height: fit-content;
+}
+  
+/*apply hover effect to button tag*/
+  
+.container button:hover {
+    color: grey;
+}
+  
+/*apply css properties to h2 tag*/
+  
+.container p {
+    color: black;
+    margin: 0 50px;
+    font-size: 14px;
+}
+  
+/*apply css properties to h1 tag*/
+
 label>svg {
     height:17px;
     width: 17px;
