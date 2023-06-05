@@ -16,7 +16,7 @@ from flask_session import Session
 from character import create_character, Character
 from entry import create_entry, Entry
 from ruleset import all_in_table,fetch_metadata
-from tools import NpEncoder,find_table
+from tools import NpEncoder,find_table,parse_name,get_configs
 engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
 
 app = Flask(__name__)
@@ -24,8 +24,6 @@ app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.json_encoder=NpEncoder
 Session(app)
-
-
 ## serve the character sheet
         
 @app.route("/sheet")
@@ -112,14 +110,8 @@ def spend_xp():
         character.xp_earned=6
         character.xp_spent=0
         character.set_tier()
-        character.extend_entries(con)
-        quals=character.fetch_quals(con)
-        for i in range(len(quals["effects"])):
-            quals["effects"][i].range=json.dumps(quals["effects"][i].range.to_dict(),cls=NpEncoder)
-            quals["effects"][i].duration=json.dumps(quals["effects"][i].duration.to_dict(),cls=NpEncoder)
-        skills=all_in_table("skills",con)
-        untaken_skills=[skill for skill in skills if skill.id not in [s.id for s in character.skills]]
-        return render_template("spend_xp.html",skills=untaken_skills,effects=quals["effects"],tag_features=quals["tag_features"],class_features=quals["class_features"],character=character)
+        character.to_file()
+        return render_template("spend_xp.html",character=character)
     if request.method=="POST":
         con=engine.connect()
         character=session.get("new_character")

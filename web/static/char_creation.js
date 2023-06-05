@@ -7,14 +7,6 @@ const score_values = {
     "3": 8,
     "4": 12
 }
-const {createApp} = Vue;
-createApp({
-    data() {
-      return {
-        message: 'Hello Vue!'
-      }
-    }
-  }).mount('#app')
 
 const sample_arrays = [
     [4, 3, 0, 0, 0, 0],
@@ -26,17 +18,26 @@ const sample_arrays = [
     [2, 2, 2, 2, 2, 1]
 ]
 
-const base_hit_die_cost={
-    "Wizard":3,
-    "Elementalist":3,
-    "Beguiler":3,
-    "Rogue":2,
-    "Priest":2,
-    "Barbarian":1,
-    "Knight":1,
-    "Sharpshooter":1,
-    "Fighter":1
+const base_hit_die_cost = {
+    "Wizard": 3,
+    "Elementalist": 3,
+    "Beguiler": 3,
+    "Rogue": 2,
+    "Priest": 2,
+    "Barbarian": 1,
+    "Knight": 1,
+    "Sharpshooter": 1,
+    "Fighter": 1
 }
+
+class char {
+    constructor() {
+        this.class;
+        this.current_hd = 1;
+        this.next_hd_cost;
+    }
+}
+
 
 class abilityScores {
     constructor(boost1, boost2) {
@@ -146,6 +147,11 @@ function update(attr) {
     document.cookie = localStorage.getItem("scores")
 }
 
+async function load_requirements(table_name) {
+    request = await fetch(`static/requirements/${table_name}.json`)
+    data = await request.json()
+    return data
+}
 
 function limit_selections(elem_name, max_selections) {
     let all = document.getElementsByName(elem_name)
@@ -161,95 +167,72 @@ function limit_selections(elem_name, max_selections) {
     }
 }
 
-function display_metadata(range, duration) {
-    // display tabs for ranges & durations
+
+
+async function load_features(character) {
+    tags=await load_requirements("__classes__tags")
+    my_tags=tags[character.classes[0].id].tags.map(tag=>tag.name)
+    console.log(my_tags)
+    effects=await load_requirements("effects")
+    effects=effects.filter(item=>item.)
+    tag_features=await load_requirements("tag_features")
+    class_features=await load_requirements("class_features")
+    html=""
+    Object.values(effects).forEach((item) => {
+        html+=effect(item)
+    })
+    return html
+}
+
+async function loadPrerequisites(character_id) {
+    request=await fetch(`static/characters/${character_id}.json`)
+    character=await request.json()
+    html=await load_features(character)
+}
+
+function load_metadata_tabs() {
     range_button = document.getElementById("ranges_tab")
     duration_button = document.getElementById("durations_tab")
     range_button.style.display = "block"
     duration_button.style.display = "block"
     document.getElementById("ranges").className = "tabcontent"
     document.getElementById("durations").className = "tabcontent"
-    // check if metadata entries are already present in document
-    if (document.contains(document.getElementById(range.id)) == false & document.contains(document.getElementById(duration.id)) == false) {
-        // add metadata entries to document
-        range_tree = document.getElementById("ranges_" + range.tree.toLowerCase())
-        add_meta_to_tree(range, range_tree)
-        duration_tree = document.getElementById("durations_" + duration.tree.toLowerCase())
-        add_meta_to_tree(duration, duration_tree)
-        // display metadata entries
-        range_tree.style.display = "block"
-        duration_tree.style.display = "block"
-        count_columns()
-    }
 }
 
-function add_meta_postreqs(metadatum, metadatum_tree) {
-    for (i in metadatum.required_for) {
-        if (document.contains(document.getElementById(metadatum.required_for[i].id)) == false) {
-            add_meta_to_tree(metadatum.required_for[i], metadatum_tree)
-        }
+async function load_all_metadata() {
+    load_metadata_tabs()
+    ranges = await load_requirements("ranges")
+    durations = await load_requirements("durations")
+    html = ""
+    for (var i = 0; i < Object.keys(ranges).length; i++) {
+        html += metadatum(ranges[Object.keys(ranges)[i]])
     }
+    for (var j = 0; j < Object.keys(durations).length; j++) {
+        html += metadatum(durations[Object.keys(durations)[j]])
+    }
+    return html
 }
 
 function track_skill_xp(skill_id) {
-    skills=document.querySelectorAll(".skill:checked")
-    selection=document.getElementById(skill_id)
-    skill_cost=skills.length+1
+    skills = document.querySelectorAll(".skill:checked")
+    selection = document.getElementById(skill_id)
+    skill_cost = skills.length + 1
     if (selection.checked) {
         if (Number(document.getElementById("xp_spent").value) + skill_cost > 6) {
             selection.checked = false
             alert("XP budget exceeded")
         }
         else {
-        mark_selected(selection,skill_cost)
+            mark_selected(selection, skill_cost)
         }
     }
     else {
-        mark_unselected(selection,Number(skill_cost+1))
+        mark_unselected(selection, Number(skill_cost + 1))
     }
 }
 
-function add_meta_to_tree(data, data_tree) {
-    const opt = `<div class="opt">
-        <input type="checkbox" id="${data.id}">
-        <label for="${data.id}">${data.name}</label>
-        <div class="info">
-            <table>
-                <tr>
-                    <td>
-                        Tree
-                    </td>
-                    <td>
-                        ${data.tree}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        XP
-                    </td>
-                    <td><span id="${data.id}_xp" value=${data.xp}>
-                        ${data.xp}</span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="explainer sub">
-        ${data.description}
-        </div>
-        </div>`
-    o = new DOMParser().parseFromString(opt, "text/html")
-    meta = o.body.firstElementChild
-    meta.onclick = function(){meta_on_click(data,data_tree)}
-    data_tree.appendChild(meta)
-    if (data_tree.childElementCount==1) {
-        meta.firstElementChild.checked=true
-        meta.firstElementChild.disabled=true
-        add_meta_postreqs(data,data_tree)
-    }
-}
-
-function meta_on_click(data,data_tree) {
-    add_meta_postreqs(data,data_tree)
+function meta_on_click(data, data_tree) {
+    add_meta_postreqs(data, data_tree)
     track_xp_spent(data.id)
 }
 
@@ -258,21 +241,6 @@ function fresh_start(form_id) {
     var form = document.getElementById(form_id)
     form.reset()
 }
-
-/* Analyzed bindings: {
-  "count": "data"
-} */
-
-const __sfc__ = {
-    data() {
-      return {
-        count: 0
-      }
-    }
-  }
-  
-
-
 
 
 // function increment_hd_xp(char_class) {
@@ -299,24 +267,21 @@ const __sfc__ = {
 // }
 
 function count_columns() {
-    trees=document.getElementsByClassName("tree")
-    shown=Array()
+    trees = document.getElementsByClassName("tree")
+    shown = Array()
     for (i in trees) {
         console.log(trees[i].style.display)
-        if (trees[i].style.display=="block") {
+        if (trees[i].style.display == "block") {
             shown.push(trees[i])
         }
     }
-    num_elements=shown.length
+    num_elements = shown.length
     for (j in shown) {
-        shown[j].parentElement.style.width=`${100/num_elements}%`
+        shown[j].parentElement.style.width = `${100 / num_elements}%`
     }
 }
 
-function track_effect_xp(checkbox_id, r, d) {
-    var range = JSON.parse(he.unescape(r))
-    var duration = JSON.parse(he.unescape(d))
-
+function track_effect_xp(checkbox_id) {
     box = document.getElementById(checkbox_id)
     v = document.getElementById(checkbox_id + "_xp").value
     if (v == undefined) {
@@ -329,8 +294,7 @@ function track_effect_xp(checkbox_id, r, d) {
             alert("XP budget exceeded")
         }
         else {
-        mark_selected(box, v)
-        display_metadata(range, duration)
+            mark_selected(box, v)
         }
     }
     if (box.checked == false) {
@@ -353,18 +317,18 @@ function track_effect_xp(checkbox_id, r, d) {
         if (is_last_item) {
             range_tree.replaceChildren()
             durations_tree.replaceChildren()
-            durations_tree.style.display="none"
-            range_tree.style.display="none"
+            durations_tree.style.display = "none"
+            range_tree.style.display = "none"
         }
-        binnable=true
+        binnable = true
         for (tree in durations_bin.children) {
-            if (durations_bin.children[tree].childElementCount>0) {
-                binnable=false
+            if (durations_bin.children[tree].childElementCount > 0) {
+                binnable = false
             }
         }
         if (binnable) {
-            document.getElementById("ranges_tab").style.display="none"
-            document.getElementById("durations_tab").style.display="none"
+            document.getElementById("ranges_tab").style.display = "none"
+            document.getElementById("durations_tab").style.display = "none"
         }
     }
 }
@@ -438,4 +402,61 @@ function openTab(tab_id) {
             tabs[i].style.display = "block"
         }
     }
+}
+
+function effect(feature) {
+    return `<div class="opt"
+    <input type="checkbox" id="${feature.id}">    
+    <label>${feature.name}</label>
+    <div class="info">
+        <table>
+            <tr>
+                <td>
+                    Tree
+                </td>
+                <td>
+                    <span>
+                    </span>
+                    <span id="${feature.id}_tree">${feature.tree}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>XP</td>
+                <td><input type="number" class="cost" id="${feature.id}_xp" value="${feature.xp}">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="explainer sub">${feature.description}</div>
+</div>`
+}
+
+function metadatum(data) {
+    return `<div class="opt">
+<input type="checkbox" id="${data.id}">
+<label for="${data.id}">${data.name}</label>
+<div class="info">
+    <table>
+        <tr>
+            <td>
+                Tree
+            </td>
+            <td>
+                ${data.tree}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                XP
+            </td>
+            <td><span id="${data.id}_xp" value=${data.xp}>
+                ${data.xp}</span>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="explainer sub">
+${data.description}
+</div>
+</div>`
 }

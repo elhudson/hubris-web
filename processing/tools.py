@@ -7,9 +7,12 @@ import sqlalchemy as sqa
 
 import os
 import load_dotenv
+from uuid import UUID
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
+        if isinstance(obj, UUID):
+            return obj.hex
         if isinstance(obj, np.integer):
             return int(obj)
         if isinstance(obj, np.floating):

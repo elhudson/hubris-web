@@ -288,10 +288,13 @@ class Character:
             return json.dumps(base,cls=NpEncoder,separators=(",",":"),indent=None)
     
     def to_file(self):
-        file_name=self.name.replace(" ","_").lower()
+        if self.name!=None:
+            file_name=self.name.replace(" ","_").lower()
+        else:
+            file_name=self.id
         char_path=os.getenv("CHAR_PATH")+f"/{file_name}.json"
-        f=open(char_path,"w")
-        return self.to_JSON(out=True,fp=f)
+        base=self.to_dict()
+        return self.to_JSON(base,out=True,fp=open(char_path,"w+"))
 
     def from_file(self):
         char_filename=str.lower(self.name.replace(" ","_"))

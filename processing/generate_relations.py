@@ -17,6 +17,7 @@ def load_requirements_list(table_name,con):
     new_dict={}
     for entry in table:
         new_dict[entry.id]={}
+        new_dict[entry.id]=entry.to_dict()
         new_dict[entry.id]["required_for"]=[s.to_dict() for s in entry.required_for]
         new_dict[entry.id]["requires"]=[s.to_dict() for s in entry.requires]
     return new_dict
@@ -31,7 +32,7 @@ def load_many_list(pair,con):
     return new
     
 def requirements_to_JSON(con):
-    cfg=get_configs
+    cfg=get_configs()
     for r in cfg['HAS_PREREQS']:
         name=parse_name(r)
         content=load_requirements_list(name,con)

@@ -7,17 +7,12 @@
     <link rel="stylesheet" href="static/char_creation.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="static/char_creation.js"></script>
-    <script src="static/he.js"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
 
 
 </head>
 
-<body>
-    <template>
-        <div id="app">{% raw %} {{ message }} {% endraw %} </div>
-    </template>
+<body onload="loadPrerequisites('{{character.id}}')">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
     <div>
@@ -139,44 +134,7 @@
             {%endif%}
             <div id="effects" class="tabcontent">
                 <h1>Effects</h1>
-                {% for feature in effects %}
-                <div class="opt {{feature.tree}}">
-                    <input type="checkbox" id="{{feature.id}}"
-                        onclick="track_effect_xp('{{feature.id}}','{{feature.range}}','{{feature.duration}}')">
-                    <label> {{feature.name}}</label>
-                    <div class="info">
-                        <table>
-                            <tr>
-                                <td>
-                                    Tree
-                                </td>
-                                <td>
-                                    <span>
-                                        {{feature.icon|safe}}
-                                    </span>
-                                    <span id="{{feature.id}}_tree">{{feature.tree}}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>XP</td>
-                                <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}">
-                                </td>
-                            </tr>
-                            {% if feature.required_for %}
-                            <tr>
-                                <td>Required For</td>
-                                <td>
-                                    {% for j in range(feature.required_for|length) %}
-                                    {{feature.required_for[j].name}}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            {% endif %}
-                        </table>
-                    </div>
-                    <div class="explainer sub">{{feature.description}}</div>
-                </div>
-                {% endfor %}
+                
             </div>
                  <div id="metadata">
                     <div id="ranges">
