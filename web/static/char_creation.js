@@ -30,15 +30,6 @@ const base_hit_die_cost = {
     "Fighter": 1
 }
 
-class char {
-    constructor() {
-        this.class;
-        this.current_hd = 1;
-        this.next_hd_cost;
-    }
-}
-
-
 class abilityScores {
     constructor(boost1, boost2) {
         this.strRaw = -2;
@@ -58,6 +49,14 @@ class abilityScores {
         this[boost1 + "Mod"] += 1;
         this[boost2 + "Mod"] += 1;
     }
+}
+
+async function set_character() {
+    character_id = document.getElementsByTagName("body")[0].id
+    const request = await fetch(`static/characters/${character_id}.json`)
+    const val = await request.json()
+    $('body').data("character", val)
+    return character = $('body').data('character')
 }
 
 function update_ability_score_values(scores) {
@@ -107,7 +106,6 @@ function subtract_by_one(scores, target) {
     }
     return update_ability_score_values(scores)
 }
-
 
 function points_remaining(scores) {
     let stats = Array("str", "dex", "con", "int", "wis", "cha")
@@ -167,51 +165,253 @@ function limit_selections(elem_name, max_selections) {
     }
 }
 
+function has_tag(tags, item) {
+    class_tags = tags[character.classes[0].id].tags.map(tag => tag.id)
+    if (item.tags.length > 1) {
+        item_tags = item.tags.map(tag => tag.id)
+        if (item_tags.filter(item => class_tags.includes(item)).length > 0) {
+            return item
+        }
+        else {
+            return false
+        }
+    }
+    else {
+        item_tag = item.tags.id
+        if (class_tags.includes(item_tag)) {
+            return item
+        }
+        else {
+            return false
+        }
+    }
+}
+
+function of_tier(effect) {
+    effect_tier = Number(effect.tier.split("T")[1])
+    if (Number(character.tier) >= effect_tier) {
+        return true
+    }
+    return false
+}
+
+function bin_by_attr(list, attr) {
+    const tree = {}
+    if (["tree", "xp"].includes(attr)) {
+        list.forEach((item) => {
+            if (Object.keys(tree).includes(item[attr]) == false) {
+                tree[item[attr]] = new Array();
+            }
+            tree[item[attr]].push(item)
+        })
+    }
+    else {
+        list.forEach((item) => {
+            if (Object.keys(tree).includes(item[attr].name) == false) {
+                tree[item[attr].name] = new Array();
+            }
+            tree[item[attr].name].push(item)
+        })
+    }
+    return tree
+}
+
+function has_prq(feature) {
+    known = character[feature.table]
+    if (feature.requires.length > 0) {
+        if (known != undefined) {
+            prq = feature.requires.map(item => item.id)
+            prq.forEach((item) => {
+                if (known.includes(item)) {
+                    return true
+                }
+            })
+            return false
+        }
+        else {
+            return false
+        }
+    }
+    else {
+        return true
+    }
+}
+
+function is_available(feature, tags) {
+    is_avail = false
+    if (of_tier(feature) && has_prq(feature)) {
+        if (feature.table == "class_features") {
+            if (feature.classes.id == character.classes[0].id) {
+                is_avail = true
+            }
+        }
+        if (["tag_features", "effects"].includes(feature.table)) {
+            if (has_tag(tags, feature)) {
+                is_avail = true
+            }
+        }
+    }
+    return is_avail
+}
 
 
-async function load_features(character) {
-    tags=await load_requirements("__classes__tags")
-    my_tags=tags[character.classes[0].id].tags.map(tag=>tag.name)
-    console.log(my_tags)
-    effects=await load_requirements("effects")
-    effects=effects.filter(item=>item.)
-    tag_features=await load_requirements("tag_features")
-    class_features=await load_requirements("class_features")
-    html=""
-    Object.values(effects).forEach((item) => {
-        html+=effect(item)
+async function fetch_options() {
+    tags = await load_requirements("__classes__tags")
+    effect_data = await load_requirements("effects")
+    tag_features_data = await load_requirements("tag_features")
+    class_features_data = await load_requirements("class_features")
+    effects = bin_by_attr(Object.values(effect_data).filter(item => is_available(item, tags)), "tree")
+    meta = await fetch_metadata(effects)
+    ranges = bin_by_attr(meta.ranges, "tree")
+    durations = bin_by_attr(meta.durations, "tree")
+    tag_features = bin_by_attr(Object.values(tag_features_data).filter(item => is_available(item, tags)), "tags")
+    class_features = bin_by_attr(Object.values(class_features_data).filter(item => is_available(item, tags)), "class_paths")
+    return { "features": { "effects": effects, "tag_features": tag_features, "class_features": class_features }, "metadata": { "ranges": ranges, "durations": durations } }
+}
+
+async function load_abilities() {
+    const options = await fetch_options()
+    Object.keys(options.features).forEach(async (tab) => {
+        if (options.features[tab] != undefined) {
+            f = await render_tree(options.features[tab])
+            document.getElementById(tab).appendChild(f)
+        }
     })
-    return html
+    Object.keys(options.metadata).forEach(async (tab) => {
+        if (options.metadata[tab] != undefined) {
+            f = await render_tree(options.metadata[tab])
+            document.getElementById(tab).appendChild(f)
+        }
+    })
 }
 
-async function loadPrerequisites(character_id) {
-    request=await fetch(`static/characters/${character_id}.json`)
-    character=await request.json()
-    html=await load_features(character)
+async function render_tree(tree) {
+    headings = Object.keys(tree)
+    doc = document.createElement("div")
+    is_meta = false
+    headings.forEach((header) => {
+        html = $.parseHTML(`<details class="feature_group"><summary>${header}</summary></details>`)[0]
+        html.id = Math.floor(Math.random() * 89999 + 10000)
+        html.setAttribute("data-tree",header)
+        entries = tree[header]
+        entries.forEach((item) => {
+            if (["ranges", "durations"].includes(item.table)) {
+                it = $.parseHTML(metadatum(item))[0]
+                is_meta = true
+                it.firstElementChild.setAttribute("checked",true)
+                it.firstElementChild.setAttribute("disabled",true)
+            }
+            else { it = $.parseHTML(feature(item))[0] }
+            if (item.table == "effects") { it.onclick = function () { effect_toggle(item.id) } }
+            else { it.onclick = function () { log_xp(item.id) } }
+            html.append(it)
+        })
+        if (is_meta) { html.style.display = "none" }
+        doc.appendChild(html)
+    })
+    return doc
 }
 
-function load_metadata_tabs() {
-    range_button = document.getElementById("ranges_tab")
-    duration_button = document.getElementById("durations_tab")
-    range_button.style.display = "block"
-    duration_button.style.display = "block"
-    document.getElementById("ranges").className = "tabcontent"
-    document.getElementById("durations").className = "tabcontent"
-}
-
-async function load_all_metadata() {
-    load_metadata_tabs()
-    ranges = await load_requirements("ranges")
-    durations = await load_requirements("durations")
-    html = ""
-    for (var i = 0; i < Object.keys(ranges).length; i++) {
-        html += metadatum(ranges[Object.keys(ranges)[i]])
+function effect_toggle(item_id) {
+    log_xp(item_id)
+    tree = document.getElementById(item_id).parentElement.parentElement
+    tree_tag=tree.getAttribute("data-tree")
+    selected_siblings = document.querySelectorAll(`[id='${tree.id}'] input[type="checkbox"]:checked`)
+    selected_effects = document.querySelectorAll(`[id='effects'] input[type="checkbox"]:checked`)
+    if (selected_siblings.length == 1) {
+        toggle_metadata_tabs(1)
+        toggle_tree(1,tree_tag)
+        flag_defaults(tree)
     }
-    for (var j = 0; j < Object.keys(durations).length; j++) {
-        html += metadatum(durations[Object.keys(durations)[j]])
+    if (selected_siblings.length==0) {
+        toggle_tree(0,tree_tag)
     }
-    return html
+    if (selected_effects.length==0) {
+        toggle_metadata_tabs(0)
+    }
 }
+
+function toggle_tree(toggle,tree) {
+    if (toggle==0) {disp="none"} else {disp="block"}
+    ranges=document.querySelectorAll(`[id='ranges'] [data-tree='${tree}']`)
+    ranges.forEach((item)=>{
+        item.style.display=disp
+    })
+    durations=document.querySelectorAll(`[id='durations'] [data-tree='${tree}']`)
+    durations.forEach((item)=>{
+        item.style.display=disp
+    })
+}
+
+function spend_xp(item_id) {
+    budget = Number(character.xp_earned)
+    current = Number(character.xp_spent)
+    itf = document.getElementById(item_id)
+    cost = Number(itf.value)
+    if (current + cost > budget) {
+        alert("XP budget exceeded. Go on adventures to earn some more!")
+        if (itf.type == "checkbox") {
+            itf.checked = false;
+        }
+    }
+    else {
+        character.xp_spent += cost
+        document.getElementById("xp_spent").setAttribute("value", current + cost)
+    }
+}
+
+function refund_xp(item_id) {
+    budget = Number(character.xp_earned)
+    current = Number(character.xp_spent)
+    itf = document.getElementById(item_id)
+    cost = Number(itf.value)
+    character.xp_spent -= cost
+    document.getElementById("xp_spent").setAttribute("value", current - cost)
+}
+
+function log_xp(item_id) {
+    cb = document.getElementById(item_id)
+    if (cb.checked) { spend_xp(item_id) }
+    else { refund_xp(item_id) }
+}
+
+function toggle_metadata_tabs(toggle) {
+    if (toggle==1) {
+        document.getElementById("ranges_tab").style.display="block"
+        document.getElementById("durations_tab").style.display="block"
+        document.getElementById("ranges").classList.add(["tabcontent"])
+        document.getElementById("durations").classList.add(["tabcontent"])
+    }
+    if (toggle==0) {
+        document.getElementById("ranges_tab").style.display="none"
+        document.getElementById("durations_tab").style.display="none"
+        document.getElementById("ranges").classList.remove(["tabcontent"])
+        document.getElementById("durations").classList.remove(["tabcontent"])
+    }
+}
+
+async function fetch_metadata(effects) {
+    durations = Array()
+    ranges = Array()
+    durations.push(effects.Buffs[0].duration)
+    durations.push(effects.Debuffs[0].duration)
+    ranges.push(effects.Buffs[0].range)
+    ranges.push(effects.Debuffs[0].range)
+    if (Object.keys(effects).includes("Damage")) {
+        if (effects.Damage.length > 0) {
+            durations.push(effects.Damage[0].duration)
+            ranges.push(effects.Damage[0].range)
+        }
+    }
+    if (Object.keys(effects).includes("Healing")) {
+        if (effects.Healing.length > 0) {
+            durations.push(effects.Healing[0].duration)
+            ranges.push(effects.Healing[0].range)
+        }
+    }
+    return { "durations": durations, "ranges": ranges }
+}
+
 
 function track_skill_xp(skill_id) {
     skills = document.querySelectorAll(".skill:checked")
@@ -241,30 +441,6 @@ function fresh_start(form_id) {
     var form = document.getElementById(form_id)
     form.reset()
 }
-
-
-// function increment_hd_xp(char_class) {
-//     hd_base_value=base_hit_die_cost[char_class];
-//     current_hd=Number(document.getElementById("counting").innerHTML)-1;
-//     next_hd_cost=hd_base_value+current_hd;
-//     if (document.getElementById("xp_spent").value+next_hd_cost<=document.getElementById("xp_earned").value) {
-//         document.getElementById("xp_spent").value=Number(document.getElementById("xp_spent").value)+Number(next_hd_cost);
-//         document.get    }
-//     else {
-//         alert("Max XP exceeded.")
-//     }
-// }
-
-// function decrement_hd_xp(char_class) {
-//     hd_base_value=base_hit_die_cost[char_class];
-//     current_hd=Number(document.getElementById("counting").innerHTML)-1;
-//     current_hd_cost=hd_base_value+current_hd;
-//     console.log(current_hp_cost)
-//     if (document.getElementById("xp_spent").value-current_hd_cost>=1) {
-//         document.getElementById("xp_spent").value-=current_hd_cost;
-//         decrement()
-//     }
-// }
 
 function count_columns() {
     trees = document.getElementsByClassName("tree")
@@ -404,28 +580,13 @@ function openTab(tab_id) {
     }
 }
 
-function effect(feature) {
-    return `<div class="opt"
-    <input type="checkbox" id="${feature.id}">    
+function feature(feature) {
+    return `<div class="opt">
+    <input type="checkbox" id="${feature.id}" value=${feature.xp}>    
     <label>${feature.name}</label>
     <div class="info">
-        <table>
-            <tr>
-                <td>
-                    Tree
-                </td>
-                <td>
-                    <span>
-                    </span>
-                    <span id="${feature.id}_tree">${feature.tree}</span>
-                </td>
-            </tr>
-            <tr>
-                <td>XP</td>
-                <td><input type="number" class="cost" id="${feature.id}_xp" value="${feature.xp}">
-                </td>
-            </tr>
-        </table>
+        <label>XP</label>
+        <input type="number" class="cost" id="${feature.id}_xp" value="${feature.xp}">
     </div>
     <div class="explainer sub">${feature.description}</div>
 </div>`
@@ -433,7 +594,7 @@ function effect(feature) {
 
 function metadatum(data) {
     return `<div class="opt">
-<input type="checkbox" id="${data.id}">
+<input type="checkbox" id="${data.id}" value=${data.xp}>
 <label for="${data.id}">${data.name}</label>
 <div class="info">
     <table>

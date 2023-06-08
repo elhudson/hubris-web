@@ -19,6 +19,7 @@ button {
 .opt {
     border:1px solid var(--text);
     margin-bottom:15px;
+    max-width: 50%;
 }
 
 .tracker>* {
@@ -50,10 +51,6 @@ input[type="checkbox"] {
 
 .explainer.sub {
     margin-left:26px;
-}
-
-span {
-    white-space: nowrap;
 }
 
 .opt td:last-child {
