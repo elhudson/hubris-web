@@ -18,49 +18,51 @@
         <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" value="0">
     </div>
     <form method="post" action="xp" id="xp">
-            <div class="tab_buttons" id="tab_buttons">
-                <button type="button" id ="skills_tab" class="tab" onclick="openTab('skills')">Skills</button>
-                <button type="button" id="hit_dice_tab" class="tab" onclick="openTab('hit_dice')">Hit Dice</button>
-                <button type="button" id="class_features_tab" class="tab" onclick="openTab('class_features')">Class Features</button>
-                <button type="button"id="tag_features_tab" class="tab" onclick="openTab('tag_features')">Tag Features</button>
-                <button type="button" id="effects_tab" class="tab" onclick="openTab('effects')">Effects</button>
-                <button type="button" id="ranges_tab" class="tab" style="display:none" onclick="openTab('ranges')">Ranges</button>
-                <button type="button" id="durations_tab" class="tab" style="display:none" onclick="openTab('durations')">Durations</button>
-            </div>
-            <div class="tabcontent" id="skills">
-                <h1>Skills</h1>
-                <table>
-                    {% for skill in skills %}
-                    <tr>
-                        <td><input type="checkbox" id="{{skill.id}}" class="skill" onclick="track_skill_xp('{{skill.id}}')"></td>
-                        <td>{{skill.name}}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="tabcontent" id="hit_dice">
-                <h1>Hit Dice</h1>
-        
-        
-                      <button type="button" @click="count++">Count</button>
-                        {{ count }}
-                      <button type="button" @click="count--">Countdown
-                      </button>
-            </div>
-            <div class="tabcontent cards" id="class_features">
-            </div>
-            <div id="tag_features" class="tabcontent cards">
-            </div>
-            <div id="effects" class="tabcontent cards">
-            </div>
-                 <div id="metadata">
-                    <div id="ranges">
-                        </div>
-                    <div id="durations">
-                    </div>
-                </div>
+        <div class="tab_buttons" id="tab_buttons">
+            <button type="button" id="skills_tab" class="tab" onclick="openTab('skills')">Skills</button>
+            <button type="button" id="hit_dice_tab" class="tab" onclick="openTab('hit_dice')">Hit Dice</button>
+            <button type="button" id="class_features_tab" class="tab" onclick="openTab('class_features')">Class
+                Features</button>
+            <button type="button" id="tag_features_tab" class="tab" onclick="openTab('tag_features')">Tag
+                Features</button>
+            <button type="button" id="effects_tab" class="tab" onclick="openTab('effects')">Effects</button>
+            <button type="button" id="ranges_tab" class="tab" style="display:none"
+                onclick="openTab('ranges')">Ranges</button>
+            <button type="button" id="durations_tab" class="tab" style="display:none"
+                onclick="openTab('durations')">Durations</button>
         </div>
-   
+        <div class="tabcontent" id="skills">
+            <div id="skillList">
+
+            </div>
+        </div>
+        <div class="tabcontent" id="hit_dice">
+            <div class="hd_wrapper">
+                <div class="counter" id="hit_die_count">
+                    1
+                </div>
+                <div class="toggles">
+                    <button type="button" onclick="increment_hd_xp()" class="hd_btn"><img
+                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
+                    <button type="button" onclick="decrement_hd_xp()" class="hd_btn"><img
+                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
+                </div>
+            </div>
+        </div>
+        <div class="tabcontent cards" id="class_features">
+        </div>
+        <div id="tag_features" class="tabcontent cards">
+        </div>
+        <div id="effects" class="tabcontent cards">
+        </div>
+        <div id="metadata">
+            <div id="ranges">
+            </div>
+            <div id="durations">
+            </div>
+        </div>
+        </div>
+
         </div>
         <button type="submit" form="xp" value="Submit">Submit</button>
     </form>
