@@ -25,6 +25,6 @@ def wipe_db(cnx,tables):
         cnx.execute(sqa.text(f"DROP TABLE {table}"))
         cnx.commit()
 
-tbls=to_delete(con,exclude=["characters"],include=["__attributes__backgrounds","__attributes__skills","__class_features__classes"])
+tbls=to_delete(con,exclude=["characters"])
 wipe_db(con,tbls)
 con.close()

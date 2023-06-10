@@ -12,23 +12,209 @@ label {
     font-size:14px;
 }
 
+#skillList label {
+    font-weight: normal;
+}
+
+
 .opt {
-    border:1px solid var(--base03);
-    width: 70%;
+    border:1px solid var(--text);
     margin-bottom:15px;
+    max-width: 50%;
+}
+
+.skill_entry {
+    display: list-item;
+    list-style-type: none;
+}
+
+.hd_btn {
+    position:relative;
+    float: left;
+    display: block;
+    margin-top:4px;
+    padding-right:-10px;
+    width: 50%;
+}
+
+
+.toggles {
+    direction: ltr;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.cost::-webkit-outer-spin-button,
+.cost::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.cost {
+  -moz-appearance: textfield;
+}
+svg,img {
+    width:13px;
+    height:13px;
+    vertical-align: baseline;
+}
+
+.hd_wrapper {
+    margin:10px;
+    padding:10px;
+    width: 50%;
+}
+
+.counter {
+    height:50px;
+    font-size:30px;
+    margin-top:10px;
+    border-bottom:1px solid var(--text)
+}
+
+.bio {
+    display:inline;
+    line-height:30px;
+    position: relative;
+    border:1px solid var(--text);
+    margin:5px;
+    padding:10px;
+}
+
+.bio th {
+    text-align: left;
+    vertical-align: top;
+    width: 50%;
+}
+
+.bio table {
+    width:100%;
+}
+
+.bio textarea {
+    height:50%;
+    width:95%;
+    border:1px solid var(--text)
+}
+
+#char_backstory {
+    height: 120px !important;
+}
+.bio item {
+    width:95%;
+    height:max-content;
+}
+
+.bio input {
+    width:fit-content;
+}
+
+button[type='submit'] {
+    max-width: fit-content;
+    margin-left:5px;
+}
+
+button img {
+    width: 20px !important;
+    height: 20px !important;
+    position: relative;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    vertical-align: baseline;
+    margin-bottom:-1px;
 }
 
 .explainer.sub {
     margin-left:26px;
 }
 
-table {
+.opt td:last-child {
+    max-width: fit-content;
+    min-width:100px;
+}
+
+.container {
+    justify-content: left;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    width: 40px;
+}
+
+.container button {
+    font-size: 14px;
+    height: fit-content;
+}
+  
+/*apply hover effect to button tag*/
+  
+.container button:hover {
+    color: grey;
+}
+  
+/*apply css properties to h2 tag*/
+  
+.container p {
+    color: black;
+    margin: 0 50px;
+    font-size: 14px;
+}
+  
+/*apply css properties to h1 tag*/
+
+label>svg {
+    height:17px;
+    width: 17px;
+}
+
+#metadata td {
+    vertical-align: top;
+}
+
+.track :first-child {
+    position: absolute;
+    top:0px;
+}
+
+.track :last-child {
+    position: absolute;
+    bottom:0px;
+}
+
+.opt table {
     margin-left:26px;
 }
 
-td:first-child {
+.opt td:first-child {
     font-style: italic;
     text-decoration: underline;
-    width: 70px;
+    width: 90px;
     vertical-align: top;
 }
+
+  
+  /* Style the buttons that are used to open the tab content */
+  button {
+    background-color:var(--background);
+    float: left;
+    border: 1px solid var(--text);
+    border-radius: 0%;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+  }
+  
+  .tabcontent {
+    display: none;
+    border:1px solid var(--text);
+    padding-left:10px;
+    padding-right: 10px;
+    margin-top:-3px !important;
+  } 
+
+  .tabset {
+    border:none;
+
+  }

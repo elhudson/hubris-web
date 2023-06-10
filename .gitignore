@@ -3,7 +3,6 @@ __pycache__
 HUBRIS.code-workspace
 .hintrc
 .editorconfig
-.vscode/
 
 package.json
 package-lock.json
@@ -13,3 +12,7 @@ node_modules/
 
 ssh_config
 web/flask_session/
+.venv/
+Dockerfile
+icons/
+assets

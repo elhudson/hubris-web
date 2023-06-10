@@ -1,7 +1,5 @@
-import nopy
 import pandas as pd
 from key_generator.key_generator import generate
-from nopy import NotionClient
 from sqlalchemy import create_engine
 import sqlite3
 import sqlalchemy as sqa
@@ -9,32 +7,9 @@ import httpx
 from dotenv import load_dotenv
 from itertools import chain
 import os
+from notion import NotionClient
 
-ones=("backgrounds","class_features","skills")
-manies=("attributes", "classes","attributes")
-class Directory:
-    def __init__(self):
-        self.effects="3b66c0a5ff9a42aca5f47a262c62b27a"
-        self.durations="1da81c78e7934c4ca2144477e5efcf8b"
-        self.ranges="b46cefa2bf344557b2c5fd362d7eb7b9"
-        self.class_features="4eaa6b73c3c84189943de75ed709d7eb"
-        self.tag_features="04a91868699f4afc8c0280ff4ac1e3ad"
-        self.classes="3df41ba0adef41da89da5873f4b7f7b0"
-        self.backgrounds="367c52ae497f430b98ccc7716c8cae3f"
-        self.skills="194cfc4a2a7e49c7a3bda3f7d65fd870"
-        self.tags="c932f3aa6db54aa2a4efad6fd38a2c63"
-        self.attributes="0c18e1f7462e45a0ba2a025e9d25184a"
 
-class NotionLink:
-
-    def __init__(self, token, directory):
-        self.directory=directory
-        self.con=NotionClient(token)
-        
-    def db(self,target):
-        id=getattr(self.directory,target)
-        return self.con.retrieve_db(id)
-    
 class Database:
 
     def __init__(self,token,directory):
@@ -280,12 +255,10 @@ class PivotTable:
         return name
     
 load_dotenv(dotenv_path="/home/el_hudson/projects/HUBRIS/sticky_note.env")
-token="secret_TrlevNz6r9aY0bTxYzu2ytLwSbkIkibkbTDUfpTCiHI"
+token=os.getenv("NOTION_TOKEN")
 link=create_engine(f"sqlite:///{os.getenv('DB_PATH')}")
 map=Directory()
 
 hubris=Database(token,map)
 
-hubris.generate_properties(link)
-hubris.generate_relationships(link)
-hubris.drop_superfluous_pivots(link)
+hubris.generate_properties(link,targets=["classes"])

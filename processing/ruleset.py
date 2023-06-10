@@ -2,7 +2,10 @@ from dotenv import load_dotenv
 import os
 import sqlalchemy as sqa
 import pandas as pd
-from db import create_entry, get_tables
+from itertools import chain
+from entry import create_entry
+from tools import get_tables, NpEncoder
+import json
 
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
@@ -19,7 +22,24 @@ def all_in_table(table_name, con):
     ids=[id[0] for id in result.values]
     for id in ids:
         entry=create_entry(table_name,id,con)
-        entry.build_single_relations(con)
-        entry.build_plural_relations(con)
-        entries.append(entry)
+        if entry!=None:
+            entry.build_extensions(con)
+            if table_name=="backgrounds":
+                entry.split_feat()
+            entries.append(entry)
     return entries
+
+def fetch_metadata(con):
+    meta={}
+    trees=("Buffs","Debuffs","Damage/Healing")
+    for tree in trees:
+        meta[tree]={"ranges":[],"durations":[]}
+        range_ids=list(chain(*pd.read_sql(sqa.text(f'''SELECT id FROM ranges WHERE tree='{tree}' and tier='T1' '''),con).values.tolist()))
+        duration_ids=list(chain(*pd.read_sql(sqa.text(f'''SELECT id FROM durations WHERE tree='{tree}' and tier='T1' '''),con).values.tolist()))
+        for r in range_ids:
+            e=create_entry("ranges",r,con)
+            meta[tree]["ranges"].append(e.to_dict())
+        for d in duration_ids:
+            e=create_entry("durations",d,con)
+            meta[tree]["durations"].append(e.to_dict())
+    return json.dumps(meta,cls=NpEncoder)
