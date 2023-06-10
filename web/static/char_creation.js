@@ -407,11 +407,14 @@ async function load_skills() {
 
 // TRACK XP EXPENDITURE
 
-function spend_xp(item_id, item_cost = null) {
+function spend_xp(item_id, item_table, item_cost = null) {
     budget = Number(character.xp_earned)
     current = Number(character.xp_spent)
     itf = document.getElementById(item_id)
-    if (item_cost == null) { item_cost = Number(itf.value) }
+    console.log(itf)
+    if (item_cost == null) { 
+        item_cost = Number(itf.value) }
+    console.log(item_cost)
     if (current + item_cost > budget) {
         alert("XP budget exceeded. Go on adventures to earn some more!")
         if (itf.type == "checkbox") {
@@ -420,14 +423,17 @@ function spend_xp(item_id, item_cost = null) {
     }
     else {
         character.xp_spent += item_cost
+        log_to_character(item_id,item_table,0)
+        console.log(character[item_table])
         document.getElementById("xp_spent").setAttribute("value", current + item_cost)
-        if (itf.id=="hit_die_count") {
+        if (item_table=="hit_die") {
             document.getElementById(item_id).innerHTML = Number(document.getElementById(item_id).innerHTML)+1
+            document.getElementById("hd_form").setAttribute("value",Number(document.getElementById(item_id).innerHTML)+1)
         }
     }
 }
 
-function refund_xp(item_id, item_cost = null) {
+function refund_xp(item_id, item_table, item_cost = null) {
     budget = Number(character.xp_earned)
     current = Number(character.xp_spent)
     itf = document.getElementById(item_id)
@@ -435,23 +441,24 @@ function refund_xp(item_id, item_cost = null) {
     if (current - item_cost >= 0) {
         document.getElementById("xp_spent").setAttribute("value", current - item_cost)
         character.xp_spent -= item_cost
-        console.log(itf)
-        if (itf.id=="hit_die_count") {
+        log_to_character(item_id,item_table,1)
+        if (item_table=="hit_die") {
             document.getElementById(item_id).innerHTML=Number(document.getElementById(item_id).innerHTML)-1
+            document.getElementById("hd_form").setAttribute("value",Number(document.getElementById(item_id).innerHTML)-1)
         }
     }
 }
 
 function log_xp(item_id, item_table, is_req = true, item_cost = null) {
     cb = document.getElementById(item_id)
-    console.log(cb)
     if (cb.checked) {
-        spend_xp(item_id, item_cost)
+        spend_xp(item_id, item_table, item_cost)
         if (is_req == true) { serve_options(item_id, item_table) }
     }
     else {
-        if (item_table == "skills") { refund_xp(item_id, Number(item_cost) + 1) }
-        else { refund_xp(item_id) }
+        if (item_table == "skills") 
+        { refund_xp(item_id,item_table,item_cost=Number(item_cost) + 1) }
+        else { refund_xp(item_id,item_table,item_cost) }
         if (is_req) { remove_options(item_id, item_table) }
     }
 }
@@ -463,18 +470,59 @@ function track_skill_xp(skill_id) {
     log_xp(skill_id, "skills", is_req = false, skill_cost)
 }
 
+// LOG CHARACTER CHOICES
+
+async function log_to_character(ability_id, ability_table,add_or_subtract) {
+    if (add_or_subtract==0) {
+    if (!Object.keys(character).includes(ability_table)) {
+        character[ability_table]=Array()
+    }
+    if (ability_table!="hit_die_count") {
+        table=await load_requirements(ability_table)
+        character[ability_table].push(table[ability_id])
+    }
+    else {
+        character[ability_table]=Number(character[ability_table])+1
+    }
+}
+    if (add_or_subtract==1) {
+        character[ability_table]=character[ability_table].filter(item=>item.id!=ab)
+    }
+    sessionStorage.setItem("character",JSON.stringify(character))
+    parse_for_server()
+}
+
+function parse_for_server() {
+    f=document.forms[0]
+    storer=document.createElement("textarea")
+    storer.name="character"
+    storer.style.display="none"
+    storer.textContent=sessionStorage.getItem("character")
+    f.appendChild(storer)
+    console.log(document.forms[0])
+}
+
+async function send_data() {
+    form=document.forms[0]
+    await fetch("xp",{
+        method:'POST',
+        body: new FormData(form)
+    })
+}
+
 // HIT DICE 
 
 function increment_hd_xp() {
     count = Number(document.getElementById("hit_die_count").innerHTML)
     cost = Number(base_hit_die_cost[character.classes[0].name])
-    spend_xp("hit_die_count", cost)
+    spend_xp("hit_die_count",item_table="hit_die", cost)
+
 }
 
 function decrement_hd_xp() {
     count = Number(document.getElementById("hit_die_count").innerHTML)
     cost = Number(base_hit_die_cost[character.classes[0].name])
-    refund_xp("hit_die_count", cost)
+    refund_xp("hit_die_count", item_table="hit_die",cost)
 }
 // DISPLAY TABS
 
@@ -562,11 +610,32 @@ function limit_selections(elem_name, max_selections) {
 }
 
 async function set_character() {
+    if (sessionStorage.getItem('character')==null) {
     character_id = document.getElementsByTagName("body")[0].id
     const request = await fetch(`static/characters/${character_id}.json`)
     const val = await request.json()
+    val.id=regularize_uuid(val.id)
+    console.log(val.id)
     $('body').data("character", val)
-    return character = $('body').data('character')
+    return character = $('body').data('character') }
+    else {
+        c=JSON.parse(sessionStorage.getItem('character'))
+        c.id=regularize_uuid(c.id)
+        $('body').data('character',c)
+        return character=$('body').data('character')
+    }
+}
+
+function clear_character() {
+    sessionStorage.removeItem('character')
+}
+function regularize_uuid(character_id) {
+    if (character_id.includes("-")==false) {
+        return `${character_id.slice(0,8)}-${character_id.slice(8,12)}-${character_id.slice(12,16)}-${character_id.slice(16,20)}-${character_id.slice(20)}`
+    }
+    else {
+        return character_id
+    }
 }
 
 const base_hit_die_cost = {

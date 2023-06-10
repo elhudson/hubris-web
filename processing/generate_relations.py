@@ -22,6 +22,14 @@ def load_requirements_list(table_name,con):
         new_dict[entry.id]["requires"]=[s.to_dict() for s in entry.requires]
     return new_dict
 
+def load_singles_list(table_name,con):
+    table=all_in_table(table_name,con)
+    new_dict={}
+    for entry in table:
+        new_dict[entry.id]={}
+        new_dict[entry.id]=entry.to_dict()
+    return new_dict
+
 def load_many_list(pair,con):
     table=all_in_table(parse_name(pair[0]),con)
     new={}
@@ -42,4 +50,8 @@ def requirements_to_JSON(con):
         content=load_many_list(pair,con)
         file=open(os.getenv('ROOT_PATH')+f"/web/static/requirements/__{parse_name(pair[0])}__{parse_name(pair[1])}.json","w")
         json.dump(content,file,cls=NpEncoder)
-    
+
+for t in ["skills","classes","backgrounds"]:
+    r=load_singles_list(t,con)
+    file=open(os.getenv('ROOT_PATH')+f"/web/static/requirements/{t}.json","w")
+    json.dump(r,file,cls=NpEncoder)

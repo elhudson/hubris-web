@@ -72,6 +72,48 @@ svg,img {
     border-bottom:1px solid var(--text)
 }
 
+.bio {
+    display:inline;
+    line-height:30px;
+    position: relative;
+    border:1px solid var(--text);
+    margin:5px;
+    padding:10px;
+}
+
+.bio th {
+    text-align: left;
+    vertical-align: top;
+    width: 50%;
+}
+
+.bio table {
+    width:100%;
+}
+
+.bio textarea {
+    height:50%;
+    width:95%;
+    border:1px solid var(--text)
+}
+
+#char_backstory {
+    height: 120px !important;
+}
+.bio item {
+    width:95%;
+    height:max-content;
+}
+
+.bio input {
+    width:fit-content;
+}
+
+button[type='submit'] {
+    max-width: fit-content;
+    margin-left:5px;
+}
+
 button img {
     width: 20px !important;
     height: 20px !important;

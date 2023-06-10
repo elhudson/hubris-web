@@ -10,13 +10,11 @@ from itertools import chain
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 sys.path.append(os.getenv("PROCESSING_PATH"))
 
-import jinja2 as j
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
-from character import create_character, Character
-from entry import create_entry, Entry
-from ruleset import all_in_table,fetch_metadata
-from tools import NpEncoder,find_table,parse_name,get_configs
+from character import create_character,deserialize_character
+from ruleset import all_in_table
+from tools import NpEncoder
 engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
 
 app = Flask(__name__)
@@ -29,7 +27,8 @@ Session(app)
 @app.route("/sheet")
 def sheet():
     character=session.get("character")
-    return render_template("sheet.html",character=character,path="/static/characters/archie_radcliffe.json")
+    character.to_file()
+    return render_template("sheet.html",character=character)
 
 ## serve the introductory dialogue
 
@@ -113,19 +112,26 @@ def spend_xp():
         character.to_file()
         return render_template("spend_xp.html",character=character)
     if request.method=="POST":
-        con=engine.connect()
-        character=session.get("new_character")
-        choices=set(json.loads(list(request.cookies.keys())[-1]))
-        for c in choices:
-            table=find_table(c,con)
-            character.add_entry(table,c,con)
-        session["new_character"]=character
-        return redirect(url_for("addtl_info"))
-
+        character=deserialize_character(json.loads(request.form.get('character')))
+        character.to_file()
+        session['new_character']=character
+        return redirect(url_for('addtl_info'))
 
 @app.route("/fluff",methods=("GET","POST"))
 def addtl_info():
     if request.method=="GET":
-        con=engine.connect()
-        character=session.get("new_character")
+        character=session.get('new_character')
         return render_template("fluff.html",character=character)
+    if request.method=='POST':
+        con=engine.connect()
+        character=session.get('new_character')
+        character.name=request.form.get('char_name')
+        character.alignment=request.form.get('char_alignment')
+        character.gender=request.form.get('char_gender')
+        character.appearance=request.form.get('char_appearance')
+        character.backstory=request.form.get('char_backstory')
+        character.write_to_database(con)
+        session['character']=character
+        return redirect(url_for('sheet'))
+
+
