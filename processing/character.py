@@ -5,7 +5,7 @@ from itertools import chain
 import pandas as pd
 import sqlalchemy as sqa
 from entry import Entry, create_entry
-
+from ruleset import all_in_table
 from tools import NpEncoder, has_prereqs
 
 con=sqa.create_engine("sqlite:////home/el_hudson/projects/HUBRIS/database/HUBRIS.db").connect()
@@ -18,6 +18,8 @@ def create_character(char_id,con):
         char.build_entries(con)
         char.xp_spent=char.count_xp()
         char.set_tier()
+        if hasattr(char,"effects"):
+            char.trees_known=char.set_trees()
     return char
 
 def deserialize_character(d):
@@ -124,51 +126,79 @@ class Character:
                     q[a]=quals
         return q
     
-    def fetch_quals_from_class(self,con):
+    def fetch_quals(self,con):
         q={}
         q["skills"]=self.classes[0].skills
-        fx=[]
-        tx=[]
-        cx=[]
-        for t in self.classes[0].tags:
+        q["class_features"]=[]
+        q["tag_features"]=[]
+        q["effects"]=[]
+        q["ranges"]=[]
+        q["durations"]=[]
+        for t in self.tags:
             t.build_extensions(con)
             for e in t.effects:
-                e.build_extensions(con)
-                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
-                    if e.id not in [a.id for a in fx]:
-                        fx.append(e)
-            for e in t.tag_features:
-                e.build_extensions(con)
-                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
-                    tx.append(e)
-        for cl in self.classes[0].class_paths:
-            cl.build_extensions(con)
-            for e in cl.class_features:
-                e.build_extensions(con)
-                if (hasattr(e,"requires")==False or len(e.requires)==0) and e.tier=="T"+str(self.tier):
-                    cx.append(e)
-        q["class_features"]=cx
-        q["effects"]=fx
-        q["tag_features"]=tx
+                if self.is_qualified(e,con)==True and e.id not in [i.id for i in q["effects"]]:
+                    e.build_extensions(con)
+                    e.range.build_extensions(con)
+                    e.duration.build_extensions(con)
+                    q["effects"].append(e)
+            for tf in t.tag_features:
+                if self.is_qualified(tf,con)==True:
+                    tf.build_extensions(con)
+                    q["tag_features"].append(tf)
+        for f in self.classes[0].class_features:
+            f.build_extensions(con)
+            if self.is_qualified(f,con)==True:
+                q["class_features"].append(f)
+        for r in all_in_table("ranges",con):
+            if self.is_qualified(r,con)==True and r.id not in [i.id for i in q["ranges"]]:
+                r.build_extensions(con)
+                q["ranges"].append(r)
+        for d in all_in_table("durations",con):
+            if self.is_qualified(d,con)==True and d.id not in [i.id for i in q["durations"]]:
+                d.build_extensions(con)
+                q["durations"].append(d)
         return q
+    
+    def assign_default_metadata(self):
+        for e in self.effects:
+            if hasattr(self,"ranges"):
+                if e.range.id not in [i.id for i in self.ranges]:
+                    self.ranges.append(e.range)
+            else:
+                self.ranges=[e.range]
+            if hasattr(self,"durations"):
+                if e.duration.id not in [i.id for i in self.durations]:
+                    self.durations.append(e.duration)
+            else:
+                self.durations=[e.duration]
 
-    def fetch_metadata_quals(self,con):
-        trees=[e.tree for e in self.effects]
-        trees=set(trees)
-        metadata={}
-        for e in trees:
-            durs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM durations WHERE tree='{e}' AND tier='T{str(self.tier)}'"),con).values))
-            durs=[d for d in durs if not has_prereqs(d,"durations",con)]
-            rngs=list(chain(*pd.read_sql(sqa.text(f"SELECT id FROM ranges WHERE tree='{e}' AND tier='T{str(self.tier)}'"),con).values))
-            rngs=[r for r in rngs if not has_prereqs(r,"ranges",con)]
-            metadata[e]={}
-            metadata[e]["durations"]=[]
-            for d in durs:
-                metadata[e]["durations"].append(create_entry("durations",d,con))
-            metadata[e]["ranges"]=[]
-            for r in rngs:
-                metadata[e]["ranges"].append(create_entry("ranges",r,con))
-        return metadata
+
+    def is_qualified(self,entry,con):
+        if hasattr(self,entry.table):
+            preexist=getattr(self,entry.table)
+            if entry.id in [i.id for i in preexist]:
+                return False
+        if entry.table in ("effects","class_features","tag_features","ranges","durations"):   
+            if entry.table in ("ranges","durations"):
+                if hasattr(self,"trees_known")==False or entry.tree not in self.trees_known:
+                    return False      
+            if entry.has_prerequisites(con) and hasattr(self,entry.table)==False:
+                return False       
+            if entry.has_prerequisites(con) and hasattr(self,entry.table):
+                entry.build_extensions(con)
+                prereqs=entry.requires
+                character_has=self.__getattribute__(entry.table)                    
+                prereq_ids=[prereq.id for prereq in prereqs]
+                character_has_ids=[ability.id for ability in character_has]
+                overlap=[i for i in prereq_ids if i in character_has_ids]
+                if len(overlap)>0:
+                    return True
+                else:
+                    return False
+            else:
+                return True
+    
 
     def basic_info(self,con):
         sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id='{self.id}' ''') 
@@ -183,6 +213,10 @@ class Character:
         self.xp_earned=int(r["xp_earned"][0])
         self.xp_spent=int(r["xp_spent"][0])
         self.alignment=r["alignment"][0]
+
+    def set_trees(self):
+        trees=[t.tree for t in self.effects]
+        return set(trees)
 
     def build_entries(self,con):
         res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
@@ -211,11 +245,28 @@ class Character:
                 e.build_single_relations(con)
                 e.build_plural_relations(con)
                 e.build_other_relations(con)
+        self.tags=self.classes[0].tags
 
-    def add_entry(self,con,id,table):
+    def add_entry(self,table,id,con):
         if hasattr(self,table)==False:
             setattr(self,table,[])
-        getattr(self,table).append(create_entry(table,id,con))
+        properties=getattr(self,table)
+        prop_ids=[p.id for p in properties]
+        if id not in prop_ids:
+            if table=="effects":
+                ent=create_entry("effects",id,con)
+                self.add_entry("ranges",ent.duration.id,con)
+                self.add_entry("durations",ent.duration.id,con)
+                if ent.id not in [e.id for e in self.effects]:
+                    self.effects.append(ent)
+            if table=="backgrounds":
+                bg=create_entry("backgrounds",id,con)
+                self.add_entry("skills",bg.relate["skills"],con)
+                self.backgrounds.append(bg)
+            else:
+                properties.append(create_entry(table,id,con))
+        
+        
 
     def to_dict(self):
         base= self.__dict__.copy()
@@ -237,10 +288,13 @@ class Character:
             return json.dumps(base,cls=NpEncoder,separators=(",",":"),indent=None)
     
     def to_file(self):
-        file_name=self.name.replace(" ","_").lower()
+        if self.name!=None:
+            file_name=self.name.replace(" ","_").lower()
+        else:
+            file_name=self.id
         char_path=os.getenv("CHAR_PATH")+f"/{file_name}.json"
-        f=open(char_path,"w")
-        return self.to_JSON(out=True,fp=f)
+        base=self.to_dict()
+        return self.to_JSON(base,out=True,fp=open(char_path,"w+"))
 
     def from_file(self):
         char_filename=str.lower(self.name.replace(" ","_"))
@@ -249,28 +303,30 @@ class Character:
             char=json.load(f)
         return char
 
-    def write_to_database(self,j,con):
-        res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
-        names=[names[0] for names in res if "__characters" in names[0]]
-        d={}
-        for item in j.keys():
-            if type(j[item])==dict:
-                l=[]
-                sub1=j[item]
-                for p in sub1.keys():
-                    l.append(json.loads(sub1[p])["id"])
-                d[item]=l
-        queries={}
-        for targ in d.keys():
-            for t in names:
-                if targ in t:
-                    l=[]
-                    for item in d[targ]:
-                        l.append((self.id,item))
-                    queries[t]=l
-        for q in queries.keys():
-            prop_name=q.replace("__characters__","")+"_id"
-            for pair in queries[q]:
-                sql=sqa.text(f'''INSERT INTO {q} (character_id, {prop_name}) VALUES('{pair[0]}','{pair[1]}') WHERE NOT EXISTS(SELECT (character_id, {prop_name} FROM {q}))''')
-                con.execute(sql)
-                con.commit()
+    def write_to_database(self,con):
+        # res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
+        # names=[names[0] for names in res if "__characters" in names[0]]
+        d=self.to_dict()
+        # queries={}
+        # for targ in d.keys():
+        #     for t in names:
+        #         if targ in t and type(d[targ])==list:
+        #             l=[]
+        #             for item in d[targ]:
+        #                 l.append((self.id,item['id']))
+        #             queries[t]=l
+        # for q in queries.keys():
+        #     prop_name=q.replace("__characters__","")+"_id"
+        #     for pair in queries[q]:
+        #         sql=sqa.text(f'''INSERT INTO {q} (char_id, {prop_name}) 
+        #                      VALUES('{pair[0]}','{pair[1]}')''')
+        #         con.execute(sql)
+        #         con.commit()
+        fields=pd.read_sql(sqa.text('SELECT * FROM characters'),con).columns.tolist()
+        vals=[str(d[field]) for field in fields]
+        j='","'
+        v=j.join(vals)
+        query=sqa.text(f'INSERT INTO characters VALUES("{v}")')
+        con.execute(query)
+        con.commit()
+    

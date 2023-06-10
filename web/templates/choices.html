@@ -1,18 +1,74 @@
 {% macro header(char) %}
 <div>
-    {% if char.classes|length>0 %}
-    <b>Class </b>{{char.classes[0].icon|safe}} {{char.classes[0].name}}
-    {% endif %}
-    {% if char.backgrounds|length>0 %}
-    <b>Backgrounds </b>{{char.backgrounds[0].icon|safe}} {{char.backgrounds[0].name}} {{char.backgrounds[1].icon|safe}} {{char.backgrounds[1].name}}
-    {% endif %}
-    {% if char.str!=None %}
-    <img src="static/assets/attributes__strength.svg"><b> STR </b><span id="str">{{char.str}}</span>
-    <img src="static/assets/attributes__dexterity.svg"><b> DEX </b><span id="dex">{{char.dex}}</span>
-    <img src="static/assets/attributes__constitution.svg"><b> CON </b><span id="con">{{char.con}}</span>
-    <img src="static/assets/attributes__intelligence.svg"><b> INT </b><span id="int">{{char.int}}</span>
-    <img src="static/assets/attributes__wisdom.svg"><b> WIS </b><span id="wis">{{char.wis}}</span>
-    <img src="static/assets/attributes__charisma.svg"><b> CHA </b><span id="cha">{{char.cha}}</span>
-    {% endif %}
+    <div>
+        {% if char.classes|length>0 %}
+        <b>Class</b>{{char.classes[0].icon|safe}} {{char.classes[0].name}}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.backgrounds|length>0 %}
+        <b>Backgrounds</b>{{char.backgrounds[0].icon|safe}} {{char.backgrounds[0].name}}
+        {{char.backgrounds[1].icon|safe}} {{char.backgrounds[1].name}}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.skills|length>0 %}
+        <b>Skills</b>
+        {% for skill in char.skills %}
+        {{skill.name}}
+        {% endfor %}
+        {% endif %}
+    <div>
+        {% if char.str!=None %}
+        <img src="static/assets/attributes__strength.svg"><b> STR </b><span id="str">{{char.str}}</span>
+        <img src="static/assets/attributes__dexterity.svg"><b> DEX </b><span id="dex">{{char.dex}}</span>
+        <img src="static/assets/attributes__constitution.svg"><b> CON </b><span id="con">{{char.con}}</span>
+        <img src="static/assets/attributes__intelligence.svg"><b> INT </b><span id="int">{{char.int}}</span>
+        <img src="static/assets/attributes__wisdom.svg"><b> WIS </b><span id="wis">{{char.wis}}</span>
+        <img src="static/assets/attributes__charisma.svg"><b> CHA </b><span id="cha">{{char.cha}}</span>
+        {% endif %}
+    </div>
+    <div>
+    </div>
+    <div>
+        {% if char.effects|length>0 %}
+        <b>Effects</b>
+        {% for effect in char.effects %}
+        {{effect.name}}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.class_features|length>0 %}
+        <b>Class Features</b>
+        {% for feature in char.class_features %}
+        {{feature.name}}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.tag_features|length>0 %}
+        <b>Tag Features</b>
+        {% for tf in char.tag_features %}
+        {{tf.name}}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.ranges|length>0 %}
+        <b>Ranges</b>
+        {% for range in char.ranges %}
+        {{range.name}} ({{range.tree}})
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {% if char.durations|length>0 %}
+        <b>Durations</b>
+        {% for duration in char.durations %}
+        {{duration.name}} ({{duration.tree}})
+        {% endfor %}
+        {% endif %}
+    </div>
 </div>
 {% endmacro %}

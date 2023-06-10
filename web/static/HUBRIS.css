@@ -29,7 +29,6 @@
     font-family: var(--font);
     font-size:16px !important;
     font-weight: bold !important;
-    border-bottom: 3px solid;
   }
 
   /* input styling */
@@ -37,7 +36,7 @@
 input, textarea, select {
   background-color: var(--background);
   border-style: none;
-  border-bottom: var(--text) 1px solid;
+  border-bottom: var(--text) 1px solid !important;
 }
 
 input, textarea, select {
@@ -62,8 +61,4 @@ input[type="radio"], input[type="checkbox"] {
 
 input[type="radio"]:checked, input[type="checkbox"]:checked {
   background-color: var(--fill);
-}
-
-.tracker {
-
 }

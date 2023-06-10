@@ -5,9 +5,14 @@ import numpy as np
 import pandas as pd
 import sqlalchemy as sqa
 
+import os
+import load_dotenv
+from uuid import UUID
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
+        if isinstance(obj, UUID):
+            return obj.hex
         if isinstance(obj, np.integer):
             return int(obj)
         if isinstance(obj, np.floating):
@@ -16,6 +21,15 @@ class NpEncoder(json.JSONEncoder):
             return obj.tolist()
         return super(NpEncoder, self).default(obj)
     
+def parse_name(name):
+    return name.lower().replace(' ','_')
+
+def get_configs():
+    return json.load(open(os.getenv("ROOT_PATH")+"/database/db_config.json"))
+
+def load_env():
+    load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
+
 
 def get_tables(con):
     tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()

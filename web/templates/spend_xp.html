@@ -1,142 +1,70 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="static/char_creation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="static/char_creation.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
 
-<body onload="reset_selections()">
+<body id="{{character.id}}" onload="set_character();load_abilities()">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
-    <form method="post" action="xp">
-        <div>
-            <label for="xp_earned">XP Earned </label><input id="xp_earned" type="number" value="6">
-            <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" value="0">
+    <div>
+        <label for="xp_earned">XP Earned </label><input id="xp_earned" type="number" value="6">
+        <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" value="0">
+    </div>
+    <form method="post" action="/xp" id="xp">
+        <div class="tab_buttons" id="tab_buttons">
+            <button type="button" id="skills_tab" class="tab" onclick="openTab('skills')">Skills</button>
+            <button type="button" id="hit_dice_tab" class="tab" onclick="openTab('hit_dice')">Hit Dice</button>
+            <button type="button" id="class_features_tab" class="tab" onclick="openTab('class_features')">Class
+                Features</button>
+            <button type="button" id="tag_features_tab" class="tab" onclick="openTab('tag_features')">Tag
+                Features</button>
+            <button type="button" id="effects_tab" class="tab" onclick="openTab('effects')">Effects</button>
+            <button type="button" id="ranges_tab" class="tab" style="display:none"
+                onclick="openTab('ranges')">Ranges</button>
+            <button type="button" id="durations_tab" class="tab" style="display:none"
+                onclick="openTab('durations')">Durations</button>
         </div>
-        <div id="class_features">
-            <h1>Class Features</h1>
-            {% for feature in class_features %}
-            <div class="opt">
-                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
-                <label for="{{feature.id}}">{{feature.name}}</label>
-                <div class="info">
-                    <table>
-                        <tr>
-                            <td>
-                                Path
-                            </td>
-                            <td>
-                                <span>
-                                    {{feature.class_paths.icon|safe}} {{feature.class_paths.name}}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>XP</td>
-                            <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
-                        </tr>
-                        {% if feature.required_for and feature.required_for|length>=1%}
-                        <tr>
-                            <td>Required For</td>
-                            <td>
-                                {% for j in range(feature.required_for|length) %}
-                                {{feature.required_for[j].name}}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </table>
-                </div>
-                <div class="explainer sub">{{feature.description}}</div>
+        <div class="tabcontent" id="skills">
+            <div id="skillList">
+
             </div>
-            {% endfor %}
         </div>
-        {% if tag_features|length>0 %}
-        <div id="tag_features">
-            <h1>Tag Features</h1>
-            {% for feature in tag_features %}
-            <div class="opt">
-                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
-                <label for="{{feature.id}}">
-                    {{feature.name}}</label>
-                <div class="info">
-                    <table>
-                        <tr>
-                            <td>
-                                Tag
-                            </td>
-                            <td>
-                                <span>
-                                    {{feature.tags.icon|safe}} {{feature.tags.name}}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>XP</td>
-                            <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
-                        </tr>
-                        {% if feature.required_for %}
-                        <tr>
-                            <td>Required For</td>
-                            <td>
-                                {% for j in range(feature.required_for|length) %}
-                                {{feature.required_for[j].name}}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </table>
+        <div class="tabcontent" id="hit_dice">
+            <div class="hd_wrapper">
+                <div class="counter" id="hit_die_count">
+                    1
                 </div>
-                <div class="explainer sub">{{feature.description}}</div>
-            </div>
-            {% endfor %}
-        </div>
-        {%endif%}
-        <div id="effects">
-            <h1>Effects</h1>
-            {% for feature in effects %}
-            <div class="opt">
-                <input type="checkbox" id="{{feature.id}}" onclick="track_xp_spent('{{feature.id}}')">
-                <label for="{{feature.id}}">
-                    {{feature.name}}</label>
-                <div class="info">
-                    <table>
-                        <tr>
-                            <td>
-                                Tree
-                            </td>
-                            <td>
-                                <span>
-                                    {{feature.icon|safe}} {{feature.tree}}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>XP</td>
-                            <td><input type="number" class="cost" id="{{feature.id}}_xp" value="{{feature.xp}}"></td>
-                        </tr>
-                        {% if feature.required_for %}
-                        <tr>
-                            <td>Required For</td>
-                            <td>
-                                {% for j in range(feature.required_for|length) %}
-                                {{feature.required_for[j].name}}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </table>
+                <input type="number" id="hd_form" value="1" style="display:none;">
+                <div class="toggles">
+                    <button type="button" onclick="increment_hd_xp()" class="hd_btn"><img
+                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
+                    <button type="button" onclick="decrement_hd_xp()" class="hd_btn"><img
+                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
                 </div>
-                <div class="explainer sub">{{feature.description}}</div>
             </div>
-            {% endfor %}
         </div>
-        <input type="submit" value="Submit choices" onclick="">
+        <div class="tabcontent cards" id="class_features">
+        </div>
+        <div id="tag_features" class="tabcontent cards">
+        </div>
+        <div id="effects" class="tabcontent cards">
+        </div>
+        <div id="metadata">
+            <div id="ranges">
+            </div>
+            <div id="durations">
+            </div>
+        </div>
+        </div>
+
+        </div>
+        <button type="submit" onsubmit="send_data()">Submit</button>
     </form>
-
-
 </body>
 
 </html>

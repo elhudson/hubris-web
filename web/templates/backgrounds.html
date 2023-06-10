@@ -10,12 +10,12 @@
 
 
 </head>
-<body>
+<body onload="fresh_start('backgrounds')">
     {% import 'choices.html' as choices %}
     {{ choices.header(character) }}
 <h1>Choose your background</h1>
 <div class="explainer"></div>
-<form name="backgrounds" method="post">
+<form name="backgrounds" id="backgrounds" method="post">
     {% for background in backgrounds %}
     <div class="opt">
         <input type="checkbox" onClick="limit_selections('background',2)" name="background" id="{{background.id}}" value="{{background.id}}" >
