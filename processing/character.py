@@ -304,24 +304,24 @@ class Character:
         return char
 
     def write_to_database(self,con):
-        # res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
-        # names=[names[0] for names in res if "__characters" in names[0]]
+        res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
+        names=[names[0] for names in res if "__characters" in names[0]]
         d=self.to_dict()
-        # queries={}
-        # for targ in d.keys():
-        #     for t in names:
-        #         if targ in t and type(d[targ])==list:
-        #             l=[]
-        #             for item in d[targ]:
-        #                 l.append((self.id,item['id']))
-        #             queries[t]=l
-        # for q in queries.keys():
-        #     prop_name=q.replace("__characters__","")+"_id"
-        #     for pair in queries[q]:
-        #         sql=sqa.text(f'''INSERT INTO {q} (char_id, {prop_name}) 
-        #                      VALUES('{pair[0]}','{pair[1]}')''')
-        #         con.execute(sql)
-        #         con.commit()
+        queries={}
+        for targ in d.keys():
+            for t in names:
+                if targ in t and type(d[targ])==list:
+                    l=[]
+                    for item in d[targ]:
+                        l.append((self.id,item['id']))
+                    queries[t]=l
+        for q in queries.keys():
+            prop_name=q.replace("__characters__","")+"_id"
+            for pair in queries[q]:
+                sql=sqa.text(f'''INSERT INTO {q} (char_id, {prop_name}) 
+                             VALUES('{pair[0]}','{pair[1]}')''')
+                con.execute(sql)
+                con.commit()
         fields=pd.read_sql(sqa.text('SELECT * FROM characters'),con).columns.tolist()
         vals=[str(d[field]) for field in fields]
         j='","'
