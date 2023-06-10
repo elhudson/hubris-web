@@ -1,0 +1,100 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "sqltools.connections": [
+            {
+                "previewLimit": 50,
+                "driver": "SQLite",
+                "name": "HUBRIS",
+                "database": "${workspaceFolder:HUBRIS}/database/HUBRIS.db"
+            }
+        ],
+        "sqltools.useNodeRuntime": true,
+        "saveEditorLayout.list": [
+            {
+                "name": "HUBRIS frontent",
+                "orientation": 0,
+                "documents": [
+                    {
+                        "fsPath": "/workspaces/HUBRIS/web/static/script.js",
+                        "column": 1
+                    },
+                    {
+                        "fsPath": "/workspaces/HUBRIS/web/templates/sheet.html",
+                        "column": 2,
+                        "position": "Below"
+                    },
+                    {
+                        "fsPath": "/workspaces/HUBRIS/web/static/style.css",
+                        "column": 2
+                    },
+                    {
+                        "fsPath": "/workspaces/HUBRIS/web/app.py",
+                        "column": 3
+                    }
+                ]
+            }
+        ],
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.fontLigatures": true,
+        "liveServer.settings.port": 5001
+    },
+    "launch": {
+        "configurations": [
+            {
+                "type": "pwa-msedge",
+                "name": "Launch Microsoft Edge",
+                "request": "launch",
+                "runtimeArgs": [
+                    "--remote-debugging-port=9222"
+                ],
+                "url": "http://127.0.0.1:5000",
+                "presentation": {
+                    "hidden": true
+                }
+            },
+            {
+                "type": "pwa-msedge",
+                "name": "Launch Microsoft Edge in headless mode",
+                "request": "launch",
+                "runtimeArgs": [
+                    "--headless",
+                    "--remote-debugging-port=9222"
+                ],
+                "url": "file:///home/el_hudson/projects/HUBRIS/web/templates/class.html",
+                "presentation": {
+                    "hidden": true
+                }
+            },
+            {
+                "type": "vscode-edge-devtools.debug",
+                "name": "Open Edge DevTools",
+                "request": "attach",
+                "url": "file:///home/el_hudson/projects/HUBRIS/web/templates/class.html",
+                "presentation": {
+                    "hidden": true
+                }
+            }
+        ],
+        "compounds": [
+            {
+                "name": "Launch Edge Headless and attach DevTools",
+                "configurations": [
+                    "Launch Microsoft Edge in headless mode",
+                    "Open Edge DevTools"
+                ]
+            },
+            {
+                "name": "Launch Edge and attach DevTools",
+                "configurations": [
+                    "Launch Microsoft Edge",
+                    "Open Edge DevTools"
+                ]
+            }
+        ]
+    },
+}

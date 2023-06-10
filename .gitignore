@@ -1,6 +1,5 @@
 .ipynb_checkpoints
 __pycache__
-HUBRIS.code-workspace
 .hintrc
 .editorconfig
 
@@ -14,5 +13,3 @@ ssh_config
 web/flask_session/
 .venv/
 Dockerfile
-icons/
-assets
