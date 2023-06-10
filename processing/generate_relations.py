@@ -6,11 +6,7 @@ import sqlalchemy as sqa
 import json
 from tools import get_schema, get_tables, NpEncoder, parse_name, get_configs
 from ruleset import all_in_table
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
-db_path=f"sqlite:///{os.getenv('DB_PATH')}"
-engine=sqa.create_engine(db_path)
-con=engine.connect()
 
 def load_requirements_list(table_name,con):
     table=all_in_table(table_name,con)
