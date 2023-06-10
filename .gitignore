@@ -3,7 +3,6 @@ __pycache__
 HUBRIS.code-workspace
 .hintrc
 .editorconfig
-.vscode/
 
 package.json
 package-lock.json
