@@ -4,7 +4,7 @@ import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
 from entry import create_entry
-from tools import get_tables, NpEncoder
+from srd.srd.tools import get_tables, NpEncoder
 import json
 
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")

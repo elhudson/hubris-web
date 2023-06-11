@@ -41,7 +41,60 @@
         ],
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.fontLigatures": true,
-        "liveServer.settings.port": 5001
+        "liveServer.settings.port": 5001,
+        "hidefiles.configurationType": "local",
+        "hidefiles.globalConfig": {
+            "profiles": [
+                {
+                    "hidden": [
+                        "scratch/",
+                        "web/__pycache__/",
+                        "web/flask_session/",
+                        "processing/__pycache__/",
+                        "HUBRIS.code-workspace",
+                        "srd/__pycache__/",
+                        "srd/srd.egg-info/",
+                        "srd/setup.py",
+                        "srd/setup.py"
+                    ],
+                    "name": "hubris",
+                    "description": "",
+                    "detail": "",
+                    "peek": []
+                },
+                {
+                    "name": "Default",
+                    "detail": "",
+                    "description": "Test",
+                    "hidden": [
+                        ".vscode/"
+                    ]
+                },
+                {
+                    "name": "Strict",
+                    "detail": "Hide everything not immediately required",
+                    "hidden": [
+                        "$Default"
+                    ]
+                }
+            ]
+        },
+        "files.exclude": {
+            "**/.git": true,
+            "**/.svn": true,
+            "**/.hg": true,
+            "**/CVS": true,
+            "**/.DS_Store": true,
+            "scratch/": true,
+            "web/__pycache__/": true,
+            "web/flask_session/": true,
+            "processing/__pycache__/": true,
+            "HUBRIS.code-workspace": true,
+            "srd/__pycache__/": true,
+            "srd/srd.egg-info/": true,
+            "srd/setup.py": true
+        },
+        "hidefiles.selectedProfile": "hubris"
     },
     "launch": {
         "configurations": [

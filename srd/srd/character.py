@@ -4,12 +4,9 @@ from itertools import chain
 
 import pandas as pd
 import sqlalchemy as sqa
-from entry import Entry, create_entry
-from ruleset import all_in_table
-from tools import NpEncoder, has_prereqs
-
-con=sqa.create_engine("sqlite:////home/el_hudson/projects/HUBRIS/database/HUBRIS.db").connect()
-id="e5231255-5dbb-4d02-8133-fe23dcac6599"
+from srd.srd.entry import Entry, create_entry
+from srd.srd.ruleset import all_in_table
+from srd.srd.tools import NpEncoder, has_prereqs
 
 def create_character(char_id,con):
     char=Character(char_id)

@@ -58,3 +58,4 @@ def find_table(id,con):
         sql=sqa.text(f"SELECT id FROM {table} WHERE id='{id}'")
         if pd.read_sql(sql,con).empty==False:
             return table
+        
