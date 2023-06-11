@@ -1,53 +1,3 @@
-import sys
-from dotenv import load_dotenv
-import os
-import pandas as pd
-import sqlalchemy as sqa
-import uuid
-import json
-from itertools import chain
-
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
-sys.path.append(os.getenv("PROCESSING_PATH"))
-
-from flask import Flask, render_template, request, url_for, redirect, session
-from flask_session import Session
-from character import create_character,deserialize_character
-from ruleset import all_in_table
-from tools import NpEncoder
-engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
-
-app = Flask(__name__)
-app.secret_key=os.urandom(19)
-app.config["SESSION_TYPE"]='filesystem'
-app.json_encoder=NpEncoder
-Session(app)
-## serve the character sheet
-        
-@app.route("/sheet")
-def sheet():
-    character=session.get("character")
-    character.to_file()
-    return render_template("sheet.html",character=character)
-
-## serve the introductory dialogue
-
-@app.route("/", methods=('GET','POST'))
-def wizard():
-    if request.method== 'GET':
-        return render_template("wizard.html")
-    if request.method=='POST':
-        name=request.form["char_name"]
-        query=sqa.text(f'SELECT id FROM characters WHERE name="{name}"')
-        con=engine.connect()
-        id=pd.read_sql(query,con).values.tolist()[0][0]
-        character=create_character(id,con)
-        session["character"]=character
-        con.close()
-        return redirect(url_for('sheet'))
-    
-## serve the class choice dialogue and save the user's response
-
 @app.route("/class", methods=("GET","POST"))
 def choose_class():
     if request.method=="GET":
@@ -133,5 +83,4 @@ def addtl_info():
         character.write_to_database(con)
         session['character']=character
         return redirect(url_for('sheet'))
-
 

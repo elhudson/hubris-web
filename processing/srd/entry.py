@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 import pandas as pd
 import sqlalchemy as sqa
-from tools import get_schema, get_tables
+from srd.tools import get_schema, get_tables
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 db_path=f"sqlite:///{os.getenv('DB_PATH')}"

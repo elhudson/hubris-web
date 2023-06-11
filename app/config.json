@@ -1,0 +1,7 @@
+{
+    "json_encoder":"NpEncoder",
+    "secret_key":"dev",
+    "static_url_path":"/resources",
+    "static_folder":"resources",
+    "DATABASE":"/database/HUBRIS.db"
+}

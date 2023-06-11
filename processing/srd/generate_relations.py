@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 import pandas as pd
 import sqlalchemy as sqa
 import json
-from tools import get_schema, get_tables, NpEncoder, parse_name, get_configs
-from ruleset import all_in_table
+from srd.tools import get_schema, get_tables, NpEncoder, parse_name, get_configs
+from srd.ruleset import all_in_table
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 db_path=f"sqlite:///{os.getenv('DB_PATH')}"

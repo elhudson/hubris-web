@@ -1,0 +1,11 @@
+setup.py
+hubris.egg-info/PKG-INFO
+hubris.egg-info/SOURCES.txt
+hubris.egg-info/dependency_links.txt
+hubris.egg-info/requires.txt
+hubris.egg-info/top_level.txt
+srd/character.py
+srd/entry.py
+srd/generate_relations.py
+srd/ruleset.py
+srd/tools.py
