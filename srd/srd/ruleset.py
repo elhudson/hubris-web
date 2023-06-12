@@ -4,7 +4,7 @@ import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
 from srd.entry import create_entry
-from srd.tools import get_tables, NpEncoder
+from srd.tools import get_tables, CharacterEncoder
 import json
 
 load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
@@ -42,4 +42,4 @@ def fetch_metadata(con):
         for d in duration_ids:
             e=create_entry("durations",d,con)
             meta[tree]["durations"].append(e.to_dict())
-    return json.dumps(meta,cls=NpEncoder)
+    return json.dumps(meta,cls=CharacterEncoder)

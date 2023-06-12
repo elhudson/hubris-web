@@ -1,0 +1,9 @@
+{
+    "flask":["request","url_for","redirect","session","Flask"],
+    "sqlalchemy":["create_engine","text"],
+    "pandas":["DataFrame","read_sql"],
+    "srd":["tools","character","entry","ruleset"],
+    "etc":[
+        "json","os","uuid"
+    ]
+}

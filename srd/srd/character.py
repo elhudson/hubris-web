@@ -6,7 +6,7 @@ import pandas as pd
 import sqlalchemy as sqa
 from srd.entry import Entry, create_entry
 from srd.ruleset import all_in_table
-from srd.tools import NpEncoder, has_prereqs
+from srd.tools import CharacterEncoder, has_prereqs
 
 def create_character(char_id,con):
     char=Character(char_id)
@@ -282,7 +282,7 @@ class Character:
 
     def to_JSON(self,base,out=False,fp=None):
         if out==True:
-            json.dump(base,fp=fp,cls=NpEncoder,separators=(",",":"),indent=None)
+            json.dump(base,fp=fp,cls=CharacterEncoder,separators=(",",":"),indent=None)
         else:
             return json.dumps(base,cls=NpEncoder,separators=(",",":"),indent=None)
     

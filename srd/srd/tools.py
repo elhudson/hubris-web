@@ -8,7 +8,7 @@ import sqlalchemy as sqa
 import os
 from uuid import UUID
 
-class NpEncoder(json.JSONEncoder):
+class CharacterEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
             return obj.hex
@@ -18,7 +18,7 @@ class NpEncoder(json.JSONEncoder):
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
-        return super(NpEncoder, self).default(obj)
+        return super(CharacterEncoder, self).default(obj)
     
 def parse_name(name):
     return name.lower().replace(' ','_')

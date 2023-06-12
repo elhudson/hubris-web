@@ -1,23 +1,8 @@
-import sys
-from dotenv import load_dotenv
-import os
-import pandas as pd
-import sqlalchemy as sqa
-import uuid
-import json
+from importer import import_loader
+import_loader('imports.json')
 
-from flask import Flask, render_template, request, url_for, redirect, session
-from flask_session import Session
-from srd.character import create_character,deserialize_character
-from srd.ruleset import all_in_table
-from srd.tools import NpEncoder
-
-app = Flask(__name__)
-app.secret_key=os.urandom(19)
-app.config["SESSION_TYPE"]='filesystem'
-app.json_encoder=NpEncoder
-app.database=sqa.create_engine("sqlite:///"+os.environ['PWD']+"/database/HUBRIS.db")
-Session(app)
+from instance import create_app
+app=create_app()
         
 @app.route("/sheet")
 def sheet():
