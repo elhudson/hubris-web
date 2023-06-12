@@ -7,9 +7,6 @@ import uuid
 import json
 from itertools import chain
 
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
-sys.path.append(os.getenv("PROCESSING_PATH"))
-
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
 from character import create_character,deserialize_character
