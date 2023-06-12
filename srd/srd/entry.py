@@ -4,12 +4,7 @@ from dotenv import load_dotenv
 
 import pandas as pd
 import sqlalchemy as sqa
-from tools import get_schema, get_tables
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
-
-db_path=f"sqlite:///{os.getenv('DB_PATH')}"
-engine=sqa.create_engine(db_path)
-con=engine.connect()
+from srd.tools import get_schema, get_tables
 
 class Entry:
     def __init__(self,table=None,id=None,con=None):
@@ -34,7 +29,7 @@ class Entry:
             l="tree__"+self.tree.lower()+".svg"
         else:
             l=f"{self.table}__"+self.name.lower().replace(" ","_")+".svg"
-        path=os.getenv("ROOT_PATH")+f"/icons/{l}"
+        path=os.getenv("PWD")+f"/icons/{l}"
         self.icon=open(path,"r").read()
 
     def query(self,con):

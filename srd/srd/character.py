@@ -1,12 +1,12 @@
 import json
 import os
 from itertools import chain
-
+import numpy as np
 import pandas as pd
 import sqlalchemy as sqa
-from srd.srd.entry import Entry, create_entry
-from srd.srd.ruleset import all_in_table
-from srd.srd.tools import NpEncoder, has_prereqs
+from srd.entry import Entry, create_entry
+from srd.ruleset import all_in_table
+from srd.tools import NpEncoder, has_prereqs
 
 def create_character(char_id,con):
     char=Character(char_id)
@@ -213,7 +213,7 @@ class Character:
 
     def set_trees(self):
         trees=[t.tree for t in self.effects]
-        return set(trees)
+        return list(set(trees))
 
     def build_entries(self,con):
         res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
@@ -263,7 +263,6 @@ class Character:
             else:
                 properties.append(create_entry(table,id,con))
         
-        
 
     def to_dict(self):
         base= self.__dict__.copy()
@@ -274,7 +273,10 @@ class Character:
             if type(entry)==list:
                 e=[]
                 for i in range(len(entry)):
-                    e.append(entry[i].to_dict())
+                    if type(entry[i]) in Entry.__subclasses__():
+                        e.append(entry[i].to_dict())
+                    else:
+                        e.append(entry[i])
                 base[item]=e
         return base
 
@@ -289,7 +291,7 @@ class Character:
             file_name=self.name.replace(" ","_").lower()
         else:
             file_name=self.id
-        char_path=os.getenv("CHAR_PATH")+f"/{file_name}.json"
+        char_path=os.getenv("PWD")+f"/static/characters/{file_name}.json"
         base=self.to_dict()
         return self.to_JSON(base,out=True,fp=open(char_path,"w+"))
 

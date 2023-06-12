@@ -55,7 +55,8 @@
                         "srd/__pycache__/",
                         "srd/srd.egg-info/",
                         "srd/setup.py",
-                        "srd/setup.py"
+                        "srd/setup.py",
+                        "flask_session/"
                     ],
                     "name": "hubris",
                     "description": "",
@@ -92,7 +93,8 @@
             "HUBRIS.code-workspace": true,
             "srd/__pycache__/": true,
             "srd/srd.egg-info/": true,
-            "srd/setup.py": true
+            "srd/setup.py": true,
+            "flask_session/": true
         },
         "hidefiles.selectedProfile": "hubris"
     },

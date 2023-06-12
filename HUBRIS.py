@@ -5,21 +5,19 @@ import pandas as pd
 import sqlalchemy as sqa
 import uuid
 import json
-from itertools import chain
 
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
-from character import create_character,deserialize_character
-from ruleset import all_in_table
-from tools import NpEncoder
-engine=sqa.create_engine("sqlite:///"+os.getenv("DB_PATH"))
+from srd.character import create_character,deserialize_character
+from srd.ruleset import all_in_table
+from srd.tools import NpEncoder
 
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.json_encoder=NpEncoder
+app.database=sqa.create_engine("sqlite:///"+os.environ['PWD']+"/database/HUBRIS.db")
 Session(app)
-## serve the character sheet
         
 @app.route("/sheet")
 def sheet():
@@ -27,20 +25,17 @@ def sheet():
     character.to_file()
     return render_template("sheet.html",character=character)
 
-## serve the introductory dialogue
 
 @app.route("/", methods=('GET','POST'))
 def wizard():
     if request.method== 'GET':
-        return render_template("wizard.html")
+        return render_template("home.html")
     if request.method=='POST':
         name=request.form["char_name"]
         query=sqa.text(f'SELECT id FROM characters WHERE name="{name}"')
-        con=engine.connect()
-        id=pd.read_sql(query,con).values.tolist()[0][0]
-        character=create_character(id,con)
+        id=pd.read_sql(query,app.database).values.tolist()[0][0]
+        character=create_character(id,app.database)
         session["character"]=character
-        con.close()
         return redirect(url_for('sheet'))
     
 ## serve the class choice dialogue and save the user's response
