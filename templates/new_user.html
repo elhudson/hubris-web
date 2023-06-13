@@ -10,14 +10,12 @@
 
 
 </head>
-<body onload="clear_character()">
+<body>
 
 <div class="dialogue">
-    {% if error!=None %}
-    <div class='error'>{{error}}</div>
-    {% endif %}
     <h1>Welcome to HUBRIS!</h1>
-    <form name="login" action="/login" method="post">
+    <h2>Please enter a new username and password.</h2>
+    <form name="new_user" action="/new_user" method="post">
         <span>
             <label for="username">Username:</label>
             <input type="text" id='username' name="username">
@@ -26,12 +24,8 @@
             <label for="password">Password:</label>
             <input type="text" id="password" name="password">
         </span>
-        <span>
-            <a href="/new_user">I don't have an account</a>
-        </span>
-        <button type="submit">Login</button>
+        <button type="submit">Create account</button>
     </form>
-   
 </div>
 
 </body>

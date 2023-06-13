@@ -32,7 +32,9 @@ def choose_backgrounds():
         con=app.database.connect()
         backgrounds=all_in_table("backgrounds",con)
         con.close()
-        return render_template("character_creation/backgrounds.html",backgrounds=backgrounds,character=session.get('new_character'))
+        return render_template("character_creation/backgrounds.html",
+                               backgrounds=backgrounds,
+                               character=session.get('new_character'))
     if request.method=="POST":
         con=app.database.connect()
         char=session.get('new_character')
@@ -52,7 +54,10 @@ def allocate_stats():
         character.backgrounds[1].build_single_relations(con)
         boost1=str.lower(character.backgrounds[0].attributes.name[0:3])
         boost2=str.lower(character.backgrounds[1].attributes.name[0:3])
-        return render_template("character_creation/stats.html",character=character,boost1=boost1,boost2=boost2)
+        return render_template("character_creation/stats.html",
+                               character=character,
+                               boost1=boost1,
+                               boost2=boost2)
     if request.method=="POST":
         stats=json.loads(list(request.cookies.keys())[-1])
         character=session.get("new_character")

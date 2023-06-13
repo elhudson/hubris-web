@@ -5,9 +5,9 @@ from sqlalchemy import text
 
 from instance import app
         
-@app.route("/sheet")
-def sheet():
-    character=session.get("character")
+@app.route("/sheet/<character_id>")
+def sheet(character_id):
+    character=create_character(character_id,app.database)
     character.to_file()
     return render_template("sheet.html",character=character)
 
@@ -15,7 +15,7 @@ def sheet():
 @app.route("/", methods=('GET','POST'))
 def wizard():
     if request.method== 'GET':
-        return render_template("home.html")
+        return render_template("home.html",error=None)
     if request.method=='POST':
         name=request.form["char_name"]
         query=text(f'SELECT id FROM characters WHERE name="{name}"')

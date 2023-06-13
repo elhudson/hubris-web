@@ -4,8 +4,6 @@
     --bg2:#efefef
     --background:#fff;
     --font:Arial, Helvetica, sans-serif;
-
-  
   }
   
   body {
@@ -61,4 +59,16 @@ input[type="radio"], input[type="checkbox"] {
 
 input[type="radio"]:checked, input[type="checkbox"]:checked {
   background-color: var(--fill);
+}
+
+.error {
+  background-color: rgba(189, 7, 7, 0.418);
+  border:1px solid var(--text);
+  padding: 1px;
+}
+
+/* show or hide icons */ 
+
+svg {
+  display:none;
 }
