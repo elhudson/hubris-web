@@ -6,7 +6,7 @@ import pandas as pd
 import sqlalchemy as sqa
 from srd.entry import Entry, create_entry
 from srd.ruleset import all_in_table
-from srd.tools import CharacterEncoder, has_prereqs
+from srd.tools import CharacterEncoder
 
 def create_character(char_id,con):
     char=Character(char_id)
@@ -273,7 +273,7 @@ class Character:
             if type(entry)==list:
                 e=[]
                 for i in range(len(entry)):
-                    if type(entry[i]) in Entry.__subclasses__():
+                    if type(entry[i]) in Entry.__subclasses__() or type(entry[i])==Entry:
                         e.append(entry[i].to_dict())
                     else:
                         e.append(entry[i])

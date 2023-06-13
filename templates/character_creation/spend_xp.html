@@ -9,8 +9,6 @@
 </head>
 
 <body id="{{character.id}}" onload="set_character();load_abilities()">
-    {% import 'choices.html' as choices %}
-    {{ choices.header(character) }}
     <div>
         <label for="xp_earned">XP Earned </label><input id="xp_earned" type="number" value="6">
         <label for="xp_spent">XP Spent</label><input id="xp_spent" type="number" value="0">
