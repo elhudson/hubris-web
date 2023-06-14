@@ -11,5 +11,5 @@ node_modules/
 
 ssh_config
 web/flask_session/
-.venv/
 Dockerfile
+*.db

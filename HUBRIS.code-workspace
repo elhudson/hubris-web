@@ -8,9 +8,12 @@
         "sqltools.connections": [
             {
                 "previewLimit": 50,
-                "driver": "SQLite",
-                "name": "HUBRIS",
-                "database": "${workspaceFolder:HUBRIS}/database/HUBRIS.db"
+                "server": "143.42.226.164",
+                "port": 5432,
+                "driver": "PostgreSQL",
+                "database": "hubris",
+                "username": "cicero63",
+                "name": "HUBRIS"
             }
         ],
         "sqltools.useNodeRuntime": true,
