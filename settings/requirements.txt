@@ -1,7 +1,0 @@
-Flask
-Flask-Session
-load-dotenv
-notion
-pandas
-Pillow
-SQLAlchemy
