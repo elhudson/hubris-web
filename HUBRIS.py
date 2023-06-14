@@ -11,6 +11,6 @@ app.json_encoder=tools.CharacterEncoder
 app.database=sqa.create_engine("sqlite:///"+os.environ['PWD']+"/database/HUBRIS.db")
 Session(app)
 
-from character_creation import *
-from character_management import *
-from user_management import *
+from site.character_creation import *
+from site.character_management import *
+from site.user_management import *
