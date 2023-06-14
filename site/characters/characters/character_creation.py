@@ -3,8 +3,6 @@ from srd.ruleset import all_in_table
 from srd.character import create_character, deserialize_character
 import uuid
 import json
-
-from instance import app
     
 ## serve the class choice dialogue and save the user's response
 
