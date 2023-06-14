@@ -61,6 +61,19 @@ input[type="radio"]:checked, input[type="checkbox"]:checked {
   background-color: var(--fill);
 }
 
+/* misc */
+
+button, button[type='submit'] {
+    background-color:var(--background);
+    float: right;
+    border: 1px solid var(--text);
+    max-width: fit-content;
+    border-radius: 0%;
+    font-family: var(--font);
+    padding:5px;
+    font-style: italic;
+}
+
 .error {
   background-color: rgba(189, 7, 7, 0.418);
   border:1px solid var(--text);
@@ -71,4 +84,17 @@ input[type="radio"]:checked, input[type="checkbox"]:checked {
 
 svg {
   display:none;
+}
+
+svg,img {
+  width:13px;
+  height:13px;
+  vertical-align: baseline;
+}
+
+.character_thumbnail {
+  border:1px solid var(--text);
+  padding:10px;
+  max-width: fit-content;
+  line-height: 50%;
 }

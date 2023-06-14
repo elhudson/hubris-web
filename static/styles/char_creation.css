@@ -2,7 +2,7 @@
 
 
 .dialogue {
-    position: fixed;
+position: fixed;
   top: 50%;
   left: 50%;
   /* bring your own prefixes */
@@ -66,11 +66,7 @@ label {
 .cost {
   -moz-appearance: textfield;
 }
-svg,img {
-    width:13px;
-    height:13px;
-    vertical-align: baseline;
-}
+
 
 .hd_wrapper {
     margin:10px;
@@ -122,20 +118,11 @@ svg,img {
     width:fit-content;
 }
 
-button {
-    max-width: fit-content; 
-}
-
 button img {
     width: 20px !important;
     height: 20px !important;
     position: relative;
     align-items: center;
-}
-
-input[type="checkbox"] {
-    vertical-align: baseline;
-    margin-bottom:-1px;
 }
 
 .explainer.sub {
@@ -160,11 +147,7 @@ input[type="checkbox"] {
     height: fit-content;
 }
   
-/*apply hover effect to button tag*/
-  
-.container button:hover {
-    color: grey;
-}
+
   
 /*apply css properties to h2 tag*/
   
@@ -208,15 +191,7 @@ label>svg {
 
   
   /* Style the buttons that are used to open the tab content */
-  button {
-    background-color:var(--background);
-    float: left;
-    border: 1px solid var(--text);
-    border-radius: 0%;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-  }
+
   
   .tabcontent {
     display: none;

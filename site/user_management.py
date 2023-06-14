@@ -1,7 +1,7 @@
 from flask import session, render_template, request, redirect, url_for, flash
 from srd.character import create_character
 from pandas import read_sql
-from sqlalchemy import text
+from sqlalchemy import text, exc
 from itertools import chain
 import uuid
 
@@ -45,7 +45,6 @@ def new_user():
                 con.commit()
                 con.close()
                 session['user_id']=str(user_id)
-                return render_template(url_for('my_characters'))
-            except BaseException:
+                return redirect(url_for('my_characters'))
+            except exc.IntegrityError:
                 return render_template('home.html',error="Account with this username already exists. If you forgot your password, ping El on Discord and she'll get it for you.")
-
