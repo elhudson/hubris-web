@@ -13,3 +13,4 @@ ssh_config
 web/flask_session/
 Dockerfile
 *.db
+\
