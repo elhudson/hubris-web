@@ -12,10 +12,10 @@ pandas==2.0.2
 Pillow==9.5.0
 python-dateutil==2.8.2
 pytz==2023.3
--e git+https://github.com/elhudson/hubris-web.git@e108d0e5eeda80d5f00e973d2370fb69bcf2fc26#egg=site&subdirectory=site
+-e git+https://github.com/elhudson/hubris-web.git@568c8f56c41ac25a880e0324a37437a4c558285c#egg=site&subdirectory=site
 six==1.16.0
 SQLAlchemy==2.0.16
--e git+https://github.com/elhudson/hubris-web.git@e108d0e5eeda80d5f00e973d2370fb69bcf2fc26#egg=srd&subdirectory=srd
+-e git+https://github.com/elhudson/hubris-web.git@568c8f56c41ac25a880e0324a37437a4c558285c#egg=srd&subdirectory=srd
 typing_extensions==4.6.3
 tzdata==2023.3
 Werkzeug==2.3.6
