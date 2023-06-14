@@ -1,6 +1,5 @@
 from itertools import chain
 import os
-from dotenv import load_dotenv
 
 import pandas as pd
 import sqlalchemy as sqa

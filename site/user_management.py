@@ -5,7 +5,8 @@ from sqlalchemy import text
 from itertools import chain
 import uuid
 
-from instance import app
+from HUBRIS import app
+
 
 @app.route('/login',methods=['POST'])
 def login():
@@ -47,3 +48,4 @@ def new_user():
                 return render_template(url_for('my_characters'))
             except BaseException:
                 return render_template('home.html',error="Account with this username already exists. If you forgot your password, ping El on Discord and she'll get it for you.")
+

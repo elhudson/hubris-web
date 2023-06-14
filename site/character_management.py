@@ -3,7 +3,8 @@ from srd.character import create_character
 from pandas import read_sql
 from sqlalchemy import text
 
-from instance import app
+from HUBRIS import app
+
         
 @app.route("/sheet/<character_id>")
 def sheet(character_id):
@@ -23,3 +24,4 @@ def wizard():
         character=create_character(id,app.database)
         session["character"]=character
         return redirect(url_for('sheet'))
+    

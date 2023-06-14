@@ -3,8 +3,8 @@ from srd.ruleset import all_in_table
 from srd.character import create_character, deserialize_character
 import uuid
 import json
-    
-## serve the class choice dialogue and save the user's response
+
+from HUBRIS import app
 
 @app.route("/class", methods=("GET","POST"))
 def choose_class():

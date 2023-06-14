@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import os
 import sqlalchemy as sqa
 import pandas as pd
@@ -7,7 +6,6 @@ from srd.entry import create_entry
 from srd.tools import get_tables, CharacterEncoder
 import json
 
-load_dotenv("/home/el_hudson/projects/HUBRIS/sticky_note.env")
 
 db_path=f"sqlite:///{os.getenv('DB_PATH')}"
 engine=sqa.create_engine(db_path)
