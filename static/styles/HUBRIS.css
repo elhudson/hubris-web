@@ -116,3 +116,19 @@ button.title-link {
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   grid-gap: 20px;
 }
+
+.stats {
+  display:inline-flex;
+}
+
+.stats .opt {
+  max-width:33%;
+  padding:5px;
+  margin:5px;
+}
+
+.stats input[type='number'] {
+  font-size: 20px;
+  width:100%;
+  justify-self: center;
+}

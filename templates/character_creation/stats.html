@@ -16,37 +16,38 @@
 </div>
 <form name="stats" method="post" action="stats" id="stats">
     <div class="stats">
-        <div 
+        <div class='opt'>
+            
+            <input type="number" id="str" value="-2" onchange="update('str')">
+            <label for="str">Strength</label>
+
+        </div>
+        <div class='opt'>
+            <input type="number" id="dex" value="-2" onchange="update('str')">
+            <label for="dex">Dexterity</label>
+
+        </div>
+        <div class='opt'>
+            <input type="number" id="con" value="-2" onchange="update('str')">
+            <label for="con">Constitution</label>
+
+        </div>
+        <div class='opt'>
+            <input type="number" id="int" value="-2" onchange="update('str')">
+            <label for="int">Intelligence</label>
+
+        </div>
+        <div class='opt'>
+            <input type="number" id="wis" value="-2" onchange="update('str')">
+            <label for="wis">Wisdom</label>
+
+        </div>
+        <div class='opt'>
+            <input type="number" id="cha" value="-2" onchange="update('str')">
+            <label for="cha">Charisma</label>
+
+        </div>
     </div>
-
-
-
-    <table>
-        <tr>
-            <td><label for="str">Strength</label></td>
-            <td><input type="number" id="str" value="-2" onchange="update('str')"></td>
-        </tr>
-        <tr>
-            <td><label for="dex">Dexterity</label></td>
-            <td><input type="number" id="dex" value="-2" onchange="update('dex')"></td>
-        </tr>
-        <tr>
-            <td><label for="con">Constitution</label></td>
-            <td><input type="number" id="con" value="-2" onchange="update('con')"></td>
-        </tr>
-        <tr>
-            <td><label for="int">Intelligence</label></td>
-            <td><input type="number" id="int" value="-2" onchange="update('int')"></td>
-        </tr>
-        <tr>
-            <td><label for="wis">Wisdom</label></td>
-            <td><input type="number" id="wis" value="-2" onchange="update('wis')"></td>
-        </tr>
-        <tr>
-            <td><label for="cha">Charisma</label></td>
-            <td><input type="number" id="cha" value="-2" onchange="update('cha')"></td>
-        </tr>
-    </table>
 
 <input type="submit" value="Submit">
 </form>
