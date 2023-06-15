@@ -12,6 +12,7 @@
 <h1>Choose your class</h1>
 <div class="explainer">When creating a HUBRIS character, the first thing you need to decide on is your character's class. There are 8 base classes in HUBRIS, detailed below.</div>
 <form name="class" method="post" action="class">
+    <div class="feature-list">
     {% for class in classes %}
     <div class="opt">
         <input type="radio" name="class" value="{{class.id}}">
@@ -75,6 +76,7 @@
         </div>
     </div>
     {% endfor %}
+    </div>
     <input type="submit" value="Submit Class">
 </form>
 </body>

@@ -6,8 +6,10 @@
     --font:Arial, Helvetica, sans-serif;
   }
   
-  body {
+  body, button {
     background-color: var(--background) !important;
+    font-family: var(--font);
+    line-height: 50%;
   }
   
   /* general text styling */
@@ -63,16 +65,18 @@ input[type="radio"]:checked, input[type="checkbox"]:checked {
 
 /* misc */
 
-button, button[type='submit'] {
+button:not(.title-link), button[type='submit']:not(.title-link) {
     background-color:var(--background);
     float: right;
     border: 1px solid var(--text);
     max-width: fit-content;
     border-radius: 0%;
-    font-family: var(--font);
     padding:5px;
     font-style: italic;
 }
+
+
+
 
 .error {
   background-color: rgba(189, 7, 7, 0.418);
@@ -92,9 +96,23 @@ svg,img {
   vertical-align: baseline;
 }
 
+
 .character_thumbnail {
   border:1px solid var(--text);
   padding:10px;
-  max-width: fit-content;
-  line-height: 50%;
+  margin:5px;
+}
+
+button.title-link {
+  padding:0px;
+  border:none;
+  font-size:18px;
+  font-weight:bold;
+  
+}
+
+.feature-list, .char_list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-gap: 20px;
 }

@@ -33,7 +33,6 @@ label {
 .opt {
     border:1px solid var(--text);
     margin-bottom:15px;
-    max-width: 50%;
 }
 
 .skill_entry {

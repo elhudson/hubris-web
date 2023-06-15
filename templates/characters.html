@@ -2,23 +2,26 @@
     
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="/static/styles/char_creation.css">
+        <link rel="stylesheet" href="/static/styles/HUBRIS.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="static/scripts/walkthrough.js"></script>
         <script src="static/scripts/char_creation.js"></script>
     </head>
     
     <body>
-        {% for character in characters %}
-        <form action="/characters" method="post">
-        <div class="character_thumbnail">
-            <h3>{{character.name}}</h3>
-            <h5>{{character.classes[0].name}} | {{character.backgrounds[0].name}} & {{character.backgrounds[1].name}} | Tier {{character.tier}}</h5>
-            <input type="radio" name="character_selection" checked value="{{character.id}}" style="display:none;">
-            <button type="submit"><i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-            </button>
+        <div class="char_list">
+            {% for character in characters %}
+            <form action="/characters" method="post">
+            <div class="character_thumbnail">
+                        <div><button class='title-link' type='submit'>{{character.name}}</button></div>
+                        <p>{{character.classes[0].name}} | {{character.backgrounds[0].name}} & {{character.backgrounds[1].name}} | Tier {{character.tier}}</p>
+                        <input type="radio" name="character_selection" checked value="{{character.id}}" style="display:none;">
+            </div>
+            </form>
+            {%endfor%}
+            <div class="character_thumbnail">
+            <a href='/class'>Create a new character</a>
+            </div>
         </div>
-        </form>
-        {%endfor%}
     </body>
 </html>

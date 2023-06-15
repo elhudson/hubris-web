@@ -11,8 +11,8 @@ class Entry:
         self.id=id
         if con!=None:
             self.build_core(con)
-        if table in ("classes","class_paths","tags","backgrounds","skills","attributes", "effects"):
-            self.load_icon()
+        # if table in ("classes","class_paths","tags","backgrounds","skills","attributes", "effects"):
+        #     self.load_icon()
     
     def has_prerequisites(self,con):
         if self.tier!="T1":

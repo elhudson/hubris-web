@@ -1,7 +1,6 @@
 import json
 import os
 from itertools import chain
-import numpy as np
 import pandas as pd
 import sqlalchemy as sqa
 from srd.entry import Entry, create_entry
