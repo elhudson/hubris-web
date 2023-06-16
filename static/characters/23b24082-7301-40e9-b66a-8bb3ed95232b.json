@@ -1,0 +1,27 @@
+{
+    "id": "23b24082730140e9b66a8bb3ed95232b",
+    "name": null,
+    "str": -2,
+    "dex": -2,
+    "con": -2,
+    "int": -2,
+    "wis": -2,
+    "cha": -2,
+    "xp_earned": 6,
+    "xp_spent": 0,
+    "alignment": null,
+    "classes": [
+        {
+            "table": "classes",
+            "id": "84f524b1-2cce-4533-a801-b5fa872fd5aa",
+            "relate": {
+                "attributes": "515e1331-adf8-467f-a196-4c848d6e43bb"
+            },
+            "description": null,
+            "weapon_proficiencies": "Simple",
+            "armor_proficiencies": null,
+            "name": "Wizard",
+            "hit_die": "d2"
+        }
+    ]
+}

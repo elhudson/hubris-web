@@ -9,7 +9,6 @@
   body, button {
     background-color: var(--background) !important;
     font-family: var(--font);
-    line-height: 50%;
   }
   
   /* general text styling */
@@ -19,7 +18,7 @@
     color:var(--text);
     font-size:14px;
     padding-bottom: 2px;
-    line-height: 150%;
+    line-height: 120%;
   }
   
   /* header styling */
@@ -31,20 +30,27 @@
     font-weight: bold !important;
   }
 
+  h3 {
+    display: inline;
+  }
+
   /* input styling */
 
 input, textarea, select {
+  font-family: var(--font);
   background-color: var(--background);
   border-style: none;
-  border-bottom: var(--text) 1px solid !important;
+  border-bottom: var(--text) 1px solid;
 }
 
 input, textarea, select {
+  font-family: var(--font);
   background-color: var(--background);
   border-style: none;
 }
 
 input[type="number"], .mod {
+  font-family: var(--font);
   border-bottom:1px solid var(--text);
   min-width:3ch;
   max-width: 5ch;
@@ -54,8 +60,10 @@ input[type="radio"], input[type="checkbox"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width:15px;
-  height: 15px;
+  vertical-align: baseline;
+  margin-bottom: -1px;
+  width:14px;
+  height: 14px;
   border:1px solid var(--text);
 }
 
@@ -65,18 +73,20 @@ input[type="radio"]:checked, input[type="checkbox"]:checked {
 
 /* misc */
 
-button:not(.title-link), button[type='submit']:not(.title-link) {
-    background-color:var(--background);
+button, input[type='submit'] {
+  font-family: var(--font);
+  background-color:var(--background);
+  border: 1px solid var(--text);
+
+}
+
+button:not(.title-link,.hd_btn), button[type='submit']:not(.title-link), input[type='submit'] {
     float: right;
-    border: 1px solid var(--text);
     max-width: fit-content;
     border-radius: 0%;
     padding:5px;
     font-style: italic;
 }
-
-
-
 
 .error {
   background-color: rgba(189, 7, 7, 0.418);
@@ -96,7 +106,33 @@ svg,img {
   vertical-align: baseline;
 }
 
+/* option styling */
 
+.stat {
+  display:flex;
+  padding:5px;
+  margin:5px;
+  text-align: center;
+  justify-content: center;
+  border: 1px solid var(--text);
+  :not(input[type='submit']){
+    align-items: center;
+  }
+}
+
+.opt {
+  padding:3px;
+  margin:10px;
+  z-index: -1;
+  border:1px solid var(--text)
+}
+
+.opt td {
+  vertical-align: top;
+}
+.opt tr td:first-child {
+  font-weight: bold;
+}
 .character_thumbnail {
   border:1px solid var(--text);
   padding:10px;
@@ -111,24 +147,81 @@ button.title-link {
   
 }
 
-.feature-list, .char_list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  grid-gap: 20px;
+.char_list, .feature-list {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.stats, .feature-list, .char_list {
+  width:100%;
+  display:grid;
 }
 
 .stats {
-  display:inline-flex;
+  grid-template-columns: repeat(3, 1fr);
+
 }
 
-.stats .opt {
-  max-width:33%;
-  padding:5px;
-  margin:5px;
+
+.hd_btn {
+  position:relative;
+  margin-top:4px;
+  max-width: 100%;
+  margin-left:0px !important;
 }
 
-.stats input[type='number'] {
-  font-size: 20px;
+.toggles *{
+  display: inline-flex;
+  max-width: 100%;
+  justify-items: end;
+}
+.ability_score {
+  max-width: max-content;
+}
+.counter {
+  font-size: 30px;
+  text-align: center;
   width:100%;
-  justify-self: center;
+  -moz-appearance: textfield;
+}
+
+.dialogue {
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+      
+  }
+
+.status *{
+  display:block;
+  margin: auto;
+  text-align: center;
+}
+
+
+
+textarea.scrolling-explainer {
+  width: 100%;
+  border-bottom: none !important;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.container {
+  width:80%;
+  padding-bottom:30px;
+  position: relative;
+  top:0%;
+  left:50%;
+  transform: translate(-50%, -0%);
+}
+
+input[type='submit'] {
+  margin-right:10px;
+}
+
+.explainer {
+  margin-left:3px;
+  margin-right:3px;
 }

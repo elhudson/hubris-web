@@ -4,80 +4,68 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="static/styles/char_creation.css">
+    <link rel="stylesheet" href="static/styles/HUBRIS.css">
     <script src="static/scripts/char_creation.js"></script>
 
 </head>
 <body>
-<h1>Choose your class</h1>
-<div class="explainer">When creating a HUBRIS character, the first thing you need to decide on is your character's class. There are 8 base classes in HUBRIS, detailed below.</div>
 <form name="class" method="post" action="class">
-    <div class="feature-list">
-    {% for class in classes %}
-    <div class="opt">
-        <input type="radio" name="class" value="{{class.id}}">
-        <label for="{{class.name}}">{{class.icon|safe}} {{class.name}}</label>
-        <div class="info">
-            <table>
-                <tr>
-                    <td>Paths</td>
-                    <td>
-                        {% for path in class.class_paths %}
-                        <span>
-                            {{path.icon|safe}}
-                            {{path.name}}
-                        </span>
-                        {% endfor %}
+    <div class="container">
+        <div class="feature-list">
+        {% for class in classes %}
+        <div class="opt">
+            <input type="radio" name="class" value="{{class.id}}">
+            <label for="{{class.name}}"><h3>{{class.icon|safe}} {{class.name}}</h3></label>
+            <div class="info">
+                <table>
+                    <tr>
+                        <td>Paths</td>
+                        <td>
+                            {{class.class_paths|listify}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Attribute</td>
+                        <td>
+                        {{class.attributes.name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Skills</td>
+                        <td>
+                            {{class.skills|listify}}
                     </td>
-                </tr>
-                <tr>
-                    <td>Attribute</td>
-                    <td>
-                    {{class.attributes.icon|safe}}
-                    {{class.attributes.name}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Skills</td>
-                    <td>
-                        {% for skill in class.skills %}
-                        <span>
-                            {{skill.icon|safe}} 
-                            {{skill.name}}
-                        </span>
-                    {% endfor %} 
-                </td>
-                </tr>
-                <tr>
-                    <td>Tags</td>
-                    <td><span>
-                        {% for tag in class.tags %}
-                            {{tag.icon|safe}}
-                            {{tag.name}}
-                        {% endfor %}
-                    </span></td>
-                </tr>
-                <tr>
-                    <td>Hit Die</td>
-                    <td>{{class.hit_die}}</td>
-                </tr>
-                <tr>
-                    <td>Armor Rating</td>
-                    <td>{{class.armor_proficiencies}}</td>
-                </tr>
-                <tr>
-                    <td>Weaponry</td>
-                    <td>{{class.weapon_proficiencies}}</td>
-                </tr>
-            </table>
+                    </tr>
+                    <tr>
+                        <td>Tags</td>
+                        <td><span>
+                           {{class.tags|listify}}
+                        </span></td>
+                    </tr>
+                    <tr>
+                        <td>Hit Die</td>
+                        <td>{{class.hit_die}}</td>
+                    </tr>
+                    <tr>
+                        <td>Armor Rating</td>
+                        <td>{{class.armor_proficiencies}}</td>
+                    </tr>
+                    <tr>
+                        <td>Weaponry</td>
+                        <td>{{class.weapon_proficiencies}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="explainer sub">
+                {% if class.description!=None %}
+                {{class.description}}
+                {%endif%}
+            </div>
         </div>
-        <div class="explainer sub">
-            {{class["description"]}}
+        {% endfor %}
         </div>
+        <input type="submit" value="Next">
     </div>
-    {% endfor %}
-    </div>
-    <input type="submit" value="Submit Class">
 </form>
 </body>
 </html>

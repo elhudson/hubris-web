@@ -11,7 +11,7 @@ from uuid import UUID
 class CharacterEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
-            return obj.hex
+            return str(obj)
         if isinstance(obj, np.integer):
             return int(obj)
         if isinstance(obj, np.floating):
@@ -22,6 +22,12 @@ class CharacterEncoder(json.JSONEncoder):
     
 def parse_name(name):
     return name.lower().replace(' ','_')
+
+def parse_path(app):
+    if 'el_hudson' in os.path.expanduser('~'):
+        app.home=os.path.expanduser('~')+'/projects/HUBRIS'
+    else:
+        app.home=os.path.expanduser('~')+"/hubris-web"
 
 def get_configs():
     return json.load(open(os.getenv("ROOT_PATH")+"/database/db_config.json"))

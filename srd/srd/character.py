@@ -18,6 +18,11 @@ def create_character(char_id,con):
             char.trees_known=char.set_trees()
     return char
 
+def fetch_character(app,character_id):
+    file=open(f'{app.home}/static/characters/{character_id}.json')
+    js=json.load(file)
+    return deserialize_character(js)
+
 def deserialize_character(d):
     me=Character(d["id"])
     for item in d.keys():
@@ -60,12 +65,12 @@ class Character:
     def __init__(self,char_id):
         self.id=char_id
         self.name=None
-        self.str=None
-        self.dex=None
-        self.con=None
-        self.int=None
-        self.wis=None
-        self.cha=None
+        self.str=-2
+        self.dex=-2
+        self.con=-2
+        self.int=-2
+        self.wis=-2
+        self.cha=-2
         self.xp_earned=None
         self.xp_spent=None
         self.alignment=None
@@ -79,7 +84,7 @@ class Character:
                 if hasattr(item,"xp"):
                     xp+=item.xp
         return xp
-    
+
     def fetch_attrs(self):
         features=[]
         for k in self.__dict__.keys():
@@ -169,7 +174,6 @@ class Character:
             else:
                 self.durations=[e.duration]
 
-
     def is_qualified(self,entry,con):
         if hasattr(self,entry.table):
             preexist=getattr(self,entry.table)
@@ -257,7 +261,13 @@ class Character:
                     self.effects.append(ent)
             if table=="backgrounds":
                 bg=create_entry("backgrounds",id,con)
+                bg.build_extensions(con)
                 self.add_entry("skills",bg.relate["skills"],con)
+                boost=str.lower(bg.attributes.name)[0:3]
+                setattr(self,boost,getattr(self,boost)+1)
+                if not hasattr(self,"boosts"):
+                    self.boosts=[]
+                self.boosts.append(boost)
                 self.backgrounds.append(bg)
             else:
                 properties.append(create_entry(table,id,con))

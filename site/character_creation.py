@@ -1,6 +1,6 @@
 from flask import session, render_template, request, redirect, url_for, app
 from srd.ruleset import all_in_table
-from srd.character import create_character, deserialize_character
+from srd.character import create_character, fetch_character, deserialize_character
 import uuid
 import json
 
@@ -16,14 +16,15 @@ def choose_class():
     if request.method=="POST":
         con=app.database.connect()
         new=create_character(uuid.uuid4(),con)
-        session["new_character"]=new
+        new.xp_spent=0
+        new.xp_earned=6
         class_id=request.form.get("class")
         new.add_entry("classes",class_id,con)
+        new.to_file()
+        session['character_id']=new.id
         con.close()
         return redirect(url_for('choose_backgrounds'))
     
-## serve the background choice dialogue and save the user's response
-
 @app.route("/backgrounds", methods=("GET", "POST"))
 def choose_backgrounds():
     if request.method=="GET":
@@ -31,31 +32,23 @@ def choose_backgrounds():
         backgrounds=all_in_table("backgrounds",con)
         con.close()
         return render_template("character_creation/backgrounds.html",
-                               backgrounds=backgrounds,
-                               character=session.get('new_character'))
+                               backgrounds=backgrounds)
     if request.method=="POST":
         con=app.database.connect()
-        char=session.get('new_character')
+        character_id=session.get('character_id')
+        character=fetch_character(app, character_id)
         background_1_id=request.form.getlist("background")[0]
         background_2_id=request.form.getlist("background")[1]
-        char.add_entry("backgrounds",background_1_id,con)
-        char.add_entry("backgrounds",background_2_id,con)
-        session["new_character"]=char
+        character.add_entry("backgrounds",background_1_id,con)
+        character.add_entry("backgrounds",background_2_id,con)
+        character.to_file()
         return redirect(url_for("allocate_stats"))
 
 @app.route("/stats", methods=("GET","POST"))
 def allocate_stats():
     if request.method=="GET":
-        con=app.database.connect()
-        character=session.get("new_character")
-        character.backgrounds[0].build_single_relations(con)
-        character.backgrounds[1].build_single_relations(con)
-        boost1=str.lower(character.backgrounds[0].attributes.name[0:3])
-        boost2=str.lower(character.backgrounds[1].attributes.name[0:3])
         return render_template("character_creation/stats.html",
-                               character=character,
-                               boost1=boost1,
-                               boost2=boost2)
+                               character_id=session.get('character_id'))
     if request.method=="POST":
         stats=json.loads(list(request.cookies.keys())[-1])
         character=session.get("new_character")
@@ -96,5 +89,3 @@ def addtl_info():
         character.write_to_database(con)
         session['character']=character
         return redirect(url_for('sheet'))
-
-

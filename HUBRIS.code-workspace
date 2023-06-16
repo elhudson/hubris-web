@@ -102,31 +102,9 @@
             "**/.svn": true,
             "**/.hg": true,
             "**/CVS": true,
-            "**/.DS_Store": true,
-            "scratch/": true,
-            "web/__pycache__/": true,
-            "web/flask_session/": true,
-            "processing/__pycache__/": true,
-            "HUBRIS.code-workspace": true,
-            "srd/__pycache__/": true,
-            "srd/srd.egg-info/": true,
-            "srd/setup.py": true,
-            "flask_session/": true,
-            "characters/__pycache__/": true,
-            "characters/characters.egg-info/": true,
-            "characters/setup.py": true,
-            "characters/characters/__pycache__/": true,
-            "srd/srd/__pycache__/": true,
-            "None": true,
-            "site/__pycache__/": true,
-            "site/characters/__pycache__/": true,
-            "site/site.egg-info/": true,
-            "site/setup.py": true,
-            "site/characters/characters.egg-info/": true,
-            "site/characters/setup.py": true,
-            "site/characters/characters/__pycache__/": true
+            "**/.DS_Store": true
         },
-        "hidefiles.selectedProfile": "hubris"
+        "hidefiles.selectedProfile": "Show All Files"
     },
     "launch": {
         "configurations": [

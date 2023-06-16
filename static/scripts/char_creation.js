@@ -1,3 +1,72 @@
+class Character {
+    constructor(data) {
+        Object.assign(this,data)
+    }
+    populate_skills() {
+        ['str','dex','con','int','wis','cha'].forEach((item)=> {
+            document.getElementById(item).setAttribute('value',this[item])
+            this.score_points=28
+        })
+    }
+    increase_attr(attr) {
+        var cur=this[attr]
+        var cost=score_values[String(cur+1)]
+        var refund=score_values[String(cur)]
+        var max=4
+        if (this.boosts.includes(attr)) {
+            max=5
+            cost=score_values[String(cur)]
+            refund=score_values[String(cur-1)]
+        } 
+        if (cur+1>max) {
+            alert('You cannot increase this ability score any further.')
+        }
+        else {
+            if (this.score_points-cost>=0) {
+                this[attr]+=1
+                this.score_points+=refund
+                this.score_points-=cost
+                document.getElementById(attr).setAttribute('value',this[attr])
+                document.getElementById('pts_remaining').setAttribute('value',this.score_points)
+            }
+            else {
+                alert("You don't have enough points left to increase that ability score.")
+            }
+        }
+    }
+    decrease_attr(attr) {
+        var cur=this[attr]
+        var min=-2
+        var cost=score_values[String(cur-1)]
+        var refund=score_values[String(cur)]
+        if (this.boosts.includes(attr)) {
+            min=-1
+            cost=score_values[String(cur-2)]
+            refund=score_values[String(cur-1)]
+        }
+        if (cur-1<min) {
+            alert('You cannot decrease this ability score any further.')
+        }
+        else {
+            this[attr]-=1
+            this.score_points+=refund
+            this.score_points-=cost            
+            document.getElementById(attr).setAttribute('value',this[attr])
+            document.getElementById('pts_remaining').setAttribute('value',this.score_points)
+        }
+    }
+}
+
+async function load_character(id,set_stats=false) {
+    request=await fetch('static/characters/'+id+".json")
+    data=await request.json()
+    c=new Character(data)
+    $('body').data("character", c)
+    if (set_stats) { c.populate_skills() }
+    return character = $('body').data('character')
+}
+
+
 // ABILITY SCORES
 
 const score_values = {
@@ -609,9 +678,8 @@ function limit_selections(elem_name, max_selections) {
     }
 }
 
-async function set_character() {
+async function set_character(character_id) {
     if (sessionStorage.getItem('character')==null) {
-    character_id = document.getElementsByTagName("body")[0].id
     const request = await fetch(`static/characters/${character_id}.json`)
     const val = await request.json()
     val.id=regularize_uuid(val.id)
