@@ -1,8 +1,5 @@
 @import "HUBRIS.css";
 
-
-
-
 a {
     color:var(--text);
     text-decoration: none;
@@ -20,12 +17,6 @@ label {
 
 #skillList label {
     font-weight: normal;
-}
-
-
-.opt {
-    border:1px solid var(--text);
-    margin-bottom:15px;
 }
 
 .skill_entry {
@@ -49,18 +40,7 @@ label {
 }
 
 
-.hd_wrapper {
-    margin:10px;
-    padding:10px;
-    width: 50%;
-}
 
-.counter {
-    height:50px;
-    font-size:30px;
-    margin-top:10px;
-    border-bottom:1px solid var(--text)
-}
 
 .bio {
     display:inline;
@@ -71,33 +51,35 @@ label {
     padding:10px;
 }
 
-.bio th {
+.bio {
+    th {
     text-align: left;
     vertical-align: top;
     width: 50%;
+    }
+    table {
+        width:100%;
+    }
+    textarea {
+        height:50%;
+        width:95%;
+        border:1px solid var(--text)
+    }
+    #char_backstory {
+        height: 120px !important;
+    }
+    .bio item {
+        width:95%;
+        height:max-content;
+    }
+    .bio input {
+        width:fit-content;
+    }
 }
 
-.bio table {
-    width:100%;
-}
 
-.bio textarea {
-    height:50%;
-    width:95%;
-    border:1px solid var(--text)
-}
 
-#char_backstory {
-    height: 120px !important;
-}
-.bio item {
-    width:95%;
-    height:max-content;
-}
 
-.bio input {
-    width:fit-content;
-}
 
 button img {
     width: 20px;
@@ -107,54 +89,12 @@ button img {
 }
 
 
-.opt td:last-child {
-    max-width: fit-content;
-    min-width:100px;
-}
-
-
-/*apply css properties to h2 tag*/
-  
-.container p {
-    color: black;
-    margin: 0 50px;
-    font-size: 14px;
-}
-  
-/*apply css properties to h1 tag*/
-
 label>svg {
     height:17px;
     width: 17px;
 }
 
-#metadata td {
-    vertical-align: top;
-}
-
-.track :first-child {
-    position: absolute;
-    top:0px;
-}
-
-.track :last-child {
-    position: absolute;
-    bottom:0px;
-}
-
-.opt table {
-    margin-left:26px;
-}
-
-.opt td:first-child {
-    font-style: italic;
-    text-decoration: underline;
-    width: 90px;
-    vertical-align: top;
-}
-
   
-  /* Style the buttons that are used to open the tab content */
 
   
   .tabcontent {
@@ -162,7 +102,6 @@ label>svg {
     border:1px solid var(--text);
     padding-left:10px;
     padding-right: 10px;
-    margin-top:-3px !important;
   } 
 
   .tabset {

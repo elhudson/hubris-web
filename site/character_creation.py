@@ -18,6 +18,7 @@ def choose_class():
         new=create_character(uuid.uuid4(),con)
         new.xp_spent=0
         new.xp_earned=6
+        new.set_tier()
         class_id=request.form.get("class")
         new.add_entry("classes",class_id,con)
         new.to_file()
@@ -32,15 +33,13 @@ def choose_backgrounds():
         backgrounds=all_in_table("backgrounds",con)
         con.close()
         return render_template("character_creation/backgrounds.html",
-                               backgrounds=backgrounds)
+                               backgrounds=backgrounds,character_id=session.get('character_id'))
     if request.method=="POST":
         con=app.database.connect()
         character_id=session.get('character_id')
         character=fetch_character(app, character_id)
-        background_1_id=request.form.getlist("background")[0]
-        background_2_id=request.form.getlist("background")[1]
-        character.add_entry("backgrounds",background_1_id,con)
-        character.add_entry("backgrounds",background_2_id,con)
+        character.add_entry("backgrounds",request.form.getlist('background')[0],con)
+        character.add_entry("backgrounds",request.form.getlist('background')[1],con)
         character.to_file()
         return redirect(url_for("allocate_stats"))
 
@@ -50,27 +49,18 @@ def allocate_stats():
         return render_template("character_creation/stats.html",
                                character_id=session.get('character_id'))
     if request.method=="POST":
-        stats=json.loads(list(request.cookies.keys())[-1])
-        character=session.get("new_character")
-        for s in stats.keys():
-            setattr(character,s,int(stats[s]))
-        session["new_character"]=character
+        character=fetch_character(app,session.get('character_id'))
+        print(character.backgrounds)
+        for attr in ['str','dex','con','int','wis','cha']:
+            character.__setattr__(attr,request.form.get(attr))
+        character.to_file()
         return redirect(url_for("spend_xp"))
     
 @app.route("/xp", methods=("GET","POST"))
 def spend_xp():
     if request.method=="GET":
-        con=app.database.connect()
-        character=session.get("new_character")
-        character.xp_earned=6
-        character.xp_spent=0
-        character.set_tier()
-        character.to_file()
-        return render_template("character_creation/spend_xp.html",character=character)
+        return render_template("character_creation/spend_xp.html",character_id=session.get('character_id'))
     if request.method=="POST":
-        character=deserialize_character(json.loads(request.form.get('character')))
-        character.to_file()
-        session['new_character']=character
         return redirect(url_for('addtl_info'))
 
 @app.route("/fluff",methods=("GET","POST"))

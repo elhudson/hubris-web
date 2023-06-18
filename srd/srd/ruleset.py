@@ -3,7 +3,6 @@ import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
 from srd.entry import create_entry
-from srd.tools import get_tables, CharacterEncoder
 import json
 
 def all_in_table(table_name, con):

@@ -1,5 +1,8 @@
 from itertools import chain
 import os
+import numpy as np
+import json
+from uuid import UUID
 
 import pandas as pd
 import sqlalchemy as sqa
@@ -11,8 +14,9 @@ class Entry:
         self.id=id
         if con!=None:
             self.build_core(con)
-        # if table in ("classes","class_paths","tags","backgrounds","skills","attributes", "effects"):
-        #     self.load_icon()
+    
+    def to_json(self):
+        return json.dumps(self,cls=EntryEncoder)        
     
     def has_prerequisites(self,con):
         if self.tier!="T1":
@@ -57,8 +61,6 @@ class Entry:
         self.build_single_relations(con)
         self.build_plural_relations(con)
         self.build_other_relations(con)
-
-
 
     def build_single_relations(self,con):
         if hasattr(self,"relate"):
@@ -204,3 +206,17 @@ class Attribute(Entry):
 class ClassPath(Entry):
     def __init__(self,table,id,con):
         super().__init__(table,id,con)
+
+class EntryEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if issubclass(type(obj),Entry):
+            return obj.to_dict()
+        if isinstance(obj, UUID):
+            return str(obj)
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(EntryEncoder, self).default(obj)

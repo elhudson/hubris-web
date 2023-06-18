@@ -1,0 +1,28 @@
+{
+    "id": "4dddeb36-edef-4b57-9db6-42ffd34718d6",
+    "name": null,
+    "str": -2,
+    "dex": -2,
+    "con": -2,
+    "int": -2,
+    "wis": -2,
+    "cha": -2,
+    "xp_earned": 6,
+    "xp_spent": 0,
+    "alignment": null,
+    "tier": 1,
+    "classes": [
+        {
+            "table": "classes",
+            "id": "76d00682-dd84-4595-96b6-a5fad3d81d80",
+            "relate": {
+                "attributes": "5ef90201-d601-4605-b4c0-b6814ffbdb1a"
+            },
+            "description": null,
+            "weapon_proficiencies": "Simple",
+            "armor_proficiencies": "Medium",
+            "name": "Priest",
+            "hit_die": "d4"
+        }
+    ]
+}

@@ -1,33 +1,39 @@
+class Ruleset {
+    constructor(data) {
+        Object.assign(this, data)
+    }
+}
+
 class Character {
     constructor(data) {
-        Object.assign(this,data)
+        Object.assign(this, data)
     }
     populate_skills() {
-        ['str','dex','con','int','wis','cha'].forEach((item)=> {
-            document.getElementById(item).setAttribute('value',this[item])
-            this.score_points=28
+        ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach((item) => {
+            document.getElementById(item).setAttribute('value', this[item])
+            this.score_points = 28
         })
     }
     increase_attr(attr) {
-        var cur=this[attr]
-        var cost=score_values[String(cur+1)]
-        var refund=score_values[String(cur)]
-        var max=4
+        var cur = this[attr]
+        var cost = score_values[String(cur + 1)]
+        var refund = score_values[String(cur)]
+        var max = 4
         if (this.boosts.includes(attr)) {
-            max=5
-            cost=score_values[String(cur)]
-            refund=score_values[String(cur-1)]
-        } 
-        if (cur+1>max) {
+            max = 5
+            cost = score_values[String(cur)]
+            refund = score_values[String(cur - 1)]
+        }
+        if (cur + 1 > max) {
             alert('You cannot increase this ability score any further.')
         }
         else {
-            if (this.score_points-cost>=0) {
-                this[attr]+=1
-                this.score_points+=refund
-                this.score_points-=cost
-                document.getElementById(attr).setAttribute('value',this[attr])
-                document.getElementById('pts_remaining').setAttribute('value',this.score_points)
+            if (this.score_points - cost >= 0) {
+                this[attr] += 1
+                this.score_points += refund
+                this.score_points -= cost
+                document.getElementById(attr).setAttribute('value', this[attr])
+                document.getElementById('pts_remaining').setAttribute('value', this.score_points)
             }
             else {
                 alert("You don't have enough points left to increase that ability score.")
@@ -35,37 +41,76 @@ class Character {
         }
     }
     decrease_attr(attr) {
-        var cur=this[attr]
-        var min=-2
-        var cost=score_values[String(cur-1)]
-        var refund=score_values[String(cur)]
+        var cur = this[attr]
+        var min = -2
+        var cost = score_values[String(cur - 1)]
+        var refund = score_values[String(cur)]
         if (this.boosts.includes(attr)) {
-            min=-1
-            cost=score_values[String(cur-2)]
-            refund=score_values[String(cur-1)]
+            min = -1
+            cost = score_values[String(cur - 2)]
+            refund = score_values[String(cur - 1)]
         }
-        if (cur-1<min) {
+        if (cur - 1 < min) {
             alert('You cannot decrease this ability score any further.')
         }
         else {
-            this[attr]-=1
-            this.score_points+=refund
-            this.score_points-=cost            
-            document.getElementById(attr).setAttribute('value',this[attr])
-            document.getElementById('pts_remaining').setAttribute('value',this.score_points)
+            this[attr] -= 1
+            this.score_points += refund
+            this.score_points -= cost
+            document.getElementById(attr).setAttribute('value', this[attr])
+            document.getElementById('pts_remaining').setAttribute('value', this.score_points)
         }
+    }
+    write_to_form() {
+        form = document.getElementById('data')
+        me = JSON.stringify(this)
+        form.setAttribute('value', me)
+    }
+    is_available(feature) {
+        is_avail = false
+        if (of_tier(feature) && has_prq(feature)) {
+            if (feature.table == "class_features") {
+                if (feature.classes.id == character.classes[0].id) {
+                    is_avail = true
+                }
+            }
+            if (["tag_features", "effects"].includes(feature.table)) {
+                if (has_tag(tags, feature)) {
+                    is_avail = true
+                }
+            }
+        }
+        return is_avail
+    }
+    async define_tags() {
+        const r = await load_requirements('__classes__tags')
+        this.tags = r[this.classes[0].id]['tags']
+    }
+    async set_background(background_id) {
+        console.log(background_id)
+        const backgrounds = await load_requirements('backgrounds')
+        if (!Object.hasOwn(this, 'backgrounds')) {
+            this.backgrounds = new Array()
+        }
+        this.backgrounds.push(backgrounds[background_id])
     }
 }
 
-async function load_character(id,set_stats=false) {
-    request=await fetch('static/characters/'+id+".json")
-    data=await request.json()
-    c=new Character(data)
-    $('body').data("character", c)
+async function load_character(id, set_stats = false) {
+    request = await fetch('static/characters/' + id + ".json")
+    data = await request.json()
+    c = new Character(data)
+    await c.define_tags()
     if (set_stats) { c.populate_skills() }
-    return character = $('body').data('character')
+    window.character = c;
 }
 
+async function load_ruleset() {
+    request = await fetch('static/requirements/global.json')
+    data = await request.json()
+    rules = new Ruleset(data)
+    return rules
+}
 
 // ABILITY SCORES
 
@@ -88,113 +133,6 @@ const sample_arrays = [
     [3, 2, 2, 2, 1, 0],
     [2, 2, 2, 2, 2, 1]
 ]
-
-class abilityScores {
-    constructor(boost1, boost2) {
-        this.strRaw = -2;
-        this.strMod = 0;
-        this.dexRaw = -2;
-        this.dexMod = 0;
-        this.conRaw = -2;
-        this.conMod = 0;
-        this.intRaw = -2;
-        this.intMod = 0;
-        this.wisRaw = -2;
-        this.wisMod = 0;
-        this.chaRaw = -2;
-        this.chaMod = 0;
-        this.maxBeforeMod = 4;
-        this.minBeforeMod = -2;
-        this[boost1 + "Mod"] += 1;
-        this[boost2 + "Mod"] += 1;
-    }
-}
-
-function update_ability_score_values(scores) {
-    scores.str = scores.strRaw + scores.strMod;
-    scores.dex = scores.dexRaw + scores.dexMod;
-    scores.con = scores.conRaw + scores.conMod;
-    scores.int = scores.intRaw + scores.intMod;
-    scores.wis = scores.wisRaw + scores.wisMod;
-    scores.cha = scores.chaRaw + scores.chaMod;
-    return scores
-}
-
-function add_by_one(scores, target) {
-    count = 0
-    let stats = Array("str", "dex", "con", "int", "wis", "cha")
-    for (var prop in stats) {
-        if (target == stats[prop]) {
-            score_value = score_values[String(Number(scores[stats[prop] + "Raw"]) + 1)]
-            count += score_value
-        }
-        else {
-            score_value = score_values[String(Number(scores[stats[prop] + "Raw"]))]
-            count += score_value
-        }
-    }
-    if (count <= 28) {
-        scores[target + "Raw"] += 1
-    }
-    return update_ability_score_values(scores)
-}
-
-function subtract_by_one(scores, target) {
-    count = 0
-    let stats = Array("str", "dex", "con", "int", "wis", "cha")
-    for (var prop in stats) {
-        if (target == stats[prop]) {
-            score_value = score_values[String(Number(scores[stats[prop] + "Raw"]) - 1)]
-            count += score_value
-        }
-        else {
-            score_value = score_values[String(Number(scores[stats[prop] + "Raw"]))]
-            count += score_value
-        }
-    }
-    if (count >= 0) {
-        scores[target + "Raw"] -= 1
-    }
-    return update_ability_score_values(scores)
-}
-
-function points_remaining(scores) {
-    let stats = Array("str", "dex", "con", "int", "wis", "cha")
-    var val = 0
-    for (var prop in stats) {
-        var score_value = score_values[String(scores[stats[prop] + "Raw"])]
-        val += score_value
-    }
-    return 28 - val
-
-}
-
-function setup(boost1, boost2) {
-    let scores = update_ability_score_values(new abilityScores(boost1, boost2))
-    let stats = Array("str", "dex", "con", "int", "wis", "cha")
-    for (s in stats) {
-        document.getElementById(stats[s]).min = scores[scores.minBeforeMod + scores[stats[s] + "Mod"]]
-        document.getElementById(stats[s]).max = scores[scores.maxBeforeMod + scores[stats[s] + "Mod"]]
-        document.getElementById(stats[s]).value = scores[stats[s]]
-    }
-    localStorage.setItem("scores", JSON.stringify(scores))
-}
-
-function update(attr) {
-    let scores = JSON.parse(localStorage.getItem("scores"))
-    if (document.getElementById(attr).value > scores[attr]) {
-        new_scores = add_by_one(scores, attr)
-        document.getElementById(attr).value = new_scores[attr]
-    }
-    if (document.getElementById(attr).value < scores[attr]) {
-        new_scores = subtract_by_one(scores, attr)
-        document.getElementById(attr).value = new_scores[attr]
-    }
-    remaining = points_remaining(new_scores)
-    document.getElementById("pts_remaining").setAttribute("value", remaining)
-    localStorage.setItem("scores", JSON.stringify(new_scores))
-    document.cookie = localStorage.getItem("scores")
-}
 
 // FILTER ABILITIES
 
@@ -317,7 +255,7 @@ async function load_abilities() {
             document.getElementById(tab).appendChild(f)
         }
     })
-    await load_skills();
+    await load_skills()
 }
 
 async function fetch_metadata(effects) {
@@ -351,36 +289,30 @@ async function render_tree(tree) {
     doc = document.createElement("div")
     is_meta = false
     headings.forEach((header) => {
-        html = $.parseHTML(`<details class="feature_group"><summary>${header}</summary></details>`)[0]
+        html = $.parseHTML(`<div class="feature_group"></div>`)[0]
         html.id = Math.floor(Math.random() * 89999 + 10000)
         html.setAttribute("data-tree", header)
         entries = tree[header]
         entries.forEach((item) => {
-            it = construct_feature(item)
+            elem=feature(item)
             if (["ranges", "durations"].includes(item.table)) {
                 is_meta = true
-                it.firstElementChild.setAttribute("checked", true)
-                it.firstElementChild.setAttribute("disabled", true)
+                elem.firstElementChild.setAttribute("checked", true)
+                elem.firstElementChild.setAttribute("disabled", true)
                 serve_options(item.id, item.table)
             }
-            html.append(it)
+            html.append(elem)
         })
-        if (is_meta) { html.style.display = "none" }
+        if (is_meta) {
+            html.style.display = "none";
+            doc.appendChild($.parseHTML(`<h3 style='display:none'>${header}</h3>`)[0])
+        }
+        else {
+            doc.appendChild($.parseHTML(`<h3>${header}</h3>`)[0])
+        }
         doc.appendChild(html)
     })
     return doc
-}
-
-function construct_feature(item) {
-    if (item.table == "ranges" || item.table == "durations") {
-        it = $.parseHTML(metadatum(item))[0]
-    }
-    else {
-        it = $.parseHTML(feature(item))[0]
-    }
-    if (item.table == "effects") { it.firstElementChild.onclick = function () { effect_toggle(item.id, item.table) } }
-    else { it.firstElementChild.onclick = function () { log_xp(item.id, item.table) } }
-    return it
 }
 
 // TOGGLE AVAILABLE ABILITIES
@@ -419,9 +351,8 @@ async function serve_options(item_id, table) {
     if (table != "skills") {
         const t = await load_requirements(table)
         t[item_id].required_for.forEach((item) => {
-            option = construct_feature(item)
             if (document.getElementById(item.id) == null) {
-                document.getElementById(item_id).parentElement.after(option)
+                document.getElementById(item_id).parentElement.after(feature(item))
             }
             else {
                 document.getElementById(item.id).parentElement.style.display = "block"
@@ -456,12 +387,11 @@ async function get_skills() {
         sks.push(s)
     }
     return sks
-
 }
 
 async function load_skills() {
     skills = await get_skills()
-    char_skills = character.backgrounds.map(bg => bg.skills.id)
+    char_skills = character.backgrounds.map(bg => bg.skills[0].id)
     skills.forEach((skill) => {
         s = $.parseHTML(skill_proficiency(skill))[0]
         s.firstElementChild.onclick = function () { track_skill_xp(skill.id) }
@@ -481,8 +411,9 @@ function spend_xp(item_id, item_table, item_cost = null) {
     current = Number(character.xp_spent)
     itf = document.getElementById(item_id)
     console.log(itf)
-    if (item_cost == null) { 
-        item_cost = Number(itf.value) }
+    if (item_cost == null) {
+        item_cost = Number(itf.value)
+    }
     console.log(item_cost)
     if (current + item_cost > budget) {
         alert("XP budget exceeded. Go on adventures to earn some more!")
@@ -492,12 +423,12 @@ function spend_xp(item_id, item_table, item_cost = null) {
     }
     else {
         character.xp_spent += item_cost
-        log_to_character(item_id,item_table,0)
+        log_to_character(item_id, item_table, 0)
         console.log(character[item_table])
         document.getElementById("xp_spent").setAttribute("value", current + item_cost)
-        if (item_table=="hit_die") {
-            document.getElementById(item_id).innerHTML = Number(document.getElementById(item_id).innerHTML)+1
-            document.getElementById("hd_form").setAttribute("value",Number(document.getElementById(item_id).innerHTML)+1)
+        if (item_table == "hit_die") {
+            document.getElementById(item_id).innerHTML = Number(document.getElementById(item_id).innerHTML) + 1
+            document.getElementById("hd_form").setAttribute("value", Number(document.getElementById(item_id).innerHTML) + 1)
         }
     }
 }
@@ -510,10 +441,10 @@ function refund_xp(item_id, item_table, item_cost = null) {
     if (current - item_cost >= 0) {
         document.getElementById("xp_spent").setAttribute("value", current - item_cost)
         character.xp_spent -= item_cost
-        log_to_character(item_id,item_table,1)
-        if (item_table=="hit_die") {
-            document.getElementById(item_id).innerHTML=Number(document.getElementById(item_id).innerHTML)-1
-            document.getElementById("hd_form").setAttribute("value",Number(document.getElementById(item_id).innerHTML)-1)
+        log_to_character(item_id, item_table, 1)
+        if (item_table == "hit_die") {
+            document.getElementById(item_id).innerHTML = Number(document.getElementById(item_id).innerHTML) - 1
+            document.getElementById("hd_form").setAttribute("value", Number(document.getElementById(item_id).innerHTML) - 1)
         }
     }
 }
@@ -525,9 +456,8 @@ function log_xp(item_id, item_table, is_req = true, item_cost = null) {
         if (is_req == true) { serve_options(item_id, item_table) }
     }
     else {
-        if (item_table == "skills") 
-        { refund_xp(item_id,item_table,item_cost=Number(item_cost) + 1) }
-        else { refund_xp(item_id,item_table,item_cost) }
+        if (item_table == "skills") { refund_xp(item_id, item_table, item_cost = Number(item_cost) + 1) }
+        else { refund_xp(item_id, item_table, item_cost) }
         if (is_req) { remove_options(item_id, item_table) }
     }
 }
@@ -541,40 +471,40 @@ function track_skill_xp(skill_id) {
 
 // LOG CHARACTER CHOICES
 
-async function log_to_character(ability_id, ability_table,add_or_subtract) {
-    if (add_or_subtract==0) {
-    if (!Object.keys(character).includes(ability_table)) {
-        character[ability_table]=Array()
+async function log_to_character(ability_id, ability_table, add_or_subtract) {
+    if (add_or_subtract == 0) {
+        if (!Object.keys(character).includes(ability_table)) {
+            character[ability_table] = Array()
+        }
+        if (ability_table != "hit_die_count") {
+            table = await load_requirements(ability_table)
+            character[ability_table].push(table[ability_id])
+        }
+        else {
+            character[ability_table] = Number(character[ability_table]) + 1
+        }
     }
-    if (ability_table!="hit_die_count") {
-        table=await load_requirements(ability_table)
-        character[ability_table].push(table[ability_id])
+    if (add_or_subtract == 1) {
+        character[ability_table] = character[ability_table].filter(item => item.id != ab)
     }
-    else {
-        character[ability_table]=Number(character[ability_table])+1
-    }
-}
-    if (add_or_subtract==1) {
-        character[ability_table]=character[ability_table].filter(item=>item.id!=ab)
-    }
-    sessionStorage.setItem("character",JSON.stringify(character))
+    sessionStorage.setItem("character", JSON.stringify(character))
     parse_for_server()
 }
 
 function parse_for_server() {
-    f=document.forms[0]
-    storer=document.createElement("textarea")
-    storer.name="character"
-    storer.style.display="none"
-    storer.textContent=sessionStorage.getItem("character")
+    f = document.forms[0]
+    storer = document.createElement("textarea")
+    storer.name = "character"
+    storer.style.display = "none"
+    storer.textContent = sessionStorage.getItem("character")
     f.appendChild(storer)
     console.log(document.forms[0])
 }
 
 async function send_data() {
-    form=document.forms[0]
-    await fetch("xp",{
-        method:'POST',
+    form = document.forms[0]
+    await fetch("xp", {
+        method: 'POST',
         body: new FormData(form)
     })
 }
@@ -584,14 +514,14 @@ async function send_data() {
 function increment_hd_xp() {
     count = Number(document.getElementById("hit_die_count").innerHTML)
     cost = Number(base_hit_die_cost[character.classes[0].name])
-    spend_xp("hit_die_count",item_table="hit_die", cost)
+    spend_xp("hit_die_count", item_table = "hit_die", cost)
 
 }
 
 function decrement_hd_xp() {
     count = Number(document.getElementById("hit_die_count").innerHTML)
     cost = Number(base_hit_die_cost[character.classes[0].name])
-    refund_xp("hit_die_count", item_table="hit_die",cost)
+    refund_xp("hit_die_count", item_table = "hit_die", cost)
 }
 // DISPLAY TABS
 
@@ -678,28 +608,12 @@ function limit_selections(elem_name, max_selections) {
     }
 }
 
-async function set_character(character_id) {
-    if (sessionStorage.getItem('character')==null) {
-    const request = await fetch(`static/characters/${character_id}.json`)
-    const val = await request.json()
-    val.id=regularize_uuid(val.id)
-    console.log(val.id)
-    $('body').data("character", val)
-    return character = $('body').data('character') }
-    else {
-        c=JSON.parse(sessionStorage.getItem('character'))
-        c.id=regularize_uuid(c.id)
-        $('body').data('character',c)
-        return character=$('body').data('character')
-    }
-}
-
 function clear_character() {
     sessionStorage.removeItem('character')
 }
 function regularize_uuid(character_id) {
-    if (character_id.includes("-")==false) {
-        return `${character_id.slice(0,8)}-${character_id.slice(8,12)}-${character_id.slice(12,16)}-${character_id.slice(16,20)}-${character_id.slice(20)}`
+    if (character_id.includes("-") == false) {
+        return `${character_id.slice(0, 8)}-${character_id.slice(8, 12)}-${character_id.slice(12, 16)}-${character_id.slice(16, 20)}-${character_id.slice(20)}`
     }
     else {
         return character_id
@@ -720,46 +634,48 @@ const base_hit_die_cost = {
 
 // TEMPLATES
 
+
 function feature(feature) {
-    return `<div class="opt">
-    <input type="checkbox" id="${feature.id}" value=${feature.xp}>    
+    const has_pwr=['effects','ranges','durations']
+    const has_tag=['effects']
+    const is_meta=['ranges','durations']
+    const base= $.parseHTML(
+    `<div class="opt">
+    <input type="checkbox" id="${feature.id}" value=${feature.xp}>  
     <label>${feature.name}</label>
     <div class="info">
-        <label>XP</label>
-        <input type="number" class="cost" id="${feature.id}_xp" value="${feature.xp}">
+        <label>XP</label> <input type="number" class="cost" id="${feature.id}_xp" value="${feature.xp}">
     </div>
-    <div class="explainer sub">${feature.description}</div>
-</div>`
-}
-
-function metadatum(data) {
-    return `<div class="opt">
-<input type="checkbox" id="${data.id}" value=${data.xp}>
-<label for="${data.id}">${data.name}</label>
-<div class="info">
-    <table>
-        <tr>
-            <td>
-                Tree
-            </td>
-            <td>
-                ${data.tree}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                XP
-            </td>
-            <td><span id="${data.id}_xp" value=${data.xp}>
-                ${data.xp}</span>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="explainer sub">
-${data.description}
-</div>
-</div>`
+    <textarea disabled class="explainer sub scrolling-explainer">${feature.description}</textarea>
+    `)[0]
+    function power(feature) {
+        return $.parseHTML(`<div>
+        <label>Power</label>
+        <input type='number' class='cost' id=${feature.id}_pwr' value='${feature.power}'>
+        </div>`)[0]}
+    function tags(feature) {
+        t=feature.tags.map(tag=>tag.name).join(", ")
+        return $.parseHTML(
+        `<div>
+        <label>Tags</label>
+        <span>${t}</span>
+        </div>`)[0]}
+    if (has_pwr.includes(feature.table)) {
+        const pw=power(feature)
+        base.getElementsByClassName('info')[0].append(pw)
+    }
+    else if (has_tag.includes(feature.table)) {
+        const t=tags(feature)
+        base.getElementsByClassName('info')[0].append(t)
+    }
+    if (feature.table=='effects') {
+        base.children[2].append(tags(feature))
+        base.firstElementChild.onclick=function() {effect_toggle(feature.id,'effects')}
+    }
+    else {
+        base.firstElementChild.onclick=function() {log_xp(feature.id,feature.table)}
+    }
+    return base
 }
 
 function skill_proficiency(skill) {

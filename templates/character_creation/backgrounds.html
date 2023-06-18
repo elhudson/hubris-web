@@ -10,14 +10,14 @@
 
 
 </head>
-<body onload="fresh_start('backgrounds')">
+<body onload="fresh_start('backgrounds');load_character('{{character_id}}')">
 <div class="container">
     <div class="explainer"></div>
     <form name="backgrounds" id="backgrounds" method="post">
         <div class="feature-list">
             {% for background in backgrounds %}
             <div class="opt">
-                <input type="checkbox" onClick="limit_selections('background',2)" name="background" id="{{background.id}}" value="{{background.id}}" >
+                <input type="checkbox" onClick="limit_selections('background',2);character.set_background('{{background.id}}')" name="background" id="{{background.id}}" value="{{background.id}}" >
                 <label for="{{background.id}}">{{background.icon|safe}} {{background.name}}</label>
                 <div class="info">
                     <table>
@@ -39,7 +39,7 @@
             </div>
             {% endfor %}
         </div>
-        <input type="submit" value="Submit background">
+        <input type="submit" value="Next">
     </form>
 </div>
 </body>

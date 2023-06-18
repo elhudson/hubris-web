@@ -3,9 +3,8 @@ import os
 from itertools import chain
 import pandas as pd
 import sqlalchemy as sqa
-from srd.entry import Entry, create_entry
+from srd.entry import Entry, create_entry, EntryEncoder
 from srd.ruleset import all_in_table
-from srd.tools import CharacterEncoder
 
 def create_character(char_id,con):
     char=Character(char_id)
@@ -29,7 +28,7 @@ def deserialize_character(d):
         if type(d[item])==dict:
             down=deserialize_entry(d[item])
             setattr(me,down)
-        elif type(d[item])==list:
+        elif type(d[item])==list and item!='boosts':
             e=[]
             for i in range(len(d[item])):
                 e.append(deserialize_entry(d[item][i]))
@@ -45,10 +44,10 @@ def deserialize_entry(d):
             down=deserialize_entry(d[item])
             setattr(me,item,down)
         elif type(d[item])==list:
-            e=[]
-            for i in range(len(d[item])):
-                e.append(deserialize_entry(d[item][i]))
-            setattr(me,item,e)
+                e=[]
+                for i in range(len(d[item])):
+                    e.append(deserialize_entry(d[item][i]))
+                setattr(me,item,e)
         else:
             setattr(me,item,d[item])
     return me
@@ -289,20 +288,13 @@ class Character:
                 base[item]=e
         return base
 
-    def to_JSON(self,base,out=False,fp=None):
-        if out==True:
-            json.dump(base,fp=fp,cls=CharacterEncoder,separators=(",",":"),indent=None)
-        else:
-            return json.dumps(base,cls=NpEncoder,separators=(",",":"),indent=None)
+    def to_json(self):
+        return json.dumps(self.__dict__,cls=EntryEncoder)
     
     def to_file(self):
-        if self.name!=None:
-            file_name=self.name.replace(" ","_").lower()
-        else:
-            file_name=self.id
+        file_name=self.id
         char_path=os.getenv("PWD")+f"/static/characters/{file_name}.json"
-        base=self.to_dict()
-        return self.to_JSON(base,out=True,fp=open(char_path,"w+"))
+        json.dump(self.__dict__,open(char_path,"w"),cls=EntryEncoder)
 
     def from_file(self):
         char_filename=str.lower(self.name.replace(" ","_"))
@@ -337,4 +329,7 @@ class Character:
         query=sqa.text(f'INSERT INTO characters VALUES("{v}")')
         con.execute(query)
         con.commit()
+
+
     
+

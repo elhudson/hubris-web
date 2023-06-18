@@ -6,12 +6,13 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="static/styles/HUBRIS.css">
     <script src="static/scripts/char_creation.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
 
 </head>
 <body>
+<div class="container">
 <form name="class" method="post" action="class">
-    <div class="container">
-        <div class="feature-list">
+    <div class="feature-list">
         {% for class in classes %}
         <div class="opt">
             <input type="radio" name="class" value="{{class.id}}">
@@ -63,9 +64,9 @@
             </div>
         </div>
         {% endfor %}
-        </div>
-        <input type="submit" value="Next">
     </div>
+    <input type="submit" value="Next">
 </form>
+</div>
 </body>
 </html>
