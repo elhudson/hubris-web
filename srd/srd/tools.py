@@ -17,8 +17,8 @@ def parse_path(app):
     else:
         app.home=os.path.expanduser('~')+"/hubris-web"
 
-def get_configs():
-    return json.load(open(os.getenv("ROOT_PATH")+"/database/db_config.json"))
+def get_configs(home):
+    return json.load(open(home+"/hubris-database/db_config.json"))
 
 def get_tables(con):
     tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()

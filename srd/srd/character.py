@@ -3,6 +3,7 @@ import os
 from itertools import chain
 import pandas as pd
 import sqlalchemy as sqa
+from sqlalchemy.exc import IntegrityError
 from srd.entry import Entry, create_entry, EntryEncoder
 from srd.ruleset import all_in_table
 
@@ -11,10 +12,6 @@ def create_character(char_id,con):
     if exists(char_id,con):
         char.basic_info(con)
         char.build_entries(con)
-        char.xp_spent=char.count_xp()
-        char.set_tier()
-        if hasattr(char,"effects"):
-            char.trees_known=char.set_trees()
     return char
 
 def fetch_character(app,character_id):
@@ -25,9 +22,18 @@ def fetch_character(app,character_id):
 def deserialize_character(d):
     me=Character(d["id"])
     for item in d.keys():
-        if type(d[item])==dict:
+        if item=='ability_scores':
+            s={}
+            s['str']=int(d[item]['str'])
+            s['dex']=int(d[item]['dex'])
+            s['con']=int(d[item]['con'])
+            s['int']=int(d[item]['int'])
+            s['wis']=int(d[item]['wis'])
+            s['cha']=int(d[item]['cha'])
+            setattr(me,'ability_scores',s)
+        elif type(d[item])==dict:
             down=deserialize_entry(d[item])
-            setattr(me,down)
+            setattr(me,item,down)
         elif type(d[item])==list and item!='boosts':
             e=[]
             for i in range(len(d[item])):
@@ -64,32 +70,10 @@ class Character:
     def __init__(self,char_id):
         self.id=char_id
         self.name=None
-        self.str=-2
-        self.dex=-2
-        self.con=-2
-        self.int=-2
-        self.wis=-2
-        self.cha=-2
         self.xp_earned=None
         self.xp_spent=None
         self.alignment=None
     
-    def count_xp(self):
-        features=self.fetch_attrs()
-        xp=0
-        for f in features:
-            items=getattr(self,f)
-            for item in items:
-                if hasattr(item,"xp"):
-                    xp+=item.xp
-        return xp
-
-    def fetch_attrs(self):
-        features=[]
-        for k in self.__dict__.keys():
-            if type(getattr(self,k))==list:
-                features.append(k)
-        return features
     
     def designate_tag(self):
         for e in self.effects:
@@ -200,18 +184,10 @@ class Character:
     
 
     def basic_info(self,con):
-        sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id='{self.id}' ''') 
+        sql=sqa.text(f'''SELECT * FROM characters WHERE id='{self.id}' ''')
         r=pd.read_sql(sql,con)
-        self.name=r["name"][0]
-        self.str=r["str"][0]
-        self.dex=r["dex"][0]
-        self.con=r["con"][0]
-        self.int=r["int"][0]
-        self.wis=r["wis"][0]
-        self.cha=r["cha"][0]
-        self.xp_earned=int(r["xp_earned"][0])
-        self.xp_spent=int(r["xp_spent"][0])
-        self.alignment=r["alignment"][0]
+        for a in r.columns:
+            setattr(self,a,r[a][0])        
 
     def set_trees(self):
         trees=[t.tree for t in self.effects]
@@ -236,16 +212,6 @@ class Character:
                 abilities.append(entry)
             setattr(self,table,abilities)
 
-    def extend_entries(self,con):
-        categories=self.fetch_attrs()
-        for c in categories:
-            entries=getattr(self,c)
-            for e in entries:
-                e.build_single_relations(con)
-                e.build_plural_relations(con)
-                e.build_other_relations(con)
-        self.tags=self.classes[0].tags
-
     def add_entry(self,table,id,con):
         if hasattr(self,table)==False:
             setattr(self,table,[])
@@ -260,14 +226,17 @@ class Character:
                     self.effects.append(ent)
             if table=="backgrounds":
                 bg=create_entry("backgrounds",id,con)
-                bg.build_extensions(con)
                 self.add_entry("skills",bg.relate["skills"],con)
-                boost=str.lower(bg.attributes.name)[0:3]
-                setattr(self,boost,getattr(self,boost)+1)
-                if not hasattr(self,"boosts"):
-                    self.boosts=[]
-                self.boosts.append(boost)
-                self.backgrounds.append(bg)
+                if bg.id not in [f.id for f in self.backgrounds]:
+                    self.backgrounds.append(bg)
+            if table=='classes':
+                cl=create_entry('classes',id,con)
+                cl.build_extensions(con)
+                if hasattr(self,'tags')==False:
+                        self.tags=[]
+                for t in cl.tags:
+                    self.tags.append(t)
+                self.classes.append(cl)
             else:
                 properties.append(create_entry(table,id,con))
         
@@ -312,8 +281,13 @@ class Character:
             for t in names:
                 if targ in t and type(d[targ])==list:
                     l=[]
-                    for item in d[targ]:
-                        l.append((self.id,item['id']))
+                    if targ=='skills':
+                        s=[t for t in d[targ] if t['proficient']==True]
+                        for item in s:
+                            l.append((self.id,item['id']))
+                    else:
+                        for item in d[targ]:
+                            l.append((self.id,item['id']))
                     queries[t]=l
         for q in queries.keys():
             prop_name=q.replace("__characters__","")+"_id"
@@ -323,12 +297,20 @@ class Character:
                 con.execute(sql)
                 con.commit()
         fields=pd.read_sql(sqa.text('SELECT * FROM characters'),con).columns.tolist()
+        for f in ['str','dex','con','int','wis','cha']:
+            d[f]=int(d['ability_scores'][f])
         vals=[str(d[field]) for field in fields]
         j='","'
         v=j.join(vals)
         query=sqa.text(f'INSERT INTO characters VALUES("{v}")')
-        con.execute(query)
-        con.commit()
+        try:
+            con.execute(query)
+            con.commit()
+        except IntegrityError:
+            de=sqa.text(f"DELETE FROM characters WHERE id='{str(self.id)}'")
+            con.execute(de)
+            con.execute(query)
+            con.commit()
 
 
     

@@ -1,0 +1,228 @@
+@import 'HUBRIS';
+
+// .sheet {
+//     width: 80%;
+//     margin: auto;
+
+//     .bin {
+//         box-sizing: border-box;
+//         display: flex;
+//         width: 100%;
+
+//         &#stats {
+//             @include section();
+//             display: flex;
+//             width: calc(100% - 10px);
+//             flex-direction: column;
+//             border: var(--border);
+
+//             .section {
+//                 border: none;
+//                 margin-left: -5px;
+//                 width: calc(100% + 10px);
+//                 border-bottom: var(--border);
+
+//                 .score {
+//                     float: left;
+//                     width: 30%;
+//                     height: max-content;
+//                 }
+
+//                 .skill-group {
+//                     width: 68%;
+//                     float: right;
+//                     @include list();
+
+//                     .skill_entry {
+//                         display: inline-flex;
+//                         width: 100%;
+
+//                         input {
+//                             &[type='number'] {
+//                                 @include small-mod();
+//                             }
+
+//                             &[type='checkbox'] {
+//                                 min-width: var(--size);
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+
+//         &#powers {
+//             display: inline-block;
+//             width:calc(100% - 10px);
+//             margin-left: 5px;
+//             border: var(--border);
+//             h1 {
+//                 @include section-title();
+//                 width: 100%;
+//                 margin-left: 0px;
+//             }
+//             >div {
+//                 display: inline-flex;
+//                 @include section();
+//                 border:none;
+//                 #power-tracking {
+//                     max-width: 20%;
+//                     vertical-align: top;
+//                 }
+
+//                 .section {
+//                     border: none;
+//                 }
+
+//                 .tabbed {
+//                     margin-top: 5px;
+//                     width: 80%;
+//                     margin-right:5px;
+//                 }
+
+//                 .tabs {
+//                     border: var(--border);
+//                 }
+//             }
+//         }
+
+//         .section {
+//             @include section();
+
+//             &#bio {
+//                 line-height: 150%;
+//             }
+
+//             &#tags :not(h1) {
+//                 line-height: 230%;
+
+//                 .tag {
+//                     padding: 5px;
+//                     max-width: 50%;
+//                     text-align: center;
+//                 }
+//             }
+
+//             #wielding {
+//                 span {
+//                     width: 100% !important;
+//                     @include list();
+//                 }
+//             }
+
+//             .unbreakable {
+//                 min-width: max-content;
+//             }
+//         }
+//     }
+// }
+
+.sheet {
+    max-width: 60%;
+}
+
+.section {
+    display: flex;
+    max-width: 100%;
+}
+
+.subsection {
+    @include section();
+    margin: 5px;
+
+}
+
+.tracker {
+    @include remaining();
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(50px, 1fr));
+    margin: 5px;
+
+    .stat {
+        @include section();
+
+        .score {
+            @include count();
+            border: unset;
+            border-bottom: var(--border)
+        }
+        padding-bottom:5px;
+    }
+}
+
+.tracker,
+.bonus,
+.dc,
+.counter {
+    max-width: 300px;
+    label {
+        vertical-align: bottom;
+    }
+}
+
+.counter {
+    @include counter();
+    border: var(--border);
+
+    div:first-child {
+        @include label();
+        border-top: unset;
+        border-bottom: var(--border);
+    }
+}
+
+.item {
+    margin: 5px;
+
+    &.bonus,
+    &.dc {
+        text-align: center;
+
+        label {
+            font-weight: normal;
+            @include label();
+        }
+    }
+
+}
+
+.opt {
+    @include feature();
+    margin: 5px;
+    .opt-name>label, >label {
+        @include section-title();
+    }
+}
+
+.tag {
+    max-width: fit-content;
+    display: inline;
+    margin: 5px;
+    line-height: 200%;
+}
+
+#powers {
+    >*:first-child {
+        max-width: 13%;
+        min-width: 13%;
+    }
+    .subsection.tabbed {
+        padding-top:23px;
+        input[type='checkbox'] {
+            display:none;
+        }
+    }
+    .set{
+        .feature-list{
+            @include option-grid();
+            grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+        }
+        &>*:first-child {
+            display:none;
+
+        }
+    }
+}

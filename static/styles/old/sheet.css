@@ -1,0 +1,227 @@
+:root {
+  --size: 14px;
+  --big: 30px;
+  --small: 10px;
+  --size-img: calc(14px - 3px);
+  --big-img: calc(30px - 3px);
+  --border: 1px solid var(--muted);
+  --background: #fff;
+  --muted: #6a6a6a;
+  --transparent: rgba(0, 0, 0, 0);
+  --text: #000;
+  --font-family: sans-serif;
+}
+
+.sheet {
+  width: 80%;
+  margin: auto;
+}
+.sheet .bin {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+}
+.sheet .bin#stats {
+  border: var(--border);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  margin: 5px;
+  display: flex;
+  width: calc(100% - 10px);
+  flex-direction: column;
+  border: var(--border);
+}
+.sheet .bin#stats > label,
+.sheet .bin#stats > div > label,
+.sheet .bin#stats .item > label {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+.sheet .bin#stats h1 {
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  margin: unset;
+  margin-left: -5px;
+  text-align: center;
+  width: calc(100% + 10px);
+  border-bottom: var(--border);
+}
+.sheet .bin#stats .section {
+  border: none;
+  margin-left: -5px;
+  width: calc(100% + 10px);
+  border-bottom: var(--border);
+}
+.sheet .bin#stats .section .score {
+  float: left;
+  width: 30%;
+  height: -moz-max-content;
+  height: max-content;
+}
+.sheet .bin#stats .section .skill-group {
+  width: 68%;
+  float: right;
+  display: list-item !important;
+  list-style: none;
+}
+.sheet .bin#stats .section .skill-group .skill_entry {
+  display: inline-flex;
+  width: 100%;
+}
+.sheet .bin#stats .section .skill-group .skill_entry input[type=number] {
+  border: unset;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  color: var(--text);
+  height: calc(var(--size) + 2px);
+  max-width: 1.9em;
+  min-width: 1.9em;
+  font-size: var(--size);
+  text-align: left;
+  border-bottom: var(--border);
+}
+.sheet .bin#stats .section .skill-group .skill_entry input[type=checkbox] {
+  min-width: var(--size);
+}
+.sheet .bin#powers {
+  display: inline-block;
+  width: calc(100% - 10px);
+  margin-left: 5px;
+  border: var(--border);
+}
+.sheet .bin#powers h1 {
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  margin: unset;
+  margin-left: -5px;
+  text-align: center;
+  width: calc(100% + 10px);
+  border-bottom: var(--border);
+  width: 100%;
+  margin-left: 0px;
+}
+.sheet .bin#powers > div {
+  display: inline-flex;
+  border: var(--border);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  margin: 5px;
+  border: none;
+}
+.sheet .bin#powers > div > label,
+.sheet .bin#powers > div > div > label,
+.sheet .bin#powers > div .item > label {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+.sheet .bin#powers > div h1 {
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  margin: unset;
+  margin-left: -5px;
+  text-align: center;
+  width: calc(100% + 10px);
+  border-bottom: var(--border);
+}
+.sheet .bin#powers > div #power-tracking {
+  max-width: 20%;
+  vertical-align: top;
+}
+.sheet .bin#powers > div .section {
+  border: none;
+}
+.sheet .bin#powers > div .tabbed {
+  margin-top: 5px;
+  width: 80%;
+  margin-right: 5px;
+}
+.sheet .bin#powers > div .tabs {
+  border: var(--border);
+}
+.sheet .bin .section {
+  border: var(--border);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  margin: 5px;
+}
+.sheet .bin .section > label,
+.sheet .bin .section > div > label,
+.sheet .bin .section .item > label {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+.sheet .bin .section h1 {
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  margin: unset;
+  margin-left: -5px;
+  text-align: center;
+  width: calc(100% + 10px);
+  border-bottom: var(--border);
+}
+.sheet .bin .section#bio {
+  line-height: 150%;
+}
+.sheet .bin .section#tags :not(h1) {
+  line-height: 230%;
+}
+.sheet .bin .section#tags :not(h1) .tag {
+  padding: 5px;
+  max-width: 50%;
+  text-align: center;
+}
+.sheet .bin .section #wielding span {
+  width: 100% !important;
+  display: list-item !important;
+  list-style: none;
+}
+.sheet .bin .section .unbreakable {
+  min-width: -moz-max-content;
+  min-width: max-content;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.row > div {
+  width: 100%;
+}
+
+.tabbed .tab_buttons {
+  font-size: 0px;
+}
+.tabbed .tab_buttons button,
+.tabbed .tab_buttons input[type=submit] {
+  border: var(--border);
+  background-color: var(--transparent);
+}
+.tabbed .tab_buttons button img,
+.tabbed .tab_buttons button svg,
+.tabbed .tab_buttons input[type=submit] img,
+.tabbed .tab_buttons input[type=submit] svg {
+  height: var(--size-img);
+  width: var(--size-img);
+}
+.tabbed .tab_buttons button {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+  padding: 3px;
+  border-bottom: none;
+}
+.tabbed .tab_buttons button:not(button:last-child) {
+  border-right: none;
+}/*# sourceMappingURL=sheet.css.map */

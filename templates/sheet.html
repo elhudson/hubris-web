@@ -1,613 +1,247 @@
+{% import 'libs.html' as libs %}
 <!DOCTYPE html>
 
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/styles/sheet.css">
-    <script src="/static/scripts/sheet.js"></script>
+    <meta charset="utf-8" type="sheet" />
+    {{ libs.sheet() }}
 </head>
 
-<body onload="start('{{ path }}')">
-    <div class="box" id="info">
-        <h1>Character Info</h1>
-        <div class="border">
-        <div class="item">
-            <label for="character_name">Name</label>
-            <span id="character_name" class="fill">{{ character.name }}</span>
-        </div>
-        <div class="item">
-            <label for="class_into">Class</label>
-            <span id="class_info" class="fill">{{ character.classes[0].title }}</span>
-        </div>
-        <div class="item">
-            <label for="background_info">Backgrounds</label>
-            <span id="background_info" class="fill">{{ character.backgrounds[0].title }} &
-                {{character.backgrounds[1].title}}</span>
-        </div>
-        <div class="item">
-            <label for="alignment">Alignment</label>
-            <select class="dropdown" id="alignment">
-                <option id="lg" {{ 'selected' if character.alignment=='lg' }}>Lawful Good</option>
-                <option id="ng" {{ 'selected' if character.alignment=='ng' }}>Neutral Good</option>
-                <option id="cg" {{ 'selected' if character.alignment=='cg' }}>Chaotic Good</option>
-                <option id="ln" {{ 'selected' if character.alignment=='ln' }}>Lawful Neutral</option>
-                <option id="tn" {{ 'selected' if character.alignment=='tn' }}>True Neutral</option>
-                <option id="cn" {{ 'selected' if character.alignment=='cn' }}>Chaotic Neutral</option>
-                <option id="le" {{ 'selected' if character.alignment=='le' }}>Lawful Evil</option>
-                <option id="ne" {{ 'selected' if character.alignment=='ne' }}>Neutral Evil</option>
-                <option id="ce" {{ 'selected' if character.alignment=='ce' }}>Chaotic Evil</option>
-            </select>
-        </div>
-        <div class="item">
-            <label for="tier">Tier</label>
-            <span id="tier" class="buttons">
-                <input type="radio" id="tier_1" name="tier" value="1" {{ 'checked' if character.tier==1 }}>
-                <label for="tier1">1</label>
-                <input type="radio" id="tier_2" name="tier" value="2" {{ 'checked' if character.tier==2 }} />
-                <label for="tier2">2</label>
-                <input type="radio" id="tier_3" name="tier" value="3" {{ 'checked' if character.tier==3 }} />
-                <label for="tier3">3</label>
-                <input type="radio" id="tier_4" name="tier" value="4" {{ 'checked' if character.tier==4 }} />
-                <label for="tier4">4</label>
-            </span>
-        </div>
-        <div class="item">
-            <label for="xp_earned">XP earned</label>
-            <input type="number" id="xp_earned" value="{{ character.xp_earned }}" class="counter" />
-            <label for="xp_spent">XP spent</label>
-            <input type="number" id="xp_spent" value="{{ character.xp_spent }}" class="counter" />
-        </div>
-        <div class="item">
-            <label for="proficiency_bonus">Proficiency Bonus</label>
-            <input id="proficiency_bonus" class="mod" value="{{ 1+character.tier }}">
-        </div>
-    </div>
-    </div>
-    <div class="box" id="status">
-        <h1>Status</h1>
-        <div class="border">
-            <div name="hit_points">
-                <label for="hp_tracking">HP</label>
-                <span id="hp_tracking">
-                    <input type="number" id="hp_left" class="counter" value="{{ (3*character.tier)+character.con }}"
-                        value="{{ (3*character.tier)+character.con }}" />
-                    <label for="hp_left">Current</label>
-                    <input type="number" id="hp_max" class="counter" value="{{ (3*character.tier)+character.con }}" />
-                    <label for="hp_max">Max</label>
-                </span>
-            </div>
-            <div name="injuries">
-                <label for="injuries">Injuries</label>
-                <select name="injuries" id="injuries" class="dropdown">
-                    <option value="">Select an injury</option>
-                </select>
-            </div>
-            <div name="hit_dice">
-                <label for="hd_tracking">Hit Dice</label>
-                <span id="hd_tracking">
-                    <input type="number" id="hd_used" class="counter" />
-                    <label for="hd_used">Used</label>
-                    <input type="number" id="hd_available" class="counter" value="1" />
-                    <label for="hp_current">Available</label>
-                </span>
-            </div>
-            <div name="hit_die_type">
-            <label for="hd_type">Die</label>
-            <span id="hd_type" class="buttons">
-                <input type="radio" id="d2" name="hit_die" {{ 'checked' if character.classes[0].hit_die=="d2" }} />
-                <label for="d2">d2</label>
-                <input type="radio" id="d3" name="hit_die" {{ 'checked' if character.classes[0].hit_die=="d3" }} />
-                <label for="d3">d3</label>
-                <input type="radio" id="d4" name="hit_die" {{ 'checked' if character.classes[0].hit_die=="d4" }} />
-                <label for="d4">d4</label>
-                <input type="radio" id="d6" name="hit_die" {{ 'checked' if character.classes[0].hit_die=="d6" }} />
-                <label for="d6">d6</label>
-                <input type="radio" id="2d4" name="hit_die" {{ 'checked' if character.classes[0].hit_die=="2d4" }} />
-                <label for="2d4">2d4</label>
-            </span>
-            </div>
-            <div name="conditions">
-                <label for="conditions">Conditions</label>
-                <textarea id="conditions" class="notepad"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="box" id="ability_scores">
-        <h1>Ability Scores</h1>
-        <div class="border">
-            <div class="skills" name="str_skills">
-                <input type="number" class="score" value="{{ character.str }}" id="str" />
-                <label for="str">Strength
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="athletics">
-                        <input type="number" class="skill_bonus mod" name="athletics" id="athletics_bonus"
-                            data-stat="str" />
-                        <input type="checkbox" class="is_proficient" name="athletics" id="Athletics" data-stat="str"
-                            onclick="setSkill('athletics_proficiency','athletics_bonus')" />
-                    </span>
-                    <label for="athletics">Athletics</label>
+<body onload="load_character('{{character.id}}');openTab('effects')">
+    <div class="sheet page">
+        <div class="section">
+            <div class="subsection bio">
+                <h1>Bio</h1>
+                <div class="item">
+                    <label for="character_name">Name</label>
+                    <span id="character_name" class="fill">{{ character.name }}</span>
+                </div>
+                <div class="item">
+                    <label for="class_into">Class</label>
+                    <span id="class_info" class="fill">{{ character.classes[0].name }}</span>
+                </div>
+                <div class="item">
+                    <label for="background_info">Backgrounds</label>
+                    <span id="background_info" class="fill">{{ character.backgrounds[0].name }} &
+                        {{character.backgrounds[1].name}}</span>
+                </div>
+                <div class="item">
+                    <label for="alignment">Alignment</label>
+                    <select class="dropdown" id="alignment">
+                        <option id="lg" {{ 'selected' if character.alignment=='Lawful Good' }}>Lawful Good</option>
+                        <option id="ng" {{ 'selected' if character.alignment=='Neutral Good' }}>Neutral Good</option>
+                        <option id="cg" {{ 'selected' if character.alignment=='Chaotic Good' }}>Chaotic Good</option>
+                        <option id="ln" {{ 'selected' if character.alignment=='Lawful Neutral' }}>Lawful Neutral
+                        </option>
+                        <option id="tn" {{ 'selected' if character.alignment=='True Neutral' }}>True Neutral</option>
+                        <option id="cn" {{ 'selected' if character.alignment=='Chaotic Neutral' }}>Chaotic Neutral
+                        </option>
+                        <option id="le" {{ 'selected' if character.alignment=='Lawful Evil' }}>Lawful Evil</option>
+                        <option id="ne" {{ 'selected' if character.alignment=='Neutral Evil' }}>Neutral Evil</option>
+                        <option id="ce" {{ 'selected' if character.alignment=='Chaotic Evil' }}>Chaotic Evil</option>
+                    </select>
                 </div>
             </div>
-            <div class="skills" title="dex_skills">
-                <input type="number" class="score" value="{{ character.dex }}" id="dex" />
-                <label for="dex">Dexterity
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="acrobatics">
-                        <input type="number" class="skill_bonus mod" name="acrobatics" id="acrobatics_bonus"
-                            data-stat="dex" />
-                        <input type="checkbox" class="is_proficient" name="acrobatics" id="Acrobatics" data-stat="dex" />
+            <div class="subsection progression">
+                <h1>Progression</h1>
+                <div class="item">
+                    <label for="tier">Tier</label>
+                    <span id="tier" class="buttons">
+                        <input disabled type="radio" id="tier_1" name="tier" value="1" />
+                        <label for="tier1">1</label>
+                        <input disabled type="radio" id="tier_2" name="tier" value="2" />
+                        <label for="tier2">2</label>
+                        <input disabled type="radio" id="tier_3" name="tier" value="3" />
+                        <label for="tier3">3</label>
+                        <input disabled type="radio" id="tier_4" name="tier" value="4" />
+                        <label for="tier4">4</label>
                     </span>
-                    <label for="acrobatics">Acrobatics</label>
-                    <br />
-                    <span class="skill" id="sleight_of_hand">
-                        <input type="number" class="skill_bonus mod" name="sleightofhand" id="sleightofhand_bonus"
-                            data-stat="dex" />
-                        <input type="checkbox" class="is_proficient" name="sleightofhand" id="Sleight of Hand"
-                            data-stat="dex" />
-                    </span>
-                    <label for="sleight_of_hand">Sleight of Hand</label>
-                    <br />
-                    <span class="skill" id="stealth">
-                        <input type="number" class="skill_bonus mod" name="stealth" id="stealth_bonus" data-stat="dex" />
-                        <input type="checkbox" class="is_proficient" name="stealth" id="Stealth" data-stat="dex" />
-                    </span>
-                    <label for="stealth">Stealth</label>
                 </div>
-            </div>
-            <div class="skills" title="con_skills">
-                <input type="number" class="score" value="{{ character.con }}" id="con" />
-                <label for="con">Constitution
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="endurance">
-                        <input type="number" class="skill_bonus mod" name="endurance" id="endurance_bonus"
-                            data-stat="con" />
-                        <input type="checkbox" class="is_proficient" name="endurance" id="Endurance" data-stat="con" />
-                    </span>
-                    <label for="endurance">Endurance</label>
+                <div class="item tracker">
+                    <div class="current">
+                        <input type="number" id="xp_spent" value="{{ character.xp_spent }}" class="counter" />
+                        <label for="xp_spent">Spent</label>
+                    </div>
+                    <div class="remaining">
+                        <input type="number" id="xp_earned" value="{{ character.xp_earned }}" class="counter" />
+                        <label for="xp_earned">Earned</label>
+                    </div>
                 </div>
-            </div>
-            <div class="skills" title="int_skills">
-                <input type="number" class="score" value="{{ character.int }}" id="int" />
-                <label for="int">Intelligence
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="investigation">
-                        <input type="number" class="skill_bonus mod" name="investigation" id="investigation_bonus"
-                            data-stat="int" />
-                        <input type="checkbox" class="is_proficient" name="investigation" id="Investigation"
-                            data-stat="int" />
-                    </span>
-                    <label for="investigation">Investigation</label>
-                    <br />
-                    <span class="skill" id="magecraft">
-                        <input type="number" class="skill_bonus mod" name="magecraft" id="magecraft_bonus"
-                            data-stat="int" />
-                        <input type="checkbox" class="is_proficient" name="magecraft" id="Magecraft" data-stat="int" />
-                    </span>
-                    <label for="magecraft">Magecraft</label>
-                    <br />
-                    <span class="skill" id="medicine">
-                        <input type="number" class="skill_bonus mod" name="medicine" id="medicine_bonus" data-stat="int" />
-                        <input type="checkbox" class="is_proficient" name="medicine" id="Medicine" data-stat="int" />
-                    </span>
-                    <label for="medicine">Medicine</label>
-                    <br />
-                    <span class="skill" id="tinker">
-                        <input type="number" class="skill_bonus mod" name="tinker" id="tinker_bonus" data-stat="int" />
-                        <input type="checkbox" class="is_proficient" name="tinker" id="Tinker" data-stat="int" />
-                    </span>
-                    <label for="tinker">Tinker</label>
-                    <br />
-                </div>
-            </div>
-            <div class="skills" title="wis_skills">
-                <input type="number" class="score" value="{{ character.wis }}" id="wis" />
-                <label for="wis">Wisdom
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="animal_handling">
-                        <input type="number" class="skill_bonus mod" name="animalhandling" id="animalhandling_bonus"
-                            data-stat="wis" />
-                        <input type="checkbox" class="is_proficient" name="animalhandling" id="Animal Handling"
-                            data-stat="wis" />
-                    </span>
-                    <label for="animal_handling">Animal Handling</label>
-                    <br />
-                    <span class="skill" id="insight">
-                        <input type="number" class="skill_bonus mod" name="insight" id="insight_bonus" data-stat="wis" />
-                        <input type="checkbox" class="is_proficient" name="insight" id="Insight" data-stat="wis" />
-                    </span>
-                    <label for="insight">Insight</label>
-                    <br />
-                    <span class="skill" id="perception">
-                        <input type="number" class="skill_bonus mod" name="perception" id="perception_bonus"
-                            data-stat="wis" />
-                        <input type="checkbox" class="is_proficient" name="perception" id="Perception" data-stat="wis" />
-                    </span>
-                    <label for="perception">Perception</label>
-                    <br />
-                    <span class="skill" id="streetwise">
-                        <input type="number" class="skill_bonus mod" name="streetwise" id="streetwise_bonus"
-                            data-stat="wis" />
-                        <input type="checkbox" class="is_proficient" name="streetwise" id="Streetwise" data-stat="wis" />
-                    </span>
-                    <label for="streetwise">Streetwise</label>
-                    <br />
-                    <span class="skill" id="survival">
-                        <input type="number" class="skill_bonus mod" name="survival" id="survival_bonus" data-stat="wis" />
-                        <input type="checkbox" class="is_proficient" name="survival" id="Survival" data-stat="wis" />
-                    </span>
-                    <label for="survival">Survival</label>
-                </div>
-            </div>
-            <div class="skills" title="cha_skills">
-                <input type="number" class="score" value="{{ character.cha }}" id="cha" />
-                <label for="cha">Charisma
-                </label>
-                <div class="skillList">
-                    <span class="skill" id="composure">
-                        <input type="number" class="skill_bonus mod" name="composure" id="composure_bonus"
-                            data-stat="cha" />
-                        <input type="checkbox" class="is_proficient" name="composure" id="Composure" data-stat="cha" />
-                    </span>
-                    <label for="composure">Composure</label>
-                    <br />
-                    <span class="skill" id="deception">
-                        <input type="number" class="skill_bonus mod" name="deception" id="deception_bonus"
-                            data-stat="cha" />
-                        <input type="checkbox" class="is_proficient" name="deception" id="Deception" data-stat="cha" />
-                    </span>
-                    <label for="deception">Deception</label>
-                    <br />
-                    <span class="skill" id="intimidation">
-                        <input type="number" class="skill_bonus mod" name="intimidation" id="intimidation_bonus"
-                            data-stat="cha" />
-                        <input type="checkbox" class="is_proficient" name="intimidation" id="Intimidation"
-                            data-stat="cha" />
-                    </span>
-                    <label for="intimidation">Intimidation</label>
-                    <br />
-                    <span class="skill" id="persuasion">
-                        <input type="number" class="skill_bonus mod" name="persuasion" id="persuasion_bonus"
-                            data-stat="cha" />
-                        <input type="checkbox" class="is_proficient" name="persuasion" id="Persuasion" data-stat="cha" />
-                    </span>
-                    <label for="persuasion">Persuasion</label>
+                <div class="item bonus">
+                    <div>
+                        <img src="https://www.svgrepo.com/show/510136/plus.svg" />
+                        <input id="proficiency_bonus">
+                    </div>
+                    <label for="proficiency_bonus">Proficiency</label>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="box" id="combat">
-        <h1 class="header">Combat</h1>
-        <div class="border">
-            <div class="initiative">
-                <label for="initiative">Initiative
-                </label>
-                <input type="number" class="score" id="initiative" value="{{ character.dex }}" />
+        <div class="section">
+            <div class="subsection hp">
+                <h1>Health</h1>
+                <div class="item tracker" name="hp">
+                    <div class="current">
+                        <input type="number" id="hp_left" class="counter" />
+                        <label for="hp_left">Current</label>
+                    </div>
+                    <div class="remaining">
+                        <input type="number" id="hp_max" class="counter" />
+                        <label for="hp_max">Max</label>
+                    </div>
+                </div>
+                <div class="item injuries">
+                    <label for="injuries">Injuries</label>
+                    <select name="injuries" id="injuries" class="dropdown">
+                        <option value="">Select an injury</option>
+                    </select>
+                </div>
             </div>
-            <div class="ac">
-                <label for="ac">AC
-                </label>
-                <input type="number" class="score" id="ac" />
+            <div class="subsection hd">
+                <h1>Hit Dice</h1>
+                <div id="hd_tracking" class="tracker">
+                    <div class="current">
+                        <input type="number" id="hd_used" class="counter" value="0" />
+                        <label for="hd_used">Used</label>
+                    </div>
+                    <div class="remaining">
+                        <input type="number" id="hd_available" class="counter" value="1" />
+                        <label for="hp_current">Available</label></span>
+                    </div>
+                </div>
+                <div id="hd_type" class="buttons">
+                    <input disabled type="radio" id="d2" name="hit_die" {{ 'checked' if
+                        character.classes[0].hit_die=="d2" }} />
+                    <label for="d2">d2</label>
+                    <input disabled type="radio" id="d3" name="hit_die" {{ 'checked' if
+                        character.classes[0].hit_die=="d3" }} />
+                    <label for="d3">d3</label>
+                    <input disabled type="radio" id="d4" name="hit_die" {{ 'checked' if
+                        character.classes[0].hit_die=="d4" }} />
+                    <label for="d4">d4</label>
+                    <input disabled type="radio" id="d6" name="hit_die" {{ 'checked' if
+                        character.classes[0].hit_die=="d6" }} />
+                    <label for="d6">d6</label>
+                    <input disabled type="radio" id="2d4" name="hit_die" {{ 'checked' if
+                        character.classes[0].hit_die=="2d4" }} />
+                    <label for="2d4">2d4</label>
+                </div>
             </div>
-            <div class="attacks">
-                <label>Weapons</label><br />
-                <div class="weapon" data-slot="1">
-                    <label for="wpn_1_name">Name</label>
-                    <input type="text" id="wpn_1_name" value="dagger">
-                    <div class="wpn_info">
-                        <label for="heft">Heft</label>
-                        <span id="heft">
-                            <input type="radio" name="wpn_heft_1" checked class="wpn_heft" id="wpn_1_light" />
-                            <label for="wpn_light">Light</label>
-                            <input type="radio" name="wpn_heft_1" class="wpn_heft" id="wpn_1_heavy" />
-                            <label for="wpn_heavy">Heavy</label>
-                        </span>
-                        <span class="range">
-                            <label>Range</label>
-                            <input type="radio" checked id="wpn_1_melee" name="wpn_range_1">
-                            <label for="wpn_1_melee">Melee</label>
-                            <input type="radio" id="wpn_1_distance" name="wpn_range_1">
-                            <label for="wpn_1_distance">Distance</label>
-                        </span>
-                        <div class="attack">
-                            <label>Damage</label>
-                            <span><input type="text" id="wpn_1_dmg_fast"></span>/
-                            <span><input type="text" id="wpn_1_dmg_slow"></span>
-                            <label>Ticks</label>
-                            <span><input type="text" id="wpn_1_time_fast"></span>/
-                            <span><input type="text" id="wpn_1_time_slow"></span>
-                        </div>
+            <div class="subsection conditions">
+                <h1>Conditions</h1>
+                <div id='entry'><textarea id="conditions" class="notepad"></textarea></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="subsection status">
+                <div class="item bonus">
+                    <div>
+                        <img src="https://www.svgrepo.com/show/510136/plus.svg" />
+                        <input id="initiative" value="{{ character.dex }}">
+                    </div>
+                    <label for="initiative">Initiative</label>
+                </div>
+                <div class="item dc">
+                    <div>
+                        <img src="https://www.svgrepo.com/show/510136/plus.svg" />
+                        <input id="ac">
+                    </div>
+                    <label for="ac">AC</label>
+                </div>
+                <div class="item" id="wielding">
+                    <label>Wielding</label>
+                    <div><input type="radio" name="wielding" id="simple">
+                        <label>Simple</label>
+                    </div>
+                    <div><input type="radio" name="wielding" id="martial">
+                        <label>Martial</label>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="box" id="backgrouds">
-        <h1>Background Features</h1>
-        <div class="border">
-            <label for="bg_feature_1">{{ character.backgrounds[0].feature.split(":")[0] }}</label>
-            <p id="bg_feature_1">{{ character.backgrounds[0].feature.split(":")[1] }}</p>
-            <label for="bg_feature_2">{{ character.backgrounds[1].feature.split(":")[0] }}</label>
-            <p id="bg_feature_2">{{ character.backgrounds[1].feature.split(":")[1] }}</p>
+        <div class='stats section' id="stats">
         </div>
-    </div>
-    {% import 'snippets/class_features.html' as cfs %}
-    {% if character.class_features|length>0 %}
-    <div class="box" id="class_features">
-        <h1>Class Features</h1>
-        <div class="border">
-            {% for i in range(character.class_features|length) %}
-            <div class="class_feature" id="class_feature_{{ i }}">
-                {{ cfs.render_class_feature(index=i,class_feature=character.class_features[i]) }}
+        <div class="section">
+            <div class="subsection backgrounds" id="backgrounds">
+                <h1>Background</h1>
+                <div class="opt">
+                    <label>{{character.backgrounds[0].feature.split(":")[0]}}</label>
+                    <div class="entry">{{ character.backgrounds[0].feature.split(":")[1] }}</div>
+                </div>
+                <div class="opt">
+                    <label>{{character.backgrounds[1].feature.split(":")[0]}}</label>
+                    <div class="entry">{{ character.backgrounds[1].feature.split(":")[1] }}</div>
+                </div>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-    {% import 'snippets/tag_features.html' as tfs %}
-    {% if character.tag_features|length>0 %}
-    <div class="box" id="tag_features">
-        <h1>Tag Features</h1>
-        <div class="border">
-            {% for i in range(character.tag_features|length) %}
-            <div class="range" id="tag_feature_{{ i }}">
-                {{ tfs.render_tag_feature(index=i,tag_feature=character.tag_features[i]) }}
-        </div>
-        {% endfor %}
-    </div>
-    </div>
-    {% endif %}
-    {% import 'snippets/effects.html' as efs %}
-    {% if character.effects|length>0 %}
-    <div class="box" id="effects">
-        <h1>Effects</h1>
-        <div class="border">
-            {% for i in range(character.effects|length) %}
-            <div class="effect" id="effect_{{ i }}">
-                {{ efs.render_effect(index=i,effect=character.effects[i]) }}
-        </div>
-        {% endfor %}
-    </div>
-    </div>
-    {% endif %}
-    {% import 'snippets/ranges.html' as rngs %}
-    {% if character.ranges|length>0 %}
-        <div class="box" id="ranges">
-            <h1>Ranges</h1>
-            <div class="border">
-            {% for i in range(character.ranges|length) %}
-            <div class="range" id="range_{{ i }}">
-                {{ rngs.render_range(index=i,range=character.ranges[i]) }}
+            <div class="subsection" id="class_features">
+                <h1>Class</h1>
+                <div class="item">
+                    <label>Armor</label>
+                    <div class="fill">{{character.classes[0].armor_proficiencies}}</div>
+                </div>
+                <div class="item">
+                    <label>Weapons</label>
+                    <div class="fill">{{character.classes[0].weapon_proficiencies}}</div>
+                </div>
+                <div class="item" id="tags">
+                    <label>Tags</label>
+                </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+        <div class="section" id="powers">
+            <div class="subsection" id="power-tracking">
+                <div class="item bonus">
+                    <div>
+                        <img src="https://www.svgrepo.com/show/510136/plus.svg" />
+                        <input id="power_bonus" value="">
+                    </div>
+                    <label for="power_bonus">Power Mod</label>
+                </div>
+                <div class="item dc">
+                    <div>
+                        <img src="https://www.svgrepo.com/show/510136/plus.svg" />
+                        <input id="power_dc" value="10" disabled>
+                    </div>
+                    <label for="power_dc">Power DC</label>
+                </div>
+                <div class="item counter">
+                    <div>Powers Used</div>
+                    <input type="number" id="powers_used" value="0" disabled min="0">
+                    <div class="toggles">
+                        <button type="button" onclick="character.use_power('+')" class="hd_btn"><img
+                                src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
+                        <button type="button" onclick="character.use_power('-')" class="hd_btn"><img
+                                src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
+                    </div>
+                </div>
+            </div>
+            <div class="subsection tabbed">
+                <div class="tab_buttons" id="tab_buttons">
+                    <button type="button" id="effects_tab" class="tab" onclick="openTab('effects')">Effects</button>
+                    <button type="button" id="ranges_tab" class="tab" onclick="openTab('ranges')">Ranges</button>
+                    <button type="button" id="durations_tab" class="tab"
+                        onclick="openTab('durations')">Durations</button>
+                    <button type="button" id="tag_features_tab" class="tab"
+                        onclick="openTab('tag_features')">Tag Features</button>
+                    <button type="button" id="class_features_tab" class="tab"
+                        onclick="openTab('class_features')">Class Features</button>
+                </div>
+                <div class="tabs">
+                    <div class="section abilities tabcontent" id="effects">
+                    </div>
+                    <div class="section abilities tabcontent" id="ranges">
+                    </div>
+                    <div class="section abilities tabcontent" id="durations">
+                    </div>
+                    <div class="section abilities tabcontent" id="tag_features">
+                    </div>
+                    <div class="section abilities tabcontent" id="class_features">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    </div>
-    {% endif %}
-    {% import 'snippets/durations.html' as durs %}
-    {% if character.durations|length>0 %}
-        <div class="box" id="durations">
-            <h1>Durations</h1>
-            <div class="border">
-            {% for i in range(character.durations|length) %}
-            <div class="range" id="duration_{{ i }}">
-                {{ durs.render_duration(index=i,duration=character.durations[i]) }}
-    </div>
-        {% endfor %}
-    </div>
 
-    </div>
-    {% endif %}
-    <div class="box" id="tags">
-        <h1>Tags</h1>
-        <div class="border">
-            {% for i in range(character.classes[0].tags|length) %}
-            <p id="tag_{{i}}">{{character.classes[0].tags[i].title}}</p>
-        
-        {% endfor %}
-    </div>
-    </div>
 </body>
-
-</html>
-
-
-<!-- <div class="box content powers">
-            <h1 class="header">Powers</h1>
-    
-            <div class="box content ranges"></div>
-            </div>
-        </div>
-    
-        <div class="powers_wrapper">
-            <div class="row row-flex">
-                <div class="col">
-                    <div class="tab powers">
-                        <button class="tablinks" onclick="openTab(event, 'favs')">
-                            Powers
-                        </button>
-                        <button class="tablinks" onclick="openTab(event, 'range')">
-                            Ranges
-                        </button>
-                        <button class="tablinks" onclick="openTab(event, 'duration')">
-                            Durations
-                        </button>
-                        <button class="tablinks" onclick="openTab(event, 'effects')">
-                            Effects
-                        </button>
-                        <button class="tablinks" onclick="openTab(event, 'tags')">
-                            Tags
-                        </button>
-                    </div>
-                    <div id="favs" class="tabcontent box content">
-                        <h3>London</h3>
-                        some text
-                    </div>
-    
-                    <div id="range" class="tabcontent box content">
-                        <div id="range_buffs">
-                            <h6>Buffs</h6>
-                            <div id="range_b_1">
-                                <input type="number" id="range_b_1_cost" class="mod" />
-                                <input type="text" id="range_b_1_name" />
-                            </div>
-                        </div>
-                        <div id="range_debuffs">
-                            <h6>Debuffs</h6>
-                            <div id="range_db_1">
-                                <input type="number" id="range_db_1_cost" class="mod" />
-                                <input type="text" id="range_db_1_name" />
-                            </div>
-                        </div>
-                        <div id="range_dh">
-                            <h6>Damage & Healing</h6>
-                            <div id="range_dh_1">
-                                <input type="number" id="range_dh_1_cost" class="mod" />
-                                <input type="text" id="range_dh_1_name" />
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div id="duration" class="tabcontent box content">
-                        <div id="duration_buffs">
-                            <h6>Buffs</h6>
-                            <div id="duration_b_1">
-                                <input type="number" id="duration_b_1_cost" class="mod" />
-                                <input type="text" id="duration_b_1_name" />
-                            </div>
-                        </div>
-                        <div id="duration_debuffs">
-                            <h6>Debuffs</h6>
-                            <div id="duration_db_1">
-                                <input type="number" id="duration_db_1_cost" class="mod" />
-                                <input type="text" id="duration_db_1_name" />
-                            </div>
-                        </div>
-                        <div id="duration_dh">
-                            <h6>Damage & Healing</h6>
-                            <div id="duration_dh_1">
-                                <input type="number" id="duration_dh_1_cost" class="mod" />
-                                <input type="text" id="duration_dh_1_name" />
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div id="effects" class="tabcontent box content">
-                        <h3>Tokyo</h3>
-                        <p>Tokyo is the capital of Japan.</p>
-                    </div>
-    
-                    <div id="tags" class="tabcontent box content">
-                        <div id="tags_wrapper">
-                            <div class="row content">
-                                <div class="col-5 px-0">
-                                    <ul class="tags_magic" style="list-style-type: none">
-                                        <li>
-                                            <input type="checkbox" id="conj" />
-                                            <label for="conj">Conjuration</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="abj" />
-                                            <label for="abj">Abjuration</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="trans" />
-                                            <label for="trans">Transmutation</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="evoc" />
-                                            <label for="evoc">Evocation</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-4 px-0">
-                                    <ul class="tags_domain" style="list-style-type: none">
-                                        <li>
-                                            <input type="checkbox" id="rel" />
-                                            <label for="rel">Religion</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="nature" />
-                                            <label for="nature">Nature</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="plant" />
-                                            <label for="plant">Plant</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="mind" />
-                                            <label for="mind">Mind</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col px-0">
-                                    <ul class="tags_elemental" style="list-style-type: none">
-                                        <li>
-                                            <input type="checkbox" id="fire" />
-                                            <label for="fire">Fire</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="ice" />
-                                            <label for="ice">Ice</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="earth" />
-                                            <label for="earth">Earth</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="air" />
-                                            <label for="air">Air</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col px-0">
-                                    <ul class="tags_weaponry" style="list-style-type: none">
-                                        <li>
-                                            <input type="checkbox" id="bludg" />
-                                            <label for="bludg">Bludgeoning</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="pierc" />
-                                            <label for="pierc">Piercing</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="slash" />
-                                            <label for="slash">Slashing</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col px-0">
-                                    <ul class="tags_attr" style="list-style-type: none">
-                                        <li>
-                                            <input type="checkbox" id="dex_tag" />
-                                            <label for="dex_tag">Dexterty</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="con_tag" />
-                                            <label for="con_tag">Constitution</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="int_tag" />
-                                            <label for="int_tag">Intelligence</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="cha_tag" />
-                                            <label for="cha_tag">Charisma</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --></body>
 
 </html>

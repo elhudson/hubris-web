@@ -18,9 +18,10 @@ def choose_class():
         new=create_character(uuid.uuid4(),con)
         new.xp_spent=0
         new.xp_earned=6
-        new.set_tier()
+        new.user=session.get('user_id')
         class_id=request.form.get("class")
         new.add_entry("classes",class_id,con)
+        new.classes[0].build_extensions(con)
         new.to_file()
         session['character_id']=new.id
         con.close()
@@ -50,9 +51,9 @@ def allocate_stats():
                                character_id=session.get('character_id'))
     if request.method=="POST":
         character=fetch_character(app,session.get('character_id'))
-        print(character.backgrounds)
+        character.ability_scores={}
         for attr in ['str','dex','con','int','wis','cha']:
-            character.__setattr__(attr,request.form.get(attr))
+            character.ability_scores[attr]=request.form.get(attr)
         character.to_file()
         return redirect(url_for("spend_xp"))
     
@@ -61,21 +62,23 @@ def spend_xp():
     if request.method=="GET":
         return render_template("character_creation/spend_xp.html",character_id=session.get('character_id'))
     if request.method=="POST":
+        character=deserialize_character(json.loads(request.form.get('character')))
+        character.to_file()
         return redirect(url_for('addtl_info'))
 
 @app.route("/fluff",methods=("GET","POST"))
 def addtl_info():
     if request.method=="GET":
-        character=session.get('new_character')
-        return render_template("character_creation/fluff.html",character=character)
+        return render_template("character_creation/fluff.html")
     if request.method=='POST':
         con=app.database.connect()
-        character=session.get('new_character')
+        character=fetch_character(app,session.get('character_id'))
         character.name=request.form.get('char_name')
         character.alignment=request.form.get('char_alignment')
         character.gender=request.form.get('char_gender')
         character.appearance=request.form.get('char_appearance')
         character.backstory=request.form.get('char_backstory')
+        print(character.ability_scores)
         character.write_to_database(con)
-        session['character']=character
-        return redirect(url_for('sheet'))
+        return redirect(url_for('sheet',character_id=session.get('character_id')))
+    

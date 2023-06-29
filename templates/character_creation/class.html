@@ -1,22 +1,24 @@
+{% import 'libs.html' as libs %}
+
 <!DOCTYPE html>
 
 <html>
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="static/styles/HUBRIS.css">
-    <script src="static/scripts/char_creation.js"></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{ libs.creation() }}
 
 </head>
 <body>
-<div class="container">
-<form name="class" method="post" action="class">
+<form name="class" class='page' method="post" action="class">
+    <h1>Classes</h1>
     <div class="feature-list">
         {% for class in classes %}
         <div class="opt">
-            <input type="radio" name="class" value="{{class.id}}">
-            <label for="{{class.name}}"><h3>{{class.icon|safe}} {{class.name}}</h3></label>
+            <div class="opt-name">
+                <input type="radio" name="class" value="{{class.id}}">
+                <label for="{{class.name}}">{{class.icon|safe}} {{class.name}}</label>
+            </div>
             <div class="info">
                 <table>
                     <tr>
@@ -67,6 +69,5 @@
     </div>
     <input type="submit" value="Next">
 </form>
-</div>
 </body>
 </html>

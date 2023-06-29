@@ -1,0 +1,10 @@
+:root {
+    --font: Droid Sans;
+    --background:#e7e3cf;
+    --text:#141310;
+    --fill: #141310;
+    --damage: #7e525b;
+    --healing: #f7cdd3;
+    --buffs: #74beb0;
+    --debuffs: #e4b778;
+}

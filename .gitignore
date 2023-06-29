@@ -15,3 +15,4 @@ Dockerfile
 *.db
 \
 database/HUBRIS.db
+flask_session/

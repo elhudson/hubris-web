@@ -1,0 +1,150 @@
+@import 'chunks';
+@import 'scheme';
+body {
+    font-family: var(--font-family);
+    font-size: var(--size);
+
+    select {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
+
+    textarea {
+        width: calc(100% - 15px);
+        height: calc(100% - 40px);
+        &:disabled {
+            color: var(--text);
+            font-family: var(--font);
+            border: none;
+        }
+    }
+
+    a {
+        @include link();
+    }
+
+    input,
+    select,
+    textarea,
+    a {
+
+
+        &[type='number'] {
+            -moz-appearance: textfield;
+        }
+        appearance: none;
+        background-color: var(--transparent);
+        border-style: solid;
+        border: var(--border);
+        color:var(--text);
+        font-size: var(--size);
+        &[type='checkbox'],
+        &[type='radio'] {
+            appearance: unset;
+            height: var(--size);
+            width: var(--size);
+            vertical-align: text-bottom;
+
+            &:checked {
+                background-color: var(--text);
+            }
+        }
+    }
+}
+
+.page {
+    >h1 {
+        width: 100%;
+        font-size: var(--big);
+        text-align: center;
+        text-transform: uppercase;
+        padding: unset;
+        margin:unset;
+        margin-bottom:10px;
+        border-bottom:var(--border);
+
+    }
+    width: 70%;
+    min-width: min-content;
+    position: relative;
+    top:30;
+    margin:auto;
+    border: var(--border);
+    box-sizing: border-box;
+}
+
+
+.stats {
+    @include option-grid();
+    grid-template-columns: repeat(3, minmax(100px, 300px));
+}
+
+.stat {
+    border: var(--border) !important;
+
+    h2 {
+        @include section-title();
+    }
+
+    .ability_score, &>input[type='number'] {
+        @include counter();
+    }
+}
+
+.score,
+.bonus {
+    text-align: center;
+    @include count();
+    img {
+        height: calc(var(--big-img) - 5px);
+        vertical-align: text-bottom;
+    }
+}
+
+.tag,
+.tree {
+    @include tag();
+}
+
+.dc {
+    @include count();
+    @include sans-plus();
+}
+
+.opt {
+    @include feature();
+}
+
+.status {
+    @include topbar();
+}
+
+.tabbed {
+    margin-bottom:10px;
+    display:block;
+    .tab_buttons {
+        @include tabs();
+        position: absolute;
+        right:0;
+        margin-right:5px;
+        transform:translate(0,-100%);
+        }
+    .tabs {
+        border:var(--border);
+        border-right:none;
+        padding:5px;
+        }
+    }
+
+    .skill_entry {
+        input[type='number'] {
+            text-align: center;
+            @include small-mod();
+        }
+        label {
+            @include inline-title();
+        }
+    }
+    

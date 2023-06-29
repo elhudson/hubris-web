@@ -1,0 +1,19 @@
+@import 'HUBRIS';
+
+
+.dialogue {
+    @include section();
+    >* {
+        margin:10px;
+    }
+    width:70%;
+    margin:auto;
+    margin-top:30%;
+    .inline {
+        display: flex;
+        >*{
+            width:100%;
+        }
+        
+    }
+}

@@ -73,7 +73,13 @@
                         "site/setup.py",
                         "site/characters/characters.egg-info/",
                         "site/characters/setup.py",
-                        "site/characters/characters/__pycache__/"
+                        "site/characters/characters/__pycache__/",
+                        "$Default",
+                        "static/styles/mixins.css.map",
+                        "static/styles/mixins.css.map",
+                        "static/styles/mixins.css.map",
+                        "static/styles/old/",
+                        "static/styles/colors.txt"
                     ],
                     "name": "hubris",
                     "description": "",
@@ -124,7 +130,11 @@
             "site/setup.py": true,
             "site/characters/characters.egg-info/": true,
             "site/characters/setup.py": true,
-            "site/characters/characters/__pycache__/": true
+            "site/characters/characters/__pycache__/": true,
+            ".vscode/": true,
+            "static/styles/mixins.css.map": true,
+            "static/styles/old/": true,
+            "static/styles/colors.txt": true
         },
         "hidefiles.selectedProfile": "hubris"
     },

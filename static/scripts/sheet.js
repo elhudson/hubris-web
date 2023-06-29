@@ -102,23 +102,7 @@ function generateNewWeaponSlots(armory) {
 }
 
 
-function setArmorClass(dex, armor, tier) {
-  const proficiency_bonus = 1 + Number(tier)
-  var ac = Number(10 + dex)
-  if (armor = "light") {
-    ac = 10 + Number(dex) + Number(proficiency_bonus)
-  }
-  else {
-    const armors = armor.split(",")
-    if (armors[2]) {
-      ac = 18 + Number(proficiency_bonus)
-    }
-    else {
-      ac = 14 + Number(proficiency_bonus)
-    }
-  }
-  document.getElementById("ac").setAttribute("value", ac)
-}
+
 
 function populateProficiencies(proficiencies) {
   for (var i = 0; i < (Object.keys(proficiencies).length); i++) {

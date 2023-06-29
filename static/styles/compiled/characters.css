@@ -1,0 +1,399 @@
+:root {
+  --size: 14px;
+  --big: 30px;
+  --small: 10px;
+  --size-img: calc(14px - 3px);
+  --big-img: calc(30px - 3px);
+  --border: 1px solid var(--muted);
+  --background: #fff;
+  --muted: #6a6a6a;
+  --transparent: rgba(0, 0, 0, 0);
+  --text: #000;
+  --font-family: sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--size);
+}
+body select {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+body textarea {
+  width: calc(100% - 15px);
+  height: calc(100% - 40px);
+}
+body textarea:disabled {
+  color: var(--text);
+  font-family: var(--font);
+  border: none;
+}
+body a {
+  border: var(--border);
+  color: var(--text);
+  padding: 2px;
+  text-align: center;
+  text-decoration: none;
+}
+body input,
+body select,
+body textarea,
+body a {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: var(--transparent);
+  border-style: solid;
+  border: var(--border);
+  color: var(--text);
+  font-size: var(--size);
+}
+body input[type=number],
+body select[type=number],
+body textarea[type=number],
+body a[type=number] {
+  -moz-appearance: textfield;
+}
+body input[type=checkbox], body input[type=radio],
+body select[type=checkbox],
+body select[type=radio],
+body textarea[type=checkbox],
+body textarea[type=radio],
+body a[type=checkbox],
+body a[type=radio] {
+  -webkit-appearance: unset;
+     -moz-appearance: unset;
+          appearance: unset;
+  height: var(--size);
+  width: var(--size);
+  vertical-align: text-bottom;
+}
+body input[type=checkbox]:checked, body input[type=radio]:checked,
+body select[type=checkbox]:checked,
+body select[type=radio]:checked,
+body textarea[type=checkbox]:checked,
+body textarea[type=radio]:checked,
+body a[type=checkbox]:checked,
+body a[type=radio]:checked {
+  background-color: var(--text);
+}
+
+.page {
+  width: 70%;
+  min-width: -moz-min-content;
+  min-width: min-content;
+  position: relative;
+  top: 30;
+  margin: auto;
+  border: var(--border);
+  box-sizing: border-box;
+}
+.page > h1 {
+  width: 100%;
+  font-size: var(--big);
+  text-align: center;
+  text-transform: uppercase;
+  padding: unset;
+  margin: unset;
+  margin-bottom: 10px;
+  border-bottom: var(--border);
+}
+
+.stats {
+  display: grid;
+  grid-gap: 10px;
+  padding: 10px;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  grid-template-columns: repeat(3, minmax(100px, 300px));
+}
+
+.stat {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  border: var(--border) !important;
+}
+.stat h2 {
+  line-height: unset;
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: var(--border);
+}
+.stat .ability_score, .stat > input[type=number] {
+  text-align: center;
+}
+.stat .ability_score input[type=number], .stat > input[type=number] input[type=number] {
+  border: unset;
+  height: calc(var(--big) + 3px);
+  font-size: var(--big);
+  text-align: center;
+  min-width: 3ch;
+  max-width: 50%;
+}
+.stat .ability_score label, .stat > input[type=number] label {
+  font-size: var(--small);
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: var(--border);
+  border: unset;
+  border-bottom: var(--border);
+}
+.stat .ability_score .toggles, .stat > input[type=number] .toggles {
+  width: 100%;
+  display: flex;
+}
+.stat .ability_score .toggles button,
+.stat .ability_score .toggles input[type=submit], .stat > input[type=number] .toggles button,
+.stat > input[type=number] .toggles input[type=submit] {
+  border: var(--border);
+  background-color: var(--transparent);
+}
+.stat .ability_score .toggles button img,
+.stat .ability_score .toggles button svg,
+.stat .ability_score .toggles input[type=submit] img,
+.stat .ability_score .toggles input[type=submit] svg, .stat > input[type=number] .toggles button img,
+.stat > input[type=number] .toggles button svg,
+.stat > input[type=number] .toggles input[type=submit] img,
+.stat > input[type=number] .toggles input[type=submit] svg {
+  height: var(--size-img);
+  width: var(--size-img);
+}
+.stat .ability_score .toggles > *:first-child, .stat > input[type=number] .toggles > *:first-child {
+  border: unset;
+  border-top: var(--border);
+  border-right: var(--border);
+  width: 50%;
+}
+.stat .ability_score .toggles > *:last-child, .stat > input[type=number] .toggles > *:last-child {
+  border: unset;
+  border-top: var(--border);
+  width: 50%;
+}
+
+.score,
+.bonus {
+  text-align: center;
+  border: var(--border);
+}
+.score input,
+.bonus input {
+  border: unset;
+  height: calc(var(--big) + 3px);
+  font-size: var(--big);
+  text-align: center;
+  min-width: 3ch;
+  max-width: 50%;
+}
+.score label,
+.bonus label {
+  font-size: var(--small);
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: var(--border);
+}
+.score img,
+.bonus img {
+  height: calc(var(--big-img) - 5px);
+  vertical-align: text-bottom;
+}
+
+.tag,
+.tree {
+  border: var(--border);
+  font-size: calc(var(--size) - 1px);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.dc {
+  border: var(--border);
+}
+.dc input {
+  border: unset;
+  height: calc(var(--big) + 3px);
+  font-size: var(--big);
+  text-align: center;
+  min-width: 3ch;
+  max-width: 50%;
+}
+.dc label {
+  font-size: var(--small);
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: var(--border);
+}
+.dc img {
+  display: none;
+}
+
+.opt {
+  box-sizing: border-box;
+  line-height: 160%;
+  border: var(--border);
+  vertical-align: top;
+}
+.opt table {
+  vertical-align: top;
+}
+.opt > label,
+.opt tr > :first-child,
+.opt .info label {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+.opt input[type=number] {
+  border: unset;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  color: var(--text);
+  height: calc(var(--size) + 2px);
+  max-width: 4ch;
+  font-size: var(--size);
+  border-bottom: var(--border);
+}
+.opt .description {
+  height: 100px;
+  overflow: auto;
+}
+.opt .entry,
+.opt .info {
+  margin-left: 5px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.row > div {
+  width: 100%;
+}
+
+.tabbed {
+  margin-bottom: 10px;
+  display: block;
+}
+.tabbed .tab_buttons {
+  border: var(--border);
+  font-size: 0px;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  border-bottom: none;
+  position: absolute;
+  right: 0;
+  margin-right: 5px;
+  transform: translate(0, -100%);
+}
+.tabbed .tab_buttons button,
+.tabbed .tab_buttons input[type=submit] {
+  border: var(--border);
+  background-color: var(--transparent);
+}
+.tabbed .tab_buttons button img,
+.tabbed .tab_buttons button svg,
+.tabbed .tab_buttons input[type=submit] img,
+.tabbed .tab_buttons input[type=submit] svg {
+  height: var(--size-img);
+  width: var(--size-img);
+}
+.tabbed .tab_buttons button {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+  padding: 3px;
+  border: none;
+  border-right: var(--border);
+}
+.tabbed .tabs {
+  border: var(--border);
+  border-right: none;
+  padding: 5px;
+}
+
+.skill_entry input[type=number] {
+  text-align: center;
+  border: unset;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  color: var(--text);
+  height: calc(var(--size) + 2px);
+  max-width: 4ch;
+  font-size: var(--size);
+  border-bottom: var(--border);
+}
+.skill_entry label {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+
+.char_list {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.character-thumbnail {
+  border: var(--border);
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 100% !important;
+}
+.character-thumbnail > label,
+.character-thumbnail > div > label,
+.character-thumbnail .item > label:not(.counter > label) {
+  text-transform: uppercase;
+  font-size: var(--size);
+  font-weight: bold;
+}
+.character-thumbnail h1, .character-thumbnail h2,
+.character-thumbnail .set > label,
+.character-thumbnail summary {
+  margin-top: 0px;
+  line-height: unset;
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: var(--border);
+}
+.character-thumbnail .title-link {
+  background-color: var(--transparent);
+  border: unset;
+  line-height: unset;
+  display: block;
+  font-size: calc(var(--size) + 5px);
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: var(--border);
+}
+
+.add a {
+  display: flex;
+  height: calc(100% - 20px);
+}
+.add div {
+  margin: auto;
+  text-align: center;
+}
+.add div img {
+  height: 60%;
+  width: 60%;
+}

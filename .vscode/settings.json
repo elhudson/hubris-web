@@ -35,5 +35,11 @@
         "editor.defaultFormatter": "ms-python.python"
     },
     "python.linting.banditEnabled": true,
-    "livePreview.defaultPreviewPath": "/web/templates/sheet.html"
+    "livePreview.defaultPreviewPath": "/web/templates/sheet.html",
+    "[scss]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[nunjucks]": {
+        "editor.defaultFormatter": "mblode.pretty-formatter"
+    }
 }

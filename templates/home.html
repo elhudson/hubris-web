@@ -4,35 +4,32 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/styles/char_creation.css">
-    <script src="static/scripts/walkthrough.js"></script>
+    <link rel="stylesheet" href="/static/styles/compiled/home.css">
     <script src="static/scripts/char_creation.js"></script>
-
-
 </head>
-<body onload="clear_character()">
 
-<div class="dialogue">
-    {% if error!=None %}
-    <div class='error'>{{error}}</div>
-    {% endif %}
-    <h1>Welcome to HUBRIS!</h1>
-    <form name="login" action="/login" method="post">
-        <span>
-            <label for="username">Username:</label>
-            <input type="text" id='username' name="username">
-        </span>
-        <span>
-            <label for="password">Password:</label>
-            <input type="text" id="password" name="password">
-        </span>
-        <span>
-            <a href="/new_user">I don't have an account</a>
-        </span>
-        <button type="submit">Login</button>
-    </form>
-   
-</div>
+<body onload="clear_character()">
+        {% if error!=None %}
+        <div class='error'>{{error}}</div>
+        {% endif %}
+        <form name="login" class='dialogue' action="/login" method="post">
+            <h1>Welcome to HUBRIS!</h1>
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id='username' name="username">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="inline">
+                <a class="left" href="/new_user">I don't have an account</a>
+                <input class="right" type="submit" value="Log in"></input>
+            </div>
+        </form>
+
+    </div>
 
 </body>
+
 </html>

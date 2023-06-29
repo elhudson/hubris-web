@@ -1,55 +1,53 @@
+{% import 'libs.html' as libs %}
 <!DOCTYPE html>
 
 <html>
 
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/styles/char_creation.css">
-    <script src="static/scripts/char_creation.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
-
+    {{ libs.creation() }}
 </head>
+
 <body onload="clear_selections();set_character()">
-    <form method="post" action="/fluff">
-    <div class="bio dialog">
-        <table><th>
-        <span class="item">
-            <label for="char_name">Name</label>
-            <input type="text" name="char_name" id="char_name">
-        </span></br>
-        <span class="item">
-            <label for="char_alignment">Alignment</label>
-            <select class="dropdown" name="'char_alignment" id="char_alignment">
-                <option id="lg">Lawful Good</option>
-                <option id="ng">Neutral Good</option>
-                <option id="cg">Chaotic Good</option>
-                <option id="ln">Lawful Neutral</option>
-                <option id="tn">True Neutral</option>
-                <option id="cn">Chaotic Neutral</option>
-                <option id="le">Lawful Evil</option>
-                <option id="ne">Neutral Evil</option>
-                <option id="ce">Chaotic Evil</option>
-            </select>
-        </span></br>
-        <span class="item">
-            <label for="char_gender">Gender</label>
-            <input type="text" name='char_gender' id="char_gender">
-        </span></br>
-        <span class="item">
-            <label for="char_appearance">Appearance</label></br>
-            <textarea id="char_appearance" name="char_appearance"></textarea>
-        </span>
-    </th>
-        <th>
-        
-    <span class='item'>
-        <label for="char_backstory">Backstory</label></br>
-        <textarea id="char_backstory"  name="char_backstory"></textarea>
-    </span></th>
-</table>
+    <div class="page">
+        <h1>Bio</h1>
+        <form method="post" action="/fluff">
+            <div class="bio">
+                <div class="item">
+                    <label for="char_name">Name</label>
+                    <input type="text" name="char_name" id="char_name">
+                </div>
+                <div class="item">
+                    <label for="char_alignment">Alignment</label>
+                    <select class="dropdown" name="char_alignment" id="char_alignment">
+                        <option id="lg">Lawful Good</option>
+                        <option id="ng">Neutral Good</option>
+                        <option id="cg">Chaotic Good</option>
+                        <option id="ln">Lawful Neutral</option>
+                        <option id="tn">True Neutral</option>
+                        <option id="cn">Chaotic Neutral</option>
+                        <option id="le">Lawful Evil</option>
+                        <option id="ne">Neutral Evil</option>
+                        <option id="ce">Chaotic Evil</option>
+                    </select>
+                </div>
+                <div class="item">
+                    <label for="char_gender">Gender</label>
+                    <input type="text" name='char_gender' id="char_gender">
+                </div>
+                <div class="item">
+                    <label for="char_appearance">Appearance</label>
+                    <textarea id="char_appearance" name="char_appearance"></textarea>
+                </div>
+                <div class='item'>
+                    <label for="char_backstory">Backstory</label>
+                    <textarea id="char_backstory" name="char_backstory"></textarea>
+                </div>
+            </div>
+            <input type="submit" value="Create character">
+        </form>
     </div>
-    <button type="submit">Submit</button>
-</form>
+
 </body>
+
 </html>
