@@ -198,10 +198,10 @@ class Character {
     }
     toggle(event, feature, character=null) {
         if (character!=null && feature.table=='skills') {
-            feature.cost(character)
-            if (event.target.checked==false) {
-                feature.xp-=1
-            }
+            feature.cost(character,event)
+            // if (event.target.checked==false) {
+            //     feature.cost+=1
+            // }
         }
         if (event.target.checked) {
             if (this.sufficient_xp(feature.xp)==true) {
@@ -708,9 +708,23 @@ class Skill extends Feature {
         r.firstElementChild.onclick=function() {character.toggle(event,copy,character)}
         return r
     }
-    cost(character) {
+    cost(character,event) {
         var owned=character.skills.filter(s=>s.proficient).length
-        this.xp=owned
+        character.free_skills=4+Number(character.ability_scores.int)-owned
+        if (event.target.checked) {
+            character.free_skills-=1
+        }
+        // else {
+        //     character.free_skills-=2
+        // }
+        console.log(character.free_skills)
+        if (character.free_skills<0) {
+            this.xp=Math.abs(character.free_skills)+1
+        }
+        else {
+            this.xp=0
+
+        }
     }
     proficiency(character) {
         if (this.proficient==false) {
@@ -720,7 +734,6 @@ class Skill extends Feature {
         else {
             this.proficient=false
             this.bonus=Number(character.ability_scores[this.code])
-            console.log(this.bonus)
         }
         document.getElementById(this.id).nextElementSibling.value=this.bonus
     }

@@ -16,3 +16,4 @@ Dockerfile
 \
 database/HUBRIS.db
 flask_session/
+.env/

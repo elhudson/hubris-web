@@ -1,4 +1,8 @@
 setup.py
+srd/character.py
+srd/entry.py
+srd/ruleset.py
+srd/tools.py
 srd.egg-info/PKG-INFO
 srd.egg-info/SOURCES.txt
 srd.egg-info/dependency_links.txt
