@@ -9,65 +9,12 @@
     {{ libs.creation() }}
 
 </head>
-<body>
-<form name="class" class='page' method="post" action="class">
+<body data-id="{{id}}">
+<div class='page' id='page'>
     <h1>Classes</h1>
-    <div class="feature-list">
-        {% for class in classes %}
-        <div class="opt">
-            <div class="opt-name">
-                <input type="radio" name="class" value="{{class.id}}">
-                <label for="{{class.name}}">{{class.icon|safe}} {{class.name}}</label>
-            </div>
-            <div class="info">
-                <table>
-                    <tr>
-                        <td>Paths</td>
-                        <td>
-                            {{class.class_paths|listify}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Attribute</td>
-                        <td>
-                        {{class.attributes.name}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Skills</td>
-                        <td>
-                            {{class.skills|listify}}
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>Tags</td>
-                        <td><span>
-                           {{class.tags|listify}}
-                        </span></td>
-                    </tr>
-                    <tr>
-                        <td>Hit Die</td>
-                        <td>{{class.hit_die}}</td>
-                    </tr>
-                    <tr>
-                        <td>Armor Rating</td>
-                        <td>{{class.armor_proficiencies}}</td>
-                    </tr>
-                    <tr>
-                        <td>Weaponry</td>
-                        <td>{{class.weapon_proficiencies}}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="explainer sub">
-                {% if class.description!=None %}
-                {{class.description}}
-                {%endif%}
-            </div>
-        </div>
-        {% endfor %}
+    <div id="content">
+        
     </div>
-    <input type="submit" value="Next">
-</form>
+</div>
 </body>
 </html>

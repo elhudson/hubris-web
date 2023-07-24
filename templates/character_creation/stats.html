@@ -8,102 +8,11 @@
 <head>
     <meta charset="utf-8" />
     {{ libs.creation() }}
-
 </head>
-<body onload="load_character('{{character_id}}')">
-<div class="page">
+<body data-id="{{id}}">
+<div class="page" id="app">
     <h1>Ability Scores</h1>
-    <div class="status">
-        <input type="number" id="pts_remaining" value="28" min="0" max="28">
-        <label for="pts_remaining">Points Remaining</label>
-    </div>
-    <form name="stats" method="post" action="/stats" id="stats">
-        <div class="stats">
-            <div class='stat'>
-                <h2>STR</h2>
-                <div class="ability_score">
-                    <input type="number" name='str' id="str" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('str'); character.stats.output(character)" class="hd_btn"><img
-                                src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                        <button type="button" onclick="character.stats.decrease_score('str'); character.stats.output(character)" class="hd_btn"><img
-                                src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>
-    
-            </div>
-            <div class='stat'>
-                <h2>DEX</h2>
-
-                <div class="ability_score">
-                    <input type="number" name="dex" id="dex" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('dex'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                    <button type="button" onclick="character.stats.decrease_score('dex'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>
-    
-            </div>
-            <div class='stat'>
-                <h2>CON</h2>
-
-                <div class="ability_score">    
-                    <input type="number" name='con' id="con" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('con'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                    <button type="button" onclick="character.stats.decrease_score('con'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>
-    
-    
-    
-            </div>
-            <div class='stat'>
-                <h2>INT</h2>
-
-                <div class="ability_score">    
-                    <input type="number" name="int" id="int" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('int'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                    <button type="button" onclick="character.stats.decrease_score('int'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>
-    
-            </div>
-            <div class='stat'>
-                <h2>WIS</h2>
-                <div class="ability_score">    
-                    <input type="number" name='wis' id="wis" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('wis'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                    <button type="button" onclick="character.stats.decrease_score('wis')" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>
-    
-            </div>
-            <div class='stat'>
-                <h2>CHA</h2>
-                <div class="ability_score">
-                    <input type="number" name='cha' id="cha" readonly>
-                    <div class="toggles">
-                        <button type="button" onclick="character.stats.increase_score('cha'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                    <button type="button" onclick="character.stats.decrease_score('cha'); character.stats.output(character)" class="hd_btn"><img
-                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                    </div>
-                </div>    
-            </div>
-        </div>
-        <input type="submit" value="Submit">
-    </form>
+  <div id="content"></div>
 </div>
 </body>
 </html>

@@ -1,20 +1,18 @@
+@font-face {
+  font-family: plex;
+  src: url(/static/styles/plex/IBMPlexMono-Regular.ttf);
+}
 :root {
-  --size: 14px;
-  --big: 30px;
-  --small: 10px;
-  --size-img: calc(14px - 3px);
-  --big-img: calc(30px - 3px);
-  --border: 1px solid var(--muted);
-  --background: #fff;
-  --muted: #6a6a6a;
-  --transparent: rgba(0, 0, 0, 0);
-  --text: #000;
-  --font-family: sans-serif;
+  background-color: #100d10;
 }
 
 body {
-  font-family: var(--font-family);
-  font-size: var(--size);
+  font-family: plex;
+  font-size: 12px;
+  color: #e5e1e5;
+}
+body img {
+  filter: invert(100%) sepia(7%) saturate(649%) hue-rotate(241deg) brightness(94%) contrast(90%);
 }
 body select {
   padding-left: 5px;
@@ -27,13 +25,13 @@ body textarea {
   height: calc(100% - 40px);
 }
 body textarea:disabled {
-  color: var(--text);
-  font-family: var(--font);
+  color: #e5e1e5;
+  font-family: plex;
   border: none;
 }
 body a {
-  border: var(--border);
-  color: var(--text);
+  border: 1px solid #958595;
+  color: #e5e1e5;
   padding: 2px;
   text-align: center;
   text-decoration: none;
@@ -42,20 +40,19 @@ body input,
 body select,
 body textarea,
 body a {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  background-color: var(--transparent);
+  background-color: rgba(0, 0, 0, 0);
   border-style: solid;
-  border: var(--border);
-  color: var(--text);
-  font-size: var(--size);
+  border: 1px solid #958595;
+  font-family: plex;
+  color: #e5e1e5;
+  font-size: 12px;
 }
 body input[type=number],
 body select[type=number],
 body textarea[type=number],
 body a[type=number] {
   -moz-appearance: textfield;
+  -webkit-appearance: textfield;
 }
 body input[type=checkbox], body input[type=radio],
 body select[type=checkbox],
@@ -67,8 +64,8 @@ body a[type=radio] {
   -webkit-appearance: unset;
      -moz-appearance: unset;
           appearance: unset;
-  height: var(--size);
-  width: var(--size);
+  height: 12px;
+  width: 12px;
   vertical-align: text-bottom;
 }
 body input[type=checkbox]:checked, body input[type=radio]:checked,
@@ -78,197 +75,222 @@ body textarea[type=checkbox]:checked,
 body textarea[type=radio]:checked,
 body a[type=checkbox]:checked,
 body a[type=radio]:checked {
-  background-color: var(--text);
+  background-color: #e5e1e5;
 }
 
 .page {
-  width: 70%;
-  min-width: -moz-min-content;
-  min-width: min-content;
+  max-width: 70%;
   position: relative;
   top: 30;
   margin: auto;
-  border: var(--border);
+  border: 1px solid #958595;
   box-sizing: border-box;
 }
 .page > h1 {
   width: 100%;
-  font-size: var(--big);
+  font-size: 30px;
   text-align: center;
   text-transform: uppercase;
   padding: unset;
   margin: unset;
   margin-bottom: 10px;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
+}
+
+.box .bubbles {
+  text-align: center;
+}
+.box .bubbles .bubble {
+  display: inline-flex;
 }
 
 .stats {
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(3, minmax(100px, 300px));
+  grid-gap: 0px;
+}
+.stats > *:not(:nth-child(3), :nth-child(6)) {
+  border-right: 1px solid #958595;
+}
+.stats > *:not(:nth-child(4), :nth-child(5), :nth-child(6)) {
+  border-bottom: 1px solid #958595;
 }
 
 .stat {
-  border: var(--border) !important;
+  padding-bottom: 5px;
 }
 .stat h2 {
   line-height: unset;
   display: block;
-  font-size: calc(var(--size) + 5px);
+  font-size: 17px;
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
 }
 .stat .ability_score, .stat > input[type=number] {
+  position: relative;
   text-align: center;
+  min-height: 80px;
 }
 .stat .ability_score input[type=number], .stat > input[type=number] input[type=number] {
   border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
+  height: 33px;
+  font-size: 30px;
   text-align: center;
-  min-width: 3ch;
+  position: relative;
+  top: 10%;
   max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
 }
 .stat .ability_score label, .stat > input[type=number] label {
-  font-size: var(--small);
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
   border: unset;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
 }
 .stat .ability_score .toggles, .stat > input[type=number] .toggles {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   width: 100%;
-  display: flex;
 }
+.stat .ability_score .toggles.expander,
 .stat .ability_score .toggles button,
-.stat .ability_score .toggles input[type=submit], .stat > input[type=number] .toggles button,
+.stat .ability_score .toggles input[type=submit], .stat > input[type=number] .toggles.expander,
+.stat > input[type=number] .toggles button,
 .stat > input[type=number] .toggles input[type=submit] {
-  border: var(--border);
-  background-color: var(--transparent);
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
 }
+.stat .ability_score .toggles.expander:hover,
+.stat .ability_score .toggles button:hover,
+.stat .ability_score .toggles input[type=submit]:hover, .stat > input[type=number] .toggles.expander:hover,
+.stat > input[type=number] .toggles button:hover,
+.stat > input[type=number] .toggles input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.stat .ability_score .toggles.expander img,
+.stat .ability_score .toggles.expander svg,
 .stat .ability_score .toggles button img,
 .stat .ability_score .toggles button svg,
 .stat .ability_score .toggles input[type=submit] img,
-.stat .ability_score .toggles input[type=submit] svg, .stat > input[type=number] .toggles button img,
+.stat .ability_score .toggles input[type=submit] svg, .stat > input[type=number] .toggles.expander img,
+.stat > input[type=number] .toggles.expander svg,
+.stat > input[type=number] .toggles button img,
 .stat > input[type=number] .toggles button svg,
 .stat > input[type=number] .toggles input[type=submit] img,
 .stat > input[type=number] .toggles input[type=submit] svg {
-  height: var(--size-img);
-  width: var(--size-img);
+  height: 11px;
+  width: 11px;
 }
 .stat .ability_score .toggles > *:first-child, .stat > input[type=number] .toggles > *:first-child {
   border: unset;
-  border-top: var(--border);
-  border-right: var(--border);
+  border-top: 1px solid #958595;
+  border-right: 1px solid #958595;
   width: 50%;
 }
 .stat .ability_score .toggles > *:last-child, .stat > input[type=number] .toggles > *:last-child {
   border: unset;
-  border-top: var(--border);
+  border-top: 1px solid #958595;
   width: 50%;
 }
 
 .score,
 .bonus {
   text-align: center;
-  border: var(--border);
 }
 .score input,
 .bonus input {
   border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
+  height: 33px;
+  font-size: 30px;
   text-align: center;
-  min-width: 3ch;
+  position: relative;
+  top: 10%;
   max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+  vertical-align: center;
 }
 .score label,
 .bonus label {
-  font-size: var(--small);
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
   vertical-align: bottom;
+  margin: 0px auto;
 }
 .score img,
 .bonus img {
-  height: calc(var(--big-img) - 5px);
-  vertical-align: text-bottom;
+  height: 22px;
 }
 
 .tag,
 .tree {
-  border: var(--border);
-  font-size: calc(var(--size) - 1px);
+  border: 1px solid #958595;
+  font-size: 11px;
   border-radius: 10px;
-  padding: 3px;
+  padding: 0px 3px;
 }
 
-.dc {
-  border: var(--border);
-}
 .dc input {
   border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
+  height: 33px;
+  font-size: 30px;
   text-align: center;
-  min-width: 3ch;
+  position: relative;
+  top: 10%;
   max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+  vertical-align: center;
 }
 .dc label {
-  font-size: var(--small);
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
   vertical-align: bottom;
-}
-.dc img {
-  display: none;
+  margin: 0px auto;
 }
 
-.opt {
+.feature {
   box-sizing: border-box;
   line-height: 160%;
-  border: var(--border);
+  border: 1px solid #958595;
   vertical-align: top;
 }
-.opt table {
+.feature table {
   vertical-align: top;
 }
-.opt > label,
-.opt tr > :first-child,
-.opt .info label {
+.feature label {
   text-transform: uppercase;
-  font-size: var(--size);
+  font-size: 12px;
   font-weight: bold;
 }
-.opt input[type=number] {
+.feature input[type=number] {
   border: unset;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
-  color: var(--text);
-  height: calc(var(--size) + 2px);
+  -moz-appearance: textfield;
+  color: #e5e1e5;
+  height: 14px;
   max-width: 4ch;
-  font-size: var(--size);
-  border-bottom: var(--border);
+  font-size: 12px;
+  border-bottom: 1px solid #958595;
 }
-.opt .description {
+.feature .feature-desc {
   height: 100px;
   overflow: auto;
-}
-.opt .entry,
-.opt .info {
-  margin-left: 5px;
 }
 
 .status {
@@ -280,12 +302,16 @@ body a[type=radio]:checked {
   width: 100%;
 }
 
+.toggles button:hover {
+  background-color: #0a080a !important;
+}
+
 .tabbed {
   margin-bottom: 10px;
   display: block;
 }
 .tabbed .tab_buttons {
-  border: var(--border);
+  border: 1px solid #958595;
   font-size: 0px;
   max-width: -moz-fit-content;
   max-width: fit-content;
@@ -295,28 +321,36 @@ body a[type=radio]:checked {
   margin-right: 5px;
   transform: translate(0, -100%);
 }
+.tabbed .tab_buttons.expander,
 .tabbed .tab_buttons button,
 .tabbed .tab_buttons input[type=submit] {
-  border: var(--border);
-  background-color: var(--transparent);
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
 }
+.tabbed .tab_buttons.expander:hover,
+.tabbed .tab_buttons button:hover,
+.tabbed .tab_buttons input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.tabbed .tab_buttons.expander img,
+.tabbed .tab_buttons.expander svg,
 .tabbed .tab_buttons button img,
 .tabbed .tab_buttons button svg,
 .tabbed .tab_buttons input[type=submit] img,
 .tabbed .tab_buttons input[type=submit] svg {
-  height: var(--size-img);
-  width: var(--size-img);
+  height: 11px;
+  width: 11px;
 }
 .tabbed .tab_buttons button {
   text-transform: uppercase;
-  font-size: var(--size);
+  font-size: 12px;
   font-weight: bold;
   padding: 3px;
   border: none;
-  border-right: var(--border);
+  border-right: 1px solid #958595;
 }
 .tabbed .tabs {
-  border: var(--border);
+  border: 1px solid #958595;
   border-right: none;
   padding: 5px;
 }
@@ -325,42 +359,34 @@ body a[type=radio]:checked {
   text-align: center;
   border: unset;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
-  color: var(--text);
-  height: calc(var(--size) + 2px);
+  -moz-appearance: textfield;
+  color: #e5e1e5;
+  height: 14px;
   max-width: 4ch;
-  font-size: var(--size);
-  border-bottom: var(--border);
-}
-.skill_entry label {
-  text-transform: uppercase;
-  font-size: var(--size);
-  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 1px solid #958595;
 }
 
 .sheet {
-  max-width: 60%;
-}
-
-.section {
-  display: flex;
-  max-width: 100%;
+  padding: 5px;
 }
 
 .subsection {
-  border: var(--border);
-  box-sizing: border-box;
+  background-color: #100d10;
+  border: 1px solid #958595;
   width: 100%;
   max-height: 100% !important;
-  margin: 5px;
+  margin-bottom: 5px;
 }
-.subsection > label,
-.subsection > div > label,
-.subsection .item > label:not(.counter > label):not(.bonus > label):not(.dc > label) {
+.subsection > label, .subsection .bio label, .subsection h3 {
   text-transform: uppercase;
-  font-size: var(--size);
+  font-size: 12px;
   font-weight: bold;
+}
+.subsection h3 {
+  display: inline;
+  line-height: unset;
 }
 .subsection h1, .subsection h2,
 .subsection .set > label,
@@ -369,257 +395,295 @@ body a[type=radio]:checked {
   margin-bottom: 0px;
   line-height: unset;
   display: block;
-  font-size: calc(var(--size) + 5px);
+  font-size: 17px;
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
+}
+.subsection:not(details[open]):is(details) {
+  border-bottom: none;
+}
+.subsection:is(details) summary img {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  float: right;
+}
+.subsection:is(details) summary:hover {
+  background-color: #0a080a;
+}
+.subsection:is(details):is([open]) summary img {
+  transform: rotate(90deg);
 }
 
-.tracker {
-  display: inline-flex;
-  text-align: center;
-  border: var(--border);
-}
-.tracker .current,
-.tracker .remaining {
-  width: 50%;
-}
-.tracker .current label,
-.tracker .remaining label {
-  font-size: var(--small);
-  text-transform: uppercase;
-  display: block !important;
-  padding: 3px;
-  text-align: center;
-  border-top: var(--border);
-}
-.tracker .current input,
-.tracker .remaining input {
-  border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
-  text-align: center;
-  min-width: 3ch;
-  max-width: 50%;
-}
-.tracker .remaining {
-  border-left: var(--border);
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(50px, 1fr));
+.box {
   margin: 5px;
-}
-.stats .stat {
-  border: var(--border);
-  box-sizing: border-box;
-  width: 100%;
-  max-height: 100% !important;
+  border: 1px solid #958595;
   padding-bottom: 5px;
 }
-.stats .stat > label,
-.stats .stat > div > label,
-.stats .stat .item > label:not(.counter > label):not(.bonus > label):not(.dc > label) {
-  text-transform: uppercase;
-  font-size: var(--size);
-  font-weight: bold;
-}
-.stats .stat h1, .stats .stat h2,
-.stats .stat .set > label,
-.stats .stat summary {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  line-height: unset;
-  display: block;
-  font-size: calc(var(--size) + 5px);
-  text-transform: uppercase;
-  font-weight: bold;
-  text-align: center;
-  border-bottom: var(--border);
-}
-.stats .stat .score {
-  border: var(--border);
-  border: unset;
-  border-bottom: var(--border);
-}
-.stats .stat .score input {
-  border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
-  text-align: center;
-  min-width: 3ch;
-  max-width: 50%;
-}
-.stats .stat .score label {
-  font-size: var(--small);
+.box > label, .box .feature-name label, .box .item > label {
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
-  vertical-align: bottom;
+  border-top: none;
+  border-bottom: 1px solid #958595;
+}
+.box select {
+  margin: 0px;
+}
+.box .item {
+  margin: 5px;
+}
+.box .item select {
+  margin-right: 0px;
+  border: none;
 }
 
-.tracker,
+.bio label {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .bonus,
 .dc,
 .counter {
-  max-width: 300px;
+  border: 1px solid #958595;
 }
-.tracker label,
 .bonus label,
 .dc label,
 .counter label {
   vertical-align: bottom;
+  border-bottom: 1px solid #958595;
+  border-top: none;
 }
 
 .counter {
+  position: relative;
   text-align: center;
-  border: var(--border);
+  min-height: 80px;
+  border: 1px solid #958595;
 }
 .counter input[type=number] {
   border: unset;
-  height: calc(var(--big) + 3px);
-  font-size: var(--big);
+  height: 33px;
+  font-size: 30px;
   text-align: center;
-  min-width: 3ch;
+  position: relative;
+  top: 10%;
   max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
 }
 .counter label {
-  font-size: var(--small);
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
   border: unset;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
 }
 .counter .toggles {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   width: 100%;
-  display: flex;
 }
+.counter .toggles.expander,
 .counter .toggles button,
 .counter .toggles input[type=submit] {
-  border: var(--border);
-  background-color: var(--transparent);
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
 }
+.counter .toggles.expander:hover,
+.counter .toggles button:hover,
+.counter .toggles input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.counter .toggles.expander img,
+.counter .toggles.expander svg,
 .counter .toggles button img,
 .counter .toggles button svg,
 .counter .toggles input[type=submit] img,
 .counter .toggles input[type=submit] svg {
-  height: var(--size-img);
-  width: var(--size-img);
+  height: 11px;
+  width: 11px;
 }
 .counter .toggles > *:first-child {
   border: unset;
-  border-top: var(--border);
-  border-right: var(--border);
+  border-top: 1px solid #958595;
+  border-right: 1px solid #958595;
   width: 50%;
 }
 .counter .toggles > *:last-child {
   border: unset;
-  border-top: var(--border);
+  border-top: 1px solid #958595;
   width: 50%;
 }
 .counter div:first-child {
-  font-size: var(--small);
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
   border-top: unset;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
 }
 
-.item {
-  margin: 5px;
-}
-.item.bonus, .item.dc {
+.tracker {
+  display: inline-block;
   text-align: center;
 }
-.item.bonus label, .item.dc label {
-  font-weight: normal;
-  font-size: var(--small);
+.tracker > *:first-child,
+.tracker > *:last-child {
+  min-width: 0;
+}
+.tracker > *:first-child label,
+.tracker > *:last-child label {
+  font-size: 10px;
   text-transform: uppercase;
   display: block !important;
   padding: 3px;
   text-align: center;
-  border-top: var(--border);
+}
+.tracker > *:first-child input,
+.tracker > *:last-child input {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+}
+.tracker > *:last-child {
+  border-left: 1px solid #958595;
 }
 
-.opt {
-  box-sizing: border-box;
-  line-height: 160%;
-  border: var(--border);
-  vertical-align: top;
+.item:not(.tracker) {
+  margin: 5px;
+  min-width: 0;
+}
+.item:not(.tracker).bonus, .item:not(.tracker).dc {
+  text-align: center;
+}
+.item:not(.tracker).bonus label, .item:not(.tracker).dc label {
+  font-weight: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+}
+
+.modifier {
+  display: inline;
+  position: relative;
+  vertical-align: middle;
+}
+.modifier * {
+  display: inline;
+  vertical-align: middle;
+  top: 10%;
+  position: relative;
+}
+
+.skill_entry {
+  margin: 2px;
+}
+
+.content {
+  display: grid;
+  max-width: 100%;
+}
+.content.bio {
+  grid-template-columns: repeat(2, 50%);
+}
+.content.progression, .content.health {
+  grid-template-columns: 40% 30% 30%;
+}
+.content.progression .tracker, .content.health .tracker {
+  display: flex;
+}
+.content.progression .box .bubbles, .content.health .box .bubbles {
+  text-align: center;
+}
+.content.progression .box .bubbles .bubble, .content.health .box .bubbles .bubble {
+  display: inline-flex;
+}
+.content.progression .box .bubbles .bubble, .content.health .box .bubbles .bubble {
+  min-width: 20%;
+}
+.content.health {
+  grid-template-columns: 30% 40% 30%;
+}
+.content.health .bubble {
+  min-width: 15%;
+}
+.content.combat {
+  grid-template-columns: repeat(5, 20%);
+}
+.content.powers {
+  grid-template-columns: 20% 80%;
+}
+
+.feature {
+  border: 1px solid #958595;
+  margin-bottom: 5px;
+}
+.feature > label, .feature .feature-name label, .feature .item > label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: none;
+  border-bottom: 1px solid #958595;
+}
+.feature select {
+  margin: 0px;
+}
+.feature .feature-content {
   margin: 5px;
 }
-.opt table {
-  vertical-align: top;
+
+.feature-group:first-child {
+  border-right: 1px solid #958595;
 }
-.opt > label,
-.opt tr > :first-child,
-.opt .info label {
-  text-transform: uppercase;
-  font-size: var(--size);
-  font-weight: bold;
-}
-.opt input[type=number] {
-  border: unset;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  color: var(--text);
-  height: calc(var(--size) + 2px);
-  max-width: 4ch;
-  font-size: var(--size);
-  border-bottom: var(--border);
-}
-.opt .description {
-  height: 100px;
-  overflow: auto;
-}
-.opt .entry,
-.opt .info {
-  margin-left: 5px;
-}
-.opt .opt-name > label, .opt > label {
+.feature-group h3 {
   line-height: unset;
   display: block;
-  font-size: calc(var(--size) + 5px);
+  font-size: 17px;
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
-  border-bottom: var(--border);
+  border-bottom: 1px solid #958595;
+  font-size: 12px;
+  margin-top: 0px;
+}
+.feature-group .feature-list {
+  margin: 0px 5px;
 }
 
-.tag {
-  max-width: -moz-fit-content;
-  max-width: fit-content;
-  display: inline;
-  margin: 5px;
-  line-height: 200%;
+.subsection .feature-group {
+  padding-top: 5px;
 }
-
-#powers > *:first-child {
-  max-width: 13%;
-  min-width: 13%;
-}
-#powers .subsection.tabbed {
-  padding-top: 23px;
-}
-#powers .subsection.tabbed input[type=checkbox] {
+.subsection .feature-group h3 {
   display: none;
 }
-#powers .set .feature-list {
+
+.meta {
   display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: 50% 50%;
 }
-#powers .set > *:first-child {
-  display: none;
+
+.feature-content {
+  display: grid;
+  grid-template-columns: 30% 70%;
 }

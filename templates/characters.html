@@ -1,37 +1,15 @@
-<html>
+{% import 'libs.html' as libs %}
 
+<html>
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/styles/compiled/characters.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="static/scripts/walkthrough.js"></script>
-    <script src="static/scripts/char_creation.js"></script>
+    {{ libs.characters() }}
 </head>
 
-<body>
-    <div class="page">
-        <h1>Characters</h1>
-    <div class="char_list">
-        {% for character in characters %}
-        <form class='character-thumbnail' action="/characters" method="post">
-            <div>
-                <button class='title-link' type='submit'>{{character.name}}</button>
-            </div>
-            <div><label>Class</label> {{character.classes[0].name}}</div>
-            <div><label>Backgrounds</label> {{character.backgrounds[0].name}} & {{character.backgrounds[1].name}}</div>
-            <div><label>Tier</label> {{character.tier}}</div>
-            <input type="radio" name="character_selection" checked value="{{character.id}}" style="display:none;">
-        </form>
-        {% endfor %}
-        <div class="add">
-            <a href='/class'>
-                <div>
-                    <img src="https://www.svgrepo.com/show/510136/plus.svg" />
-                </div>
-            </a>
-        </div>
+<body data-ids="{{ ids|safe }}">
+    <div class="page" id="page">
+        <div>some content?</div>
     </div>
-</div>
 </body>
 
 </html>

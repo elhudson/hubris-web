@@ -1,0 +1,17 @@
+@import 'theme';
+
+html {
+    * {
+        font-family: $sans;
+        font-size: $size;
+        color: $text;
+    }
+    a {
+        color: $text;
+        text-decoration: none;
+
+        &:hover {
+            color: $light;
+        }
+    }
+}

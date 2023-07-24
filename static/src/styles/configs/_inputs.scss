@@ -1,0 +1,18 @@
+@import 'theme';
+
+input {
+    border-bottom:$border;
+    &[type='checkbox'] {
+        border:$border;
+        &:checked {
+            background-color: $selected;
+        }
+        &:hover {
+            background-color: $hover;
+        }
+    }
+    &[type='number'] {
+        max-width: 3rem;
+        width: min-content;
+    }
+}

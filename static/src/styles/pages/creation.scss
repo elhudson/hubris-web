@@ -1,0 +1,18 @@
+@use '../configs';
+@use '../components/page';
+@use '../components/feature';
+@use '../components/tabs';
+
+.page {
+    @include page.page
+}
+
+.feature {
+    @include feature.feature
+}
+
+.react-tabs {
+    padding:none;
+    margin: none;
+    @include tabs.tabs
+}

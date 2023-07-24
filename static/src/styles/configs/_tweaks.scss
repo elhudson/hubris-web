@@ -1,0 +1,23 @@
+@import 'theme';
+
+::-webkit-scrollbar {
+    display: none;
+  }
+  html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  input,
+  select,
+  textarea{
+      &[type='number'] {
+          -moz-appearance: textfield;
+          -webkit-appearance: textfield;
+      }
+      &[type='checkbox'] {
+        appearance: none;
+      }
+      background-color: $transparent;
+      border:none;
+  }
+

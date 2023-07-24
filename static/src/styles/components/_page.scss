@@ -1,0 +1,18 @@
+@use 'buttons';
+@use 'headers';
+@use '../configs';
+
+@mixin page() {
+    max-width: 70%;
+    position: relative;
+    top:30;
+    margin:auto;
+    border: configs.$border;
+    box-sizing: border-box;
+    >h1 {
+        @include headers.page;
+    }
+    button.next {
+        @include buttons.next-page;
+    }
+}

@@ -8,8 +8,8 @@
     {{ libs.sheet() }}
 </head>
 
-<body onload="load_character('{{character.id}}');openTab('effects')">
-    <div class="sheet page">
+<body>
+    <div class="sheet page" id='sheet' data-id="{{character.id}}">
         <div class="section">
             <div class="subsection bio">
                 <h1>Bio</h1>
@@ -29,7 +29,6 @@
                 <div class="item">
                     <label for="alignment">Alignment</label>
                     <select class="dropdown" id="alignment">
-                        <option id="lg" {{ 'selected' if character.alignment=='Lawful Good' }}>Lawful Good</option>
                         <option id="ng" {{ 'selected' if character.alignment=='Neutral Good' }}>Neutral Good</option>
                         <option id="cg" {{ 'selected' if character.alignment=='Chaotic Good' }}>Chaotic Good</option>
                         <option id="ln" {{ 'selected' if character.alignment=='Lawful Neutral' }}>Lawful Neutral

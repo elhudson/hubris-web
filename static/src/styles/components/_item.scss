@@ -1,0 +1,24 @@
+@use '../configs';
+@use 'headers';
+
+@mixin item {
+    padding:2px 5px;
+    >label {
+        @include headers.inline;
+        padding-right:5px;
+    }
+    .tag, .tree, .path, .skill, .attribute {
+        @include tag;
+    }
+}
+
+@mixin tag {
+    vertical-align: baseline;
+    color:configs.$highlight;
+    border:configs.$border;
+    background-color: configs.$selected;
+    font-size: configs.$small;
+    padding:0px 2px;
+    margin:3px 3px;
+    border-radius: 7px;
+}

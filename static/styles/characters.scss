@@ -1,31 +1,67 @@
 @import 'HUBRIS';
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(100%/5), 300px));
+    grid-template-rows: repeat(auto-fill, 100px);
+}
 
-.char_list {
-    @include option-grid();
+.add-character {
+    display: grid;
+    margin:5px;
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    button {
+        max-height:100px;
+        border: $border;
+        border-radius: 0px;
+        background-color: $background;
+        &:hover {
+            background-color: $hover;
+        }
+    }
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    a {
+        border: none;
+    }  
 }
 
 .character-thumbnail {
-    @include section();
-
-    .title-link {
-        background-color: var(--transparent);
-        border: unset;
-        @include section-title();
+    margin:5px;
+    border: $border;
+   display: grid;
+   grid-template-columns: 30% 70%;
+    >div {
+        max-width: 100%;
+        border:$border;
     }
-}
-
-.add {
-        a {
-            display: flex;
-            height: calc(100% - 20px)
+    div svg {
+        max-width: unset;
+        max-height: unset;
+        max-width: 100%;
+        max-height: 90px;
+    }
+    .thumb-text {
+        display:grid;
+        grid-template-columns: 85% 15%;
+        &>*:first-child {
+            @include section();
+            overflow:hidden;
         }
-        div {
-            margin:auto;
-            text-align: center;
-        img {
-            height: 60%;
-            width: 60%;
+        .item {
+            margin:5px;
+        }
+        .box {
+            min-width: fit-content;
+            max-width: min-content;
+            label {
+                display: none;
+            }
+            @include radio($vertical:true, $children:4);
+            max-height: none;
         }
     }
+    
 }
-

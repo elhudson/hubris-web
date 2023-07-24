@@ -1,0 +1,21 @@
+@import 'theme';
+svg {
+    .st0 {
+        fill: $text;
+    }
+    path {
+    stroke: $text;
+    g {
+        fill:$text;
+    }
+}
+}
+
+a {
+    display: unset;
+}
+
+div svg, div img {
+    max-width: 50px;
+    max-height: 50px;
+}

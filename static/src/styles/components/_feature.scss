@@ -1,0 +1,19 @@
+@use '../configs';
+@use 'item';
+@use 'headers';
+@use 'box';
+
+@mixin feature {
+    @include box.box;
+    .feature-name {
+        @include headers.input-header;
+    }
+
+    .feature-info {
+        @include item.item;
+        border-bottom: configs.$border;
+        &.desc {
+            border-bottom: none;
+        }
+    }
+}

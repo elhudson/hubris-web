@@ -8,68 +8,13 @@
     {{ libs.creation() }}
 </head>
 
-<body onload="load_character('{{character_id}}')">
+<body data-id="{{id}}">
     <div class="page">
-        <h1>Abilities</h1>
-        <form method="post" action="/xp" id="xp">
-            <div class="status">
-                <div class="current">
-                    <input id="xp_spent" disabled type="number" value="0">
-                    <label for="xp_spent">XP Spent</label>
-                </div>
-                <div class="remaining">
-                    <input id="xp_earned" disabled type="number" value="6">
-                    <label for="xp_earned">XP Earned</label>
-                </div>
-            </div>
-            <div class="tabbed">
-                <div class="tab_buttons" id="tab_buttons">
-                    <button type="button" id="skills_tab" class="tab" onclick="openTab('skills')">Skills</button>
-                    <button type="button" id="hit_dice_tab" class="tab" onclick="openTab('hit_dice')">Hit Dice</button>
-                    <button type="button" id="class_features_tab" class="tab" onclick="openTab('class_features')">Class
-                        Features</button>
-                    <button type="button" id="tag_features_tab" class="tab" onclick="openTab('tag_features')">Tag
-                        Features</button>
-                    <button type="button" id="effects_tab" class="tab" onclick="openTab('effects')">Effects</button>
-                    <button type="button" id="ranges_tab" class="tab" style="visibility:hidden"
-                        onclick="openTab('ranges')">Ranges</button>
-                    <button type="button" id="durations_tab" class="tab" style="visibility:hidden"
-                        onclick="openTab('durations')">Durations</button>
-                </div>
-                <div class="tabs">
-                    <div class="tabcontent" id="skills">
-                       
-                    </div>
-                    <div class="tabcontent" id="hit_dice" style="display:none">
-                        <div class='stat single'>
-                            <h2>Hit Dice</h2>
-                            <div class="ability_score">
-                                <input type="number" name='str' id="hd" disabled>
-                                <div class="toggles">
-                                    <button type="button" onclick='window.character.hd("add")' class="hd_btn"><img
-                                            src="https://www.svgrepo.com/show/510136/plus.svg" /></button>
-                                    <button type="button" onclick='window.character.hd("remove")' class="hd_btn"><img
-                                            src="https://www.svgrepo.com/show/510074/minus.svg" /></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tabcontent cards" id="class_features" style="display:none">
-                    </div>
-                    <div id="tag_features" class="tabcontent cards" style="display:none">
-                    </div>
-                    <div id="effects" class="tabcontent cards" style="display:none">
-                    </div>
-                    <div id="ranges" class="tabcontent" style="display:none">
-                    </div>
-                    <div id="durations" class="tabcontent" style="display:none">
-                    </div>
-                </div>
-            </div>
-            <input name="character" id="data" type="text" style="display:none">
-            <input type="submit" value="Next">
+    <h1>Abilities</h1>
+    <div id="content">
+
     </div>
-    </form>
+    </div>
 
 </body>
 

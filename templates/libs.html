@@ -1,18 +1,22 @@
 {% macro global() -%}    
-    <script src="/static/scripts/char_creation.js"></script>
     <script src="https://mozilla.github.io/nunjucks/files/nunjucks.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src=" https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js "></script>
 {% endmacro -%}
 
 {% macro creation() %}
     {{ global() }}
-    <link rel="stylesheet" href="/static/styles/compiled/creation.css">
+    <script src="/static/dist/creation.js" type="module"></script>
 
 {% endmacro %}
 
 {% macro sheet() %}
     {{ global() }}
     <link rel="stylesheet" href="/static/styles/compiled/sheet.css">
+    <script src="/static/dist/sheet.js" type="module"></script>
+{% endmacro %}
 
+{% macro characters() %}
+    {{global()}}
+    <link rel="stylesheet" href="static/styles/compiled/characters.css">
+    <script src="/static/dist/characters.js" type="module"> </script>
 {% endmacro %}

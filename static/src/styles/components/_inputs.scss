@@ -1,0 +1,75 @@
+@mixin big-mod {
+    border: unset;
+    height: calc($big + 3px);
+    font-size: $big;
+    text-align: center;
+    position: relative;
+    top:10%;
+    max-width: 50%;
+    min-width: 5ch;
+    width: 10%;
+}
+
+@mixin counter {
+    position: relative;
+    text-align: center;
+    min-height:calc($big + 50px);
+    input[type='number'] {
+        @include big-mod();
+    }
+    label {
+        @include label();
+        border:unset;
+        border-bottom:$border;
+    }
+    .toggles {
+        position: absolute;
+        bottom:0;
+        right:0;
+        @include button();
+        width: 100%;
+        >*:first-child {
+            border: unset;
+            border-top: $border;
+            border-right: $border;
+            width: 50%;
+        }
+        >*:last-child {
+            border: unset;
+            border-top: $border;
+            width: 50%;
+
+        }
+    }
+}
+
+@mixin count {
+    input {
+        @include big-mod();
+        vertical-align: center;
+    }
+    label {
+        @include label();
+        vertical-align: bottom;
+        margin:0px auto;
+    }
+}
+
+@mixin doublesided {
+    display: inline-block;
+    text-align: center;
+    >*:first-child,
+    >*:last-child {
+        min-width:0;
+        label {
+            @include label();
+        }
+
+        input {
+            @include big-mod();
+        }
+    }
+    >*:last-child {
+        border-left: $border;
+    }
+}

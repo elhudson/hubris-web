@@ -11,7 +11,6 @@
 }
 
 .status {
-    @include remaining();
     width: 20%;
 }
 
@@ -19,20 +18,7 @@
     border-bottom: none;
 }
 
-.page {
-    input[type='submit'] {
-        text-align: center;
-        @include section-title();
-        border: unset;
-        margin: unset !important;
-        width: 100%;
-        border-top: var(--border);
-    }
 
-    >* {
-        margin: 5px;
-    }
-}
 
 .opt {
     @include feature();

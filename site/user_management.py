@@ -3,8 +3,10 @@ from srd.character import create_character
 from pandas import read_sql
 from sqlalchemy import text, exc
 from itertools import chain
+import os
 import uuid
-
+from werkzeug import exceptions
+from db_connect import tunnel, engine
 from HUBRIS import app
 
 
@@ -18,14 +20,25 @@ def login():
     else:
         session['user_id']=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
         return redirect(url_for('my_characters'))
+    
+@app.errorhandler(exceptions.InternalServerError)
+def handle_server_disconnect(e):
+    t=tunnel()
+    e=engine(t)
+    app.database=e
+    return redirect(request.base_uri)
+
 
 @app.route('/characters',methods=['GET','POST'])
 def my_characters():
     if request.method=='GET':
         user_id=session.get('user_id')
         ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user_id}'"),app.database).values.tolist()))
-        chars=[create_character(id,app.database) for id in ids]
-        return render_template('characters.html',characters=chars)
+        needs_writing=[i for i in ids if str(i)+'.json' not in os.listdir(app.home+'/static/characters')]
+        chars=[create_character(id,app.database) for id in needs_writing]
+        for c in chars:
+            c.to_file()
+        return render_template('characters.html',ids=ids)
     if request.method=='POST':
         id=request.form['character_selection']
         return redirect(url_for('sheet',character_id=id))
