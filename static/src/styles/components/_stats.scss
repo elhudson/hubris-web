@@ -1,0 +1,12 @@
+@use 'inputs';
+
+@mixin stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 50%));
+    .counter {
+        @include inputs.counter;
+    }
+    .item {
+        margin:5px;
+    }
+}

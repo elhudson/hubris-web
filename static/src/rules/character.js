@@ -4,7 +4,7 @@ import { FeatureArray, SkillArray } from './structures';
 import { immerable, current } from 'immer'
 import * as _ from 'lodash'
 import { Entry, Collection } from './feature';
-import { Groups } from '../pages/creation';
+import { Groups } from './sorts';
 
 export class Character {
     [immerable] = true
@@ -13,30 +13,48 @@ export class Character {
         this.ability_scores = StatArray.from(data);
         this.skills.owned = SkillArray.parse(data.skills, ruleset.skills);
     }
+    clone() {
+        return _.cloneDeep(this)
+    }
     static parse(data) {
-        var ch=new Character(data)
-        Object.keys(data).forEach((k)=> {
-            if (Object.keys(ruleset).filter(i=>i.includes('__')==false).includes(k)) {
-                ch[k]=data[k].map(d=>Entry.parse(d))
+        var ch = new Character(data)
+        Object.keys(data).forEach((k) => {
+            if (Object.keys(ruleset).filter(i => i.includes('__') == false).includes(k)) {
+                ch[k] = data[k].map(d => Entry.parse(d))
             }
         })
-        ch.ability_scores=data.ability_scores
+        ch.ability_scores = data.ability_scores
+        ch.bio=Bio.parse(data.bio)
         return ch
     }
-    static async load(id) {
-        const from_file = await fetch('/static/characters/' + id + '.json')
-        const data = await from_file.json()
-        return new Character(data)
+    static load(id) {
+        if (sessionStorage.getItem(id)==null) {
+            return this.create(id)
+        }
+        else {
+            return this.parse(JSON.parse(sessionStorage.getItem(id)))
+        }
     }
     static create(id) {
-        var scores=new StatArray()
-        var self=new Character({
-            id:id,
-            xp_earned:6,
-            xp_spent:0,
-            skills:ruleset.skills.list()})
-        self.ability_scores=scores
+        var scores = new StatArray()
+        var self = new Character({
+            id: id,
+            xp_earned: 6,
+            xp_spent: 0,
+            skills: ruleset.skills.list(),
+            bio:new Bio()
+        })
+        self.ability_scores = scores
         return self
+    }
+    save() {
+        sessionStorage.setItem(this.id,JSON.stringify(this))
+    }
+    write(url) {
+        fetch(url, {
+            method:'POST',
+            body:sessionStorage.getItem(this.id)
+        })
     }
     tier(xp = this.xp_spent) {
         var spent = Number(xp)
@@ -69,101 +87,103 @@ export class Character {
             return str + proficiency
         }
     }
-    pwr({ xp=this.xp_spent, cls=this.classes[0] }) {
+    pwr({ xp = this.xp_spent, cls = this.classes[0] }) {
         var attr = ruleset.attributes[cls.relate['attributes']].name
-        var pb=this.proficiency(xp)
-        return Number(this.ability_scores[attr.toLowerCase().slice(0, 3)]) + pb  
+        var pb = this.proficiency(xp)
+        return Number(this.ability_scores[attr.toLowerCase().slice(0, 3)]) + pb
     }
     class_tags() {
-        this.tags=this.classes[0].links('tags')
+        return this.classes[0].links('tags')
     }
     has(feature) {
-        if (Object.hasOwn(this,feature.table)) {
-        var r=this[feature.table].map(f=>f.id)
-        return r.includes(feature.id) }
-        else {return false}
+        if (Object.hasOwn(this, feature.table)) {
+            var r = this[feature.table].map(f => f.id)
+            return r.includes(feature.id)
+        }
+        else { return false }
     }
     available(obj, column) {
-        return obj.links(column).filter(t=>t.qualifies(this))
+        return obj.links(column).filter(t => t.qualifies(this))
+    }
+    add(feature) {
+        if (feature != null) {
+            this[feature.table] == undefined && (this[feature.table] = [])
+            this[feature.table].push(feature)
+            feature.defaults.forEach((f) => {
+                this.add(f)
+            })
+            this.options[feature.table].get(feature).bought = true
+            this.options[feature.table].qual(this, feature)
+        }
+    }
+    purchase(feature) {
+        if (feature.addable(this)) {
+            this.xp_spent += feature.xp
+            this.add(feature)
+        }
+        else {
+            alert('Not eligible!')
+            document.getElementById(feature.id).checked = false
+        }
+    }
+    refund(feature) {
+        if (feature.removeable(this)) {
+            this.xp_spent -= feature.xp
+            this.remove(feature)
+        }
+        else {
+            alert('This is a default feature!')
+        }
+    }
+    remove(feature) {
+        if (feature != null && feature != undefined ) {
+            this[feature.table] == undefined && (this[feature.table] = [])
+            _.remove(this[feature.table], f => f.id == feature.id)
+            var illegal = this[feature.table].filter(f => f.legal(this) == false)
+            illegal.forEach((i) => {
+                this.refund(i)
+            })
+            feature.defaults.forEach((f) => {
+                if (f!=null && f.removeable(this)) {
+                    this.remove(f)
+                }
+            })
+            if (this.options[feature.table].pool().map(f => f.id).includes(feature.id)) {
+                this.options[feature.table].get(feature).bought = false
+            }
+            this.options[feature.table].dequal(this, feature)
+        }
     }
     buyable() {
-        var options=new Object();
-        options.class_features=new Groups(this.available(this.classes[0],'class_features'))
-        options.tag_features=new Groups(_.uniqBy(this.tags.flatMap(t=>this.available(t,'tag_features')), 'id'))
-        options.effects=new Groups(_.uniqBy(this.tags.flatMap(t=>this.available(t, 'effects')), 'id'))
-        options.effects.forEach((ef)=> {ef.quald_by(this)})
+        var options = new Object();
+        if (this.tags == undefined) {
+            this.tags = this.class_tags()
+        }
+        options.class_features = new Groups(this.available(this.classes[0], 'class_features'))
+        options.tag_features = new Groups(_.uniqBy(this.tags.flatMap(t => this.available(t, 'tag_features')), 'id'))
+        options.effects = new Groups(_.uniqBy(this.tags.flatMap(t => this.available(t, 'effects')), 'id'))
+        options.effects.forEach((ef) => { ef.quald_by(this) })
+        options.ranges = new Groups([])
+        options.durations = new Groups([])
         return options
     }
 }
 
-export function useCharacter(ch) {    
-    const [character, dispatch] = useImmerReducer(dispatcher, ch)
-    function dispatcher(draft, action) {
-        const snapshot=()=> {return current(draft)}
-        function adder(draft, feature) {
-            draft[feature.table]==undefined && (draft[feature.table]=[])
-            feature.qualifies(snapshot()) && draft[feature.table].push(feature) 
-            ruleset.reference.has_ancestry.includes(feature.table) && (ancestry(draft, feature, true))
-        }
-        function ancestry(draft, feature, add) {
-            add ? spender(draft, feature.xp) : refunder(draft, feature.xp)
-            feature.table=='effects' && (metadata(draft, feature, add))
-        }
-        function remover(draft, feature) {
-            if (feature.removeable(snapshot())) {
-                _.remove(draft[feature.table], i=>i.id==feature.id)
-                ruleset.reference.has_ancestry.includes(feature.table) && ancestry(draft, feature, false)
-            }
-        }
-        function spender(draft, cost) {
-            var cost=Number(action.cost)
-            draft.xp_spent+=cost
-        }
-        function refunder(draft, cost) {
-            var cost=Number(action.cost)
-            draft.xp_spent-=cost
-        }
-        function metadata(draft, feature, add) {
-            var rng=ruleset.ranges[feature.range.id]
-            var dur=ruleset.durations[feature.duration.id]
-            if (add) {
-                adder(draft, rng)
-                adder(draft, dur)
-            }
-            else {
-                remover(draft, rng)
-                remover(draft, dur)
-
-            }
-        }
-        if (action.type=='add') {
-            var f=ruleset[action.target][action.id]
-           adder(draft, f)
-        }
-        if (action.type=='drop') {
-            var f=ruleset[action.target][action.id]
-            remover(draft, f)
-        }
-        if (action.type=='update-score') {
-            var ref=current(draft)
-            if (action.direction=='up') {
-                var atm=action.costs[action.value]
-                var next=action.costs[Number(action.value)+1]
-                var diff=next-atm
-                if (ref.ability_scores.points-diff>=0) {
-                    draft.ability_scores[action.code]+=1
-                    draft.ability_scores.points-=diff
-                }
-            }
-            if (action.direction=='down') {
-                var atm=action.costs[action.value]
-                var next=action.costs[Number(action.value)-1]
-                var diff=next-atm
-                draft.ability_scores[action.code]-=1
-                draft.ability_scores.points-=diff
-            }
-        }
+class Bio {
+    [immerable]=true
+    constructor() {
+        this.name;
+        this.gender;
+        this.appearance;
+        this.backstory;
+        this.alignment='lg'
     }
-    return [character, dispatch]
+    update(prop, v) {
+        this[prop]=v
+    }
+    static parse(json) {
+        const b=new Bio()
+        Object.assign(b,json)
+        return b
+    }
 }
-

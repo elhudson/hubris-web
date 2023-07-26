@@ -1,75 +1,77 @@
+@use 'buttons';
+@use 'headers';
+
+@import '../configs';
+
 @mixin big-mod {
     border: unset;
     height: calc($big + 3px);
     font-size: $big;
     text-align: center;
     position: relative;
-    top:10%;
     max-width: 50%;
     min-width: 5ch;
     width: 10%;
 }
 
+@mixin doublesided {
+    display: flex;
+    >*{
+        width: 50%;
+    }
+}
+
+@mixin toggles {
+    position: absolute;
+    bottom:0;
+    right:0;
+    @include buttons.buttons;
+    width: 100%;
+}
+
 @mixin counter {
+    border:$border;
     position: relative;
     text-align: center;
+    align-items: center;
     min-height:calc($big + 50px);
     input[type='number'] {
-        @include big-mod();
+        @include big-mod;
     }
     label {
-        @include label();
         border:unset;
         border-bottom:$border;
+        position:relative;
+        top:0;
+        text-align: center;
+        display: block;
+        @include headers.label;
     }
     .toggles {
-        position: absolute;
-        bottom:0;
-        right:0;
-        @include button();
-        width: 100%;
-        >*:first-child {
-            border: unset;
-            border-top: $border;
-            border-right: $border;
-            width: 50%;
-        }
-        >*:last-child {
-            border: unset;
-            border-top: $border;
-            width: 50%;
-
-        }
+        @include toggles;
+        border:unset;
+        border-top:$border;
     }
 }
 
 @mixin count {
+    margin:5px;
+    border:$border;
+    align-items: center;
+    display: flex;
+    flex-direction: column-reverse;
     input {
-        @include big-mod();
+        @include big-mod;
         vertical-align: center;
     }
     label {
-        @include label();
-        vertical-align: bottom;
-        margin:0px auto;
+        @include headers.label;
+        margin-bottom:0px;
+        border-top:$border;
+        width: 100%;
     }
 }
 
-@mixin doublesided {
-    display: inline-block;
-    text-align: center;
-    >*:first-child,
-    >*:last-child {
-        min-width:0;
-        label {
-            @include label();
-        }
-
-        input {
-            @include big-mod();
-        }
-    }
-    >*:last-child {
-        border-left: $border;
-    }
+@mixin field {
+    max-width: 128ch;
 }

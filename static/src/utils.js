@@ -2,19 +2,6 @@ import { useState } from 'react';
 import React from 'react';
 import { ReactSVG } from 'react-svg';
 
-export function NextPage({ current, next, character, condition }) {
-    function save() {
-        if (condition(current, character) == true) {
-            sessionStorage.setItem(character.id, JSON.stringify(character))
-            window.location.assign(`/${next}`)
-        }
-        else { alert('Please choose all required options before proceeding.') }
-    }
-    return (
-        <button className='next' type='button' onClick={save}> Next </button>
-    )
-}
-
 export function Counter({ limiter = null, boosted = false, item, update, costs }) {
     !Object.hasOwn(item, 'min') && (item.min = 0)
     !Object.hasOwn(item, 'max') && (item.max = 999999)
@@ -49,12 +36,7 @@ export function Counter({ limiter = null, boosted = false, item, update, costs }
     }
     var buttons = null
     if (item.readonly == false) {
-        buttons = <div class='toggles'>
-            <button type="button" onClick={increase} class="hd_btn"><img
-                src="/static/assets/plus.svg" /></button>
-            <button type="button" onClick={decrease} class="hd_btn"><img
-                src="/static/assets/minus.svg" /></button>
-        </div>
+        buttons=<UpDown increase={increase} decrease={decrease} />
     }
     return (<div className="item counter">
         <label>{item.label}</label>
@@ -63,6 +45,37 @@ export function Counter({ limiter = null, boosted = false, item, update, costs }
     </div>)
 }
 
+export function UpDown({increase, decrease}) {
+    return (
+        <div className='toggles'>
+            <button type="button" onClick={increase}>
+                <Icon name={'plus'} />
+            </button>
+            <button type="button" onClick={decrease}>
+                <Icon name={'minus'} />
+            </button>
+        </div>
+    )
+}
+
+
+export function Field({label, data, id, handler}) {
+    return (
+        <div className='item'>
+            <label>{label}</label>
+            <input id={id} type='text' value={data} onChange={handler} />
+        </div>
+    )
+}
+
+export function BigField({label, data, id, handler}) {
+    return (
+        <div className='item big'>
+            <label>{label}</label>
+            <textarea id={id} onChange={handler}>{data}</textarea>
+        </div>
+    )
+}
 
 export function Bonus({ item }) {
     var sign;
@@ -92,17 +105,13 @@ export function DC({ item }) {
     )
 }
 
-export function Section({ open, header, items, cls, style = null }) {
-    var c = cls + " content"
+export function Points({ item }) {
     return (
-        <details open={open} className='subsection sectioned'>
-            <summary> {header}  <img src='/static/assets/right-arrow.svg' /> </summary>
-            <div className={c} style={style}>
-                {items}
-            </div>
-        </details>
+        <div className='item points'>
+            <label>{item.label}</label>
+            <Modifier editable={false} id={item.id} value={item.value} />
+        </div>
     )
-
 }
 
 export function Item({ label, content }) {
@@ -117,7 +126,7 @@ export function Item({ label, content }) {
 
 export function Dropdown({ label, data, handler, selected = null }) {
     return (
-        <div class='item'>
+        <div className='item'>
             <label>{label}</label> &nbsp;
             <select id={label} defaultValue={selected} onChange={handler}>
                 {Object.keys(data).map(opt =>
@@ -163,13 +172,7 @@ export function Tracker({ left, right, update }) {
     )
 }
 
-export function ReadMore({ v, setToggle }) {
-    var img;
-    v == false ? img = <img src='/static/assets/plus.svg' /> : img = <img src='/static/assets/minus.svg' />
-    return (
-        <button type='button' class='expander' value={v} onClick={setToggle}>{img}</button>
-    )
-}
+
 
 export const useToggle = (initialState) => {
     const [toggleValue, setToggleValue] = useState(initialState);

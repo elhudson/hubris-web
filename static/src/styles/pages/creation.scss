@@ -2,6 +2,10 @@
 @use '../components/page';
 @use '../components/feature';
 @use '../components/tabs';
+@use '../components/choices';
+@use '../components/stats';
+@use '../components/inputs';
+@use '../components/item';
 
 .page {
     @include page.page
@@ -14,5 +18,30 @@
 .react-tabs {
     padding:none;
     margin: none;
-    @include tabs.tabs
+    @include tabs.tabs;
+}
+
+.category {
+    @include choices.choices;
+}
+
+.stats {
+    @include stats.stats;
+}
+
+.points {
+    @include inputs.count;
+}
+
+.doublesided {
+    @include inputs.doublesided;
+}
+
+.bio {
+    .item:not(.big) {
+        @include item.inline-item;
+    }
+    .big {
+        @include item.top-item;
+    }
 }

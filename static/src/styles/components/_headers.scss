@@ -13,6 +13,13 @@
 
 }
 
+@mixin label {
+    @include inline;
+    font-size:configs.$small;
+    text-align: center;
+    display: block;
+}
+
 @mixin item {
     @include box-header;
     font-size: calc(configs.$size + 2px);

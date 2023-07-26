@@ -8,8 +8,6 @@ from HUBRIS import app
         
 @app.route("/sheet/<character_id>")
 def sheet(character_id):
-    character=create_character(character_id,app.database)
-    character.to_file()
     return render_template("sheet.html",character=character)
 
 

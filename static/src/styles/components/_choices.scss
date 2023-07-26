@@ -1,0 +1,17 @@
+@use 'controls';
+@use 'headers';
+
+@mixin choices {
+    .controls {
+        @include controls.controls;
+    }
+    .group {
+        h1 {
+            @include headers.floating-header;
+            display: grid;
+            &:empty {
+                display: none;
+            }
+        }
+    }
+}

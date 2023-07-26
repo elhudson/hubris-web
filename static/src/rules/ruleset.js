@@ -1,4 +1,5 @@
-import { Entry, Feature } from "./feature.js";
+import { Entry} from './feature.js';
+import { Feature } from '../components/feature.js';
 import React from 'react';
 import { SkillArray } from "./structures.js";
 

@@ -78,12 +78,6 @@ function Bio({ data, open }) {
     )
 }
 
-function Alignment({ selected, editCharacter }) {
-    return (
-        <Dropdown data={ruleset.reference.alignments} selected={selected} label={'alignment'} handler={editCharacter} />
-    )
-}
-
 function Progression({ data, open }) {
     var content=[<XP spent={data.character.xp_spent} earned={data.character.xp_earned} update={data.manual} />,
                 <div>

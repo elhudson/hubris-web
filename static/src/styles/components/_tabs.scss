@@ -17,46 +17,5 @@
         margin-top:0px;
         padding-top:0px;
     }
-    .controls {
-        width: fit-content;
-        margin:5px;
-        border: configs.$border;
-        display: flex;
-        .icon {
-            div {
-                padding:unset;
-                margin:unset;
-                vertical-align: middle;
-            }
-            padding:2px;
-            padding-top:0px;
-            svg {
-                height: calc(configs.$small + 4px);
-                vertical-align: middle;
-                width: auto;
-            }
-        }
-        .group-buttons {
-            @include bin-buttons;
-            border-right:none;
-            border-top:none;
-            border-bottom:none;
-            >*{
-                font-size: configs.$small;
-            }
-        }
-    }
-    
-    .group {
-        h1 {
-            @include headers.floating-header;
-            &:empty {
-                display: none;
-            }
-        }
-    }
 }
 
-@mixin bin-buttons {
-    @include buttons.buttons;
-}
