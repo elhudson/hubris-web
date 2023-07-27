@@ -1,0 +1,79 @@
+@use '../../configs';
+
+@use 'headers';
+
+@mixin item {
+    padding:2px 5px;
+    display: flex;
+    >label {
+        @include headers.inline;
+        padding-right:5px;
+    }
+    .tag, .tree, .path, .skill, .attribute {
+        @include tag;
+    }
+    >span {
+        @include tagset;
+    }
+}
+
+@mixin tag {
+    vertical-align: baseline;
+    color:configs.$highlight;
+    border:configs.$border;
+    background-color: configs.$selected;
+    font-size: configs.$small;
+    padding:0px 2px;
+    margin:3px 3px;
+    border-radius: 7px;
+}
+
+@mixin tagset {
+    display:flex;
+    flex-wrap: wrap;
+}
+
+@mixin boxed-item {
+    border:configs.$border;
+    margin:5px;
+    >label {
+        display: inline-block;
+        @include headers.item-header;
+        padding:0px 3px;
+        border:unset;
+    }
+    input, textarea {
+        border:none;
+    }
+}
+
+@mixin top-item {
+    @include boxed-item;
+    display: block;
+    >label{
+        border-bottom:configs.$border;
+        box-sizing: border-box;
+
+    }
+    textarea {
+        box-sizing: border-box;
+        width: 100%;
+    }
+}
+
+@mixin inline-item {
+    display: flex;
+    @include boxed-item;
+    >label {
+        border-right:configs.$border;
+        max-width: unset;
+        width: unset;
+    }
+    input, select {
+        width: 100%;
+        max-width: unset;
+    }
+
+}
+
+

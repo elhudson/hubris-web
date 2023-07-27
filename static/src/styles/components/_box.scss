@@ -1,6 +1,0 @@
-@use '../configs';
-
-@mixin box {
-    border:configs.$border;
-    margin:5px;
-}

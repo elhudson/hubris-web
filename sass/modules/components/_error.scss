@@ -1,0 +1,13 @@
+@use '../../configs';
+
+@mixin error {
+    $txt: configs.$red;
+    $bg: transparentize($color: configs.$red, $amount: 0.8);
+    border:1px solid $txt;
+    color: $txt;
+    font-weight: bold;
+    font-style: italic;
+    padding:5px;
+    margin:5px;
+    background-color: $bg;
+}

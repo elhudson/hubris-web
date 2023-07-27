@@ -12,9 +12,9 @@ def sheet(character_id):
 
 
 @app.route("/", methods=('GET','POST'))
-def wizard():
+def wizard(error=None):
     if request.method== 'GET':
-        return render_template("home.html",error=None)
+        return render_template("login/login.html")
     if request.method=='POST':
         name=request.form["char_name"]
         query=text(f'SELECT id FROM characters WHERE name="{name}"')
