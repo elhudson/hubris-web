@@ -1,7 +1,5 @@
-import { Entry} from './feature.js';
-import { Feature } from '../components/feature.js';
+import Entry from '../elements/feature.js';
 import React from 'react';
-import { SkillArray } from "./structures.js";
 
 export class Ruleset extends Object {
     constructor(data) {
@@ -43,7 +41,6 @@ export class Ruleset extends Object {
             },
             skill_codes:['str','dex','con','int','wis','cha'],
             armors:['Light', 'Medium','Heavy'],
-            possible_props:['ticks','desc','power','xp','tags','tree','description'],
             point_costs: {
                 "-2": 0,
                 "-1": 1,
@@ -53,14 +50,23 @@ export class Ruleset extends Object {
                 "3": 8,
                 "4": 12
             },
-            grouping:['tags','xp','tree','power','range','duration','class_paths', 'weapon_proficiencies', 'armor_proficiencies', 'hit_die']
+            grouping:['tags','xp','tree','power','range','duration','class_paths', 'weapon_proficiencies', 'armor_proficiencies', 'hit_die'],
+            bins:{
+                classes:['weapon_proficiencies', 'armor_proficiencies', 'hit_die'],
+                backgrounds:['skills', 'attributes'],
+                tag_features:['tags', 'xp'],
+                class_features:['class_paths', 'xp'],
+                effects:['power', 'xp', 'tree', 'tags'],
+                ranges:['power', 'xp', 'tree'],
+                durations:['power', 'xp', 'tree']
+            }
         }
     }
     condition(url, character) {
         const conditions = {
-            class:(character) => {return character.classes.length==1},
-            backgrounds:(character)=>{return character.backgrounds.length==2},
-            stats:(character)=>{return character.ability_scores.points==0},
+            class:(character) => {return character.classes.base!=null},
+            backgrounds:(character)=>{return character.backgrounds.primary!=null && character.backgrounds.secondary!=null},
+            stats:(character)=>{return character.stats.points==0},
             xp:(character)=> {return true}
         }
         return conditions[url](character)
@@ -116,16 +122,4 @@ export class Rules {
     ids() {
         return Array.from(Object.keys(this))
     }
-    display() {
-        var data=this.list()
-        return (<RRules data={data} />)}
 }
-
-function RRules({data}) {
-    return(
-    <div className='ruleset'>
-        {data.map(d=><Feature label={d.name} feature={d} />)}
-    </div>)}
-
-
-

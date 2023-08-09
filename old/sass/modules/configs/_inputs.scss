@@ -1,0 +1,21 @@
+@use 'theme';
+
+input {
+    border-bottom:theme.$border;
+    &[type='checkbox'], &[type='radio'] {
+        appearance: unset;
+        height:theme.$size;
+        width: theme.$size;
+        border:theme.$border;
+        &:checked {
+            background-color: theme.$selected;
+        }
+        &:hover:not(:disabled) {
+            background-color: theme.$hover;
+        }
+    }
+    &[type='number'] {
+        max-width: 3rem;
+        width: min-content;
+    }
+}

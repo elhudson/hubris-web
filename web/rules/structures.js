@@ -1,27 +1,4 @@
-import { Entry } from '../rules/feature.js';
 
-export class SkillArray extends Array {
-    static parse(skills,rules) {
-        if (skills.length<18) {
-        var n=rules.list();
-        var profs=skills.map(e=>e.id)
-        n.forEach((skill)=> {
-            profs.includes(skill.id) && (skill.proficient=true)
-        })
-        return SkillArray.from(n)}
-        else {
-            return SkillArray.from(skills)
-        }
-    }
-    by_attribute() {
-        let v={}
-        var codes=[...new Set(this.map(item=>item.code))]
-        codes.forEach((code)=> {
-            v[code]=this.filter(item=>item.code==code)
-        })
-        return v
-    }
-}
 
 
 export class Featureset extends Array {

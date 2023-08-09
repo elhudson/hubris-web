@@ -8,7 +8,7 @@ from HUBRIS import app
         
 @app.route("/sheet/<character_id>")
 def sheet(character_id):
-    return render_template("sheet.html",character=character)
+    return render_template("sheet/sheet.html",id=character_id)
 
 
 @app.route("/", methods=('GET','POST'))

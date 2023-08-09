@@ -1,10 +1,9 @@
 import React from "react";
+import { User, useUser } from '../../models/user'
 import { createRoot } from "react-dom/client";
-import { Dialog } from "../../components/dialog";
-import {immerable} from 'immer';
-import {useImmerReducer} from 'use-immer';
-import { BlankPage } from "../../components/pages";
-import './login.scss';
+import {styles, style} from 'hubris-components/styles'
+import {Block} from 'hubris-components/containers'
+import Dialog from "../../elements/dialog";
 
 function Login({error}) {
     const ob=new User()
@@ -12,7 +11,7 @@ function Login({error}) {
     const handleUpdate=(e)=> {
         updateUser({
             type:'edit',
-            target:e.target.id,
+            path:e.target.getAttribute('path'),
             value:e.target.value
         })}
     const handleLogin=(e)=> {
@@ -22,21 +21,19 @@ function Login({error}) {
         user.register()
     }
     return(
-        <BlankPage content={
             <Dialog 
                 error={error}
                 header={'Welcome to HUBRIS!'} 
                 items={[
-                    {label:'username',id:'username',value:user.username}, 
-                    {label: 'password', id:'password', value:user.password}
+                    {label:'username', data:{text:'Username', path:'username'}}, 
+                    {label:'password', data:{text:'Password', path:'password'}}
                 ]}
                 buttons={[
                     {txt:'Register', handler:handleRegister},
                     {txt:'Login', handler:handleLogin}
                 ]}
                 handler={handleUpdate}
-            />} 
-        />
+            />
     )
 }
 

@@ -1,55 +1,81 @@
-import { Character } from '../../models/character.js'
 import { Ruleset } from '../../rules/ruleset.js'
-import { Item, Icon } from '../../components/utils.js'
+import { Item, LabeledItem } from 'hubris-components/containers'
+import { Icon } from 'hubris-components/images.js';
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client'
+import { Tier } from '../../models/character/sections/progression.js';
 import { User, useUser } from '../../models/user.js';
-
-window.ruleset=await Ruleset.load()
-
+import { useAsync } from 'react-async-hook';
+import { Character } from '../../models/character/character.js';
+import {style, styles, reusable} from 'hubris-components/styles.js'
+import { Button } from 'hubris-components/interactive.js';
+window.ruleset = await Ruleset.load()
+import { BarLoader } from 'react-spinners';
 var page = createRoot(document.getElementById('page'))
 var data = document.querySelector('body').getAttribute('data-ids')
-var ids=JSON.parse('{"ids":'+data.replaceAll(`'`,`"`)+'}').ids
+var ids = JSON.parse('{"ids":' + data.replaceAll(`'`, `"`) + '}').ids
 
-
-page.render(<CharacterGrid ids={ids}/>)
-
-
-function CharacterGrid({ids}) {
-    return(
-    <div className='character-grid'>
-        {ids.map(c=><CharacterThumbnail id={c} />)}
+page.render(
+    <>
+    <h1>Characters</h1>
+    <div style={{display:'flex'}}>
+        {ids.map(id => <CharacterThumbnail id={id} />)}
         <NewCharacter />
-    </div>)}
+    </div>
+    </>
+)
 
-async function CharacterThumbnail({id}) {
-    return fetch(`/get/${id}`)
-        .then((result)=>result.json())
-        .then((json)=>Character.parse(JSON.parse(json)))
-        .then((character)=> 
-        <div class='character-thumbnail'>
-            <Icon name={'person'} />
-            <div class='thumb-text'>
-                <div>
-                    <a href={`/sheet/${character.id}`}><h2 class='thumb-title'>{character.name}</h2></a>
-                    <div class='thumb-summary'>
-                        <Item label={'Class'} content={classname}/>
-                        <Item label={'Backgrounds'} content={backgrounds} />
+
+function CharacterThumbnail({ id }) {
+    const fetchCharacter = async id => (await Character.request(id))
+    const asyncHero = useAsync(fetchCharacter, [id])
+    return (
+<LabeledItem 
+    childStyles={style('thumbnail', {
+        display:'flex'
+    })}
+    label={
+    asyncHero.result ? 
+        (<a href={`/sheet/${asyncHero.result.id}`}>{asyncHero.result.name}</a>) : 
+        'Loading...'}>
+            {asyncHero.loading && 
+                <div style={{
+                    width:'80%',
+                    height:'100px',
+                    position:'relative'
+                }}>
+                    <BarLoader cssOverride={{top:'50%'}} color={styles.text} />
+                </div>}
+            {asyncHero.error && <div>Error: {asyncHero.error.message}</div>}
+            {asyncHero.result && (
+                <>
+                    <div style={{width: 'fit-content'}}>
+                        <Icon size={100} name={`classes__${asyncHero.result.classes[0].name.toLowerCase()}`} />
                     </div>
-                </div>
-                <Tier character={character}/>
-            </div>
-        </div>
-        )}
+                    <div style={{width:'fit-content', position:'relative', borderLeft:styles.border}}>
+                        <div style={{margin:5}}>
+                        <Item label={'Class'}>{asyncHero.result.classes[0].name}</Item>
+                        </div>
+                        <div style={{margin:5}}>
+                        <Item label={'Backgrounds'}>{asyncHero.result.backgrounds.map(b => b.name).join(' & ')} </Item>
+                        </div>
+                        <div style={{borderTop:styles.border, position:'absolute', bottom:0, width:'100%'}}>
+                            <Tier tier={asyncHero.result.progression.tier()} />
+                        </div>
+                    </div>
+                        
+                </>
+                )}
+</LabeledItem>
+    )
+}
 
-function NewCharacter({}) {
-    return(
-        <div class='add-character'>
-                <button type='button'>
-                    <a href='/class'>
-                   <Icon name={'plus'} />
-                    </a>
-                </button>
+function NewCharacter({ }) {
+    return (
+        <div style={{margin:5}}>
+        <Button>
+            <Icon name='plus' size={100} />
+        </Button>
         </div>
     )
 }

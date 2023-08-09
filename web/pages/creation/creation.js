@@ -1,23 +1,20 @@
 import { Ruleset } from '../../rules/ruleset.js'
 import React from 'react';
 import { createRoot } from 'react-dom/client'
-import { Character, useCharacter } from '../../models/character.js'
-import { Points } from '../../components/utils.js';
+import { Character, useCharacter, generatePatch} from '../../models/character/character.js'
 import 'react-tabs/style/react-tabs.css';
-import './creation.scss';
 import _ from 'lodash';
-import { Choices } from '../../rules/sorts.js';
-import { Page, NextPage } from "../../components/pages.js";
-import { AbilityScores } from "../../components/scores.js";
-import { Alignment, Backstory, Appearance, Gender, Name } from '../../components/bio.js';
-
+import { Block, Tabbed } from 'hubris-components/containers.js';
 await Ruleset.load();
-
 const root = createRoot(document.getElementById('page'))
-
+import { Choices } from '../../rules/sorts.js';
 var id = document.querySelector('body').getAttribute('data-id')
+import { PageWithNext } from 'hubris-components/pages.js';
+
 var ch = Character.load(id)
-console.log(ch)
+if (ch=='Character not found!') {
+    ch=Character.create(id)
+}
 var url = window.location.pathname.split('/')[1]
 root.render(
     <>
@@ -27,51 +24,45 @@ root.render(
 )
 
 function CreationPage({ url, ch }) {
-    ch.options = new Choices(ch, url)
-    ch.xp_spent = 0
-    const [char, dispatchChanges] = useCharacter(ch)
-    function handleAddDrop(e) {
-        var which;
-        if (e.target.checked == true) {
-            which = 'add'
-        }
-        if (e.target.checked == false) {
-            which = 'drop'
-        }
-        dispatchChanges({
-            type: which,
-            target: e.target.getAttribute('location').replace(' ', '_'),
-            id: e.target.id,
-            cost: e.target.getAttribute('cost')
-        })
-    }
-    function handleBio(e) {
-        dispatchChanges({
-            type:'bio',
-            target:e.target.id,
-            content:e.target.value,
-            inner:e.target.innerHTML
-        })
-    }
-    function handleBin(e) {
-        dispatchChanges({
-            type: 'bin',
-            target: e.target.getAttribute('location'),
-            value: e.target.value
-        })
-    }
+    const [char, dispatchChanges] = useCharacter(ch, url)
+    const patch=generatePatch(dispatchChanges)
+    var binner=patch('options', 'regroup')
+    var handler=patch('options', 'addDrop')
     switch (url) {
         case 'class': {
-            return <Classes ch={char} binner={handleBin} handler={handleAddDrop} />
+            return(
+            <PageWithNext url={url} character={char}>
+                {char.options.classes.display({binner:binner, handler:handler})}
+            </PageWithNext>)
         }
         case 'backgrounds': {
-            return <Backgrounds ch={char} binner={handleBin} handler={handleAddDrop} />
+            return(
+            <PageWithNext url={url} character={char}>
+                {char.options.backgrounds.display({binner:binner, handler:handler})}
+            </PageWithNext>
+            )
         }
         case 'stats': {
-            return <Stats dispatcher={dispatchChanges} ch={char} />
+            var counter=[patch('stats', 'increment'), patch('stats','decrement')]
+            return (
+            <PageWithNext url={url} character={char}>
+                {char.stats.display(counter)}
+            </PageWithNext>)
         }
         case 'xp': {
-            return <XP handler={handleAddDrop} binner={handleBin} ch={char} />
+            return (
+            <PageWithNext url={url} character={char}>
+                <Tabbed names={['Features', 'Powers']}>
+                    <Tabbed names={['Class Features','Tag Features']}>
+                            {char.options.features.class_features.display({binner:binner, handler:handler})}
+                            {char.options.features.tag_features.display({binner:binner, handler:handler})}
+                    </Tabbed>
+                    <Tabbed names={['Effects', 'Ranges', 'Durations']}>
+                        {char.options.powers.effects.display({binner:binner, handler:handler})}
+                        {char.options.powers.metadata.display({binner:binner, handler:handler})}
+                    </Tabbed>
+                </Tabbed>
+            </PageWithNext>)
         }
         case 'fluff': {
             return <Fluff handler={handleBio} ch={char} />
@@ -86,14 +77,6 @@ function Backgrounds({ handler, binner, ch }) {
             <NextPage current={'backgrounds'} character={ch} />
         </>
     )
-}
-
-function Classes({ handler, binner, ch }) {
-    return (
-        <>
-            <Page handler={handler} binner={binner} ch={ch} />
-            <NextPage current={'class'} character={ch} />
-        </>)
 }
 
 function Stats({ dispatcher, ch }) {

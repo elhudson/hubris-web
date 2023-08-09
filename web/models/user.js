@@ -1,11 +1,12 @@
 import { useImmerReducer } from "use-immer";
 import { immerable } from "immer";
+import _ from "lodash";
 
 export const useUser = (data) => {
     const [user, dispatch]=useImmerReducer(dispatcher, data)
     function dispatcher(draft, action) {
         if (action.type=='edit') {
-            draft[action.target]=action.value
+            _.set(draft, action.path, action.value)
         }
     }
     return [user, dispatch]
@@ -34,4 +35,10 @@ export class User {
         }).then((result)=>
             window.location.assign(result.url))
         }
+    new_character() {
+        pass
+    }
+    get_characters() {
+        pass
+    }
 }

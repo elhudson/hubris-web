@@ -1,12 +1,57 @@
 import { immerable, current } from "immer"
 import _ from "lodash"
-
+import { Block, LabeledItem } from "hubris-components/containers"
+import React from "react"
+import { Controls, Button } from "hubris-components/interactive"
+import {style, styles} from 'hubris-components/styles'
 export class Choices {
     [immerable] = true
-    constructor(character, url) {
-        url == 'xp' && Object.assign(this, character.buyable())
+    constructor(character=null, url=null) {
+        if (url == 'xp') {
+            var buyable=character.buyable()
+            this.features=Choices.from(buyable.features)
+            this.powers=Choices.from(buyable.powers)
+            this.powers.metadata=Choices.from(buyable.powers.metadata)    
+        }
         url == 'class' && Object.assign(this, { 'classes': new Groups(ruleset.classes.list()) })
         url == 'backgrounds' && Object.assign(this, { 'backgrounds': new Groups(ruleset.backgrounds.list()) })
+    }
+    regroup(action) {
+        _.get(this, action.path).regroup(action.data.value)
+    }
+    static from(obj) {
+        var self=new Choices()
+        Object.assign(self, obj)
+        return self
+    }
+    addDrop(action, ch) {
+        var feature=ruleset[action.table][action.data.value]
+        if ((action.data.checked==true && feature.qualifies(ch)) || (action.data.checked==false && feature.removeable(ch))) {
+            var tree=_.get(this, action.path)
+            var func=action.data.checked ? 'add':'remove'
+            var cost=_.get(ch, action.path)[func](feature)
+            cost!=null && (ch.progression.xp.spent+=cost)
+            tree.get(ruleset[action.table][action.data.value]).bought=action.data.checked
+            tree.forEach((item)=> {
+                if (item.qualifies(ch) || item.bought==true) {
+                    item.buyable=true
+                    if (item.removeable(ch)==false) {
+                        item.buyable=false
+                    }
+                }
+                else {
+                    item.buyable=false
+                }
+            })
+        }
+    }
+    display({binner, handler}) {
+        return(
+        <div>
+        {Object.keys(this).map(key=>
+            this[key].display({binner:binner, handler:handler}))}
+        </div>
+        )
     }
 }
 
@@ -14,7 +59,12 @@ export class Groups {
     [immerable] = true
     constructor(aray) {
         this.by = ''
-        this.content = { [this.by]: aray }
+        this.content = { [this.by]: new Bin(aray) }
+        this.defaults={class_features:'class_paths', effects:'tree'}
+        try {
+            this.regroup(this.defaults[aray[0].table])
+        }
+        catch{ {Error} }
     }
     *[Symbol.iterator]() {
         var list = Object.values(this.content)
@@ -28,6 +78,18 @@ export class Groups {
             func(o)
         }
     }
+    map(func) {
+        for (var o of this) {
+            return func(o)
+        }
+    }
+    filter(func) {
+        for (var o of this) {
+            if (func(o)==true) {
+                return o
+            }
+        }
+    }
     clone_branch(feature) {
         var branch = this.get_branch(feature)
         return _.cloneDeep(branch)
@@ -36,19 +98,17 @@ export class Groups {
         var branch = this.get_branch(feature)
         this.content[this.find_branch(feature)] = branch.filter(b => b.addable(char) || char.has(b))
     }
-    enqueue(feature) {
-        if (feature!=undefined) {
+    add(feature) {
         var branch = this.get_branch(feature)
-        if (this.pool().map(p=>p.id).includes(feature.id)==false) {
-            branch.push(feature)
-        }
+        branch.push(feature)
+        return feature.xp
     }
-    }
-    dequeue(feature) {
+    remove(feature) {
         var branch = this.get_branch(feature)
         _.remove(branch, f => f.id == feature.id)
+        return(-1*feature.xp)
     }
-    qual(char, feature) {
+    qual(feature) {
         if (feature.descendable) {
             feature.children().forEach((child) => {
                 this.enqueue(child)
@@ -84,6 +144,9 @@ export class Groups {
         pool = _.uniqBy(pool, 'id')
         return pool
     }
+    includes(feature) {
+        return _.find(this.pool(), item=>item.id==feature.id)==undefined ? false : true
+    }
     get(feature) {
         var coordinates = this.coordinates(feature)
         return this.content[coordinates.branch][coordinates.index]
@@ -92,13 +155,13 @@ export class Groups {
         var pool = this.pool()
         if (prop == '') {
             this.by = ''
-            this.content = { '': pool }
+            this.content = { '': new Bin(pool) }
         }
         else {
             var groups = new Object()
             var keys = [...new Set([...new Set(pool.map(s => s.get(prop)))].flat(10))]
             keys.forEach((k) => {
-                groups[k] = []
+                groups[k] = new Bin()
             })
             pool.forEach((item) => {
                 var ct = item.get(prop)
@@ -114,5 +177,61 @@ export class Groups {
             this.by = prop
             this.content = groups
         }
+    }
+    display({binner, handler=null}) {
+        function Bins({bins, binner, handler=null}) {
+            var pool=bins.pool()
+            if (pool.length>0) {
+                var loc=pool[0].table
+                var path=pool[0].path
+            var possible = [...new Set(pool.flatMap(f => props(f)))].filter(f => ruleset.reference.bins[loc].includes(f))
+            function props(obj) {
+                return Object.keys(obj)
+            }
+            var cols=Object.keys(bins.content).length
+            cols>4 && (cols=4)
+            const display=style('bins', {
+                display:'grid',
+                gridTemplateColumns:`repeat(${cols}, auto)`
+
+            })
+            return (
+                <> 
+                    <Controls icon={'group'}>
+                        <Button onClick={binner} table={loc} path={path} value={''} aria-selected={'' == bins.by}>None</Button>
+                        {possible.map(l => <Button table={loc} path={path} onClick={binner} value={l} aria-selected={l == bins.by}>{l.replace('_', ' ')}</Button>)}
+                    </Controls>
+                    <div className={display}>
+                        {Object.keys(bins.content).map(by => bins.content[by].display({label:by, handler:handler}))}
+                    </div>
+                </>
+            )
+            }
+            else {
+                return (<></>)
+            }
+            
+        } 
+        return <Bins bins={this} binner={binner} handler={handler}/>
+    }
+}
+
+export class Bin extends Array {
+    [immerable]=true
+    constructor(data=[]) {
+        super(...Array.from(data))
+        this.sort('xp')
+    }
+    sort(by) {
+        Object.assign(this, _.sortBy(this, item=>_.get(item, by)))
+    }
+    display({label, handler=null}) {
+        function Bin({ data, label, handler=null }) {
+            return (
+                <Block header={label}>
+                            { data.map(f => f.displayOption({handler:handler})) }
+                </Block>
+            )}
+        return (<Bin data={Array.from(this)} label={label} handler={handler} />)
     }
 }

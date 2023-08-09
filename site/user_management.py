@@ -11,11 +11,12 @@ from db_connect import tunnel, engine
 from HUBRIS import app
 
 
-@app.route('/login',methods=['POST'])
+@app.route('/login',methods=['GET','POST'])
 def login():        
     data=json.loads(request.get_data())
     username=data['username']
     password=data['password']
+    print(username, password)
     q=read_sql(text(f"SELECT * FROM users WHERE username='{username}'"),app.database)
     if q.empty:
         return redirect(url_for('wizard',error='no-account'))
