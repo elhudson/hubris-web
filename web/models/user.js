@@ -5,6 +5,7 @@ import _ from "lodash";
 export const useUser = (data) => {
     const [user, dispatch]=useImmerReducer(dispatcher, data)
     function dispatcher(draft, action) {
+        console.log(action)
         if (action.type=='edit') {
             _.set(draft, action.path, action.value)
         }
@@ -15,8 +16,8 @@ export const useUser = (data) => {
 export class User {
     [immerable]=true
     constructor() {
-        this.username=null,
-        this.password=null,
+        this.username="",
+        this.password="",
         this.characters=[]
     }
     login() {

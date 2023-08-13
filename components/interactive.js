@@ -109,7 +109,8 @@ export function Dropdown({ name, path, data, handler, selected = null }) {
     var cont = style('container', {
         border: styles.border,
         display: 'flex',
-        height: '100%'
+        height:'auto',
+        marginBottom:5
     })
     return (
         <div className={cont}>

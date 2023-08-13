@@ -17,15 +17,15 @@ export default class Stats extends Info {
             this.scores[code]=new AbilityScore(code)
         })
     }
-    static parse(json) {
-        var self=super.parse('stats', json)
-        Object.keys(self.scores).forEach((key)=> {
-            self.scores[key]=AbilityScore.parse(self.scores[key])
+    static parse(raw) {
+        var self= super.parse(raw)
+        Object.keys(self.scores).forEach((score)=> {
+            self.scores[score]=AbilityScore.parse(raw.scores[score])
         })
-        if (json.backgrounds!=undefined) {
-            self.boosts(json.backgrounds)
-        }
-        return self        
+        return self
+    }
+    skill_bonus(skill, pb) {
+        this.scores[skill.code].bonus(skill, pb)
     }
     increment(action) {
         var target=_.get(this, action.path)
@@ -42,54 +42,40 @@ export default class Stats extends Info {
         }
     }
     boosts(backgrounds) {
-        console.log(backgrounds)
-        this.scores[backgrounds.primary.attributes.name.slice(0,3).toLowerCase()].boostify()
-        this.scores[backgrounds.secondary.attributes.name.slice(0,3).toLowerCase()].boostify()
-    }
-    increase_score(score) {
-        var step = this.score_values[String(this[score] + 1)] - this.score_values[String(this[score])]
-        console.log(step)
-        if (this.points - step >= 0 && this[score] < 4) {
-            this[score] += 1
-            this.points -= step
+        var bg1, bg2
+        if (Array.isArray(backgrounds)) {
+            bg1=backgrounds[0]
+            bg2=backgrounds[1]
+        }
+        else {
+            bg1=backgrounds.primary
+            bg2=backgrounds.secondary
+        }
+        if (bg1!=null && bg2!=null) {
+            this.scores[bg1.attributes.name.slice(0,3).toLowerCase()].boostify()
+            this.scores[bg2.attributes.name.slice(0,3).toLowerCase()].boostify()
         }
     }
-    decrease_score(score) {
-        var step = this.score_values[String(this[score]) - 1] - this.score_values[String(this[score])]
-        console.log(step)
-        if (this[score] > -2 && this.points - step <= 28) {
-            this[score] -= 1
-            this.points -= step
-        }
-    }
-    finalize() {
-        const copy = Object.assign(new Object(), this)
-        copy.boosted.forEach((boost) => {
-            copy[boost] += 1
-        })
-        return copy
-    }
-    output(character) {
-        character.ability_scores=this.finalize()
-    }
-    display(update) {
-        const display={
-            display:'grid',
-            gridTemplateColumns:'repeat(3, auto)'
-        }
-        return(
-            <div>
-                <DC item={{label:'Remaining', value:this.points}}/>
-                <div style={display}>
-                {Object.keys(this.scores).map(code=> this.scores[code].display(update))}
+    displayAllocate(update) {
+        function Stats({stats, update}) {
+            return(
+                <div>
+                    <DC item={{label:'Remaining', value:stats.points}}/>
+                    <div style={{
+                    display:'grid',
+                    gridTemplateColumns:'repeat(3, auto)'}}>
+                        {Object.keys(stats.scores).map(code=> stats.scores[code].display(update))}
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        return <Stats stats={this} update={update}/>
+        
     }
     StatsSkills({stats, skills}) {
         var grouped = skills.by_attribute()
         Object.keys(grouped).forEach((code)=> {
-            grouped[code].bonus=stats[code]
+            grouped[code].bonus=stats.scores[code].value
         })
         return (
             <Block header={'Stats'} className={style("stat", 
@@ -106,7 +92,7 @@ export default class Stats extends Info {
                         <div>
                         <Bonus item={{value: grouped[code].bonus, label: code, id: code}} />
                         <OptionList>
-                            {grouped[code].map(c=><CheckboxItem item={{label:c.name, value:c.bonus, id:c.id}} checked={c.proficient} />)}
+                            {grouped[code].map(c=>c.display())}
                         </OptionList>
                         </div>
                     </Border>)}
@@ -127,6 +113,21 @@ class AbilityScore {
     static parse(ob) {
         var self=new AbilityScore(ob.code)
         Object.assign(self, ob)
+        if (self.max==5) {
+            self.cost=function(value=this.value) {
+                var mapping={
+                    '-1':0,
+                    '0':1,
+                    '1':2,
+                    '2':3,
+                    '3':5,
+                    '4':8,
+                    '5':12
+                }
+                return mapping[value]
+            }
+        }
+
         return self
     }
     cost(value=this.value) {
@@ -159,7 +160,7 @@ class AbilityScore {
                 '0':1,
                 '1':2,
                 '2':3,
-                '3':8,
+                '3':5,
                 '4':8,
                 '5':12
             }
@@ -167,6 +168,7 @@ class AbilityScore {
         }
     }
     increment(points) {
+        console.log(this.cost())
         if (this.value<this.max) {
             var net_cost=Math.abs(this.cost()-this.cost(this.value+1))
             if (this.affordable(points, net_cost)) {
@@ -177,6 +179,14 @@ class AbilityScore {
         return false
 
     }
+    bonus(skill, pb) {
+        if (skill.proficient) {
+            skill.bonus=this.value+pb
+        }
+        else {
+            skill.bonus=this.value
+        }
+    }
     decrement(points) {
         if (this.value>this.min) {
             var net_cost=-1*Math.abs(this.cost()-this.cost(this.value-1))
@@ -186,10 +196,9 @@ class AbilityScore {
         }
     }
     return false 
-}
+    }
     display(handler) {
         function Stat({label, value, handler}) {
-            console.log(handler)
             return(
                 <Counter item={{label:label, value:value, path:`scores.${label}`}} update={handler}/>
             )

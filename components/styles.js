@@ -68,6 +68,19 @@ const reusable={
                 borderRight: styles.border
             }
         }
+    },
+    boxLabel: {
+        position:'absolute',
+        width:'fit-content',
+        top:0,
+        right:0,
+        fontWeight:'bold',
+        fontSize:styles.small,
+        color:styles.muted,
+        borderLeft:styles.border,
+        borderBottom:styles.border,
+        zIndex:1,
+        backgroundColor:styles.background
     }
 }
 

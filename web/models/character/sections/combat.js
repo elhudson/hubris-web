@@ -13,19 +13,25 @@ export default class Combat extends Info {
     [immerable] = true
     constructor() {
         var skeleton={
-            armor:null,
-            weapons:null,
-            initiative:null
+            armor:new Armory(),
+            weapons:new Arsenal(),
+            initiative:-2
         }
         super(skeleton)
     }
-    // parse(json) {
-    //     // this.armor=new Armory({cls:json.classes[0].armor_proficiencies, dex:json.ability_scores.dex, pb:json.progression.proficiency()})
-    //     // this.weapons=new Arsenal({value:json.classes[0].weapon_proficiencies, classname:json.classes[0].name, str:json.ability_scores.str, dex:json.ability_scores.dex, pb:json.progression.proficiency()})
-    //     this.initiative=dex
-    //     super.parse('combat',json)
-    // }
-    Combat({patch, combat }) {
+    static parse(raw, data) {
+        var self=super.parse(raw)
+        self.armor=Armory.parse(self.armor)
+        self.armor.list().forEach((item)=> {
+            item.ac=Armor.armor_class(item.value, data.dex, data.pb)
+        })
+        self.weapons=Arsenal.parse(self.weapons)
+        self.weapons.list().forEach((item)=> {
+            item.atk=Weapon.atk_bonus({str:data.str, dex:data.dex, charclass:data.classname, pb:data.pb})
+        })
+        return self
+    }
+    Combat({patch, combat}) {
         var swap=patch('combat','radioSwitch')
         var namer=patch('combat', 'update')
         return(
@@ -39,12 +45,21 @@ export default class Combat extends Info {
 
 export class Armor extends item {
     [immerable]=true
-    constructor({value, index, dex, proficiency}) {
+    constructor() {
         super()
-        this.index=index
-        this.value=value
-        this.ac=Armor.armor_class(value, dex, proficiency)
-        this.active=false
+    }
+    static create({value, index, dex, proficiency}) {
+        var self=new Armor()
+        self.index=index
+        self.value=value
+        self.ac=Armor.armor_class(value, dex, proficiency)
+        self.active=false
+        return self
+    }
+    static parse(raw) {
+        var self=new Armor()
+        Object.assign(self, raw)
+        return self
     }
     static armor_class(value, dex, pb) {
         var cls=0
@@ -63,17 +78,34 @@ export class Armor extends item {
 
 export class Armory {
     [immerable]=true
-    constructor({cls, dex, pb}) {
-        var avail=this.get_armors(cls)
+    constructor() {
+        this[0]=null
+    }
+    static assemble({cls, dex, pb}) {
+        var self=new Armory()
+        var avail=Armory.get_armors(cls)
         for (var i=0;i<avail.length;i++) {
-            this[i]=new Armor({
+            self[i]=Armor.create({
                 value:avail[i],
                 index:i,
                 dex:dex,
                 proficiency:pb
             })
         }
-        this[0].active=true
+        self[0].active=true
+        return self
+    }
+    set_acs(dex, pb) {
+        this.list().forEach((item)=> {
+            item.ac=Armor.armor_class(item.value, dex, pb)
+        })
+    }
+    static parse(raw) {
+        var self=new Armory()
+        Object.keys(raw).forEach((r)=> {
+            self[r]=Armor.parse(raw[r])
+        })
+        return self
     }
     list() {
         return Object.values(this)
@@ -81,7 +113,7 @@ export class Armory {
     wearing() {
         return _.find(this.list(), f=>f.active)
     }
-    get_armors(value) {
+    static get_armors(value) {
         var avail=['None']
         value=='Light' && (avail=['None','Light'])
         value=='Medium' && (avail=['None','Light', 'Medium'])
@@ -120,14 +152,13 @@ export class Armory {
 
 export class Weapon extends item {
     [immerable]=true
-    constructor({value, classname, str, dex, pb})  {
+    constructor() {
         super()
-        this.name;
-        this.active=false
-        this.value=value
-        this.atk=Weapon.atk_bonus(str, dex, classname, pb)
+        this.name=""
+        this.active=false;
+        this.value=""
+        this.atk=""
         this.dmg={
-            amount:(value=='Martial' ? '2d6' : '1d6'),
             type:new RadioArray({
                 keys:['bludgeoning', 'piercing', 'slashing'],
                 values:['Bludgeoning', 'Piercing', 'Slashing'],
@@ -140,17 +171,33 @@ export class Weapon extends item {
             defaultActive:'light'
         })
     }
+    static create({value, classname, str, dex, pb})  {
+        var self=new Weapon()
+        self.name='untitled'
+        self.active=false
+        self.value=value
+        self.dmg.amount=value=='Martial' ? '2d6' : '1d6',
+        self.atk=Weapon.atk_bonus({str:str, dex:dex, classname:classname, pb:pb})
+        return self
+        
+    }
+    static parse(raw) {
+        var self=new Weapon()
+        Object.assign(self, raw)
+        self.weight=RadioArray.parse(raw.weight)
+        self.dmg.type=RadioArray.parse(raw.dmg.type)
+        return self
+    }
     quick() {
         return (this.weight.light.active ? 7 : 10)
     }
     slow() {
         return (this.weight.heavy.active ? 13 : 10)
     }
-    static atk_bonus(str, dex, charclass, pb) {
+    static atk_bonus({str, dex, charclass, pb}) {
         return (['Rogue', 'Sharpshooter'].includes(charclass) ? dex+pb : str+pb)
     }
     static Weapon({wpn, namer, onChange}) {
-        console.log(wpn)
         const addtl= {
             fontFamily:styles.mono,
             fontWeight:'bold',
@@ -196,6 +243,7 @@ export class Weapon extends item {
                     </FeatureInfo>
                 </DataGrid>
         </Snippet>)}
+
     static Attack({wpn}) {
         if (wpn.active) {
             return (
@@ -213,9 +261,18 @@ export class Weapon extends item {
 
 export class Arsenal  {
     [immerable]=true
-    constructor({value, classname, str, dex, pb}) {
-        var avail=this.get_weapons(value)
-        var wpns=avail.map(a=>new Weapon({
+    constructor() {
+        this[0]=new Weapon()
+    }
+    set_bonuses(str, dex, classname, pb) {
+        this.list().forEach((item)=> {
+            item.atk=Weapon.atk_bonus(str, dex, classname, pb)
+        })
+    }
+    static create({value, classname, str, dex, pb}) {
+        var self=new Arsenal()
+        var avail=self.get_weapons(value)
+        var wpns=avail.map(a=>Weapon.create({
                 value:a,
                 dex:dex,
                 str:str,
@@ -223,7 +280,17 @@ export class Arsenal  {
                 pb:pb
             }))
         var indices=_.range(avail.length)
-        Object.assign(this, new RadioArray({keys:indices, values:wpns, defaultActive:0}))
+        Object.assign(self, new RadioArray({keys:indices, values:wpns, defaultActive:0}))
+        return self
+    }
+    static parse(raw) {
+        var self=new Arsenal()
+        Object.assign(self,RadioArray.parse(raw))
+        Object.keys(self).forEach((key)=>{
+            self[key]=Weapon.parse(self[key])
+        })
+        return self
+        
     }
     get_weapons(value) {
        return value==['Simple'] ? ['Simple'] : ['Simple', 'Martial'] 

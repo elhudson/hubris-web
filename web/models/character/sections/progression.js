@@ -19,9 +19,6 @@ export default class Progression extends Info {
         }
         super(skeleton)
     }
-    // parse(json) {
-    //     super.parse(json)
-    // }
     tier() {
         if (_.range(-1, 30).includes(this.xp.earned)) { return 1 }
         else if (_.range(30, 75).includes(this.xp.earned)) { return 2 }
@@ -31,8 +28,8 @@ export default class Progression extends Info {
     proficiency() {
         return this.tier()+1
     }
-    static parse(char) {
-        return new Progression(char)
+    static parse(raw) {
+        return super.parse(raw)
     }
     Progression({ progression, patch}) {
         const [inc, dec]=[patch('progression', 'increment'), patch('progression', 'decrement')]
@@ -72,8 +69,8 @@ function XP({ xp, tier, update }) {
     <div className={styled}>
         <Tracker 
             header={'XP'}
-            right={{ value: xp.spent, label: 'spent', name: 'xp.spent', readOnly: true }}
-            left={{ value: xp.earned, label: 'earned', name: 'xp.earned', readOnly: false }}
+            right={{ value: xp.spent, label: 'spent', path: 'xp.spent', readOnly: true }}
+            left={{ value: xp.earned, min:xp.spent, label: 'earned', path: 'xp.earned', readOnly: false }}
             update={update} 
         />
         <Tier tier={tier}/>

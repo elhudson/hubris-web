@@ -10,19 +10,10 @@ export default class Info {
     constructor(skeleton) {
         Object.assign(this, skeleton)
     }
-    static parse(title, json) {
-        var frame=new this
-        if (json[title]==undefined) {
-            Object.keys(this).forEach((key)=> {
-                if (json[key]!=undefined) {
-                    frame[key]=json[key]
-                }
-            })
-        }
-        else {
-            Object.assign(frame, json[title])            
-        }
-        return frame
+    static parse(raw) {
+        var self=new this
+        Object.assign(self, raw)
+        return self
     }
     set_attribute(character, path, default_value) {
         var data=_.get(character, path)
@@ -40,7 +31,7 @@ export default class Info {
             var path=action.path
             _.set(this, path, action.data.selectedOptions[0].value)
         }
-        if (action.src=='INPUT') {
+        if (action.src=='INPUT' || action.src=='TEXTAREA') {
             var path=action.path
             _.set(this, path, action.data.value)
         }
@@ -97,11 +88,24 @@ export class RadioArray {
             keys[i]==immutable && (this[keys[i]].active=true)
         }
     }
+    static parse(raw) {
+        var defaultActive=_.find(Object.keys(raw), r=>raw[r].active)
+        var self=new RadioArray({keys:Object.keys(raw), values:Object.values(raw), defaultActive:defaultActive})
+        return self
+        
+    }
     list() {
         return Object.values(this)
     }
     active() {
         return _.find(this.list(), f=>f.active)
+    }
+    activate(value) {
+        var target=_.find(this.list(), v=>v.value==value)
+        target.active=true
+        this.list().forEach((val)=> {
+            val.value!=value && (val.active==false)
+        })
     }
     Radio({aray, path, group, handler}) {
         const forceRerender=useState(true)

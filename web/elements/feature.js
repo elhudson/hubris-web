@@ -1,19 +1,24 @@
 import React from "react"
-import { SmallMod, Metadata as Meta } from "hubris-components/text"
+import { SmallMod, Metadata as Meta, CheckboxItem } from "hubris-components/text"
 import { LabeledItem, Row } from "hubris-components/containers"
 import {style, styles, reusable} from 'hubris-components/styles'
 import { Popper } from "@mui/base"
 import { Box } from "@mui/material"
 import { Button, Buttons } from "hubris-components/interactive"
-
-
+import { Ruleset } from "../rules/ruleset"
+import {Arsenal, Armory} from '../models/character/sections/combat'
 import _ from 'lodash'
 import { current, immerable } from 'immer';
 
 export default class Entry {
     [immerable]=true
     constructor(data) {
-        Object.assign(this, data)
+        try {
+            Object.assign(this, ruleset[data.table][data.id])
+        }
+        catch {ReferenceError} {
+            Object.assign(this, data)
+        }
         this.path=this.table
         this.descendable=false
         this.bought=false
@@ -198,6 +203,7 @@ function Checkbox({ feature, handler }) {
 
 
 export class Metadata extends Entry {
+    [immerable]=true
     constructor(data) {
         super(data)
         this.descendable=true  
@@ -207,24 +213,13 @@ export class Metadata extends Entry {
     qualifies(character) {
         var q=false
         if (super.qualifies(character) && this.requirements(character)) {
-            var trees=[...new Set(character.powers.effects.map(e=>e.tree))]
+            var trees=[...new Set(character.powers.effects.map(e=>[e.tree]))]
+            console.log(trees)
             if (trees.includes(this.tree)) {
                 q=true
             }
         }
         return q
-    }
-    removeable(character) {
-        if (super.removeable(character)) {
-            var autos=character.effects.map(o=>o.defaults.map(f=>f.id))
-            autos=autos.flat(10)
-            if (autos.includes(this.id)) {
-                return false
-            }
-            else {
-                return true
-            }
-        }
     }
 }
 
@@ -293,31 +288,53 @@ export class TagFeature extends Entry {
 export class Skill extends Entry {
     constructor(data) {
         super(data);
+        this.xp=0;
         if (Object.hasOwn(this, 'attributes')) {
             this.code = this.attributes.name.toLowerCase().slice(0, 3)
         }
     }
-    cost(character, event) {
-        var owned = character.skills.filter(s => s.proficient).length
-        character.free_skills = 4 + Number(character.ability_scores.int) - owned
-        if (event.target.checked) {
-            character.free_skills -= 1
+    cost(int, skills) {
+        var free=2+int
+        var known=_.countBy(skills, s=>s.proficient==true)
+        known=known.true==undefined ? 0 : known.true
+        var left=free-known
+        if (left<=0) {
+            this.xp=1+Math.abs(left)
         }
-        if (character.free_skills < 0) {
-            this.xp = Math.abs(character.free_skills) + 1
+        return this.xp
+    }
+    select(int, skills, progression) {
+        var cost=this.cost(int.value, skills)
+        if (progression.xp.earned-progression.xp.spent>=cost) {
+            this.proficient=true
+            progression.xp.spent+=cost
         }
-        else {
-            this.xp = 0
-        }
+
+    }
+    deselect(int, skills, progression) {
+        var cost=this.cost(int.value, skills)*-1
+        this.proficient=false
+        progression.xp.spent+=cost
     }
     proficiency(character) {
         const v = character.skills[character.skills.findIndex(c => c.id == this.id)]
         if (v.proficient) {
-            this.bonus = character.progression.proficiency() + character.ability_scores[this.code]
+            this.bonus = character.progression.proficiency() + character.stats.scores[this.code]
         }
         else {
-            this.bonus = character.ability_scores[this.code]
+            this.bonus = character.stats.scores[this.code]
         }
+    }
+    display() {
+        function Skill({skill}) {
+            return(
+                <CheckboxItem item={{label:skill.name}} checked={skill.proficient}>
+                    <SmallMod value={skill.bonus}/>
+                </CheckboxItem>
+            )
+        }
+        return <Skill skill={this} />
+
     }
 }
 
@@ -325,7 +342,6 @@ export class Class extends Entry {
     constructor(data) {
         super(data)
     }
-
     qualifies(character) {
         if (Object.hasOwn(character, 'classes')==false) {
             return true
@@ -342,6 +358,7 @@ export class Class extends Entry {
 export class Background extends Entry {
     constructor(data) {
         super(data)
+        this.description=data.feature
     }
     qualifies(character) {
         return (character.backgrounds.primary==null || character.backgrounds.secondary==null)

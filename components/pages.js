@@ -1,12 +1,17 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { Button } from './interactive.js';
+import { Button, Buttons } from './interactive.js';
+import { style, styles} from './styles.js';
 
 export function NextPage({ current, character }) {
-    var progression=['class','backgrounds','stats','xp','fluff']
+    var progression=['class','backgrounds','stats', 'fluff', 'characters']
     var next=progression[progression.indexOf(current)+1]
-    console.log(next)
-    function save() {
+    var display=style('bottom-btn', {
+        '& button': {
+            margin:0
+        }
+    })
+    async function proceed() {
         if (ruleset.condition(current, character) == true) {
             sessionStorage.setItem(character.id, JSON.stringify(character))
             window.location.assign(`/${next}`)
@@ -14,13 +19,27 @@ export function NextPage({ current, character }) {
         else { alert('Please choose all required options before proceeding.') }
     }
     return (
-        <Button onClick={save}> next </Button>
+        <div className={display}>
+            <Buttons>
+                <Button onClick={proceed}> next </Button>
+                <SaveButton character={character} />
+            </Buttons>
+        </div>
+    )
+}
+
+export function SaveButton({character}) {
+    return(
+        <Button onClick={character.write}>Save</Button>
     )
 }
 
 export function PageWithNext({url, character, children}) {
+    var sty=style('page', {
+        border:styles.border
+    })
     return(
-        <div>
+        <div className={sty}>
             <PageHeader>{url}</PageHeader>
             <PageContent>{children}</PageContent>
             <NextPage current={url} character={character}/>

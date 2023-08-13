@@ -67,7 +67,7 @@ export class Ruleset extends Object {
             class:(character) => {return character.classes.base!=null},
             backgrounds:(character)=>{return character.backgrounds.primary!=null && character.backgrounds.secondary!=null},
             stats:(character)=>{return character.stats.points==0},
-            xp:(character)=> {return true}
+            fluff:(character)=>{return true}
         }
         return conditions[url](character)
     }

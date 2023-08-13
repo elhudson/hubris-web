@@ -25,8 +25,8 @@ function Login({error}) {
                 error={error}
                 header={'Welcome to HUBRIS!'} 
                 items={[
-                    {label:'username', data:{text:'Username', path:'username'}}, 
-                    {label:'password', data:{text:'Password', path:'password'}}
+                    {label:'username', hidden:false, data:{text:user.username, path:'username'}}, 
+                    {label:'password', hidden:true, data:{text:user.password, path:'password'}}
                 ]}
                 buttons={[
                     {txt:'Register', handler:handleRegister},

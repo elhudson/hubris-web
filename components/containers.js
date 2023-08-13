@@ -219,10 +219,12 @@ export function LabeledItem({ childStyles=null, className=null, label, children 
 
 
 
-export function Item({ label, children }) {
+export function Item({ label, children, below=false }) {
     var s = style('item', {
-        display: 'inline-flex',
-        width: '100%',
+        margin:5,
+        display: below ? 'block':'inline-flex',
+        flexDirection:'row-reverse',
+        width: 'auto',
         '& label': {
             textTransform: 'uppercase',
             fontWeight: 'bold',
@@ -232,8 +234,8 @@ export function Item({ label, children }) {
     )
     return (
         <div className={s}>
-            <label>{label}</label>
             {children}
+            <label>{label}</label>
         </div>
     )
 }

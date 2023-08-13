@@ -8,14 +8,13 @@ from srd.entry import EntryEncoder
 from srd.tools import parse_path
 import sqlalchemy as sqa
 from filters import *
-from db_connect import engine, tunnel, file_putter
+from db_connect import engine, tunnel
 
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.jinja_env.filters['listify']=listify
 app.template_folder='./web/pages'
-app.json_encoder=EntryEncoder
 parse_path(app)
 Session(app)
 

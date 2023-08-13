@@ -1,4 +1,4 @@
-from flask import session, render_template, request, redirect, url_for, flash
+from flask import session, render_template, Response, request, redirect, url_for, flash
 from srd.character import create_character
 from pandas import read_sql
 from sqlalchemy import text, exc
@@ -9,7 +9,10 @@ import json
 from werkzeug import exceptions
 from db_connect import tunnel, engine
 from HUBRIS import app
+import requests
+import gzip
 
+receipts=[]
 
 @app.route('/login',methods=['GET','POST'])
 def login():        
@@ -61,9 +64,22 @@ def my_characters():
         id=request.form['character_selection']
         return redirect(url_for('sheet',character_id=id))
 
-@app.route('/get/<id>',methods=['GET'])
-def get_character(id):
-    char=create_character(id, app.database)
-    js=char.to_json()
-    return js
+@app.route('/<id>',methods=['GET', 'POST'])
+def character(id):
+    if request.method=='GET':
+        data=read_sql(f'''SELECT data FROM characters WHERE id='{id}' ''', app.database).values.tolist()[0][0]
+        print(data)
+        return json.loads(data)
+    if request.method=='POST':
+        receipts.append(request.get_json())
+        if (len(receipts)==11):
+           data=json.dumps({k:v for d in receipts for k, v in d.items()})
+           cnx=app.database.connect()
+           if read_sql(text(f"SELECT * FROM characters WHERE id='id'"), app.database).empty==True:
+                cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
+                
+           else:
+                cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
+           cnx.commit()
+        return('Character saved.')
 

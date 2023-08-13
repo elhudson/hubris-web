@@ -20,8 +20,8 @@ export function Bonus({ item, override }) {
     return (
         <LabeledItem className={cls} childStyles={layout} label={item.label}>
                 {item.value < 0 ?
-                    <Icon name='minus' /> :
-                    <Icon name='plus' />}
+                    <Icon name='minus' sx={{margin:'unset'}} /> :
+                    <Icon name='plus' sx={{margin:'unset'}} />}
                 <Modifier editable={false} id={item.id} value={Math.abs(item.value)} />
         </LabeledItem>
     )
@@ -66,33 +66,23 @@ export function Tracker({ header, left, right, children, update }) {
         flexDirection:'row',
         height:'auto',
         '& > div': {
-            flex: '1 1 auto',
+            // flex: '1 1 auto',
+            width:'50%',
             border:'unset',
             margin:0,
             '& label': {
-                position:'absolute',
-                width:'fit-content',
-                top:0,
-                right:0,
-                fontWeight:'bold',
-                fontSize:styles.small,
-                color:styles.muted,
-                borderLeft:styles.border,
-                borderBottom:styles.border,
-                zIndex:1,
-                backgroundColor:styles.background
+                ...reusable.boxLabel
             },
             '&:first-child': {
                 borderRight:styles.border
             }
         }
-
     })
    
     return (
         <LabeledItem label={header} childStyles={display}>            
-            <Counter item={left} update={update} />
-            <Counter item={right} update={update} />
+            {left.readOnly ? <DC item={left} /> :  <Counter item={left} update={update} /> }
+            {right.readOnly ? <DC item={right} /> :  <Counter item={right} update={update} />}
         </LabeledItem>
     )
 }
@@ -101,10 +91,7 @@ export function Counter({ item, update }) {
     const increase=update[0]
     const decrease=update[1]
     const display=style('style', {
-        height: 'unset !important',
-        '& button': {
-            height:'50%'
-        }
+        height: 'unset !important'
     })
     const layout=style('cols', {
         display:'flex',

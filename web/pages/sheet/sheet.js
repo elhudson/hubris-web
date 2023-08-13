@@ -6,6 +6,10 @@ import { Character, useCharacter, generatePatch } from '../../models/character/c
 import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
 import GridLayout from "react-grid-layout";
+import { current } from 'immer'
+
+import '/node_modules/react-grid-layout/css/styles.css'
+import '/node_modules/react-resizable/css/styles.css'
 
 await Ruleset.load()
 
@@ -21,16 +25,14 @@ root.render(<CharacterSheet ch={char} />)
 function CharacterSheet({ ch }) {
     const [char, dispatch]=useCharacter(ch)
     const patch=generatePatch(dispatch)
-    var windowHeight=window.innerHeight
-    var onePercent=windowHeight/100
     const l=[
         {i:'thumbnail', x:0, y:0, w:3, h:8, static:true},
-        {i:'progression', x:3, y:0, w:5, h:8.5, static:true},
-        {i:'stats', x:9, y:0, w:4, h:4, static:true},
-        {i:'health', x:0, y:0, w:3, h:18.5},
-        {i:'combat', x: 0, y:0, w:4, h:2.5},
-        {i: 'powers', x:3, y:4, w:5, h:18},
-        {i: 'features', x:4, y:70, w:4, h:10}
+        {i:'progression', x:3, y:0, w:5, h:8, static:true},
+        {i:'stats', x:9, y:0, w:4, h:0, static:true},
+        {i:'health', x:0, y:8, w:3, h:16},
+        {i:'combat', x: 0, y:12, w:4, h:12},
+        {i: 'powers', x:3, y:8, w:5, h:16},
+        {i: 'features', x:4, y:24, w:4, h:0}
     ]
     return (
         <GridLayout 
@@ -39,7 +41,7 @@ function CharacterSheet({ ch }) {
             cols={12} 
             width={1200}
             allowOverlap={false}
-            rowHeight={onePercent}
+            rowHeight={10}
             >
             <div key='thumbnail'>
                 <char.bio.Bio ch={char} patch={patch} /> 
@@ -48,19 +50,19 @@ function CharacterSheet({ ch }) {
                 <char.progression.Progression progression={char.progression} patch={patch} /> 
            </div>
            <div key='stats'>
-                <char.ability_scores.StatsSkills stats={char.ability_scores} skills={char.skills} />
+                <char.stats.StatsSkills stats={char.stats} skills={char.skills} />
            </div>
             <div key='health'>
-                <char.health.Health health={char.health} patch={patch} />
+                {char.health.display({patch:patch})}
             </div>
             <div key='combat'>
                 <char.combat.Combat patch={patch} combat={char.combat}/> 
             </div>
             <div key='features'>
-                <char.features.Features features={char.features} />   
+                {char.features.display({patch:patch})}
             </div>
             <div key='powers'>
-                <char.powers.Powers powers={char.powers} patch={patch} />      
+                {char.powers.display({patch:patch})}
             </div>
         </GridLayout>
     )

@@ -25,11 +25,8 @@ def allocate_stats():
 def spend_xp():
     return render_template("creation/creation.html",id=session.get('character_id'))
 
-@app.route("/fluff",methods=("GET","POST"))
+@app.route("/fluff",methods=("GET", 'POST'))
 def addtl_info():
     if request.method=='GET':
         return render_template("creation/creation.html", id=session.get('character_id'))
-    if request.method=='POST':
-        ch=json.loads(request.get_data())
-        fil=open(f"tmp/{ch['id']}.json",'w+')
-        json.dump(ch,fil)
+  

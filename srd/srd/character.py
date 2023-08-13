@@ -7,12 +7,10 @@ from sqlalchemy.exc import IntegrityError
 from srd.entry import Entry, create_entry, EntryEncoder
 from srd.ruleset import all_in_table
 
-def create_character(char_id,con):
-    char=Character(char_id)
-    if exists(char_id,con):
-        char.basic_info(con)
-        char.build_entries(con)
-    return char
+def create_character(id, con):
+    sql=pd.read_sql(sqa.text(f"SELECT data FROM characters WHERE id='{id}'"), con).values.tolist()[0]
+    data=json.load(sql)
+    return data
 
 def fetch_character(app,character_id):
     file=open(f'{app.home}/static/characters/{character_id}.json')
@@ -69,11 +67,6 @@ def exists(char_id,con):
 class Character:
     def __init__(self,char_id):
         self.id=char_id
-        self.name=None
-        self.xp_earned=None
-        self.xp_spent=None
-        self.alignment=None
-    
     
     def designate_tag(self):
         for e in self.effects:

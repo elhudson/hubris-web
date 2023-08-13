@@ -5,6 +5,7 @@ import React from 'react'
 import {Region, Block, Item} from 'hubris-components/containers'
 import {Dropdown} from 'hubris-components/interactive'
 import { Ruleset } from "../../../rules/ruleset"
+import { Arsenal, Armory } from "./combat"
 
 export default class Classes extends Info {
     [immerable]=true
@@ -16,6 +17,11 @@ export default class Classes extends Info {
     }
     includes(id) {
         return this.base.id==id
+    }
+    static parse(raw) {
+        var self=super.parse(raw)
+        self.base=Entry.parse(raw.base)
+        return self
     }
     class_features() {
         var ids=this.base.class_features.map(f=>f.id)
@@ -36,15 +42,19 @@ export default class Classes extends Info {
         })
         return all
     }
-    add(feature) {
+    tags() {
+        var tag_ids=this.base.tags.map(t=>t.id)
+        return tag_ids.map(t=>ruleset.tags[t])
+    }
+    add(feature, character) {
         this.base=feature
+        character.health.hd.die=this.base.hit_dice
+        character.powers.attr=this.base.attributes.name.slice(0, 3).toLowerCase()
+        character.tags=this.base.tags.map(t=>ruleset.tags[t.id])
+        character.combat.weapons=Arsenal.create({value:this.base.weapon_proficiencies, classname:this.base.name, str:character.stats.scores.str.value, dex:character.stats.scores.dex.value, pb:character.progression.proficiency()})
+        character.combat.armor=Armory.assemble({cls:this.base.armor_proficiencies, dex:character.stats.scores.dex.value, pb:character.progression.proficiency()})
     }
     remove(feature) {
         this.base=null
-    }
-    static parse(json) {
-        var self=new Classes()
-        json.classes!=undefined && (self.base=Entry.parse(json.classes.base))
-        return self
     }
 }

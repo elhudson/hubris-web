@@ -4,6 +4,9 @@ import { Block, LabeledItem } from "hubris-components/containers"
 import React from "react"
 import { Controls, Button } from "hubris-components/interactive"
 import {style, styles} from 'hubris-components/styles'
+import { Armory, Arsenal } from "../models/character/sections/combat"
+import Entry from "../elements/feature"
+
 export class Choices {
     [immerable] = true
     constructor(character=null, url=null) {
@@ -24,18 +27,32 @@ export class Choices {
         Object.assign(self, obj)
         return self
     }
-    addDrop(action, ch) {
-        var feature=ruleset[action.table][action.data.value]
+    edits(ch, obj) {
+        var mapping={
+            classes:function() {
+                ch.health.hd.die=obj.hit_die
+            },
+            backgrounds:function() {
+                ch.stats.boosts(ch.backgrounds)
+                ch.skills.auto(ch.backgrounds)
+            }
+        }
+           mapping[obj.table]()
+    }
+    addDrop(action, ch, free=false) {
+        var feature=ruleset[action.table][action.data.value].clone()
+        free && (feature.xp=0)
         if ((action.data.checked==true && feature.qualifies(ch)) || (action.data.checked==false && feature.removeable(ch))) {
             var tree=_.get(this, action.path)
             var func=action.data.checked ? 'add':'remove'
-            var cost=_.get(ch, action.path)[func](feature)
+            var cost=_.get(ch, action.path)[func](feature, action.context)
             cost!=null && (ch.progression.xp.spent+=cost)
+            action.table=='effects' && (this.handleMetadata(feature, func, ch))
             tree.get(ruleset[action.table][action.data.value]).bought=action.data.checked
             tree.forEach((item)=> {
                 if (item.qualifies(ch) || item.bought==true) {
                     item.buyable=true
-                    if (item.removeable(ch)==false) {
+                    if (item.removeable(ch)==false || item.xp==0) {
                         item.buyable=false
                     }
                 }
@@ -45,12 +62,29 @@ export class Choices {
             })
         }
     }
+    handleMetadata(feature, act, ch) {
+        const synthAction=(feature, act)=> {
+            return({
+                path:`powers.metadata.${feature.table}`,
+                parent:'options',
+                table:`${feature.table}`,
+                data:{
+                    value:feature.id,
+                    checked:act=='add' ? true:false
+                }
+            })
+        }
+        var range=synthAction(feature.range, act)
+        var duration=synthAction(feature.duration, act)
+        this.addDrop(range, ch, true)
+        this.addDrop(duration, ch, true)
+    }
     display({binner, handler}) {
         return(
-        <div>
-        {Object.keys(this).map(key=>
-            this[key].display({binner:binner, handler:handler}))}
-        </div>
+            <div>
+            {Object.keys(this).map(key=>
+                this[key].display({binner:binner, handler:handler}))}
+            </div>
         )
     }
 }
@@ -60,11 +94,13 @@ export class Groups {
     constructor(aray) {
         this.by = ''
         this.content = { [this.by]: new Bin(aray) }
-        this.defaults={class_features:'class_paths', effects:'tree'}
+        this.defaults={class_features:'class_paths', tag_features:'tags', effects:'tree', ranges:'tree', durations:'tree'}
         try {
             this.regroup(this.defaults[aray[0].table])
         }
-        catch{ {Error} }
+        catch {
+            {Error}
+        }
     }
     *[Symbol.iterator]() {
         var list = Object.values(this.content)
@@ -72,6 +108,16 @@ export class Groups {
         for (var i = 0; i < fl.length; i++) {
             yield fl[i]
         }
+    }
+    static parse(data) {
+        var by=data.by
+        var items=Object.values(data.content).flat(2)
+        for (var i=0;i<items.length;i++) {
+            items[i]=Entry.parse(items[i])
+        }
+        var self=new Groups(items)
+        self.regroup(by)
+        return self
     }
     forEach(func) {
         for (var o of this) {
@@ -178,7 +224,7 @@ export class Groups {
             this.content = groups
         }
     }
-    display({binner, handler=null}) {
+    display({binner, handler=null, asOption=true}) {
         function Bins({bins, binner, handler=null}) {
             var pool=bins.pool()
             if (pool.length>0) {
@@ -202,7 +248,7 @@ export class Groups {
                         {possible.map(l => <Button table={loc} path={path} onClick={binner} value={l} aria-selected={l == bins.by}>{l.replace('_', ' ')}</Button>)}
                     </Controls>
                     <div className={display}>
-                        {Object.keys(bins.content).map(by => bins.content[by].display({label:by, handler:handler}))}
+                        {Object.keys(bins.content).map(by => bins.content[by].display({label:by, handler:handler, asOption:asOption}))}
                     </div>
                 </>
             )
@@ -225,11 +271,12 @@ export class Bin extends Array {
     sort(by) {
         Object.assign(this, _.sortBy(this, item=>_.get(item, by)))
     }
-    display({label, handler=null}) {
+    display({label, handler=null, asOption}) {
+        var func=asOption ? 'displayOption':'displayFeature'
         function Bin({ data, label, handler=null }) {
             return (
                 <Block header={label}>
-                            { data.map(f => f.displayOption({handler:handler})) }
+                    { data.map(f => f[func]({handler:handler})) }
                 </Block>
             )}
         return (<Bin data={Array.from(this)} label={label} handler={handler} />)

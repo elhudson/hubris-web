@@ -14,6 +14,7 @@ import Powers from './sections/powers';
 import Classes from './sections/class';
 import Backgrounds from './sections/backgrounds'
 import Info from './section';
+import { json } from 'react-router-dom';
 
 export class Character {
     [immerable] = true
@@ -24,6 +25,7 @@ export class Character {
         this.bio = new Bio()
         this.combat = new Combat()
         this.stats = new Stats()
+        this.skills=new Skills()
         this.progression = new Progression()
         this.health = new Health()
         this.features=new Features()
@@ -33,7 +35,7 @@ export class Character {
         return _.cloneDeep(this)
     }
     static async request(id) {
-        var request = await fetch(`/get/${id}`)
+        var request = await fetch(`/${id}`)
         var json = await request.json()
         var character = Character.parse(json)
         if (sessionStorage.getItem(id) == null) {
@@ -43,18 +45,28 @@ export class Character {
     }
     static parse(data) {
         var ch = new Character(data.id)
-        ch.classes=Classes.parse(data)
-        ch.backgrounds=Backgrounds.parse(data)
-        ch.stats=Stats.parse(data)
-        ch.features=Features.parse(data)
-        ch.powers=Powers.parse(data)
-        ch.progression=Progression.parse(data)
-        // ch.bio.parse('bio', data)
-        // ch.combat.parse('combat', data)
-        // ch.progression.parse('progression', data)
-        // ch.health.parse('health', data)
-        // ch.features.parse('features', data)
-        // ch.powers.parse('powers', data)
+            ch.classes=Classes.parse(data.classes)
+            ch.backgrounds=Backgrounds.parse(data.backgrounds)
+            ch.stats=Stats.parse(data.stats)
+            ch.features=Features.parse(data.features, ch.backgrounds)
+            ch.progression=Progression.parse(data.progression)
+            ch.powers=Powers.parse(data.powers, {
+                scores:ch.stats.scores,
+                pb:ch.progression.proficiency(),
+                attr:ch.classes.base.attributes
+            })
+            ch.skills=Skills.parse(data.skills, {
+                scores:ch.stats,
+                pb:ch.progression.proficiency()
+            })
+            ch.bio=Bio.parse(data.bio)
+            ch.combat=Combat.parse(data.combat, {
+                str:ch.stats.scores.str.value, 
+                dex:ch.stats.scores.dex.value, 
+                pb:ch.progression.proficiency(),
+                classname:ch.classes.base.name
+            })
+            ch.health=Health.parse(data.health)
         return ch
     }
     static load(id) {
@@ -71,15 +83,18 @@ export class Character {
     save() {
         sessionStorage.setItem(this.id, JSON.stringify(this))
     }
-    write(url) {
-        fetch(url, {
-            method: 'POST',
-            body: sessionStorage.getItem(this.id)
+    async write() {
+        Object.keys(this).forEach(async (key)=> {
+            var req= {
+                method: 'POST',
+                body: JSON.stringify({[key]:this[key]}),
+                headers:new Headers({
+                    'Content-Type':'application/json'
+                })
+            }
+            await fetch(`/${this.id}`, req)
         })
-    }
-    class_tags() {
-        console.log(this.classes.base)
-        return this.classes.base.links('tags')
+            
     }
     has(feature) {
         try {
@@ -167,7 +182,11 @@ export function useCharacter(ch, url) {
     ch.options = new Choices(ch, url)
     const [character, dispatch] = useImmerReducer(dispatcher, ch)
     function dispatcher(draft, action) {
+        if (action.needs_context) {
+            action.context=draft
+        }
         draft[action.parent][action.type](action, draft)
+
         
         // if (followup == 'add' || followup == 'drop') {
         //     var success = draft.options.addDrop(action, current(draft))
@@ -225,12 +244,12 @@ export function useCharacter(ch, url) {
 }
 
 export function generatePatch(dispatcher) {
-    const patch = (parent, type) => {
+    const patch = (parent, type, needs_context=false) => {
         const handleChange = (e) => {
             dispatcher({
                 type: type,
                 parent: parent,
-
+                needs_context: needs_context,
                 src: e.target.tagName,
                 path: e.target.getAttribute('path'),
                 data: e.target,

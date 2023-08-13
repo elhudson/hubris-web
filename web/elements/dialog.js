@@ -1,25 +1,26 @@
 import React from "react";
-import {Field, HiddenField} from 'hubris-components/text'
+import {Field} from 'hubris-components/text'
 import { LabeledItem } from "hubris-components/containers";
 import {Buttons, Button} from 'hubris-components/interactive'
 
 export default function Dialog({ header, error, buttons, items, handler }) {
     return (
-<LabeledItem label={header}>
-        <Error error={error} />
-            <div>
-                {items.map(item =>
-                        <Field data={item.data} handler={handler} />)}
-            </div>
-            <Buttons vertical={false}>
-                {buttons.map(b=> 
-                    <Button onClick={b.handler}>
-                        {b.txt}
-                    </Button>
+    <LabeledItem label={header}>
+            <Error error={error} />
+                <div>
+                    {items.map(item =>
+                            <Field data={item.data} hidden={item.hidden} handler={handler} toggleble={false} />)}
+                </div>
+                <Buttons vertical={false}>
+                    {buttons.map(b=> 
+                        <Button onClick={b.handler}>
+                            {b.txt}
+                        </Button>
 
-                )}
-            </Buttons>
-</LabeledItem>)}
+                    )}
+                </Buttons>
+    </LabeledItem>)
+}
 
 function Error({error}) {
     const errors={
