@@ -1,0 +1,22 @@
+{% macro global() -%}    
+    <script src="https://mozilla.github.io/nunjucks/files/nunjucks.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+{% endmacro -%}
+
+{% macro creation() %}
+    {{ global() }}
+    <script src="/static/dist/creation.js" type="module"></script>
+
+{% endmacro %}
+
+{% macro sheet() %}
+    {{ global() }}
+    <link rel="stylesheet" href="/static/styles/compiled/sheet.css">
+    <script src="/static/dist/sheet.js" type="module"></script>
+{% endmacro %}
+
+{% macro characters() %}
+    {{global()}}
+    <link rel="stylesheet" href="static/styles/compiled/characters.css">
+    <script src="/static/dist/characters.js" type="module"> </script>
+{% endmacro %}

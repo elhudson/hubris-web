@@ -1,16 +1,20 @@
 import json
 from itertools import chain
 
-import numpy as np
 import pandas as pd
 import sqlalchemy as sqa
 
 import os
-from uuid import UUID
     
 def parse_name(name):
     return name.lower().replace(' ','_')
 
+def in_dev():
+    if 'el_hudson' in os.path.expanduser('~'):
+        return True
+    else:
+        return False
+    
 def parse_path(app):
     if 'el_hudson' in os.path.expanduser('~'):
         app.home=os.path.expanduser('~')+'/projects/HUBRIS'
@@ -47,4 +51,3 @@ def find_table(id,con):
         sql=sqa.text(f"SELECT id FROM {table} WHERE id='{id}'")
         if pd.read_sql(sql,con).empty==False:
             return table
-        

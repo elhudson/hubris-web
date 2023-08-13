@@ -1,0 +1,64 @@
+@font-face {
+  font-family: plex;
+  src: url(/static/styles/plex/IBMPlexMono-Regular.ttf);
+}
+.feature h2 {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.react-tabs__tab-list, .group-buttons {
+  list-style: none;
+  display: block;
+  padding: unset;
+  margin: unset;
+}
+.react-tabs__tab-list > *, .group-buttons > * {
+  border: 1px solid #93a1a1;
+  cursor: pointer;
+  background-color: rgba(147, 161, 161, 0.2);
+  color: #002b36;
+  display: inline;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0px 5px;
+}
+.react-tabs__tab-list > *:hover, .group-buttons > *:hover {
+  background-color: rgba(147, 161, 161, 0.05);
+}
+.react-tabs__tab-list > *[aria-selected=true], .group-buttons > *[aria-selected=true] {
+  background-color: #fdf6e3;
+  border-bottom: 1px solid #fdf6e3;
+  z-index: 1;
+}
+
+.options {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  width: 100%;
+}
+
+.groups {
+  width: 100%;
+  border-top: none;
+  border-right: 1px solid #93a1a1;
+}
+.groups h1 {
+  border-bottom: none;
+}
+.groups .group {
+  border-top: none;
+  width: 100%;
+  overflow: scroll;
+}
+
+.react-tabs__tab-panel {
+  max-height: 100vh;
+  overflow: scroll;
+}
+
+h1 {
+  border-bottom: none;
+}

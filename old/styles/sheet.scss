@@ -1,0 +1,207 @@
+@import 'HUBRIS';
+
+.sheet {
+    padding: 5px;
+}
+
+
+.subsection {
+    background-color: $background;
+    @include section();
+    margin-bottom: 5px;
+
+    &:not(details[open]):is(details) {
+        border-bottom: none;
+    }
+
+    &:is(details) {
+        summary img{
+            $dim:calc($size + 8px);
+            width: $dim;
+            height: $dim;
+            position: absolute;
+            float:right;
+
+        }
+
+        summary:hover {
+            background-color: $hover;
+        }
+
+        &:is([open]) {
+             summary img {
+                transform:rotate(90deg);
+            }
+        }
+    }
+}
+
+.box {
+    margin: 5px;
+    @include labeled(top);
+
+    .item {
+        margin: 5px;
+
+        select {
+            margin-right: 0px;
+            border: none;
+        }
+    }
+    padding-bottom:5px;
+}
+
+
+
+
+.bio label {
+    @include inline-title();
+}
+
+.bonus,
+.dc,
+.counter {
+    label {
+        vertical-align: bottom;
+        border-bottom: $border;
+        border-top: none;
+    }
+
+    border:$border;
+
+}
+
+.counter {
+    @include counter();
+    border: $border;
+
+    div:first-child {
+        @include label();
+        border-top: unset;
+        border-bottom: $border;
+    }
+}
+
+.tracker {
+    @include doublesided();
+}
+
+.item:not(.tracker) {
+    margin: 5px;
+    min-width: 0;
+
+    &.bonus,
+    &.dc {
+        text-align: center;
+        label {
+            font-weight: normal;
+            @include label();
+        }
+    }
+
+}
+
+
+    .modifier {
+        display: inline;
+        position: relative;
+        vertical-align: middle;
+        * {
+            display: inline;
+            vertical-align: middle;
+            top:10%;
+            position: relative;
+        }
+    }
+
+
+.skill_entry {
+    margin: 2px;
+}
+
+.content {
+    display: grid;
+    max-width: 100%;
+
+    &.bio {
+        grid-template-columns: repeat(2, 50%);
+    }
+
+    &.progression,
+    &.health {
+        .tracker {
+            display: flex;
+        }
+
+        grid-template-columns:40% 30% 30%;
+
+        .box {
+            .bubbles {
+                @include radio($vertical: false);
+                text-align: center;
+
+                .bubble {
+                    min-width: 20%;
+                }
+            }
+        }
+    }
+
+    &.health {
+        grid-template-columns: 30% 40% 30%;
+
+        .bubble {
+            min-width: 15%;
+        }
+    }
+
+    &.combat {
+        grid-template-columns: repeat(5, 20%);
+    }
+    &.powers {
+        grid-template-columns: 20% 80%;
+    }
+}
+
+.feature {
+    @include labeled($top: true);
+
+    .feature-content {
+        margin: 5px;
+    }
+
+    margin-bottom:5px;
+}
+
+.feature-group {
+    &:first-child {
+        border-right: $border;
+    }
+
+    h3 {
+        @include section-title();
+        font-size: $size;
+        margin-top: 0px;
+    }
+
+    .feature-list {
+        margin: 0px 5px;
+    }
+}
+
+.subsection .feature-group {
+    padding-top:5px;
+    h3 {
+        display:none;
+    }
+}
+
+.meta {
+    display:grid;
+    grid-template-columns: 50% 50%;
+}
+
+.feature-content {
+    display: grid;
+    grid-template-columns: 30% 70%;
+}

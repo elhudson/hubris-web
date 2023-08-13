@@ -1,19 +1,26 @@
 {
     "folders": [
         {
+            "name": "HUBRIS",
             "path": "."
         }
     ],
     "settings": {
         "sqltools.connections": [
             {
+                "mysqlOptions": {
+                    "authProtocol": "default",
+                    "enableSsl": "Disabled"
+                },
                 "previewLimit": 50,
-                "server": "143.42.226.164",
-                "port": 5432,
-                "driver": "PostgreSQL",
-                "database": "hubris",
-                "username": "cicero63",
-                "name": "HUBRIS"
+                "server": "ehudson19.mysql.pythonanywhere-services.com",
+                "port": 3306,
+                "driver": "MySQL",
+                "name": "HUBRIS",
+                "database": "ehudson19$HUBRIS",
+                "username": "ehudson19",
+                "askForPassword": true,
+                "connectionTimeout": 60
             }
         ],
         "sqltools.useNodeRuntime": true,
@@ -79,7 +86,8 @@
                         "static/styles/mixins.css.map",
                         "static/styles/mixins.css.map",
                         "static/styles/old/",
-                        "static/styles/colors.txt"
+                        "static/styles/colors.txt",
+                        "static/node_modules/"
                     ],
                     "name": "hubris",
                     "description": "",
@@ -134,9 +142,11 @@
             ".vscode/": true,
             "static/styles/mixins.css.map": true,
             "static/styles/old/": true,
-            "static/styles/colors.txt": true
+            "static/styles/colors.txt": true,
+            "static/node_modules/": true
         },
-        "hidefiles.selectedProfile": "hubris"
+        "hidefiles.selectedProfile": "hubris",
+        "liveSassCompile.settings.showOutputWindowOn": "None"
     },
     "launch": {
         "configurations": [

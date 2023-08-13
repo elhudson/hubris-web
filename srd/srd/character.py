@@ -7,12 +7,10 @@ from sqlalchemy.exc import IntegrityError
 from srd.entry import Entry, create_entry, EntryEncoder
 from srd.ruleset import all_in_table
 
-def create_character(char_id,con):
-    char=Character(char_id)
-    if exists(char_id,con):
-        char.basic_info(con)
-        char.build_entries(con)
-    return char
+def create_character(id, con):
+    sql=pd.read_sql(sqa.text(f"SELECT data FROM characters WHERE id='{id}'"), con).values.tolist()[0]
+    data=json.load(sql)
+    return data
 
 def fetch_character(app,character_id):
     file=open(f'{app.home}/static/characters/{character_id}.json')
@@ -59,7 +57,7 @@ def deserialize_entry(d):
     return me
 
 def exists(char_id,con):
-    sql=sqa.text(f'''SELECT name, str, dex, con, int, wis, cha, xp_earned, xp_spent, alignment FROM characters WHERE id="{char_id}" ''') 
+    sql=sqa.text(f'''SELECT * FROM characters WHERE id="{char_id}" ''') 
     r=pd.read_sql(sql,con)
     if r.empty:
         return False
@@ -69,11 +67,6 @@ def exists(char_id,con):
 class Character:
     def __init__(self,char_id):
         self.id=char_id
-        self.name=None
-        self.xp_earned=None
-        self.xp_spent=None
-        self.alignment=None
-    
     
     def designate_tag(self):
         for e in self.effects:
@@ -194,8 +187,9 @@ class Character:
         return list(set(trees))
 
     def build_entries(self,con):
-        res=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values
-        names=[names[0] for names in res if "__characters" in names[0]]
+        res=list(chain(*pd.read_sql(sqa.text("SELECT table_name FROM information_schema.tables WHERE table_schema='ehudson19$HUBRIS'"),con).values.tolist()))
+        names=[n for n in res if "__characters" in n and '.csv' not in n]
+        print(names)
         r={}
         for name in names:
             prop_name=name[14::]

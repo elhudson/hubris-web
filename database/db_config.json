@@ -1,0 +1,23 @@
+{
+    "MANY_TO_MANY": [
+    ["Classes","Tags"], 
+    ["Classes","Skills"],
+    ["Tags","Effects"]
+    ],
+   "HAS_PREREQS": [
+    "Effects",
+    "Durations",
+    "Ranges",
+    "Class Features",
+    "Tag Features"
+   ],
+   "NOTION_DB":"0e2c8717f10341a2a2d30f48eb2c6677",
+   "NOTION_TOKEN":"secret_oPnTR8UwwPWeDeJReXH7rZwRb2ILunhXd35AQOn2xmY",
+   "SERVER_ADDRESS":"ssh.pythonanywhere.com",
+   "SERVER_PWD":"?L89Y]TD?Xunp9C",
+   "SERVER_USERNAME":"ehudson19",
+   "DB_NAME":"ehudson19$HUBRIS",
+   "DB_ADDRESS": "ehudson19.mysql.pythonanywhere-services.com",
+   "DB_PWD":"cicero63",
+   "ICON_PATH":"/home/ehudson19/hubris-web/icons"
+}

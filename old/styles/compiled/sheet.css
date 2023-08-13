@@ -1,0 +1,689 @@
+@font-face {
+  font-family: plex;
+  src: url(/static/styles/plex/IBMPlexMono-Regular.ttf);
+}
+:root {
+  background-color: #100d10;
+}
+
+body {
+  font-family: plex;
+  font-size: 12px;
+  color: #e5e1e5;
+}
+body img {
+  filter: invert(100%) sepia(7%) saturate(649%) hue-rotate(241deg) brightness(94%) contrast(90%);
+}
+body select {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+body textarea {
+  width: calc(100% - 15px);
+  height: calc(100% - 40px);
+}
+body textarea:disabled {
+  color: #e5e1e5;
+  font-family: plex;
+  border: none;
+}
+body a {
+  border: 1px solid #958595;
+  color: #e5e1e5;
+  padding: 2px;
+  text-align: center;
+  text-decoration: none;
+}
+body input,
+body select,
+body textarea,
+body a {
+  background-color: rgba(0, 0, 0, 0);
+  border-style: solid;
+  border: 1px solid #958595;
+  font-family: plex;
+  color: #e5e1e5;
+  font-size: 12px;
+}
+body input[type=number],
+body select[type=number],
+body textarea[type=number],
+body a[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+}
+body input[type=checkbox], body input[type=radio],
+body select[type=checkbox],
+body select[type=radio],
+body textarea[type=checkbox],
+body textarea[type=radio],
+body a[type=checkbox],
+body a[type=radio] {
+  -webkit-appearance: unset;
+     -moz-appearance: unset;
+          appearance: unset;
+  height: 12px;
+  width: 12px;
+  vertical-align: text-bottom;
+}
+body input[type=checkbox]:checked, body input[type=radio]:checked,
+body select[type=checkbox]:checked,
+body select[type=radio]:checked,
+body textarea[type=checkbox]:checked,
+body textarea[type=radio]:checked,
+body a[type=checkbox]:checked,
+body a[type=radio]:checked {
+  background-color: #e5e1e5;
+}
+
+.page {
+  max-width: 70%;
+  position: relative;
+  top: 30;
+  margin: auto;
+  border: 1px solid #958595;
+  box-sizing: border-box;
+}
+.page > h1 {
+  width: 100%;
+  font-size: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: unset;
+  margin: unset;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #958595;
+}
+
+.box .bubbles {
+  text-align: center;
+}
+.box .bubbles .bubble {
+  display: inline-flex;
+}
+
+.stats {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(3, minmax(100px, 300px));
+  grid-gap: 0px;
+}
+.stats > *:not(:nth-child(3), :nth-child(6)) {
+  border-right: 1px solid #958595;
+}
+.stats > *:not(:nth-child(4), :nth-child(5), :nth-child(6)) {
+  border-bottom: 1px solid #958595;
+}
+
+.stat {
+  padding-bottom: 5px;
+}
+.stat h2 {
+  line-height: unset;
+  display: block;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #958595;
+}
+.stat .ability_score, .stat > input[type=number] {
+  position: relative;
+  text-align: center;
+  min-height: 80px;
+}
+.stat .ability_score input[type=number], .stat > input[type=number] input[type=number] {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+}
+.stat .ability_score label, .stat > input[type=number] label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border: unset;
+  border-bottom: 1px solid #958595;
+}
+.stat .ability_score .toggles, .stat > input[type=number] .toggles {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
+.stat .ability_score .toggles.expander,
+.stat .ability_score .toggles button,
+.stat .ability_score .toggles input[type=submit], .stat > input[type=number] .toggles.expander,
+.stat > input[type=number] .toggles button,
+.stat > input[type=number] .toggles input[type=submit] {
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
+}
+.stat .ability_score .toggles.expander:hover,
+.stat .ability_score .toggles button:hover,
+.stat .ability_score .toggles input[type=submit]:hover, .stat > input[type=number] .toggles.expander:hover,
+.stat > input[type=number] .toggles button:hover,
+.stat > input[type=number] .toggles input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.stat .ability_score .toggles.expander img,
+.stat .ability_score .toggles.expander svg,
+.stat .ability_score .toggles button img,
+.stat .ability_score .toggles button svg,
+.stat .ability_score .toggles input[type=submit] img,
+.stat .ability_score .toggles input[type=submit] svg, .stat > input[type=number] .toggles.expander img,
+.stat > input[type=number] .toggles.expander svg,
+.stat > input[type=number] .toggles button img,
+.stat > input[type=number] .toggles button svg,
+.stat > input[type=number] .toggles input[type=submit] img,
+.stat > input[type=number] .toggles input[type=submit] svg {
+  height: 11px;
+  width: 11px;
+}
+.stat .ability_score .toggles > *:first-child, .stat > input[type=number] .toggles > *:first-child {
+  border: unset;
+  border-top: 1px solid #958595;
+  border-right: 1px solid #958595;
+  width: 50%;
+}
+.stat .ability_score .toggles > *:last-child, .stat > input[type=number] .toggles > *:last-child {
+  border: unset;
+  border-top: 1px solid #958595;
+  width: 50%;
+}
+
+.score,
+.bonus {
+  text-align: center;
+}
+.score input,
+.bonus input {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+  vertical-align: center;
+}
+.score label,
+.bonus label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+  margin: 0px auto;
+}
+.score img,
+.bonus img {
+  height: 22px;
+}
+
+.tag,
+.tree {
+  border: 1px solid #958595;
+  font-size: 11px;
+  border-radius: 10px;
+  padding: 0px 3px;
+}
+
+.dc input {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+  vertical-align: center;
+}
+.dc label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+  margin: 0px auto;
+}
+
+.feature {
+  box-sizing: border-box;
+  line-height: 160%;
+  border: 1px solid #958595;
+  vertical-align: top;
+}
+.feature table {
+  vertical-align: top;
+}
+.feature label {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+.feature input[type=number] {
+  border: unset;
+  -webkit-appearance: none;
+          appearance: none;
+  -moz-appearance: textfield;
+  color: #e5e1e5;
+  height: 14px;
+  max-width: 4ch;
+  font-size: 12px;
+  border-bottom: 1px solid #958595;
+}
+.feature .feature-desc {
+  height: 100px;
+  overflow: auto;
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.status > div {
+  width: 100%;
+}
+
+.toggles button:hover {
+  background-color: #0a080a !important;
+}
+
+.tabbed {
+  margin-bottom: 10px;
+  display: block;
+}
+.tabbed .tab_buttons {
+  border: 1px solid #958595;
+  font-size: 0px;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  border-bottom: none;
+  position: absolute;
+  right: 0;
+  margin-right: 5px;
+  transform: translate(0, -100%);
+}
+.tabbed .tab_buttons.expander,
+.tabbed .tab_buttons button,
+.tabbed .tab_buttons input[type=submit] {
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
+}
+.tabbed .tab_buttons.expander:hover,
+.tabbed .tab_buttons button:hover,
+.tabbed .tab_buttons input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.tabbed .tab_buttons.expander img,
+.tabbed .tab_buttons.expander svg,
+.tabbed .tab_buttons button img,
+.tabbed .tab_buttons button svg,
+.tabbed .tab_buttons input[type=submit] img,
+.tabbed .tab_buttons input[type=submit] svg {
+  height: 11px;
+  width: 11px;
+}
+.tabbed .tab_buttons button {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px;
+  border: none;
+  border-right: 1px solid #958595;
+}
+.tabbed .tabs {
+  border: 1px solid #958595;
+  border-right: none;
+  padding: 5px;
+}
+
+.skill_entry input[type=number] {
+  text-align: center;
+  border: unset;
+  -webkit-appearance: none;
+          appearance: none;
+  -moz-appearance: textfield;
+  color: #e5e1e5;
+  height: 14px;
+  max-width: 4ch;
+  font-size: 12px;
+  border-bottom: 1px solid #958595;
+}
+
+.sheet {
+  padding: 5px;
+}
+
+.subsection {
+  background-color: #100d10;
+  border: 1px solid #958595;
+  width: 100%;
+  max-height: 100% !important;
+  margin-bottom: 5px;
+}
+.subsection > label, .subsection .bio label, .subsection h3 {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+.subsection h3 {
+  display: inline;
+  line-height: unset;
+}
+.subsection h1, .subsection h2,
+.subsection .set > label,
+.subsection summary {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  line-height: unset;
+  display: block;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #958595;
+}
+.subsection:not(details[open]):is(details) {
+  border-bottom: none;
+}
+.subsection:is(details) summary img {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  float: right;
+}
+.subsection:is(details) summary:hover {
+  background-color: #0a080a;
+}
+.subsection:is(details):is([open]) summary img {
+  transform: rotate(90deg);
+}
+
+.box {
+  margin: 5px;
+  border: 1px solid #958595;
+  padding-bottom: 5px;
+}
+.box > label, .box .feature-name label, .box .item > label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: none;
+  border-bottom: 1px solid #958595;
+}
+.box select {
+  margin: 0px;
+}
+.box .item {
+  margin: 5px;
+}
+.box .item select {
+  margin-right: 0px;
+  border: none;
+}
+
+.bio label {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.bonus,
+.dc,
+.counter {
+  border: 1px solid #958595;
+}
+.bonus label,
+.dc label,
+.counter label {
+  vertical-align: bottom;
+  border-bottom: 1px solid #958595;
+  border-top: none;
+}
+
+.counter {
+  position: relative;
+  text-align: center;
+  min-height: 80px;
+  border: 1px solid #958595;
+}
+.counter input[type=number] {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+}
+.counter label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border: unset;
+  border-bottom: 1px solid #958595;
+}
+.counter .toggles {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
+.counter .toggles.expander,
+.counter .toggles button,
+.counter .toggles input[type=submit] {
+  border: 1px solid #958595;
+  background-color: rgba(0, 0, 0, 0);
+}
+.counter .toggles.expander:hover,
+.counter .toggles button:hover,
+.counter .toggles input[type=submit]:hover {
+  background-color: #0a080a;
+}
+.counter .toggles.expander img,
+.counter .toggles.expander svg,
+.counter .toggles button img,
+.counter .toggles button svg,
+.counter .toggles input[type=submit] img,
+.counter .toggles input[type=submit] svg {
+  height: 11px;
+  width: 11px;
+}
+.counter .toggles > *:first-child {
+  border: unset;
+  border-top: 1px solid #958595;
+  border-right: 1px solid #958595;
+  width: 50%;
+}
+.counter .toggles > *:last-child {
+  border: unset;
+  border-top: 1px solid #958595;
+  width: 50%;
+}
+.counter div:first-child {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: unset;
+  border-bottom: 1px solid #958595;
+}
+
+.tracker {
+  display: inline-block;
+  text-align: center;
+}
+.tracker > *:first-child,
+.tracker > *:last-child {
+  min-width: 0;
+}
+.tracker > *:first-child label,
+.tracker > *:last-child label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+}
+.tracker > *:first-child input,
+.tracker > *:last-child input {
+  border: unset;
+  height: 33px;
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 10%;
+  max-width: 50%;
+  min-width: 2ch;
+  width: 10%;
+}
+.tracker > *:last-child {
+  border-left: 1px solid #958595;
+}
+
+.item:not(.tracker) {
+  margin: 5px;
+  min-width: 0;
+}
+.item:not(.tracker).bonus, .item:not(.tracker).dc {
+  text-align: center;
+}
+.item:not(.tracker).bonus label, .item:not(.tracker).dc label {
+  font-weight: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+}
+
+.modifier {
+  display: inline;
+  position: relative;
+  vertical-align: middle;
+}
+.modifier * {
+  display: inline;
+  vertical-align: middle;
+  top: 10%;
+  position: relative;
+}
+
+.skill_entry {
+  margin: 2px;
+}
+
+.content {
+  display: grid;
+  max-width: 100%;
+}
+.content.bio {
+  grid-template-columns: repeat(2, 50%);
+}
+.content.progression, .content.health {
+  grid-template-columns: 40% 30% 30%;
+}
+.content.progression .tracker, .content.health .tracker {
+  display: flex;
+}
+.content.progression .box .bubbles, .content.health .box .bubbles {
+  text-align: center;
+}
+.content.progression .box .bubbles .bubble, .content.health .box .bubbles .bubble {
+  display: inline-flex;
+}
+.content.progression .box .bubbles .bubble, .content.health .box .bubbles .bubble {
+  min-width: 20%;
+}
+.content.health {
+  grid-template-columns: 30% 40% 30%;
+}
+.content.health .bubble {
+  min-width: 15%;
+}
+.content.combat {
+  grid-template-columns: repeat(5, 20%);
+}
+.content.powers {
+  grid-template-columns: 20% 80%;
+}
+
+.feature {
+  border: 1px solid #958595;
+  margin-bottom: 5px;
+}
+.feature > label, .feature .feature-name label, .feature .item > label {
+  font-size: 10px;
+  text-transform: uppercase;
+  display: block !important;
+  padding: 3px;
+  text-align: center;
+  border-top: none;
+  border-bottom: 1px solid #958595;
+}
+.feature select {
+  margin: 0px;
+}
+.feature .feature-content {
+  margin: 5px;
+}
+
+.feature-group:first-child {
+  border-right: 1px solid #958595;
+}
+.feature-group h3 {
+  line-height: unset;
+  display: block;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #958595;
+  font-size: 12px;
+  margin-top: 0px;
+}
+.feature-group .feature-list {
+  margin: 0px 5px;
+}
+
+.subsection .feature-group {
+  padding-top: 5px;
+}
+.subsection .feature-group h3 {
+  display: none;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.feature-content {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
