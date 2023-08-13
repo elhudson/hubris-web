@@ -39,7 +39,8 @@ export default class Features extends Info {
     display({patch}) {
         function Features({features, binner}) {
             const styled=style('features', {
-                maxHeight:'100%',
+                maxHeight:260,
+                overflow:'scroll',
                 '& > div': {
                     marginBottom:5
                 }

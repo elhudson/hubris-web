@@ -12,6 +12,7 @@ var id = document.querySelector('body').getAttribute('data-id')
 import { PageWithNext } from 'hubris-components/pages.js';
 import { current } from 'immer';
 import { HD } from '../../models/character/sections/health.js';
+
 var ch = Character.load(id)
 if (ch=='Character not found!') {
     ch=Character.create(id)
@@ -28,32 +29,13 @@ root.render(
 function CreationPage({ url, ch }) {
     const [char, dispatchChanges] = useCharacter(ch, url)
     const patch=generatePatch(dispatchChanges)
-    window.ch=char
     var binner=patch('options', 'regroup')
     var handler=patch('options', 'addDrop', true)
     return (
         <PageWithNext url={url} character={char}>
             {url=='class' && char.options.classes.display({binner:binner, handler:handler})}
             {url=='backgrounds' && char.options.backgrounds.display({binner:binner, handler:handler})}
-            {url=='stats' && char.stats.displayAllocate([patch('stats', 'increment'), patch('stats', 'decrement')])}
-            {url=='xp' &&        
-                    <Tabbed names={['Features', 'Powers', 'Skills', 'Hit Dice']}>
-                        <Tabbed names={['Class Features','Tag Features']}>
-                                {char.options.features.class_features.display({binner:binner, handler:handler})}
-                                {char.options.features.tag_features.display({binner:binner, handler:handler})}
-                        </Tabbed>
-                        <Tabbed names={['Effects', 'Ranges', 'Durations']}>
-                            {char.options.powers.effects.display({binner:binner, handler:handler})}
-                            {char.options.powers.metadata.ranges.display({binner:binner, handler:handler})}
-                            {char.options.powers.metadata.durations.display({binner:binner, handler:handler})}
-                        </Tabbed>
-                        <div>
-                            { char.skills.display({handler:patch('skills', 'addDrop', true)}) }
-                        </div>
-                        <div>
-                            {char.health.hd.displayOption({update:[patch('health', 'increment', true), patch('health', 'decrement', true)]})}
-                        </div>
-                    </Tabbed>}
+            {url=='stats' && char.stats.displayAllocate([patch('stats', 'increment'), patch('stats', 'decrement')])}                   
             {url=='fluff' && <char.bio.FullBio obj={char.bio} handler={patch('bio', 'update')}/>}
         </PageWithNext>
     )

@@ -70,10 +70,13 @@ export function Button({ onClick, max=null, table=null, min=null, children, valu
     )
 }
 
-export function Controls({icon, children}) {
+export function Controls({icon, sx=null, children}) {
     var content=children.length>1 ? <Buttons vertical={false}>{children}</Buttons> : {children}
     var display=style('controls', {
         display:'flex',
+        zIndex:2,
+        ...sx,
+        backgroundColor:styles.background,
         width:'fit-content',
         '& > div:first-child': {
             padding: '0px 3px'

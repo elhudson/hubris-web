@@ -158,8 +158,8 @@ export default class Entry {
         var ids=this.requires.map(i=>i.id)
         return ids.map(id=>ruleset[this.table][id])
     }
-    displayFeature({meta=null}) {
-        return <Feature feature={this} meta={meta}/>
+    displayFeature() {
+        return <Feature feature={this} />
     }
     displayOption({handler}) {
         return <Feature feature={this} check={<Checkbox feature={this} handler={handler}/>}/>
@@ -214,7 +214,6 @@ export class Metadata extends Entry {
         var q=false
         if (super.qualifies(character) && this.requirements(character)) {
             var trees=[...new Set(character.powers.effects.map(e=>[e.tree]))]
-            console.log(trees)
             if (trees.includes(this.tree)) {
                 q=true
             }
@@ -240,12 +239,16 @@ export class Effect extends Entry {
         }
         return q
     }
-
     quald_by(char) {
         var char_tags=char.classes.base.links('tags')
         var my_tags=this.links('tags')
         var rez=char_tags.filter(f=>my_tags.map(i=>i.id).includes(f.id))
         this.tags=rez
+    }
+    displayFeature({ranges, durations}) {
+        return(
+            <Feature feature={this} meta={{ranges:ranges, durations:durations}}/>
+        )
     }
 }
 

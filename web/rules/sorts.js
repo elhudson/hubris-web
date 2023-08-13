@@ -22,22 +22,17 @@ export class Choices {
     regroup(action) {
         _.get(this, action.path).regroup(action.data.value)
     }
+    includes(feature) {
+        var self=new Array()
+        Object.keys(this).forEach((item)=> {
+            self=_.concat(self, this[item].pool())
+        })
+        return (self.map(s=>s.id).includes(feature.id)) 
+    }
     static from(obj) {
         var self=new Choices()
         Object.assign(self, obj)
         return self
-    }
-    edits(ch, obj) {
-        var mapping={
-            classes:function() {
-                ch.health.hd.die=obj.hit_die
-            },
-            backgrounds:function() {
-                ch.stats.boosts(ch.backgrounds)
-                ch.skills.auto(ch.backgrounds)
-            }
-        }
-           mapping[obj.table]()
     }
     addDrop(action, ch, free=false) {
         var feature=ruleset[action.table][action.data.value].clone()
@@ -91,10 +86,11 @@ export class Choices {
 
 export class Groups {
     [immerable] = true
-    constructor(aray) {
+    constructor(aray, possessions=null) {
         this.by = ''
         this.content = { [this.by]: new Bin(aray) }
         this.defaults={class_features:'class_paths', tag_features:'tags', effects:'tree', ranges:'tree', durations:'tree'}
+        possessions!=null && (this.owned(possessions))
         try {
             this.regroup(this.defaults[aray[0].table])
         }
@@ -108,6 +104,13 @@ export class Groups {
         for (var i = 0; i < fl.length; i++) {
             yield fl[i]
         }
+    }
+    owned(group) {
+        this.forEach((item)=> {
+            if (group.includes(item)) {
+                item.bought=true
+            }
+        })
     }
     static parse(data) {
         var by=data.by
@@ -140,10 +143,6 @@ export class Groups {
         var branch = this.get_branch(feature)
         return _.cloneDeep(branch)
     }
-    dequal(char, feature) {
-        var branch = this.get_branch(feature)
-        this.content[this.find_branch(feature)] = branch.filter(b => b.addable(char) || char.has(b))
-    }
     add(feature) {
         var branch = this.get_branch(feature)
         branch.push(feature)
@@ -153,13 +152,6 @@ export class Groups {
         var branch = this.get_branch(feature)
         _.remove(branch, f => f.id == feature.id)
         return(-1*feature.xp)
-    }
-    qual(feature) {
-        if (feature.descendable) {
-            feature.children().forEach((child) => {
-                this.enqueue(child)
-            })
-        }
     }
     get_branch(feature) {
         var branch = this.find_branch(feature)

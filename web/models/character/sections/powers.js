@@ -27,30 +27,29 @@ export default class Powers extends Info {
     }
     static parse(raw, data) {
         var self = super.parse(raw)
-        self.effects = new Groups(self.effects)
-        self.metadata.ranges = new Groups(self.metadata.ranges)
-        self.metadata.durations = new Groups(self.metadata.durations)
+        self.effects =Groups.parse(self.effects)
+        self.metadata.ranges = Groups.parse(self.metadata.ranges)
+        self.metadata.durations = Groups.parse(self.metadata.durations)
         self.attr=data.attr.name.slice(0,3).toLowerCase()
         self.mod = data.pb + data.scores[self.attr].value
         return self
     }
     display({ patch }) {
         function Powers({ powers, patch }) {
+            const disp=style('powers', {
+                maxHeight:260, 
+                overflow:'scroll'
+            })
             const handlers = [patch('powers', 'increment'), patch('powers', 'decrement')]
             return (
-                <Block header={'Powers'}>
+                <Block header={'Powers'} className={disp}>
                     <Row>
                         <Bonus item={{ label: 'Power Mod', value: powers.mod }} />
                         <DC item={{ label: 'Power DC', value: powers.dc() }} />
                         <Counter update={handlers} item={{ label: 'Powers Used', value: powers.used, path: "used", readOnly: false }} />
                     </Row>
                     <OptionList>
-                        {powers.effects.map(f =>
-                            <div>
-                                <Feature
-                                    feature={f}
-                                    meta={powers.metadata} />
-                            </div>)}
+                        {powers.effects.map(f => f.displayFeature({ranges:powers.metadata.ranges, durations:powers.metadata.durations}))}
                     </OptionList>
                 </Block>
             )

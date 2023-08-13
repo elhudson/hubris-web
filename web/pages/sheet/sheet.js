@@ -10,6 +10,7 @@ import { current } from 'immer'
 
 import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
+import { Controls, Button } from 'hubris-components/interactive.js'
 
 await Ruleset.load()
 
@@ -35,6 +36,8 @@ function CharacterSheet({ ch }) {
         {i: 'features', x:4, y:24, w:4, h:0}
     ]
     return (
+        <>
+        {char.controls()}
         <GridLayout 
             className="layout" 
             layout={l} 
@@ -65,6 +68,7 @@ function CharacterSheet({ ch }) {
                 {char.powers.display({patch:patch})}
             </div>
         </GridLayout>
+        </>
     )
 }
 

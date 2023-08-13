@@ -10,7 +10,8 @@ const config = {
         login:'./web/pages/login/login.js',
         sheet: './web/pages/sheet/sheet.js',
         characters:'./web/pages/characters/characters.js',
-        creation:'./web/pages/creation/creation.js'
+        creation:'./web/pages/creation/creation.js',
+        levelup:'./web/pages/levelup/levelup.js'
     },
     output: {
         path: path.resolve(__dirname, 'static/dist'),

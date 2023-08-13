@@ -21,10 +21,6 @@ def choose_backgrounds():
 def allocate_stats():
     return render_template("creation/creation.html", id=session.get('character_id'))
     
-@app.route("/xp", methods=("GET","POST"))
-def spend_xp():
-    return render_template("creation/creation.html",id=session.get('character_id'))
-
 @app.route("/fluff",methods=("GET", 'POST'))
 def addtl_info():
     if request.method=='GET':
