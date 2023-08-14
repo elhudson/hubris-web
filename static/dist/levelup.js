@@ -7,26 +7,8 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./web/pages/levelup.js":
-/*!******************************!*\
-  !*** ./web/pages/levelup.js ***!
-  \******************************/
-/***/ (() => {
-
-eval("throw new Error(\"Module build failed (from ./node_modules/source-map-loader/dist/cjs.js):\\nError: ENOENT: no such file or directory, open '/home/el_hudson/projects/HUBRIS/web/pages/levelup.js'\");\n\n//# sourceURL=webpack://my-webpack-project/./web/pages/levelup.js?");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
+/******/ 	"use strict";
 /******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./web/pages/levelup.js"]();
 /******/ 	
 /******/ })()
 ;

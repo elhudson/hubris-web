@@ -1,0 +1,53 @@
+@use 'sass:map';
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
+
+
+$solarized: (
+    'light':#eee8d5,
+    'muted':#93a1a1,
+    'text':#002b36,
+    'background':#fdf6e3,
+    'red':#dc322f,
+);
+
+$purple: (
+    'light':#bbb0bb,
+    'muted':#958595,
+    'text':#e5e1e5,
+    'background':#100d10
+);
+
+$gruvbox: (
+    'background':#1D2021,
+    'text':#FBF1C7,
+    'muted':#A89984,
+    'light':#EBDBB2,
+    'red':#CC241D
+);
+
+$theme: $gruvbox;
+$sans: 'IBM Plex Sans';
+$mono: 'IBM Plex Mono';
+$hover:transparentize(map.get($theme, 'muted'), $amount:0.95);
+$behind: darken(map.get($theme, 'background'), $amount:0.5);
+$selected:transparentize(map.get($theme, 'muted'), $amount:0.8);
+$highlight:transparentize(map.get($theme, 'text'), $amount: 0.2);
+$text: map.get($theme, 'text');
+$background: map.get($theme, 'background');
+$muted: map.get($theme, 'muted');
+$light: map.get($theme, 'light');
+$size: 12px;
+$line: calc(12px*1.2);
+$big: 30px;
+$small: 10px;
+$size-img: calc(14px - 3px);
+$big-img: calc(30px - 3px);
+$border: 1px solid $muted;
+$transparent: rgba(0, 0, 0, 0);
+$icon: $text;
+
+$red:map.get($theme, 'red');
+$darker: map.get($theme, 'bg2');

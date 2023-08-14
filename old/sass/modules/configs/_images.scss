@@ -1,0 +1,23 @@
+@use 'theme';
+.injected-svg {
+    path, line {
+        fill:theme.$text;
+        stroke:theme.$text;
+    }
+}
+
+.icon {
+    div {
+        max-height: 100%;
+        height: 100%;
+    }
+}
+
+a {
+    display: unset;
+}
+
+div svg, div img {
+    width:100%;
+    height: 100%;
+}
