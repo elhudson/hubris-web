@@ -11,7 +11,7 @@ import uuid
 from filters import *
 from db_connect import address
 from pandas import read_sql
-
+from itertools import chain
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
@@ -23,27 +23,25 @@ Session(app)
 receipts=[]
 
 
-@app.route("/class", methods=("GET","POST"))
+@app.route("/class")
 def choose_class():
-        new_id=uuid.uuid4()
-        session['character_id']=str(new_id)
-        return render_template("creation/creation.html", id=str(new_id))
-    
-@app.route("/backgrounds", methods=("GET", "POST"))
+    new_id=uuid.uuid4()
+    session['character_id']=str(new_id)
+    return render_template("base.html", script='creation', id=session.get('character_id'))
+
+@app.route("/backgrounds")
 def choose_backgrounds():
-        return render_template("creation/creation.html",id=session.get('character_id'))
+    return render_template("base.html", script='creation', id=session.get('character_id'))
 
-@app.route("/stats", methods=("GET","POST"))
+@app.route("/stats")
 def allocate_stats():
-    return render_template("creation/creation.html", id=session.get('character_id'))
+    return render_template("base.html", script='creation', id=session.get('character_id'))
     
-@app.route("/fluff",methods=("GET", 'POST'))
+@app.route("/fluff")
 def addtl_info():
-    if request.method=='GET':
-        return render_template("creation/creation.html", id=session.get('character_id'))
-  
+    return render_template("base.html", script='creation', id=session.get('character_id'))
 
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login',methods=['POST'])
 def login():        
     data=json.loads(request.get_data())
     username=data['username']
@@ -78,11 +76,11 @@ def register():
 
 @app.route("/sheet/<character_id>")
 def sheet(character_id):
-    return render_template("sheet/sheet.html",id=character_id)
+    return render_template("base.html",id=character_id, script='sheet')
 
 @app.route("/level/<character_id>")
 def spend_xp(character_id):
-    return render_template("levelup/levelup.html",id=character_id)
+    return render_template("base.html",id=character_id, script='levelup')
 
 
 @app.route("/")
@@ -90,15 +88,12 @@ def wizard(error=None):
     return render_template("base.html", script='login')
     
     
-@app.route('/characters',methods=['GET','POST'])
+@app.route('/characters')
 def my_characters():
-    if request.method=='GET':
-        user_id=session.get('user_id')
-        ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user_id}'"),app.database).values.tolist()))
-        return render_template('characters/characters.html',ids=ids)
-    if request.method=='POST':
-        id=request.form['character_selection']
-        return redirect(url_for('sheet',character_id=id))
+    user_id=session.get('user_id')
+    ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user_id}'"),app.database).values.tolist()))
+    return render_template('base.html', script='characters', id=ids)
+
 
 @app.route('/<id>',methods=['GET', 'POST'])
 def character(id):
@@ -110,11 +105,18 @@ def character(id):
         if (len(receipts)==11):
            data=json.dumps({k:v for d in receipts for k, v in d.items()})
            cnx=app.database.connect()
-           if read_sql(text(f"SELECT * FROM characters WHERE id='id'"), app.database).empty==True:
+           if read_sql(text(f"SELECT * FROM characters WHERE id='{id}'"), app.database).empty==True:
                 cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
-                
            else:
                 cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
            cnx.commit()
         return('Character saved.')
 
+
+@app.route('/delete/<id>', methods=['POST'])
+def delete_character(id):
+    query=text(f'''DELETE FROM characters WHERE id='{id}' ''')
+    cnx=app.database.connect()
+    cnx.execute(query)
+    cnx.commit()
+    cnx.close()
