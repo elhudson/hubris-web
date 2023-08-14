@@ -5,7 +5,7 @@ import {style, styles, reusable} from 'hubris-components/styles'
 import { Popper } from "@mui/base"
 import { Box } from "@mui/material"
 import { Button, Buttons } from "hubris-components/interactive"
-import { Ruleset } from "../rules/ruleset"
+import { Ruleset } from "../models/ruleset"
 import {Arsenal, Armory} from '../models/character/sections/combat'
 import _ from 'lodash'
 import { current, immerable } from 'immer';
