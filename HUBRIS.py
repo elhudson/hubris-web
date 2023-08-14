@@ -1,34 +1,122 @@
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
-
-from flask import Flask, redirect, request
+import json
+from flask import Flask, redirect, request, render_template, session, url_for
 from flask_session import Session
 import os
 from srd.entry import EntryEncoder
 from srd.tools import parse_path
-import sqlalchemy as sqa
+from sqlalchemy import create_engine, text
+import uuid
 from filters import *
-from db_connect import engine, tunnel
-
+from db_connect import address
+from pandas import read_sql
+from itertools import chain
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
-app.jinja_env.filters['listify']=listify
-app.template_folder='./web/pages'
+app.database=create_engine(address)
+app.template_folder='./web'
 parse_path(app)
 Session(app)
 
-tunnel=tunnel()
-app.database=engine(tunnel)
+receipts=[]
 
 
+@app.route("/class")
+def choose_class():
+    new_id=uuid.uuid4()
+    session['character_id']=str(new_id)
+    return render_template("base.html", script='creation', id=session.get('character_id'))
 
-class Database:
-    def __init__(self, tunnel):
-        self.connection=tunnel
-    def reconnect(self):
-        self.connection=engine(tunnel())
+@app.route("/backgrounds")
+def choose_backgrounds():
+    return render_template("base.html", script='creation', id=session.get('character_id'))
 
-from user_management import *
-from character_management import *
-from character_creation import *
+@app.route("/stats")
+def allocate_stats():
+    return render_template("base.html", script='creation', id=session.get('character_id'))
+    
+@app.route("/fluff")
+def addtl_info():
+    return render_template("base.html", script='creation', id=session.get('character_id'))
+
+@app.route('/login',methods=['POST'])
+def login():        
+    data=json.loads(request.get_data())
+    username=data['username']
+    password=data['password']
+    print(username, password)
+    q=read_sql(text(f"SELECT * FROM users WHERE username='{username}'"),app.database)
+    if q.empty:
+        return redirect(url_for('wizard',error='no-account'))
+    elif q['password'][0]!=password:
+        return redirect(url_for('wizard',error='wrong-password'))
+    else:
+        session['user_id']=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
+        return redirect(url_for('my_characters'))
+
+@app.route('/register',methods=['POST'])
+def register():
+    data=json.loads(request.get_data())
+    username=data['username']
+    password=data['password']
+    user_id=uuid.uuid4()
+    exists=read_sql(text(f'''SELECT * FROM users WHERE username='{username}' '''),app.database)
+    if exists.empty:
+        add=text(f"INSERT INTO users VALUES('{str(user_id)}','{username}','{password}')")
+        with app.database.connect() as con:
+            con.execute(add)
+            con.commit()
+            con.close()
+            session['user_id']=str(user_id)
+            return redirect(url_for('my_characters'))
+    else :
+        return redirect(url_for('wizard',error='account-exists'))
+
+@app.route("/sheet/<character_id>")
+def sheet(character_id):
+    return render_template("base.html",id=character_id, script='sheet')
+
+@app.route("/level/<character_id>")
+def spend_xp(character_id):
+    return render_template("base.html",id=character_id, script='levelup')
+
+
+@app.route("/")
+def wizard(error=None):
+    return render_template("base.html", script='login')
+    
+    
+@app.route('/characters')
+def my_characters():
+    user_id=session.get('user_id')
+    ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user_id}'"),app.database).values.tolist()))
+    return render_template('base.html', script='characters', id=ids)
+
+
+@app.route('/<id>',methods=['GET', 'POST'])
+def character(id):
+    if request.method=='GET':
+        data=read_sql(f'''SELECT data FROM characters WHERE id='{id}' ''', app.database).values.tolist()[0][0]
+        return json.loads(data)
+    if request.method=='POST':
+        receipts.append(request.get_json())
+        if (len(receipts)==11):
+           data=json.dumps({k:v for d in receipts for k, v in d.items()})
+           cnx=app.database.connect()
+           if read_sql(text(f"SELECT * FROM characters WHERE id='{id}'"), app.database).empty==True:
+                cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
+           else:
+                cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
+           cnx.commit()
+        return('Character saved.')
+
+
+@app.route('/delete/<id>', methods=['POST'])
+def delete_character(id):
+    query=text(f'''DELETE FROM characters WHERE id='{id}' ''')
+    cnx=app.database.connect()
+    cnx.execute(query)
+    cnx.commit()
+    cnx.close()

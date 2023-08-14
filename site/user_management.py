@@ -12,45 +12,4 @@ from HUBRIS import app
 import requests
 import gzip
 
-receipts=[]
-
-@app.route('/login',methods=['GET','POST'])
-def login():        
-    data=json.loads(request.get_data())
-    username=data['username']
-    password=data['password']
-    print(username, password)
-    q=read_sql(text(f"SELECT * FROM users WHERE username='{username}'"),app.database)
-    if q.empty:
-        return redirect(url_for('wizard',error='no-account'))
-    elif q['password'][0]!=password:
-        return redirect(url_for('wizard',error='wrong-password'))
-    else:
-        session['user_id']=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
-        return redirect(url_for('my_characters'))
-
-@app.route('/register',methods=['POST'])
-def register():
-    data=json.loads(request.get_data())
-    username=data['username']
-    password=data['password']
-    user_id=uuid.uuid4()
-    exists=read_sql(text(f'''SELECT * FROM users WHERE username='{username}' '''),app.database)
-    if exists.empty:
-        add=text(f"INSERT INTO users VALUES('{str(user_id)}','{username}','{password}')")
-        with app.database.connect() as con:
-            con.execute(add)
-            con.commit()
-            con.close()
-            session['user_id']=str(user_id)
-            return redirect(url_for('my_characters'))
-    else :
-        return redirect(url_for('wizard',error='account-exists'))
-    
-@app.errorhandler(exceptions.InternalServerError)
-def handle_server_disconnect(e):
-    t=tunnel()
-    e=engine(t)
-    app.database=e
-    return redirect(request.base_uri)
 

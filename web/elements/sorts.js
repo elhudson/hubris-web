@@ -5,7 +5,7 @@ import React from "react"
 import { Controls, Button } from "hubris-components/interactive"
 import {style, styles} from 'hubris-components/styles'
 import { Armory, Arsenal } from "../models/character/sections/combat"
-import Entry from "../elements/feature"
+import Entry from "./feature"
 
 export class Choices {
     [immerable] = true
