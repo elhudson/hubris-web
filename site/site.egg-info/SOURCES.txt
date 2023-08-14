@@ -1,9 +1,0 @@
-character_creation.py
-character_management.py
-filters.py
-setup.py
-user_management.py
-site.egg-info/PKG-INFO
-site.egg-info/SOURCES.txt
-site.egg-info/dependency_links.txt
-site.egg-info/top_level.txt
