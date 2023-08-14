@@ -7,11 +7,12 @@ const isProduction = process.env.NODE_ENV == 'production';
 
 const config = {
     entry: {
-        login:'./web/pages/login.js',
-        sheet: './web/pages/sheet.js',
-        characters:'./web/pages/characters.js',
-        creation:'./web/pages/creation.js',
-        levelup:'./web/pages/levelup.js'
+        login:'./web/pages/login.js'
+
+        // sheet: './web/pages/sheet.js',
+        // characters:'./web/pages/characters.js',
+        // creation:'./web/pages/creation.js',
+        // levelup:'./web/pages/levelup.js'
     },
     output: {
         path: path.resolve(__dirname, 'static/dist'),

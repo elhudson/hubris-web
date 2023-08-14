@@ -3,8 +3,10 @@ import { User, useUser } from '../../models/user'
 import { createRoot } from "react-dom/client";
 import {styles, style} from 'hubris-components/styles'
 import {Block} from 'hubris-components/containers'
-import Dialog from "../../elements/dialog";
 
+const components=require('hubris-components')
+
+import Dialog from "../../elements/dialog";
 function Login({error}) {
     const ob=new User()
     const [user, updateUser]=useUser(ob)

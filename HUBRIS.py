@@ -4,20 +4,18 @@ import json
 from flask import Flask, redirect, request, render_template, session, url_for
 from flask_session import Session
 import os
-from srd.entry import EntryEncoder
-from srd.tools import parse_path
 from sqlalchemy import create_engine, text
 import uuid
 from filters import *
 from db_connect import address
 from pandas import read_sql
 from itertools import chain
+
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.database=create_engine(address)
 app.template_folder='./web'
-parse_path(app)
 Session(app)
 
 receipts=[]
@@ -82,11 +80,9 @@ def sheet(character_id):
 def spend_xp(character_id):
     return render_template("base.html",id=character_id, script='levelup')
 
-
 @app.route("/")
 def wizard(error=None):
     return render_template("base.html", script='login')
-    
     
 @app.route('/characters')
 def my_characters():

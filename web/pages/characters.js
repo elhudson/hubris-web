@@ -8,8 +8,8 @@ import { User, useUser } from '../models/user.js';
 import { useAsync } from 'react-async-hook';
 import { Character } from '../models/character/character.js';
 import {style, styles, reusable} from 'hubris-components/styles.js'
-import { Button } from 'hubris-components/interactive.js';
 
+import { Button } from 'hubris-components/interactive.js';
 window.ruleset = await Ruleset.load()
 
 import { BarLoader } from 'react-spinners';

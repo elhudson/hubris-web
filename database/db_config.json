@@ -11,6 +11,11 @@
     "Class Features",
     "Tag Features"
    ],
+   "LEFTOVERS":[
+    "Backgrounds",
+    "Attributes",
+    "Skills"
+   ],
    "NOTION_DB":"0e2c8717f10341a2a2d30f48eb2c6677",
    "NOTION_TOKEN":"secret_oPnTR8UwwPWeDeJReXH7rZwRb2ILunhXd35AQOn2xmY",
    "SERVER_ADDRESS":"ssh.pythonanywhere.com",

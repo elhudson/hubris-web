@@ -22,15 +22,8 @@ export function NextPage({ current, character }) {
         <div className={display}>
             <Buttons>
                 <Button onClick={proceed}> next </Button>
-                <SaveButton character={character} />
             </Buttons>
         </div>
-    )
-}
-
-export function SaveButton({character}) {
-    return(
-        <Button onClick={character.write}>Save</Button>
     )
 }
 
