@@ -8,13 +8,6 @@ import _ from 'lodash';
 
 await Ruleset.load();
 const root = createRoot(document.getElementById('page'))
-var id = document.querySelector('body').getAttribute('data-id')
-
-
-var ch = Character.load(id)
-if (ch=='Character not found!') {
-    ch=Character.create(id)
-}
 
 var url = window.location.pathname.split('/')[1]
 root.render(

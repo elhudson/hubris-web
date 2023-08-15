@@ -16,6 +16,7 @@ import Backgrounds from './sections/backgrounds'
 import {Button, Controls} from '../../components/components/interactive'
 import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
+
 export class Character {
     [immerable] = true
     constructor(id) {

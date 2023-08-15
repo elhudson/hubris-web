@@ -17,28 +17,25 @@ app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.database=create_engine(address)
 app.template_folder='./web'
-Session(app)
 
 receipts=[]
 
 
 @app.route("/class")
 def choose_class():
-    new_id=uuid.uuid4()
-    session['character_id']=str(new_id)
-    return render_template("base.html", script='creation', id=session.get('character_id'))
+    return render_template("base.html", script='creation')
 
 @app.route("/backgrounds")
 def choose_backgrounds():
-    return render_template("base.html", script='creation', id=session.get('character_id'))
+    return render_template("base.html", script='creation')
 
 @app.route("/stats")
 def allocate_stats():
-    return render_template("base.html", script='creation', id=session.get('character_id'))
+    return render_template("base.html", script='creation')
     
 @app.route("/fluff")
 def addtl_info():
-    return render_template("base.html", script='creation', id=session.get('character_id'))
+    return render_template("base.html", script='creation')
 
 @app.route('/login',methods=['POST'])
 def login():        
@@ -52,8 +49,8 @@ def login():
     elif q['password'][0]!=password:
         return redirect(url_for('wizard',error='wrong-password'))
     else:
-        session['user_id']=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
-        return redirect(url_for('my_characters'))
+        user_id=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
+        return redirect(url_for('my_characters', user=user_id))
 
 @app.route('/register',methods=['POST'])
 def register():
@@ -69,7 +66,7 @@ def register():
             con.commit()
             con.close()
             session['user_id']=str(user_id)
-            return redirect(url_for('my_characters'))
+            return redirect(url_for('my_characters', user=user_id))
     else :
         return redirect(url_for('wizard',error='account-exists'))
 
@@ -86,10 +83,9 @@ def wizard(error=None):
     return render_template("base.html", script='login')
     
 @app.route('/characters')
-def my_characters():
-    user_id=session.get('user_id')
-    ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user_id}'"),app.database).values.tolist()))
-    return render_template('base.html', script='characters', id=ids)
+def my_characters(user):
+    ids=list(chain(*read_sql(text(f"SELECT id FROM characters WHERE user='{user}'"),app.database).values.tolist()))
+    return render_template('base.html', script='characters')
 
 
 @app.route('/<id>',methods=['GET', 'POST'])
