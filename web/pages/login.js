@@ -13,8 +13,8 @@ function Login({error}) {
             path:e.target.getAttribute('path'),
             value:e.target.value
         })}
-    const handleLogin=(e)=> {
-        user.login()
+    const handleLogin= async (e)=> {
+        await user.login()
     }
     const handleRegister=(e)=> {
         user.register()

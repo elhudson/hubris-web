@@ -9,14 +9,15 @@ import { Character } from '../models/character/character.js';
 import {style, styles, reusable} from '../components/components/styles.js'
 import { Button } from '../components/components/interactive.js';
 import { Alignment } from '../models/character/sections/bio';
+import { User } from '../models/user';
+
 window.ruleset = await Ruleset.load()
 
 import { BarLoader } from 'react-spinners';
 var page = createRoot(document.getElementById('page'))
-var data = document.querySelector('body').getAttribute('data-id')
-var ids = JSON.parse('{"ids":' + data.replaceAll(`'`, `"`) + '}').ids
+var user=User.from_url()
 
-window.char=await Character.request(ids[2])
+await user.get_characters()
 
 page.render(
     <>
@@ -33,7 +34,7 @@ function CharacterThumbnail({ id }) {
     const fetchCharacter = async id => (await Character.request(id))
     const asyncHero = useAsync(fetchCharacter, [id])
     return (
-<LabeledItem 
+    <LabeledItem 
     childStyles={style('thumbnail', {
         display:'flex'
     })}

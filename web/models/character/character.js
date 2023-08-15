@@ -16,7 +16,7 @@ import Backgrounds from './sections/backgrounds'
 import {Button, Controls} from '../../components/components/interactive'
 import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
-
+import { v4 as uuidv4 } from 'uuid';
 export class Character {
     [immerable] = true
     constructor(id) {
@@ -38,6 +38,7 @@ export class Character {
     static async request(id) {
         var request = await fetch(`/${id}`)
         var json = await request.json()
+        console.log(json)
         var character = Character.parse(json)
         if (sessionStorage.getItem(id) == null) {
             sessionStorage.setItem(id, JSON.stringify(character))
@@ -90,7 +91,8 @@ export class Character {
             return this.parse(JSON.parse(sessionStorage.getItem(id)))
         }
     }
-    static create(id) {
+    static create() {
+        id=v4()
         return new Character(id)
     }
     save() {

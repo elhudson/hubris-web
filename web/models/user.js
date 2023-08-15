@@ -1,6 +1,9 @@
 import { useImmerReducer } from "use-immer";
 import { immerable } from "immer";
 import _ from "lodash";
+import { Character } from "./character/character";
+import { validate } from "uuid";
+
 export const useUser = (data) => {
     const [user, dispatch]=useImmerReducer(dispatcher, data)
     function dispatcher(draft, action) {
@@ -19,26 +22,48 @@ export class User {
         this.password="",
         this.characters=[]
     }
-    login() {
-        var data=JSON.stringify(this)
-        fetch('/login', {
-            method:'POST',
-            body:data
-        }).then((result)=>
-            window.location.assign(result.url))
+    static parse(json) {
+        var self=new User()
+        Object.assign(self, json)
+        return self
     }
-    register() {
+    static from_url() {
+        var user_id=window.location.pathname.split('/').at(-1)
+        var user_data=JSON.parse(sessionStorage.getItem('user'))
+        var js={
+            ...user_data,
+            id:user_id
+        }
+        return User.parse(js)
+    }
+    async login() {
+        var data=await fetch('/login', {
+            method:'POST',
+            body:JSON.stringify(this)
+        })
+        sessionStorage.setItem('user',JSON.stringify(this))
+        window.location.assign(data.url)
+    }
+    static async register() {
         var data=JSON.stringify(this)
-        fetch('/register', {
+        var request=await fetch('/register', {
             method:'POST',
             body:data
-        }).then((result)=>
-            window.location.assign(result.url))
+        })
+        sessionStorage.setItem('user', JSON.stringify(this))
+        return window.location.assign(request.url)
         }
     new_character() {
-        pass
+        this.characters.push(Character.create())
     }
-    get_characters() {
-        pass
+    async get_characters() {
+        var characters=await fetch(`/${this.id}`)
+        var data=await characters.json()
+        data.forEach(async (id)=> {
+            if (validate(id)) {
+                var ch=await Character.request(id)
+            }
+        })
+        return data
     }
 }
