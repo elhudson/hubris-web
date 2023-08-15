@@ -1,9 +1,7 @@
 import { immerable, current } from "immer"
 import _ from "lodash"
-import { nanoid } from "nanoid"
 import React, { useState } from "react"
-import { Radio } from "hubris-components/interactive"
-
+import { Radio } from "../../components/components/interactive"
 
 export default class Info {
     [immerable]=true

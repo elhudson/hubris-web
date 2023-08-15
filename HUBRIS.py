@@ -9,6 +9,7 @@ import uuid
 from filters import *
 from db_connect import address
 from pandas import read_sql
+import sqlalchemy
 from itertools import chain
 
 app = Flask(__name__)
@@ -94,18 +95,21 @@ def my_characters():
 @app.route('/<id>',methods=['GET', 'POST'])
 def character(id):
     if request.method=='GET':
-        data=read_sql(f'''SELECT data FROM characters WHERE id='{id}' ''', app.database).values.tolist()[0][0]
+        try:
+            data=read_sql(f'''SELECT data FROM characters WHERE id='{id}' ''', app.database).values.tolist()[0][0]
+        except sqlalchemy.exc.OperationalError:
+            app.database=create_engine(address)
+            data=read_sql(f'''SELECT data FROM characters WHERE id='{id}' ''', app.database).values.tolist()[0][0]
         return json.loads(data)
     if request.method=='POST':
         receipts.append(request.get_json())
         if (len(receipts)==11):
            data=json.dumps({k:v for d in receipts for k, v in d.items()})
-           cnx=app.database.connect()
-           if read_sql(text(f"SELECT * FROM characters WHERE id='{id}'"), app.database).empty==True:
-                cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
-           else:
-                cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
-           cnx.commit()
+           try:
+               write_out(app.database,data)
+           except sqlalchemy.exc.OperationalError:
+               app.database=create_engine(address)
+               write_out(app.database, data)
         return('Character saved.')
 
 
@@ -116,3 +120,11 @@ def delete_character(id):
     cnx.execute(query)
     cnx.commit()
     cnx.close()
+    
+def write_out(con, data):
+    cnx=app.database.connect()
+    if read_sql(text(f"SELECT * FROM characters WHERE id='{id}'"), app.database).empty==True:
+        cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
+    else:
+        cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
+    cnx.commit()

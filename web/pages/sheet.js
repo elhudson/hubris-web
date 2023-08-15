@@ -1,24 +1,22 @@
 import React from 'react'
-import { Ruleset } from '../../rules/ruleset.js'
+import { Ruleset } from '../models/ruleset.js'
 import { createRoot } from 'react-dom/client'
-import { Character, useCharacter, generatePatch } from '../../models/character/character.js'
+import { Character, useCharacter, generatePatch } from '../models/character/character.js'
 
 import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
 import GridLayout from "react-grid-layout";
-import { current } from 'immer'
 
 import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
-import { Controls, Button } from 'hubris-components/interactive.js'
 
 await Ruleset.load()
 
-const root = createRoot(document.getElementById('sheet'))
-var char = await Character.load(document.getElementById('sheet').getAttribute('data-id'))
+const root = createRoot(document.getElementById('page'))
+var char = await Character.load(document.getElementsByTagName('body')[0].getAttribute('data-id'))
 
 if (char=='Character not found!') {
-    char=await Character.request(document.getElementById('sheet').getAttribute('data-id'))
+    char=await Character.request(document.getElementsByTagName('body')[0].getAttribute('data-id'))
 }
 
 root.render(<CharacterSheet ch={char} />)
@@ -27,9 +25,9 @@ function CharacterSheet({ ch }) {
     const [char, dispatch]=useCharacter(ch)
     const patch=generatePatch(dispatch)
     const l=[
-        {i:'thumbnail', x:0, y:0, w:3, h:8, static:true},
-        {i:'progression', x:3, y:0, w:5, h:8, static:true},
-        {i:'stats', x:9, y:0, w:4, h:0, static:true},
+        {i:'thumbnail', x:0, y:0, w:3, h:8},
+        {i:'progression', x:3, y:0, w:5, h:8},
+        {i:'stats', x:9, y:0, w:4, h:0},
         {i:'health', x:0, y:8, w:3, h:16},
         {i:'combat', x: 0, y:12, w:4, h:12},
         {i: 'powers', x:3, y:8, w:5, h:16},

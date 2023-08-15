@@ -2,7 +2,7 @@ import { useImmerReducer } from 'use-immer'
 import React from 'react';
 import { immerable, current } from 'immer'
 import * as _ from 'lodash'
-import { Choices, Groups } from '../../rules/sorts';
+import { Choices, Groups } from '../../elements/sorts';
 import Bio from './sections/bio';
 import Skills from './sections/skills';
 import Stats from './sections/stats';
@@ -13,8 +13,9 @@ import Features from './sections/features';
 import Powers from './sections/powers';
 import Classes from './sections/class';
 import Backgrounds from './sections/backgrounds'
-import {Button, Controls} from 'hubris-components/interactive'
-
+import {Button, Controls} from '../../components/components/interactive'
+import { Icon } from '../../components/components/images';
+import { styles } from '../../components/components/styles';
 export class Character {
     [immerable] = true
     constructor(id) {
@@ -43,6 +44,7 @@ export class Character {
         return character
     }
     static parse(data) {
+        console.log(data)
         var ch = new Character(data.id)
             ch.classes=Classes.parse(data.classes)
             ch.backgrounds=Backgrounds.parse(data.backgrounds)
@@ -134,10 +136,9 @@ export class Character {
         }
         return options
     }
-    controls() {
+    controls(length) {
         function CharacterControls({ch}) {
             const handleSave=()=> {
-                console.log(ch)
                 sessionStorage.setItem(ch.id, JSON.stringify(ch))
                 ch.write()
             }
@@ -149,13 +150,31 @@ export class Character {
             }
             return(
             <Controls sx={{position:'fixed'}}>
-                <Button onClick={handleSave}>Save</Button>
-                <Button onClick={handleLevelup}>Level Up</Button>
-                <Button onClick={handleSheet}>Character Sheet</Button>
+                <Button onClick={handleSave}>
+                <Icon name={'save'}/></Button>
+                <Button onClick={handleLevelup}>
+                <Icon name={'levelup'}/>
+                </Button>
+                <Button onClick={handleSheet}>
+                <Icon name={'character-sheet'}/></Button>
             </Controls>
             )}
         return <CharacterControls ch={this} />
     }
+}
+
+export function SaveButton({ch}) {
+    const handleSave=()=>{
+        sessionStorage.setItem(ch.id, JSON.stringify(ch))
+        ch.write()
+    }
+    return(
+        <div style={{position:'fixed', width:'fit-content', background:styles.background, top:30, right:30}}>
+            <Button onClick={handleSave}>
+                <Icon name={'save'} size={40} />
+            </Button>
+        </div>
+    )
 }
 
 export function useCharacter(ch, url=null) {

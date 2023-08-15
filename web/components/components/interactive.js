@@ -75,6 +75,8 @@ export function Controls({icon, sx=null, children}) {
     var display=style('controls', {
         display:'flex',
         zIndex:2,
+        margin:'auto',
+        fontFamily:styles.mono,
         ...sx,
         backgroundColor:styles.background,
         width:'fit-content',

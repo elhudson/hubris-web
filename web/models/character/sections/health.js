@@ -1,11 +1,11 @@
 import Info from "../section"
 import { immerable } from "immer"
 import React from "react";
-import {Region, Row, LabeledItem, Block} from 'hubris-components/containers'
-import {Radio, Dropdown} from 'hubris-components/interactive'
-import {Textbox} from 'hubris-components/text'
-import {Tracker, Counter} from 'hubris-components/numbers'
-import { styles, style } from "hubris-components/styles";
+import {Region, Row, LabeledItem, Block} from '../../../components/components/containers'
+import {Radio, Dropdown} from '../../../components/components/interactive'
+import {Textbox} from '../../../components/components/text'
+import {Tracker, Counter} from '../../../components/components/numbers'
+import { styles, style } from "../../../components/components/styles";
 import _ from "lodash";
 
 
@@ -73,7 +73,10 @@ class HitDice {
     }
     static parse(raw) {
         var self=new HitDice()
-        Object.assign(raw, self) 
+        try {
+        Object.assign(self, raw) 
+        }
+        catch {{Error}}
         return self
     }
     max_hp() {

@@ -1,4 +1,4 @@
-import {default as styles} from './styles/_styles.module.scss';
+import {default as styles} from '../styles/_styles.module.scss';
 import { createUseStyles } from 'react-jss'
 import React from 'react'
 
@@ -64,8 +64,8 @@ const reusable={
             margin: 'unset',
             padding: 'unset',
             maxHeight: '100%',
-            '&:last-child': {
-                borderRight: styles.border
+            '&:first-child': {
+                borderLeft: 'none'
             }
         }
     },

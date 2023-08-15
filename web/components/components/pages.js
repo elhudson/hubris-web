@@ -7,8 +7,13 @@ export function NextPage({ current, character }) {
     var progression=['class','backgrounds','stats', 'fluff', 'characters']
     var next=progression[progression.indexOf(current)+1]
     var display=style('bottom-btn', {
+        paddingTop:20,
+        
         '& button': {
-            margin:0
+            margin:0,
+            border:'unset',
+            borderTop:styles.border,
+            
         }
     })
     async function proceed() {
@@ -33,7 +38,7 @@ export function PageWithNext({url, character, children}) {
     })
     return(
         <div className={sty}>
-            <PageHeader>{url}</PageHeader>
+            <PageHeader title={url}/>
             <PageContent>{children}</PageContent>
             <NextPage current={url} character={character}/>
         </div>
@@ -48,33 +53,11 @@ function PageContent({children}) {
 
 function PageHeader({title}) {
     return(
-        <h1>{title}</h1>
+        <h1 style={{
+            textTransform:'uppercase',
+            fontFamily:styles.mono,
+            width:'fit-content',
+            margin:'auto'
+        }}>{title}</h1>
     )
 }
-
-// export function TabbedPage({ data, handler, bin = null }) {
-//     return (<Tabs>
-//         <TabList>
-//             {Object.keys(data).map(k => <Tab disabled={data[k].pool().length == 0}>{k.replace('_', ' ')}</Tab>)}
-//         </TabList>
-//         {Object.values(data).map(v => <TabPanel>
-//             <Category bins={v} binner={bin} handler={handler} />
-//         </TabPanel>)}
-//     </Tabs>)
-// }
-
-// export function Page({ ch, binner, handler }) {
-//     if (Object.keys(ch.options).length > 1) {
-//         return (<TabbedPage data={ch.options} bin={binner} handler={handler} />)
-//     }
-//     else {
-//         return (<SinglePage bins={ch.options} binner={binner} handler={handler} />)
-//     }
-// }
-
-// export function BlankPage({content}) {
-//     return (
-//         <div className='page'>
-//         {content}
-//         </div>
-//         )}

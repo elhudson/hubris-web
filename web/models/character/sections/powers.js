@@ -1,13 +1,9 @@
 import Info from "../section"
-import { immerable } from "immer"
 import React from "react";
-import Feature, { FeatureMeta } from "../../../elements/feature";
-import { Region, Row, Block, OptionList, Snippet } from "hubris-components/containers";
-import { SmallHeader } from "hubris-components/text";
-import { style } from "hubris-components/styles";
-import { Tabs, Tab, TabList, TabPanel } from 'react-tabs'
-import { Bonus, Counter, DC } from "hubris-components/numbers";
-import { Groups } from "../../../rules/sorts";
+import { Region, Row, Block, OptionList, Snippet } from "../../../components/components/containers";
+import { style } from "../../../components/components/styles";
+import { Bonus, Counter, DC } from "../../../components/components/numbers";
+import { Groups } from "../../../elements/sorts";
 
 export default class Powers extends Info {
     constructor() {

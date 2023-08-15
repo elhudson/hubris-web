@@ -91,7 +91,11 @@ export function Counter({ item, update }) {
     const increase=update[0]
     const decrease=update[1]
     const display=style('style', {
-        height: 'unset !important'
+        height: 'unset !important',
+        border:'unset !important',
+        '& button:last-child': {
+            borderRight:styles.border
+        }
     })
     const layout=style('cols', {
         display:'flex',

@@ -146,7 +146,11 @@
             "static/node_modules/": true
         },
         "hidefiles.selectedProfile": "hubris",
-        "liveSassCompile.settings.showOutputWindowOn": "None"
+        "liveSassCompile.settings.showOutputWindowOn": "None",
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.autopep8"
+        },
+        "python.formatting.provider": "none"
     },
     "launch": {
         "configurations": [

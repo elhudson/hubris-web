@@ -1,14 +1,12 @@
 import React from "react"
-import { SmallMod, Metadata as Meta, CheckboxItem } from "hubris-components/text"
-import { LabeledItem, Row } from "hubris-components/containers"
-import {style, styles, reusable} from 'hubris-components/styles'
+import { SmallMod, Metadata as Meta, CheckboxItem } from "../components/components/text"
+import { LabeledItem, Row } from "../components/components/containers"
+import {style, styles, reusable} from '../components/components/styles'
 import { Popper } from "@mui/base"
 import { Box } from "@mui/material"
-import { Button, Buttons } from "hubris-components/interactive"
-import { Ruleset } from "../models/ruleset"
-import {Arsenal, Armory} from '../models/character/sections/combat'
+import { Button, Buttons } from "../components/components/interactive"
 import _ from 'lodash'
-import { current, immerable } from 'immer';
+import { immerable } from 'immer';
 
 export default class Entry {
     [immerable]=true
@@ -538,7 +536,7 @@ export function DataGrid({children}) {
         borderBottom:'none',
         margin:5,
         width:'100%',
-        gridTemplateColumns:'repeat(2, auto)',
+        gridTemplateColumns:'12ch auto',
         '& > div': {
             borderLeft:styles.border,
             borderBottom:styles.border,

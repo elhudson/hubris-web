@@ -1,12 +1,9 @@
 import Info from "../section"
 import { immerable } from "immer"
 import React from "react";
-import Feature from "../../../elements/feature";
-import { Region, Block, Snippet, Tabbed } from "hubris-components/containers";
-import { SmallHeader } from "hubris-components/text";
-import { style } from "hubris-components/styles";
-import { Groups } from "../../../rules/sorts";
-
+import { style } from "../../../components/components/styles";
+import { Groups } from "../../../elements/sorts";
+import { Block, Tabbed } from "../../../components/components/containers";
 import _ from "lodash";
 export default class Features extends Info {
     [immerable]=true

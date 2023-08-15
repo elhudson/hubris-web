@@ -1,11 +1,9 @@
 import Info from "../section"
 import { immerable, current } from "immer"
-import {Region, Block, OptionList, Border} from 'hubris-components/containers'
+import {Region, Block, OptionList, Border} from '../../../components/components/containers'
 import React from 'react'
-import {Bonus, Tracker, DC, Counter} from 'hubris-components/numbers'
-import { CheckboxItem } from 'hubris-components/text'
-import {style} from 'hubris-components/styles'
-import { Ruleset } from "../../../rules/ruleset"
+import {Bonus, Tracker, DC, Counter} from '../../../components/components/numbers'
+import {style} from '../../../components/components/styles'
 
 export default class Stats extends Info {
     [immerable]=true

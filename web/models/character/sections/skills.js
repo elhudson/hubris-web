@@ -1,11 +1,10 @@
 import { immerable, current} from "immer";
-import { Ruleset } from "../../../rules/ruleset";
 import _ from "lodash";
 import React from "react";
-import {style, styles} from 'hubris-components/styles'
+import {style, styles} from '../../../components/components/styles'
 
-import { CheckboxItem } from "hubris-components/text";
-import { LabeledItem } from "hubris-components/containers";
+import { CheckboxItem } from "../../../components/components/text";
+import { LabeledItem } from "../../../components/components/containers";
 export default class Skills extends Array {
     [immerable]=true
     constructor() {

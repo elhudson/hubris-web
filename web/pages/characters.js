@@ -1,21 +1,22 @@
-import { Ruleset } from '../../rules/ruleset.js'
-import { Item, LabeledItem } from 'hubris-components/containers'
-import { Icon } from 'hubris-components/images.js';
+import { Ruleset } from '../models/ruleset'
+import { Item, LabeledItem } from '../components/components/containers'
+import { Icon } from '../components/components/images.js';
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client'
 import { Tier } from '../models/character/sections/progression.js';
-import { User, useUser } from '../models/user.js';
 import { useAsync } from 'react-async-hook';
 import { Character } from '../models/character/character.js';
-import {style, styles, reusable} from 'hubris-components/styles.js'
-
-import { Button } from 'hubris-components/interactive.js';
+import {style, styles, reusable} from '../components/components/styles.js'
+import { Button } from '../components/components/interactive.js';
+import { Alignment } from '../models/character/sections/bio';
 window.ruleset = await Ruleset.load()
 
 import { BarLoader } from 'react-spinners';
 var page = createRoot(document.getElementById('page'))
-var data = document.querySelector('body').getAttribute('data-ids')
+var data = document.querySelector('body').getAttribute('data-id')
 var ids = JSON.parse('{"ids":' + data.replaceAll(`'`, `"`) + '}').ids
+
+window.char=await Character.request(ids[2])
 
 page.render(
     <>
@@ -38,7 +39,10 @@ function CharacterThumbnail({ id }) {
     })}
     label={
     asyncHero.result ? 
-        (<a href={`/sheet/${asyncHero.result.id}`}>{asyncHero.result.bio.name}</a>) : 
+        (<>
+        <a href={`/sheet/${asyncHero.result.id}`}>{asyncHero.result.bio.name}</a>
+        
+        </>) : 
         'Loading...'}>
             {asyncHero.loading && 
                 <div style={{
@@ -55,20 +59,24 @@ function CharacterThumbnail({ id }) {
                         <Icon size={100} name={`classes__${asyncHero.result.classes.base.name.toLowerCase()}`} />
                     </div>
                     <div style={{width:'fit-content', position:'relative', borderLeft:styles.border}}>
-                        <div style={{margin:5}}>
+                        <div style={{margin:2}}>
                         <Item label={'Class'}>{asyncHero.result.classes.base.name}</Item>
                         </div>
-                        <div style={{margin:5}}>
+                        <div style={{margin:2}}>
                         <Item label={'Backgrounds'}>{[asyncHero.result.backgrounds.primary.name, asyncHero.result.backgrounds.secondary.name].join(' & ')} </Item>
                         </div>
+                        <Alignment selected={asyncHero.result.bio.alignment} />
                         <div style={{borderTop:styles.border, position:'absolute', bottom:0, width:'100%'}}>
                             <Tier tier={asyncHero.result.progression.tier()} />
                         </div>
                     </div>
-                        
+                    {asyncHero.result.controls('short')}
+
+                    <div>
+        </div>
                 </>
-                )}
-</LabeledItem>
+            )}
+    </LabeledItem>
     )
 }
 

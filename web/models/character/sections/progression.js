@@ -1,12 +1,10 @@
 import Info from "../section"
 import { immerable } from "immer"
-import {Region, Block, Row, LabeledItem} from 'hubris-components/containers'
+import {Region, Block, Row, LabeledItem} from '../../../components/components/containers'
 import React from 'react'
-import {Radio} from 'hubris-components/interactive'
-import { Tracker, Bonus } from 'hubris-components/numbers'
-import {style, styles} from 'hubris-components/styles'
-import { Grid } from '@mui/material'
-
+import {Radio} from '../../../components/components/interactive'
+import { Tracker, Bonus } from '../../../components/components/numbers'
+import {style, styles} from '../../../components/components/styles'
 
 export default class Progression extends Info {
     [immerable]=true

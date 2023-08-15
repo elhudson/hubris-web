@@ -2,9 +2,9 @@ import { immerable, current } from "immer"
 import Info from "../section"
 
 import React from 'react'
-import {Region, Block, Item, Row} from 'hubris-components/containers'
-import { Field, Textbox } from "hubris-components/text"
-import { Dropdown } from "hubris-components/interactive"
+import {Region, Block, Item, Row} from '../../../components/components/containers'
+import { Field, Textbox } from "../../../components/components/text"
+import { Dropdown } from "../../../components/components/interactive"
 
 export default class Bio extends Info {
     [immerable] = true

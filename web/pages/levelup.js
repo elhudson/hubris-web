@@ -1,8 +1,8 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
-import { Character, useCharacter, generatePatch } from "../../models/character/character"  
-import { Ruleset } from "../../rules/ruleset"
-import { Tabbed } from "hubris-components/containers"
+import { Character, useCharacter, generatePatch } from "../models/character/character"  
+import { Ruleset } from "../models/ruleset"
+import { Tabbed } from "../components/components/containers"
 
 await Ruleset.load()
 

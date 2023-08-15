@@ -1,10 +1,9 @@
 import { immerable, current } from "immer"
 import _ from "lodash"
-import { Block, LabeledItem } from "hubris-components/containers"
+import { Block, LabeledItem } from "../components/components/containers"
 import React from "react"
-import { Controls, Button } from "hubris-components/interactive"
-import {style, styles} from 'hubris-components/styles'
-import { Armory, Arsenal } from "../models/character/sections/combat"
+import { Controls, Button } from "../components/components/interactive"
+import {style, styles} from '../components/components/styles'
 import Entry from "./feature"
 
 export class Choices {
@@ -89,7 +88,7 @@ export class Groups {
     constructor(aray, possessions=null) {
         this.by = ''
         this.content = { [this.by]: new Bin(aray) }
-        this.defaults={class_features:'class_paths', tag_features:'tags', effects:'tree', ranges:'tree', durations:'tree'}
+        this.defaults={class_features:'class_paths', tag_features:'tags', effects:'tree', ranges:'tree', durations:'tree', "classes":"", "backgrounds":""}
         possessions!=null && (this.owned(possessions))
         try {
             this.regroup(this.defaults[aray[0].table])

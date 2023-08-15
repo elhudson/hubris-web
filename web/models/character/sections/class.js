@@ -1,10 +1,6 @@
 import { immerable } from "immer"
 import Info from "../section"
 import Entry from "../../../elements/feature"
-import React from 'react'
-import {Region, Block, Item} from 'hubris-components/containers'
-import {Dropdown} from 'hubris-components/interactive'
-import { Ruleset } from "../../../rules/ruleset"
 import { Arsenal, Armory } from "./combat"
 
 export default class Classes extends Info {
