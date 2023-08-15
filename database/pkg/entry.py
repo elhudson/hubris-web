@@ -6,7 +6,7 @@ from uuid import UUID
 
 import pandas as pd
 import sqlalchemy as sqa
-from srd.tools import get_schema, get_tables
+from tools import get_schema, get_tables
 
 class Entry:
     def __init__(self,table=None,id=None,con=None):
@@ -106,7 +106,10 @@ class Entry:
             if type(entry)==list and len(entry)>0:
                 e=[]
                 for i in range(len(entry)):
-                    e.append(entry[i].to_dict())
+                    try:
+                        e.append(entry[i].to_dict())
+                    except AttributeError:
+                        continue
                 base[item]=e
         return base
 
@@ -156,7 +159,6 @@ class Class(Entry):
 class Background(Entry):
     def _init__(self,table,id,con):
         super().__init__(table,id,con)
-        self.split_feat()
     def split_feat(self):
         self.feature_name=self.feature.split(":")[0]
         self.feature_desc=self.feature.split(":")[1]

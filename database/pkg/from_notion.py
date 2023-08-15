@@ -5,8 +5,6 @@ import requests
 import sqlalchemy as sqa
 from itertools import chain
 import os
-from db_connect import connect
-
 
 class Database:
     def __init__(self,id,configs):

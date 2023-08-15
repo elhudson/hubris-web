@@ -5,14 +5,6 @@ import requests
 import sqlalchemy as sqa
 from itertools import chain
 import os
-from db_connect import connect
-
-engine=connect()
-
-with open("db_config.json") as config_file:
-    configs=json.load(config_file)
-
-notion=Client(auth=configs['NOTION_TOKEN'])
 
 class Database:
     def __init__(self,id,configs):
@@ -236,10 +228,3 @@ class BridgeTable:
         s="__"
         return s+s.join(pair).lower()
     
-    
-notion=Client(auth=configs['NOTION_TOKEN'])
-
-hubris=Database(configs['NOTION_DB'],configs)
-hubris.populate(notion)
-hubris.sqlify()
-hubris.write_tables(engine)

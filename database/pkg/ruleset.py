@@ -2,7 +2,7 @@ import os
 import sqlalchemy as sqa
 import pandas as pd
 from itertools import chain
-from srd.entry import create_entry
+from entry import create_entry
 import json
 
 def all_in_table(table_name, con):
@@ -14,8 +14,6 @@ def all_in_table(table_name, con):
         entry=create_entry(table_name,id,con)
         if entry!=None:
             entry.build_extensions(con)
-            if table_name=="backgrounds":
-                entry.split_feat()
             entries.append(entry)
     return entries
 

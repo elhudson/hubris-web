@@ -3,9 +3,9 @@ import os
 import pandas as pd
 import sqlalchemy as sqa
 import json
-from srd.entry import EntryEncoder
-from srd.tools import get_schema, get_tables, parse_name, get_configs
-from srd.ruleset import all_in_table
+from entry import EntryEncoder
+from tools import get_schema, get_tables, parse_name
+from ruleset import all_in_table
 
 def load_requirements_list(table_name,con):
     table=all_in_table(table_name,con)
@@ -37,10 +37,11 @@ def load_many_list(pair,con):
 def rulesetify(cfg, con):
     ruleset={}
     for left in cfg['LEFTOVERS']:
-        ruleset[left]=load_singles_list(left,con)
+        name=left.lower()
+        ruleset[name]=load_singles_list(name,con)
     for r in cfg['HAS_PREREQS']:
         name=parse_name(r)
         ruleset[name]=load_requirements_list(name,con)
     for pair in cfg["MANY_TO_MANY"]:
         ruleset[f'__{parse_name(pair[0])}__{parse_name(pair[1])}']=load_many_list(pair,con)
-    json.dump(ruleset,open('./static/ruleset.json','w+'),cls=EntryEncoder)
+    json.dump(ruleset,open('/home/ehudson19/hubris-web/static/ruleset.json','w+'),cls=EntryEncoder)

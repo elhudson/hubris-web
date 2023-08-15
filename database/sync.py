@@ -1,12 +1,17 @@
 import json
-from database import Database  
+from from_notion import Database  
 from notion_client import Client
 from db_connect import address
-from database.to_json import 
+from to_json import rulesetify
+from sqlalchemy import create_engine
 
-notion=Client(auth=configs['NOTION_TOKEN'])
+engine=create_engine(address)
+configs=json.load(open('db_config.json'))
 
-hubris=Database(configs['NOTION_DB'],configs)
-hubris.populate(notion)
-hubris.sqlify()
-hubris.write_tables(engine)
+# notion=Client(auth=configs['NOTION_TOKEN'])
+# hubris=Database(configs['NOTION_DB'],configs)
+# hubris.populate(notion)
+# hubris.sqlify()
+# hubris.write_tables(engine)
+
+rulesetify(configs, engine)

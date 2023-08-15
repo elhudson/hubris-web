@@ -25,7 +25,7 @@ def get_configs(home):
     return json.load(open(home+"/hubris-database/db_config.json"))
 
 def get_tables(con):
-    tables=pd.read_sql(sqa.text("SELECT tbl_name FROM sqlite_master WHERE type='table'"),con).values.tolist()
+    tables=pd.read_sql(sqa.text("SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_schema='ehudson19$HUBRIS'"),con).values.tolist()
     return list(chain(*tables))
 
 def get_schema(con):
