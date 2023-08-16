@@ -43,8 +43,8 @@ class Database:
         fr=self.run_query(txt)
         return list(chain(*fr.values.tolist()))
     def as_item(self, txt):
-        fr=self.as_list(txt)
-        return fr[0]
+        fr=self.run_query(txt)
+        return fr['data'].values.tolist()
 
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
@@ -64,8 +64,8 @@ def creation():
 def init_character():
     args=request.args
     user=args.get('user')
-    char_id=uuid.uuid4()
-    data={'id':str(char_id)}
+    char_id=str(uuid.uuid4())
+    data=json.dumps({'id':char_id})
     app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{char_id}', '{user}', :obj)''', obj=data)
     return redirect(url_for('creation', character=char_id, stage='class'))
 

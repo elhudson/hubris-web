@@ -60,6 +60,7 @@ export class User {
     async create_character() {
         var endpt='/new_character?'+new URLSearchParams({user:this.id})
         const response=await fetch(endpt)
-        window.location.assign(id.url)
+        console.log(endpt.url)
+        window.location.assign(response.url)
     }
 }
