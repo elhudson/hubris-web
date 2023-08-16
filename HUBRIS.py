@@ -6,8 +6,7 @@ from flask_session import Session
 import os
 from sqlalchemy import create_engine, text
 import uuid
-from filters import *
-from db_connect import address
+from db_connect import address, tunnel, engine
 from pandas import read_sql
 import sqlalchemy
 from itertools import chain
@@ -17,6 +16,8 @@ class Database:
         self.address=address
     def create_engine(self):
         self.engine=create_engine(self.address)
+    def create_dev_engine(self):
+        self.engine=engine(tunnel())
     def run_query(self, txt):
         try:
             fr=read_sql(text(txt), self.engine) 
@@ -49,7 +50,7 @@ app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
 app.database=Database(address)
-app.database.create_engine()
+app.database.create_dev_engine()
 app.template_folder='./web'
 
 receipts=[]
