@@ -7,7 +7,6 @@ import { validate } from "uuid";
 export const useUser = (data) => {
     const [user, dispatch]=useImmerReducer(dispatcher, data)
     function dispatcher(draft, action) {
-        console.log(action)
         if (action.type=='edit') {
             _.set(draft, action.path, action.value)
         }
@@ -28,11 +27,11 @@ export class User {
         return self
     }
     static from_url() {
-        var user_id=window.location.pathname.split('/').at(-1)
+        var params=new URLSearchParams(window.location.href.split('?')[1])
         var user_data=JSON.parse(sessionStorage.getItem('user'))
         var js={
             ...user_data,
-            id:user_id
+            id:params.get('user')
         }
         return User.parse(js)
     }
@@ -57,13 +56,8 @@ export class User {
         this.characters.push(Character.create())
     }
     async get_characters() {
-        var characters=await fetch(`/${this.id}`)
-        var data=await characters.json()
-        data.forEach(async (id)=> {
-            if (validate(id)) {
-                var ch=await Character.request(id)
-            }
-        })
-        return data
+        var characters=await fetch('/user?'+new URLSearchParams({user:this.id}))
+        var data=await characters.json().then((res)=>res.flat(10))
+        this.characters=data
     }
 }

@@ -16,14 +16,13 @@ window.ruleset = await Ruleset.load()
 import { BarLoader } from 'react-spinners';
 var page = createRoot(document.getElementById('page'))
 var user=User.from_url()
-
 await user.get_characters()
 
 page.render(
     <>
     <h1>Characters</h1>
     <div style={{display:'flex'}}>
-        {ids.map(id => <CharacterThumbnail id={id} />)}
+        {user.characters.map(id => <CharacterThumbnail id={id} />)}
         <NewCharacter />
     </div>
     </>
@@ -75,7 +74,7 @@ function CharacterThumbnail({ id }) {
 
                     <div>
         </div>
-                </>
+        </>
             )}
     </LabeledItem>
     )

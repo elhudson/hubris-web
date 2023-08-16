@@ -44,7 +44,7 @@ export default class Classes extends Info {
     }
     add(feature, character) {
         this.base=feature
-        character.health.hd.die=this.base.hit_dice
+        character.health.hd.die=this.base.hit_die
         character.powers.attr=this.base.attributes.name.slice(0, 3).toLowerCase()
         character.tags=this.base.tags.map(t=>ruleset.tags[t.id])
         character.combat.weapons=Arsenal.create({value:this.base.weapon_proficiencies, classname:this.base.name, str:character.stats.scores.str.value, dex:character.stats.scores.dex.value, pb:character.progression.proficiency()})

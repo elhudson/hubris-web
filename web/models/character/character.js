@@ -31,22 +31,26 @@ export class Character {
         this.health = new Health()
         this.features=new Features()
         this.powers=new Powers()
+        this.routes={
+            sheet:'/sheet?'+new URLSearchParams({id:id}),
+            ref:'/character?'+new URLSearchParams({id:id}),
+            levelup:'/levelup?'+new URLSearchParams({id:id})
+        }
     }
     clone() {
         return _.cloneDeep(this)
     }
     static async request(id) {
-        var request = await fetch(`/${id}`)
+        var request = await fetch('/character?' + new URLSearchParams({id:id}))
         var json = await request.json()
-        console.log(json)
-        var character = Character.parse(json)
-        if (sessionStorage.getItem(id) == null) {
-            sessionStorage.setItem(id, JSON.stringify(character))
-        }
+        var character = Character.parse(JSON.parse(json))
+        sessionStorage.setItem('character', JSON.stringify(character))
         return character
     }
+    assemble() {
+        return Character.parse(sessionStorage.getItem('character'))
+    }
     static parse(data) {
-        console.log(data)
         var ch = new Character(data.id)
             ch.classes=Classes.parse(data.classes)
             ch.backgrounds=Backgrounds.parse(data.backgrounds)
@@ -83,20 +87,18 @@ export class Character {
             })
         })
     }
-    static load(id) {
-        if (sessionStorage.getItem(id) == null) {
-            return 'Character not found!'
-        }
-        else {
-            return this.parse(JSON.parse(sessionStorage.getItem(id)))
-        }
+    static async load(id=null) {
+        id==null && (id=new URLSearchParams(window.location.href.split('?')[1]).get('id'))
+        return JSON.parse(sessionStorage.getItem('character')).id==id ? 
+            Character.parse(JSON.parse(sessionStorage.getItem('character'))) :
+            await Character.request(id)
     }
     static create() {
         id=v4()
         return new Character(id)
     }
     save() {
-        sessionStorage.setItem(this.id, JSON.stringify(this))
+        sessionStorage.setItem('character', JSON.stringify(this))
     }
     async write() {
         Object.keys(this).forEach(async (key)=> {
@@ -107,7 +109,7 @@ export class Character {
                     'Content-Type':'application/json'
                 })
             }
-            await fetch(`/${this.id}`, req)
+            await fetch(this.routes.ref, req)
         })
             
     }
