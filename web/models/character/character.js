@@ -43,7 +43,7 @@ export class Character {
     static async request(id) {
         var request = await fetch('/character?' + new URLSearchParams({id:id}))
         var json = await request.json()
-        var character = Character.parse(JSON.parse(json))
+        var character = Character.parse(json)
         sessionStorage.setItem('character', JSON.stringify(character))
         return character
     }
@@ -92,10 +92,6 @@ export class Character {
         return JSON.parse(sessionStorage.getItem('character')).id==id ? 
             Character.parse(JSON.parse(sessionStorage.getItem('character'))) :
             await Character.request(id)
-    }
-    static create() {
-        id=v4()
-        return new Character(id)
     }
     save() {
         sessionStorage.setItem('character', JSON.stringify(this))

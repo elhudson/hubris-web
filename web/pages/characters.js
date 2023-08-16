@@ -13,6 +13,8 @@ import { User } from '../models/user';
 
 window.ruleset = await Ruleset.load()
 
+
+
 import { BarLoader } from 'react-spinners';
 var page = createRoot(document.getElementById('page'))
 var user=User.from_url()
@@ -23,7 +25,7 @@ page.render(
     <h1>Characters</h1>
     <div style={{display:'flex'}}>
         {user.characters.map(id => <CharacterThumbnail id={id} />)}
-        <NewCharacter />
+        <NewCharacter user={user}/>
     </div>
     </>
 )
@@ -80,9 +82,9 @@ function CharacterThumbnail({ id }) {
     )
 }
 
-function NewCharacter({ }) {
+function NewCharacter({user}) {
     function handleClick(e) {
-        window.location.assign('/class')
+        user.create_character()
     }
     return (
         <div style={{margin:5}}>

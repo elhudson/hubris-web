@@ -51,13 +51,15 @@ export class User {
         })
         sessionStorage.setItem('user', JSON.stringify(this))
         return window.location.assign(request.url)
-        }
-    new_character() {
-        this.characters.push(Character.create())
     }
     async get_characters() {
         var characters=await fetch('/user?'+new URLSearchParams({user:this.id}))
         var data=await characters.json().then((res)=>res.flat(10))
         this.characters=data
+    }
+    async create_character() {
+        var endpt='/new_character?'+new URLSearchParams({user:this.id})
+        const response=await fetch(endpt)
+        window.location.assign(id.url)
     }
 }

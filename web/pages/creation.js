@@ -9,7 +9,8 @@ import _ from 'lodash';
 await Ruleset.load();
 const root = createRoot(document.getElementById('page'))
 
-var url = window.location.pathname.split('/')[1]
+await Character.load()
+
 root.render(
     <>
     <CreationPage url={url} ch={ch} />

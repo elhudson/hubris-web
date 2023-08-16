@@ -1,7 +1,7 @@
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 import json
-from flask import Flask, redirect, request, render_template, session, url_for
+from flask import Flask, redirect, request, render_template, session, url_for, make_response
 from flask_session import Session
 import os
 from sqlalchemy import create_engine, text
@@ -12,44 +12,75 @@ from pandas import read_sql
 import sqlalchemy
 from itertools import chain
 
+class Database:
+    def __init__(self, address):
+        self.address=address
+    def create_engine(self):
+        self.engine=create_engine(self.address)
+    def run_query(self, txt):
+        try:
+            fr=read_sql(text(txt), self.engine) 
+        except sqlalchemy.exc.OperationalError:
+            self.create_engine()
+            fr=read_sql(text(txt), self.engine)
+        return fr
+    def write_data(self, txt, obj=None):
+        try:
+            cnx=self.engine.connect()
+        except sqlalchemy.exc.OperationalError:
+            self.create_engine()
+            cnx=self.engine.connect()
+        if obj==None:
+            cnx.execute(text(txt))
+        else:
+            stmt=text(txt)
+            v=stmt.bindparams(obj=obj)
+            cnx.execute(v)
+        cnx.commit()
+        cnx.close()
+    def as_list(self, txt):
+        fr=self.run_query(txt)
+        return list(chain(*fr.values.tolist()))
+    def as_item(self, txt):
+        fr=self.as_list(txt)
+        return fr[0]
+
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.config["SESSION_TYPE"]='filesystem'
-app.database=create_engine(address)
+app.database=Database(address)
+app.database.create_engine()
 app.template_folder='./web'
 
 receipts=[]
 
 
-@app.route("/class")
-def choose_class():
+@app.route("/create")
+def creation():
     return render_template("base.html", script='creation')
 
-@app.route("/backgrounds")
-def choose_backgrounds():
-    return render_template("base.html", script='creation')
+@app.route("/new_character")
+def init_character():
+    args=request.args
+    user=args.get('user')
+    char_id=uuid.uuid4()
+    data={'id':str(char_id)}
+    app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{char_id}', '{user}', :obj)''', obj=data)
+    return redirect(url_for('creation', character=char_id, stage='class'))
 
-@app.route("/stats")
-def allocate_stats():
-    return render_template("base.html", script='creation')
-    
-@app.route("/fluff")
-def addtl_info():
-    return render_template("base.html", script='creation')
 
 @app.route('/login',methods=['POST'])
 def login():        
     data=json.loads(request.get_data())
     username=data['username']
     password=data['password']
-    q=read_sql(text(f"SELECT * FROM users WHERE username='{username}'"),app.database)
+    q=app.database.run_query(f"SELECT * FROM users WHERE username='{username}'")
     if q.empty:
         return redirect(url_for('wizard',error='no-account'))
     elif q['password'][0]!=password:
         return redirect(url_for('wizard',error='wrong-password'))
     else:
-        user_id=read_sql(text(f"SELECT id FROM users WHERE username='{username}'"),app.database)['id'][0]
-        print(user_id)
+        user_id=app.database.as_item(f"SELECT id FROM users WHERE username='{username}'")
         return redirect(url_for('my_characters', user=user_id))
 
 @app.route('/register',methods=['POST'])
@@ -58,15 +89,10 @@ def register():
     username=data['username']
     password=data['password']
     id=str(uuid.uuid4())
-    exists=read_sql(text(f'''SELECT * FROM users WHERE username='{username}' '''),app.database)
+    exists=app.database.run_query(f'''SELECT * FROM users WHERE username='{username}' ''')
     if exists.empty:
-        add=text(f"INSERT INTO users VALUES('{id}','{username}','{password}')")
-        with app.database.connect() as con:
-            con.execute(add)
-            con.commit()
-            con.close()
-            session['user_id']=str(user_id)
-            return redirect(url_for('my_characters', user=id))
+        app.database.write_data(f"INSERT INTO users VALUES('{id}','{username}','{password}')")
+        return redirect(url_for('my_characters', user=id))
     else :
         return redirect(url_for('wizard',error='account-exists'))
 
@@ -90,50 +116,30 @@ def my_characters():
 def get_characters():
     args=request.args
     user=args.get('user')
-    q=text(f"SELECT id FROM characters WHERE user='{user}'")
-    try:
-        data=read_sql(q, app.database)
-    except sqlalchemy.exc.OperationalError:
-        app.database=create_engine(address)
-        data=read_sql(q, app.database)
-    return json.dumps(data.values.tolist())
+    q=f"SELECT id FROM characters WHERE user='{user}'"
+    return app.database.as_list(q)
+   
     
 @app.route('/character',methods=['GET', 'POST'])
 def character():
     args=request.args
     id=args.get('id')
     if request.method=='GET':
-        q=f'''SELECT data FROM characters WHERE id='{id}' '''
-        try:
-            data=read_sql(q, app.database)
-        except sqlalchemy.exc.OperationalError:
-            app.database=create_engine(address)
-            data=read_sql(q, app.database)
-        return json.dumps(data['data'][0])
+        return app.database.as_item(f'''SELECT data FROM characters WHERE id='{id}' ''')
     if request.method=='POST':
         receipts.append(request.get_json())
         if (len(receipts)==11):
            data=json.dumps({k:v for d in receipts for k, v in d.items()})
-           try:
-               write_out(app.database, id, data)
-           except:
-               app.database=create_engine(address)
-               write_out(app.database, id, data)
+           if app.database.run_query(f"SELECT * FROM characters WHERE id='{id}'").empty==True:
+               app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}' ''', obj=data)
+           else:
+               app.database.write_data(f'''UPDATE characters SET data=:obj WHERE id='{id}' ''', obj=data)
         return('Character saved.')
 
 @app.route('/delete', methods=['POST'])
 def delete_character():
     args=request.args
-    query=text(f'''DELETE FROM characters WHERE id='{args.get(id)}' ''')
-    cnx=app.database.connect()
-    cnx.execute(query)
-    cnx.commit()
-    cnx.close()
-
-def write_out(con, id, data):
-    cnx=app.database.connect()
-    if read_sql(text(f"SELECT * FROM characters WHERE id='{id}'"), app.database).empty==True:
-        cnx.execute(text(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}', :obj)'''),{'obj':data})
-    else:
-        cnx.execute(text(f'''UPDATE characters SET data=:obj WHERE id='{id}' '''), {'obj':data})
-    cnx.commit()
+    query=f'''DELETE FROM characters WHERE id='{args.get(id)}' '''
+    app.database.write_data(query)
+    
+    
