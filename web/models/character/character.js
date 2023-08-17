@@ -144,7 +144,7 @@ export class Character {
     controls() {
         function CharacterControls({ch}) {
             const handleSave= async ()=> {
-                sessionStorage.setItem(ch.id, JSON.stringify(ch))
+                sessionStorage.setItem('character', JSON.stringify(ch))
                 var resp=await ch.write()
                 alert(resp.msg)
             }

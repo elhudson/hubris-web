@@ -41,10 +41,7 @@ function CharacterThumbnail({ id }) {
     })}
     label={
     asyncHero.result ? 
-        (<>
-        <a href={`/sheet/${asyncHero.result.id}`}>{asyncHero.result.bio.name}</a>
-        
-        </>) : 
+        <a href={asyncHero.routes.sheet}>{asyncHero.result.bio.name}</a> : 
         'Loading...'}>
             {asyncHero.loading && 
                 <div style={{
