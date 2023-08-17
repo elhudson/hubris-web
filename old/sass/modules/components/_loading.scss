@@ -1,6 +1,0 @@
-@use '../../configs';
-@use 'layout';
-
-@mixin loading-bar {
-    @include layout.centered;
-}

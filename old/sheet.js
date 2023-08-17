@@ -1,1 +1,0 @@
-import {Character} from './static/scripts/character.js'
