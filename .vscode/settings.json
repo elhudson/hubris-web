@@ -6,7 +6,8 @@
         ".editorconfig": true,
         ".git**": true,
         ".hintrc": true,
-        ".vscode": true
+        ".vscode": true,
+        "**/.git": false
     },
     "livePreview.serverRoot": "/backend/",
     "editor.scrollPredominantAxis": false,
@@ -32,7 +33,7 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
+        "editor.defaultFormatter": "ms-python.autopep8"
     },
     "python.linting.banditEnabled": true,
     "livePreview.defaultPreviewPath": "/web/templates/sheet.html",

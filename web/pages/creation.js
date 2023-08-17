@@ -5,29 +5,33 @@ import { createRoot } from 'react-dom/client'
 import { Character, useCharacter, generatePatch, SaveButton} from '../models/character/character'
 import 'react-tabs/style/react-tabs.css';
 import _ from 'lodash';
+import Uri from 'jsuri';
 
 await Ruleset.load();
+
 const root = createRoot(document.getElementById('page'))
 
-await Character.load()
+const ch=await Character.load()
+window.char=ch
+const url=new Uri(window.location.href).getQueryParamValue('stage')
 
 root.render(
     <>
-    <CreationPage url={url} ch={ch} />
+    <CreationPage stage={url} ch={ch} />
     </>
 )
 
-function CreationPage({ url, ch }) {
-    const [char, dispatchChanges] = useCharacter(ch, url)
+function CreationPage({ ch, stage }) {
+    const [char, dispatchChanges] = useCharacter(ch)
     const patch=generatePatch(dispatchChanges)
     var binner=patch('options', 'regroup')
     var handler=patch('options', 'addDrop', true)
     return (
-        <PageWithNext url={url} character={char}>
-            {url=='class' && char.options.classes.display({binner:binner, handler:handler})}
-            {url=='backgrounds' && char.options.backgrounds.display({binner:binner, handler:handler})}
-            {url=='stats' && char.stats.displayAllocate([patch('stats', 'increment'), patch('stats', 'decrement')])}                   
-            {url=='fluff' && <char.bio.FullBio obj={char.bio} handler={patch('bio', 'update')}/>}
+        <PageWithNext url={stage} character={char}>
+            {stage=='class' && char.options.classes.display({binner:binner, handler:handler})}
+            {stage=='backgrounds' && char.options.backgrounds.display({binner:binner, handler:handler})}
+            {stage=='stats' && char.stats.displayAllocate([patch('stats', 'increment'), patch('stats', 'decrement')])}                   
+            {stage=='bio' && <char.bio.FullBio obj={char.bio} handler={patch('bio', 'update')}/>}
             <SaveButton ch={char} />
         </PageWithNext>
     )

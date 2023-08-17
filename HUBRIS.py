@@ -44,11 +44,12 @@ class Database:
         return list(chain(*fr.values.tolist()))
     def as_item(self, txt):
         fr=self.run_query(txt)
-        return fr['data'].values.tolist()
+        attr=txt.split('SELECT ')[1].split(' ')[0]
+        print(attr)
+        return fr[attr][0]
 
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
-app.config["SESSION_TYPE"]='filesystem'
 app.database=Database(address)
 app.database.create_dev_engine()
 app.template_folder='./web'
@@ -65,6 +66,7 @@ def init_character():
     args=request.args
     user=args.get('user')
     char_id=str(uuid.uuid4())
+    print(char_id)
     data=json.dumps({'id':char_id})
     app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{char_id}', '{user}', :obj)''', obj=data)
     return redirect(url_for('creation', character=char_id, stage='class'))
@@ -120,23 +122,22 @@ def get_characters():
     q=f"SELECT id FROM characters WHERE user='{user}'"
     return app.database.as_list(q)
    
-    
+@app.route('/rules')
+def get_rules():
+    rules=json.load(open(f'{os.getcwd()}/database/ruleset.json'))
+    return json.dumps(rules)
+
 @app.route('/character',methods=['GET', 'POST'])
 def character():
     args=request.args
-    id=args.get('id')
     if request.method=='GET':
-        return app.database.as_item(f'''SELECT data FROM characters WHERE id='{id}' ''')
+        return app.database.run_query(f'''SELECT data FROM characters WHERE id='{args.get('character')}' ''')['data'][0]
     if request.method=='POST':
-        receipts.append(request.get_json())
-        if (len(receipts)==11):
-           data=json.dumps({k:v for d in receipts for k, v in d.items()})
-           if app.database.run_query(f"SELECT * FROM characters WHERE id='{id}'").empty==True:
-               app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{id}', '{session.get('user_id')}' ''', obj=data)
-           else:
-               app.database.write_data(f'''UPDATE characters SET data=:obj WHERE id='{id}' ''', obj=data)
-        return('Character saved.')
-
+        user_id=app.database.run_query(f'''SELECT user FROM characters WHERE id='{args.get('character')}' ''').at[0, 'user']
+        user_data=app.database.run_query(f'''SELECT * FROM users WHERE id='{user_id}' ''')
+        data={'msg':f'Character saved by user {user_data.at[0, "username"]}', 'user':user_id, 'character':request.get_json()}
+        return json.dumps(data)
+    
 @app.route('/delete', methods=['POST'])
 def delete_character():
     args=request.args

@@ -87,11 +87,16 @@ export default class Entry {
             class_features:ClassFeature,
             tag_features:TagFeature
         }
-        if (Object.keys(mappings).includes(data.table)) {
-            return new mappings[data.table](data)
+        try {
+            if (Object.keys(mappings).includes(data.table)) {
+                return new mappings[data.table](data)
+            }
+            else {
+                return new Entry(data)
+            }
         }
-        else {
-            return new Entry(data)
+        catch {TypeError} {
+            return data
         }
     }
     clone() {

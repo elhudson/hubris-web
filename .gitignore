@@ -3,17 +3,4 @@ __pycache__
 .hintrc
 .editorconfig
 
-package.json
-package-lock.json
-
-environment/
-node_modules/
-
-ssh_config
-web/flask_session/
-Dockerfile
-*.db
-\
-database/HUBRIS.db
-flask_session/
-.env/
+node_modules

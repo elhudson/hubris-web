@@ -8,15 +8,7 @@ import Entry from "./feature"
 
 export class Choices {
     [immerable] = true
-    constructor(character=null, url=null) {
-        if (url == 'xp') {
-            var buyable=character.buyable()
-            this.features=Choices.from(buyable.features)
-            this.powers=Choices.from(buyable.powers)
-            this.powers.metadata=Choices.from(buyable.powers.metadata)    
-        }
-        url == 'class' && Object.assign(this, { 'classes': new Groups(ruleset.classes.list()) })
-        url == 'backgrounds' && Object.assign(this, { 'backgrounds': new Groups(ruleset.backgrounds.list()) })
+    constructor() {
     }
     regroup(action) {
         _.get(this, action.path).regroup(action.data.value)
@@ -83,6 +75,21 @@ export class Choices {
     }
 }
 
+
+export class Options extends Choices {
+    [immerable]=true
+    constructor(character) {
+        super()
+        var buyable=character.buyable()
+        this.features=Choices.from(buyable.features)
+        this.powers=Choices.from(buyable.powers)
+        this.powers.metadata=Choices.from(buyable.powers.metadata)    
+        this.classes=new Groups(ruleset.classes.list(), [character.classes.base]) 
+        this.backgrounds=new Groups(ruleset.backgrounds.list())
+    }
+}
+
+
 export class Groups {
     [immerable] = true
     constructor(aray, possessions=null) {
@@ -114,8 +121,10 @@ export class Groups {
     static parse(data) {
         var by=data.by
         var items=Object.values(data.content).flat(2)
-        for (var i=0;i<items.length;i++) {
-            items[i]=Entry.parse(items[i])
+        if (items.length>0) {
+            for (var i=0;i<items.length;i++) {
+                items[i]=Entry.parse(items[i])
+            }
         }
         var self=new Groups(items)
         self.regroup(by)

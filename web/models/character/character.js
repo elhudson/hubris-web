@@ -2,7 +2,7 @@ import { useImmerReducer } from 'use-immer'
 import React from 'react';
 import { immerable, current } from 'immer'
 import * as _ from 'lodash'
-import { Choices, Groups } from '../../elements/sorts';
+import { Choices, Groups, Options } from '../../elements/sorts';
 import Bio from './sections/bio';
 import Skills from './sections/skills';
 import Stats from './sections/stats';
@@ -16,7 +16,7 @@ import Backgrounds from './sections/backgrounds'
 import {Button, Controls} from '../../components/components/interactive'
 import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
-import { v4 as uuidv4 } from 'uuid';
+
 export class Character {
     [immerable] = true
     constructor(id) {
@@ -32,23 +32,23 @@ export class Character {
         this.features=new Features()
         this.powers=new Powers()
         this.routes={
-            sheet:'/sheet?'+new URLSearchParams({id:id}),
-            ref:'/character?'+new URLSearchParams({id:id}),
-            levelup:'/levelup?'+new URLSearchParams({id:id})
+            sheet:'/sheet?'+new URLSearchParams({character:id}),
+            ref:'/character?'+new URLSearchParams({character:id}),
+            levelup:'/levelup?'+new URLSearchParams({character:id})
         }
     }
     clone() {
         return _.cloneDeep(this)
     }
     static async request(id) {
-        var request = await fetch('/character?' + new URLSearchParams({id:id}))
+        var request = await fetch('/character?' + new URLSearchParams({character:id}))
         var json = await request.json()
         var character = Character.parse(json)
         sessionStorage.setItem('character', JSON.stringify(character))
         return character
     }
-    assemble() {
-        return Character.parse(sessionStorage.getItem('character'))
+    static assemble() {
+        return Character.parse(JSON.parse(sessionStorage.getItem('character')))
     }
     static parse(data) {
         var ch = new Character(data.id)
@@ -60,7 +60,7 @@ export class Character {
             ch.powers=Powers.parse(data.powers, {
                 scores:ch.stats.scores,
                 pb:ch.progression.proficiency(),
-                attr:ch.classes.base.attributes
+                attr:ch.classes.base==null ? {name:'Strength'} : ch.classes.base.attributes
             })
             ch.skills=Skills.parse(data.skills, {
                 scores:ch.stats,
@@ -71,10 +71,10 @@ export class Character {
                 str:ch.stats.scores.str.value, 
                 dex:ch.stats.scores.dex.value, 
                 pb:ch.progression.proficiency(),
-                classname:ch.classes.base.name
+                classname:ch.classes.base==null ? 'Wizard' : ch.classes.base.name
             })
             ch.health=Health.parse(data.health)
-            ch.options=new Choices(ch, 'xp')
+            ch.options=new Options(ch)
             ch.bought()
         return ch
     }
@@ -88,26 +88,30 @@ export class Character {
         })
     }
     static async load(id=null) {
-        id==null && (id=new URLSearchParams(window.location.href.split('?')[1]).get('id'))
-        return JSON.parse(sessionStorage.getItem('character')).id==id ? 
-            Character.parse(JSON.parse(sessionStorage.getItem('character'))) :
-            await Character.request(id)
+        id==null && (id=new URLSearchParams(window.location.href.split('?')[1]).get('character'))
+        if (Object.hasOwn(sessionStorage, 'character')) {
+            var v=Character.assemble()
+            v.id=id
+            return v
+        }
+        else {
+            var v=await Character.request(id)
+            return v
+        }
     }
     save() {
         sessionStorage.setItem('character', JSON.stringify(this))
     }
     async write() {
-        Object.keys(this).forEach(async (key)=> {
-            var req= {
-                method: 'POST',
-                body: JSON.stringify({[key]:this[key]}),
-                headers:new Headers({
-                    'Content-Type':'application/json'
-                })
-            }
-            await fetch(this.routes.ref, req)
-        })
-            
+        var req= {
+            method: 'POST',
+            body: JSON.stringify(this),
+            headers:new Headers({
+                'Content-Type':'application/json'
+            })
+        }
+        var r=await fetch(this.routes.ref, req).then((r)=> r.json())
+        return r
     }
     has(feature) {
         try {
@@ -124,11 +128,11 @@ export class Character {
     buyable() {
         var options={
             features:{
-                class_features:new Groups(this.classes.class_features()),
-                tag_features:new Groups(this.classes.tag_features())
+                class_features:this.classes.base==null ? new Groups([]) : new Groups(this.classes.class_features()),
+                tag_features:this.classes.base==null ? new Groups([]) : new Groups(this.classes.tag_features())
             },
             powers:{
-                effects:new Groups(this.classes.effects()),
+                effects:this.classes.base==null ? new Groups([]) : new Groups([this.classes.effects()]),
                 metadata:{
                     ranges:new Groups(ruleset.ranges.list()),
                     durations:new Groups(ruleset.durations.list())
@@ -137,17 +141,18 @@ export class Character {
         }
         return options
     }
-    controls(length) {
+    controls() {
         function CharacterControls({ch}) {
-            const handleSave=()=> {
+            const handleSave= async ()=> {
                 sessionStorage.setItem(ch.id, JSON.stringify(ch))
-                ch.write()
+                var resp=await ch.write()
+                alert(resp.msg)
             }
             const handleLevelup=()=> {
-                window.location.assign(`/level/${ch.id}`)
+                window.location.assign(ch.routes.levelup)
             }
             const handleSheet=()=> {
-                window.location.assign(`/sheet/${ch.id}`)
+                window.location.assign(ch.routes.sheet)
             }
             return(
             <Controls sx={{position:'fixed'}}>
@@ -178,8 +183,7 @@ export function SaveButton({ch}) {
     )
 }
 
-export function useCharacter(ch, url=null) {
-    url!=null && (ch.options = new Choices(ch, url))
+export function useCharacter(ch) {
     const [character, dispatch] = useImmerReducer(dispatcher, ch)
     function dispatcher(draft, action) {
         if (action.needs_context) {

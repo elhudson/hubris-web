@@ -60,7 +60,10 @@ export class User {
     async create_character() {
         var endpt='/new_character?'+new URLSearchParams({user:this.id})
         const response=await fetch(endpt)
-        console.log(endpt.url)
+        var ps=new URLSearchParams(response.url.split('?')[1])
+        var id=ps.character
+        var ch=new Character(id)
+        sessionStorage.setItem('character', JSON.stringify(ch))
         window.location.assign(response.url)
     }
 }

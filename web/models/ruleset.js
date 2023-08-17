@@ -67,45 +67,20 @@ export class Ruleset extends Object {
             class:(character) => {return character.classes.base!=null},
             backgrounds:(character)=>{return character.backgrounds.primary!=null && character.backgrounds.secondary!=null},
             stats:(character)=>{return character.stats.points==0},
-            fluff:(character)=>{return true}
+            bio:(character)=>{return true}
         }
         return conditions[url](character)
     }
     static async load() {
         var data=JSON.parse(localStorage.getItem('HUBRIS-ruleset'))
-        if (data==null) {
-            var request = await fetch('/static/ruleset.json');
+        if (data==null || data==undefined) {
+            var request = await fetch('/rules');
             data = await request.json()
         }
         var ruleset = new Ruleset(data);
         window.ruleset=ruleset;
         localStorage.setItem('HUBRIS-ruleset', JSON.stringify(ruleset))
         return ruleset
-    }
-}
-
-export class RulesLookup {
-    constructor(data) {
-        var tester=Object.values(data)[0]
-        this.left=Object.keys(tester)[0]
-        this.right=Object.keys(tester)[1]
-        this.corr=new Array()
-        Object.values(data).forEach((val)=> {
-            val=Object.values(val)
-            var left=Entry.parse(val[0])
-            val[1].forEach((c)=> {
-                var pair={
-                    [this.left]:left,
-                    [this.right]:Entry.parse(c)
-                }
-                this.corr.push(pair)
-            })
-        })
-    }
-    match(id, target, table) {
-        var matches= this.corr.filter(i=>i[table].id==id)
-        var result=matches.map(match=>match[target])
-        return result
     }
 }
 

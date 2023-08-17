@@ -23,7 +23,7 @@ await user.get_characters()
 page.render(
     <>
     <h1>Characters</h1>
-    <div style={{display:'flex'}}>
+    <div style={{display:'grid', gridTemplateColumns:'repeat(3, 33%)'}}>
         {user.characters.map(id => <CharacterThumbnail id={id} />)}
         <NewCharacter user={user}/>
     </div>

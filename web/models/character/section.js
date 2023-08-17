@@ -10,7 +10,7 @@ export default class Info {
     }
     static parse(raw) {
         var self=new this
-        Object.assign(self, raw)
+        raw!=undefined && (Object.assign(self, raw))
         return self
     }
     set_attribute(character, path, default_value) {

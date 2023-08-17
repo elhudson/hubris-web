@@ -1,9 +1,5 @@
 {
-    "MANY_TO_MANY": [
-    ["Classes","Tags"], 
-    ["Classes","Skills"],
-    ["Tags","Effects"]
-    ],
+   
    "HAS_PREREQS": [
     "Effects",
     "Durations",
@@ -11,10 +7,12 @@
     "Class Features",
     "Tag Features"
    ],
-   "LEFTOVERS":[
+   "NO_PREREQS":[
     "Backgrounds",
     "Attributes",
-    "Skills"
+    "Skills",
+    "Classes",
+    "Tags"
    ],
    "NOTION_DB":"0e2c8717f10341a2a2d30f48eb2c6677",
    "NOTION_TOKEN":"secret_oPnTR8UwwPWeDeJReXH7rZwRb2ILunhXd35AQOn2xmY",

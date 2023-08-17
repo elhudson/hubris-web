@@ -4,11 +4,10 @@ import { Button, Buttons } from './interactive.js';
 import { style, styles} from './styles.js';
 
 export function NextPage({ current, character }) {
-    var progression=['class','backgrounds','stats', 'fluff', 'characters']
+    var progression=['class','backgrounds','stats', 'bio', 'save']
     var next=progression[progression.indexOf(current)+1]
     var display=style('bottom-btn', {
         paddingTop:20,
-        
         '& button': {
             margin:0,
             border:'unset',
@@ -18,8 +17,14 @@ export function NextPage({ current, character }) {
     })
     async function proceed() {
         if (ruleset.condition(current, character) == true) {
-            sessionStorage.setItem(character.id, JSON.stringify(character))
-            window.location.assign(`/${next}`)
+            sessionStorage.setItem('character', JSON.stringify(character))
+            if (next=='save') {
+                character.save()
+                var res=await character.write()
+                var usr='/characters?'+new URLSearchParams({'user':res.user})
+                window.location.assign(usr)
+            }
+            else {window.location.assign('/create?'+new URLSearchParams({character:character.id, stage:next}))}
         }
         else { alert('Please choose all required options before proceeding.') }
     }
