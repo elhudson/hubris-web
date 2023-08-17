@@ -51,7 +51,7 @@ class Database:
 app = Flask(__name__)
 app.secret_key=os.urandom(19)
 app.database=Database(address)
-app.database.create_dev_engine()
+app.database.create_engine()
 app.template_folder='./web'
 
 receipts=[]
