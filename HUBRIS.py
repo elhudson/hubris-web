@@ -17,7 +17,7 @@ class Database:
         self.address=address
         self.storage=f'{os.path.expanduser("~")}/storage'
     def create_engine(self):
-        if os.path.expanduser('~')=='ehudson19':
+        if os.path.expanduser('~')=='/home/ehudson19':
             self.engine=create_engine(self.address)
         else:
             self.create_dev_engine()
