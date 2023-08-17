@@ -10,12 +10,17 @@ from db_connect import address, tunnel, engine
 from pandas import read_sql
 import sqlalchemy
 from itertools import chain
+import paramiko
 
 class Database:
     def __init__(self, address):
         self.address=address
+        self.storage=f'{os.path.expanduser("~")}/storage'
     def create_engine(self):
-        self.engine=create_engine(self.address)
+        if os.path.expanduser('~')=='ehudson19':
+            self.engine=create_engine(self.address)
+        else:
+            self.create_dev_engine()
     def create_dev_engine(self):
         self.engine=engine(tunnel())
     def run_query(self, txt):
@@ -34,14 +39,40 @@ class Database:
         if obj==None:
             cnx.execute(text(txt))
         else:
-            stmt=text(txt)
-            v=stmt.bindparams(obj=obj)
-            cnx.execute(v)
+            cnx.execute(text(txt), obj)
         cnx.commit()
         cnx.close()
+    def get_filename(self, char, usr):
+        return f'{char}__{usr}.json'
+    def get_all(self):
+        return os.listdir(self.storage)
+    def save_character(self, char, usr):
+        with open(f'{self.storage}/{self.get_filename(char["id"], usr)}', 'w+') as blob:
+            json.dump(char, blob)
+    def get_usr_characters(self, usr):
+        files=self.get_all()
+        chars=[f for f in files if usr in f]
+        char_ids=[f.split('__')[0] for f in chars]
+        return char_ids
+    def get_character(self, id):
+        files=self.get_all()
+        me=[f for f in files if id in f][0]
+        with open(f'{self.storage}/{me}') as loc:
+            return json.load(loc)
     def as_list(self, txt):
         fr=self.run_query(txt)
         return list(chain(*fr.values.tolist()))
+    def get_user(self, id):
+        q=f"SELECT * FROM users WHERE id={id}"
+        return self.run_query(q)
+    def delete_character(self, id):
+        files=self.get_all()
+        me=[f for f in files if id in f][0]
+        os.remove(me)
+    def get_char_owner(self, char):
+        char=[f for f in self.get_all() if char in f][0]
+        usr=char.split('__')[1].split('.')[0]
+        return usr
     def as_item(self, txt):
         fr=self.run_query(txt)
         attr=txt.split('SELECT ')[1].split(' ')[0]
@@ -54,9 +85,6 @@ app.database=Database(address)
 app.database.create_engine()
 app.template_folder='./web'
 
-receipts=[]
-
-
 @app.route("/create")
 def creation():
     return render_template("base.html", script='creation')
@@ -66,9 +94,8 @@ def init_character():
     args=request.args
     user=args.get('user')
     char_id=str(uuid.uuid4())
-    print(char_id)
-    data=json.dumps({'id':char_id})
-    app.database.write_data(f'''INSERT INTO characters (id, user, data) VALUES('{char_id}', '{user}', :obj)''', obj=data)
+    data={'id':char_id}
+    app.database.save_character(data, user)
     return redirect(url_for('creation', character=char_id, stage='class'))
 
 
@@ -103,7 +130,7 @@ def register():
 def sheet():
     return render_template("base.html", script='sheet')
 
-@app.route("/level")
+@app.route("/levelup")
 def spend_xp():
     return render_template("base.html", script='levelup')
 
@@ -119,8 +146,7 @@ def my_characters():
 def get_characters():
     args=request.args
     user=args.get('user')
-    q=f"SELECT id FROM characters WHERE user='{user}'"
-    return app.database.as_list(q)
+    return app.database.get_usr_characters(user)
    
 @app.route('/rules')
 def get_rules():
@@ -131,17 +157,22 @@ def get_rules():
 def character():
     args=request.args
     if request.method=='GET':
-        return app.database.run_query(f'''SELECT data FROM characters WHERE id='{args.get('character')}' ''')['data'][0]
+        return json.dumps(app.database.get_character(args.get('character')))
     if request.method=='POST':
-        user_id=app.database.run_query(f'''SELECT user FROM characters WHERE id='{args.get('character')}' ''').at[0, 'user']
-        user_data=app.database.run_query(f'''SELECT * FROM users WHERE id='{user_id}' ''')
-        data={'msg':f'Character saved by user {user_data.at[0, "username"]}', 'user':user_id, 'character':request.get_json()}
-        return json.dumps(data)
+        user_id=app.database.get_char_owner(args.get('character'))
+        character=request.get_json()
+        app.database.save_character(character, user_id)
+        data={'msg':f'Character saved', 'user':user_id, 'character':character}
+        response={
+            'url':url_for('my_characters', user=user_id),
+            'body':json.dumps(data)
+        }
+        return make_response(response)
     
-@app.route('/delete', methods=['POST'])
+@app.route('/delete')
 def delete_character():
     args=request.args
-    query=f'''DELETE FROM characters WHERE id='{args.get(id)}' '''
-    app.database.write_data(query)
+    app.database.delete_character(args.get('character'))
+    return json.dumps({'msg':'Character deleted.'})
     
     

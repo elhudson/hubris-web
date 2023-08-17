@@ -16,6 +16,9 @@ import Backgrounds from './sections/backgrounds'
 import {Button, Controls} from '../../components/components/interactive'
 import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
+import { Alignment } from './sections/bio';
+import { Tier } from './sections/progression';
+import { Item } from '../../components/components/containers';
 
 export class Character {
     [immerable] = true
@@ -32,10 +35,11 @@ export class Character {
         this.features=new Features()
         this.powers=new Powers()
         this.routes={
-            sheet:'/sheet?'+new URLSearchParams({character:id}),
-            ref:'/character?'+new URLSearchParams({character:id}),
-            levelup:'/levelup?'+new URLSearchParams({character:id})
-        }
+            sheet:'/sheet?'+new URLSearchParams({character:this.id}),
+            ref:'/character?'+new URLSearchParams({character:this.id}),
+            levelup:'/levelup?'+new URLSearchParams({character:this.id}),
+            trash:'/delete?'+new URLSearchParams({character:this.id})
+        }   
     }
     clone() {
         return _.cloneDeep(this)
@@ -49,6 +53,11 @@ export class Character {
     }
     static assemble() {
         return Character.parse(JSON.parse(sessionStorage.getItem('character')))
+    }
+    async delete() {
+        var resp=await fetch(this.routes.trash).then((j)=>j.json())
+        sessionStorage.removeItem('character')
+        alert(resp.msg)
     }
     static parse(data) {
         var ch = new Character(data.id)
@@ -103,6 +112,7 @@ export class Character {
         sessionStorage.setItem('character', JSON.stringify(this))
     }
     async write() {
+        console.log(this.routes.ref)
         var req= {
             method: 'POST',
             body: JSON.stringify(this),
@@ -154,18 +164,48 @@ export class Character {
             const handleSheet=()=> {
                 window.location.assign(ch.routes.sheet)
             }
+            const handleTrash=async ()=> {
+                await ch.delete()
+            }
             return(
-            <Controls sx={{position:'fixed'}}>
+            <Controls>
                 <Button onClick={handleSave}>
-                <Icon name={'save'}/></Button>
+                    <Icon name={'save'}/></Button>
                 <Button onClick={handleLevelup}>
-                <Icon name={'levelup'}/>
+                    <Icon name={'levelup'}/>
                 </Button>
                 <Button onClick={handleSheet}>
-                <Icon name={'character-sheet'}/></Button>
+                    <Icon name={'character-sheet'}/></Button>
+                <Button onClick={handleTrash}>
+                    <Icon name={'trash'} />
+                </Button>
             </Controls>
             )}
         return <CharacterControls ch={this} />
+    }
+    thumbnail() {
+        function Thumbnail({ch}) {
+        return(
+            <div>
+                <div style={{width: 'fit-content'}}>
+                <Icon size={100} name={`classes__${ch.classes.base.name.toLowerCase()}`} />
+            </div>
+            <div style={{width:'fit-content', position:'relative', borderLeft:styles.border}}>
+                <div style={{margin:2}}>
+                <Item label={'Class'}>{ch.classes.base.name}</Item>
+                </div>
+                <div style={{margin:2}}>
+                <Item label={'Backgrounds'}>{[ch.backgrounds.primary.name, ch.backgrounds.secondary.name].join(' & ')} </Item>
+                </div>
+                <Alignment selected={ch.bio.alignment} />
+                <div style={{borderTop:styles.border, position:'absolute', bottom:0, width:'100%'}}>
+                    <Tier tier={ch.progression.tier()} />
+                </div>
+            </div>
+            {ch.controls()}
+            </div>)
+        }
+        return Thumbnail({ch:this})
     }
 }
 

@@ -27,7 +27,7 @@ export default class Health extends Info {
     }
     static parse(raw) {
         var self=super.parse(raw)
-        self.hd=HitDice.parse(raw)
+        self.hd=HitDice.parse(raw.hd)
         self.hp.max=self.hd.max_hp()
         return self
     }
@@ -73,10 +73,9 @@ class HitDice {
     }
     static parse(raw) {
         var self=new HitDice()
-        try {
-        Object.assign(self, raw) 
-        }
-        catch {{Error}}
+        self.die=raw.die
+        self.max=raw.max
+        self.used=raw.used
         return self
     }
     max_hp() {

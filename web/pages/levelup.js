@@ -5,9 +5,8 @@ import { Ruleset } from "../models/ruleset"
 import { Tabbed } from "../components/components/containers"
 
 await Ruleset.load()
+var ch=await Character.load()
 
-var id=document.querySelector('body').getAttribute('data-id')
-var ch=Character.load(id)
 const root = createRoot(document.getElementById('page'))
 
 root.render(<LevelUp ch={ch}/>)

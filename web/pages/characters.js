@@ -41,7 +41,7 @@ function CharacterThumbnail({ id }) {
     })}
     label={
     asyncHero.result ? 
-        <a href={asyncHero.routes.sheet}>{asyncHero.result.bio.name}</a> : 
+        <a href={asyncHero.result.routes.sheet}>{asyncHero.result.bio.name}</a> : 
         'Loading...'}>
             {asyncHero.loading && 
                 <div style={{
@@ -52,29 +52,7 @@ function CharacterThumbnail({ id }) {
                     <BarLoader cssOverride={{top:'50%'}} color={styles.text} />
                 </div>}
             {asyncHero.error && <div>Error: {asyncHero.error.message}</div>}
-            {asyncHero.result && (
-                <>
-                    <div style={{width: 'fit-content'}}>
-                        <Icon size={100} name={`classes__${asyncHero.result.classes.base.name.toLowerCase()}`} />
-                    </div>
-                    <div style={{width:'fit-content', position:'relative', borderLeft:styles.border}}>
-                        <div style={{margin:2}}>
-                        <Item label={'Class'}>{asyncHero.result.classes.base.name}</Item>
-                        </div>
-                        <div style={{margin:2}}>
-                        <Item label={'Backgrounds'}>{[asyncHero.result.backgrounds.primary.name, asyncHero.result.backgrounds.secondary.name].join(' & ')} </Item>
-                        </div>
-                        <Alignment selected={asyncHero.result.bio.alignment} />
-                        <div style={{borderTop:styles.border, position:'absolute', bottom:0, width:'100%'}}>
-                            <Tier tier={asyncHero.result.progression.tier()} />
-                        </div>
-                    </div>
-                    {asyncHero.result.controls('short')}
-
-                    <div>
-        </div>
-        </>
-            )}
+            {asyncHero.result && (asyncHero.result.thumbnail())}
     </LabeledItem>
     )
 }

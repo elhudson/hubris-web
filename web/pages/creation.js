@@ -12,7 +12,6 @@ await Ruleset.load();
 const root = createRoot(document.getElementById('page'))
 
 const ch=await Character.load()
-window.char=ch
 const url=new Uri(window.location.href).getQueryParamValue('stage')
 
 root.render(
@@ -23,6 +22,7 @@ root.render(
 
 function CreationPage({ ch, stage }) {
     const [char, dispatchChanges] = useCharacter(ch)
+    window.c=char
     const patch=generatePatch(dispatchChanges)
     var binner=patch('options', 'regroup')
     var handler=patch('options', 'addDrop', true)

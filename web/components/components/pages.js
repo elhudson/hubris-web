@@ -6,6 +6,7 @@ import { style, styles} from './styles.js';
 export function NextPage({ current, character }) {
     var progression=['class','backgrounds','stats', 'bio', 'save']
     var next=progression[progression.indexOf(current)+1]
+    console.log(next)
     var display=style('bottom-btn', {
         paddingTop:20,
         '& button': {
@@ -21,8 +22,7 @@ export function NextPage({ current, character }) {
             if (next=='save') {
                 character.save()
                 var res=await character.write()
-                var usr='/characters?'+new URLSearchParams({'user':res.user})
-                window.location.assign(usr)
+                window.location.assign(res.url)
             }
             else {window.location.assign('/create?'+new URLSearchParams({character:character.id, stage:next}))}
         }

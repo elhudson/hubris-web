@@ -7,65 +7,33 @@ import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
 import GridLayout from "react-grid-layout";
 
+import { Tabbed } from '../components/components/containers.js'
+
 import '/node_modules/react-grid-layout/css/styles.css'
 import '/node_modules/react-resizable/css/styles.css'
 
 await Ruleset.load()
 
 const root = createRoot(document.getElementById('page'))
-var char = await Character.load(document.getElementsByTagName('body')[0].getAttribute('data-id'))
-
-if (char=='Character not found!') {
-    char=await Character.request(document.getElementsByTagName('body')[0].getAttribute('data-id'))
-}
+var char=await Character.load()
 
 root.render(<CharacterSheet ch={char} />)
 
 function CharacterSheet({ ch }) {
     const [char, dispatch]=useCharacter(ch)
     const patch=generatePatch(dispatch)
-    const l=[
-        {i:'thumbnail', x:0, y:0, w:3, h:8},
-        {i:'progression', x:3, y:0, w:5, h:8},
-        {i:'stats', x:9, y:0, w:4, h:0},
-        {i:'health', x:0, y:8, w:3, h:16},
-        {i:'combat', x: 0, y:12, w:4, h:12},
-        {i: 'powers', x:3, y:8, w:5, h:16},
-        {i: 'features', x:4, y:24, w:4, h:0}
-    ]
     return (
         <>
         {char.controls()}
-        <GridLayout 
-            className="layout" 
-            layout={l} 
-            cols={12} 
-            width={1200}
-            allowOverlap={false}
-            rowHeight={10}
-            >
-            <div key='thumbnail'>
-                <char.bio.Bio ch={char} patch={patch} /> 
-            </div>
-           <div key='progression'>
-                <char.progression.Progression progression={char.progression} patch={patch} /> 
-           </div>
-           <div key='stats'>
-                <char.stats.StatsSkills stats={char.stats} skills={char.skills} />
-           </div>
-            <div key='health'>
-                {char.health.display({patch:patch})}
-            </div>
-            <div key='combat'>
-                <char.combat.Combat patch={patch} combat={char.combat}/> 
-            </div>
-            <div key='features'>
-                {char.features.display({patch:patch})}
-            </div>
-            <div key='powers'>
-                {char.powers.display({patch:patch})}
-            </div>
-        </GridLayout>
+        <Tabbed names={['Bio', 'Progression', 'Stats', 'Health', 'Combat', 'Features', 'Powers']}>
+        <char.bio.Bio ch={char} patch={patch} /> 
+        <char.progression.Progression progression={char.progression} patch={patch} /> 
+        <char.stats.StatsSkills stats={char.stats} skills={char.skills} />
+        {char.health.display({patch:patch})}
+        <char.combat.Combat patch={patch} combat={char.combat}/> 
+        {char.features.display({patch:patch})}
+        {char.powers.display({patch:patch})}
+        </Tabbed>
         </>
     )
 }

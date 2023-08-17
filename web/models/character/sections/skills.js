@@ -36,8 +36,8 @@ export default class Skills extends Array {
         this.forEach((skill)=> scores.skill_bonus(skill, pb))
     }
     auto(backgrounds) {
-        _.find(this, i=>i.id==backgrounds.primary.skills[0].id).proficient=true
-        _.find(this, i=>i.id==backgrounds.secondary.skills[0].id).proficient=true
+        backgrounds.primary.skills.length>0 && (_.find(this, i=>i.id==backgrounds.primary.skills[0].id).proficient=true)
+        backgrounds.secondary.skills.length>0 && (_.find(this, i=>i.id==backgrounds.secondary.skills[0].id).proficient=true)
     }
     addDrop(action) {
         var target=_.find(this, i=>i.id==action.data.value)
