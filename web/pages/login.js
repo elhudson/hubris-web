@@ -2,7 +2,11 @@ import React from "react";
 import { User, useUser } from '../models/user'
 import { createRoot } from "react-dom/client";
 import Dialog from "../elements/dialog";
-
+import Uri from "jsuri";
+export default function login() {
+    const error=new Uri(window.location.href).getQueryParamValue('error')
+    return(<Login error={error} />)
+}
 
 function Login({error}) {
     const ob=new User()
@@ -35,12 +39,3 @@ function Login({error}) {
             />
     )
 }
-
-const error=()=> {
-    return String(window.location).includes('error') ?
-        String(window.location).split('=')[1] : null
-    }
-
-var root=createRoot(document.getElementById('page'))
-root.render(<Login error={error()}/>)
-

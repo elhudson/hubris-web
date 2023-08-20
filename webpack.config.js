@@ -6,20 +6,13 @@ const isProduction = process.env.NODE_ENV == 'production';
 
 
 const config = {
-    entry: {
-        login:'./web/pages/login.js',
-        sheet: './web/pages/sheet.js',
-        characters:'./web/pages/characters.js',
-        creation:'./web/pages/creation.js',
-        levelup:'./web/pages/levelup.js'
-    },
+    entry: './web/hubris.js',
     output: {
         path: path.resolve(__dirname, 'static/dist'),
         filename: '[name].js'
     },
     plugins: [
-        // Add your plugins here
-        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+  
     ],
     module: {
         rules: [
@@ -32,26 +25,16 @@ const config = {
                 type: 'asset',
             },
             {
-                test: /\.css$/i,
-                use: ["css-loader"],
-              },
-              {
-                test: /\.s[ac]ss$/i,
-                use: [
-                  // Creates `style` nodes from JS strings
-                  "style-loader",
-                  // Translates CSS into CommonJS
-                  "css-loader",
-                  // Compiles Sass to CSS
-                  {
-                    loader: "sass-loader",
-                    options: {
-                      sassOptions: {
-                        includePaths: [path.resolve(__dirname, "./assets")]
-                      },
-                    },
-                  },
-                ]},
+              test: /\.s[ac]ss$/i,
+              use: [
+                // Creates `style` nodes from JS strings
+                "style-loader",
+                // Translates CSS into CommonJS
+                "css-loader",
+                // Compiles Sass to CSS
+                "sass-loader",
+              ],
+            },
                 {
                   test: /\.m?js$/,
                   enforce: 'pre',

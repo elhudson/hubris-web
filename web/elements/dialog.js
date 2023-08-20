@@ -1,40 +1,46 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Field } from "../components/components/text";
-import { LabeledItem } from "../components/components/containers"
+import { Item, LabeledItem } from "../components/components/containers"
 import { Button, Buttons } from "../components/components/interactive";
 import { style, styles } from "../components/components/styles";
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 
 export default function Dialog({ header, error, buttons, items, handler }) {
+    const theme=useTheme()
     return (
-        <>
-        <h1 style={{width:'fit-content', margin:'auto'}}>Welcome to HUBRIS!</h1>
-        <div style={{
-            border:styles.border,
-            width:300,
-            margin:'auto'}}>
-            <div style={{ margin: 5 }}>
+        <div className={css`
+            width:500px;
+            border:${theme.border};
+            margin:auto;
+            margin-top:300px;
+            div:last-child {
+                border:unset;
+                border-top:${theme.border};
+            }
+        `}>
+        <h1 className={css`
+            border-bottom: ${theme.border};
+            text-align: center;
+            padding: unset;
+            margin: unset;
+            `}>{header}</h1>
                 <Error error={error} />
                 <div>
                     {items.map(item =>
-                        <Field data={item.data} hidden={item.hidden} handler={handler} toggleble={false} />)}
-                </div>
-            </div>
-            <Buttons 
-                className={style('bottom-btns', {
-                    borderBottom:'unset !important',
-                    borderLeft:'unset !important',
-                    borderRight:'unset !important'
-                    })} 
-                vertical={false}>
-                        {buttons.map(b =>
-                            <Button onClick={b.handler}>
-                                {b.txt}
-                            </Button>
+                        <Item label={item.label}>
+                            <Field data={item.data} hidden={item.hidden} handler={handler} toggleble={false} />
+                        </Item>
+                    )}
 
-                )}
+                </div>
+            <Buttons vertical={false}>
+            {buttons.map(b =>
+                <Button onClick={b.handler}>
+                    {b.txt}
+                </Button>)}
             </Buttons>
         </div>
-        </>
     )
 }
 

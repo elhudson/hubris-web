@@ -3,7 +3,8 @@ import {style, styles, get_font, reusable} from './styles'
 import { Button } from './interactive'
 import { Icon } from './images'
 import { TabList, Tab, Tabs, TabPanel } from 'react-tabs'
-
+import { useTheme } from '@emotion/react'
+import { css } from '@emotion/css'
 export function OptionList({children}) {
     var display=style('options', {
         display:'list-item',
@@ -219,23 +220,16 @@ export function LabeledItem({ childStyles=null, className=null, label, children 
 
 
 
-export function Item({ label, children, below=false }) {
-    var s = style('item', {
-        margin:5,
-        display: below ? 'block':'inline-flex',
-        flexDirection:'row-reverse',
-        width: 'auto',
-        '& label': {
-            textTransform: 'uppercase',
-            fontWeight: 'bold',
-            marginRight: 10
-        }
-    }
-    )
+export function Item({ label, children }) {
+    const theme=useTheme()
+    const labelBelow=css`
+        input[type='text'], text {
+            ${theme.styles.text};
+        }`
     return (
-        <div className={s}>
+        <div className={labelBelow}>
             {children}
-            <label>{label}</label>
+            <label className={theme.styles.label}>{label}</label>
         </div>
     )
 }

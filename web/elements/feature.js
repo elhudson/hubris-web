@@ -447,7 +447,6 @@ function Xp({ xp }) {
     return (
         <FeatureInfo label={'xp'} value={xp}/>
     )
-
 }
 
 function Power({ power }) {
@@ -474,7 +473,6 @@ function Tree({ tree }) {
             <Meta text={tree}/>
         </FeatureInfo>
     )
-
 }
 
 function Description({ de }) {

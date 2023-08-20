@@ -1931,17 +1931,6 @@ eval("/**\n * @license React\n * react-dom.development.js\n *\n * Copyright (c) 
 
 /***/ }),
 
-/***/ "./node_modules/react-dom/client.js":
-/*!******************************************!*\
-  !*** ./node_modules/react-dom/client.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-eval("\n\nvar m = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\nif (false) {} else {\n  var i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;\n  exports.createRoot = function (c, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.createRoot(c, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n  exports.hydrateRoot = function (c, h, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.hydrateRoot(c, h, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n}\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-dom/client.js?");
-
-/***/ }),
-
 /***/ "./node_modules/react-dom/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/react-dom/index.js ***!
@@ -1983,50 +1972,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nfunction memoize(fn) {\n  var cache = {};\n  return function (arg) {\n    if (cache[arg] === undefined) cache[arg] = fn(arg);\n    return cache[arg];\n  };\n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (memoize);\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-jss/node_modules/@emotion/memoize/dist/memoize.browser.esm.js?");
-
-/***/ }),
-
-/***/ "./node_modules/react-spinners/esm/BarLoader.js":
-/*!******************************************************!*\
-  !*** ./node_modules/react-spinners/esm/BarLoader.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _helpers_unitConverter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers/unitConverter */ \"./node_modules/react-spinners/esm/helpers/unitConverter.js\");\n/* harmony import */ var _helpers_animation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers/animation */ \"./node_modules/react-spinners/esm/helpers/animation.js\");\n/* harmony import */ var _helpers_colors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./helpers/colors */ \"./node_modules/react-spinners/esm/helpers/colors.js\");\nvar __assign = undefined && undefined.__assign || function () {\n  __assign = Object.assign || function (t) {\n    for (var s, i = 1, n = arguments.length; i < n; i++) {\n      s = arguments[i];\n      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];\n    }\n    return t;\n  };\n  return __assign.apply(this, arguments);\n};\nvar __rest = undefined && undefined.__rest || function (s, e) {\n  var t = {};\n  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];\n  if (s != null && typeof Object.getOwnPropertySymbols === \"function\") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {\n    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];\n  }\n  return t;\n};\n\n\n\n\nvar long = (0,_helpers_animation__WEBPACK_IMPORTED_MODULE_1__.createAnimation)(\"BarLoader\", \"0% {left: -35%;right: 100%} 60% {left: 100%;right: -90%} 100% {left: 100%;right: -90%}\", \"long\");\nvar short = (0,_helpers_animation__WEBPACK_IMPORTED_MODULE_1__.createAnimation)(\"BarLoader\", \"0% {left: -200%;right: 100%} 60% {left: 107%;right: -8%} 100% {left: 107%;right: -8%}\", \"short\");\nfunction BarLoader(_a) {\n  var _b = _a.loading,\n    loading = _b === void 0 ? true : _b,\n    _c = _a.color,\n    color = _c === void 0 ? \"#000000\" : _c,\n    _d = _a.speedMultiplier,\n    speedMultiplier = _d === void 0 ? 1 : _d,\n    _e = _a.cssOverride,\n    cssOverride = _e === void 0 ? {} : _e,\n    _f = _a.height,\n    height = _f === void 0 ? 4 : _f,\n    _g = _a.width,\n    width = _g === void 0 ? 100 : _g,\n    additionalprops = __rest(_a, [\"loading\", \"color\", \"speedMultiplier\", \"cssOverride\", \"height\", \"width\"]);\n  var wrapper = __assign({\n    display: \"inherit\",\n    position: \"relative\",\n    width: (0,_helpers_unitConverter__WEBPACK_IMPORTED_MODULE_2__.cssValue)(width),\n    height: (0,_helpers_unitConverter__WEBPACK_IMPORTED_MODULE_2__.cssValue)(height),\n    overflow: \"hidden\",\n    backgroundColor: (0,_helpers_colors__WEBPACK_IMPORTED_MODULE_3__.calculateRgba)(color, 0.2),\n    backgroundClip: \"padding-box\"\n  }, cssOverride);\n  var style = function style(i) {\n    return {\n      position: \"absolute\",\n      height: (0,_helpers_unitConverter__WEBPACK_IMPORTED_MODULE_2__.cssValue)(height),\n      overflow: \"hidden\",\n      backgroundColor: color,\n      backgroundClip: \"padding-box\",\n      display: \"block\",\n      borderRadius: 2,\n      willChange: \"left, right\",\n      animationFillMode: \"forwards\",\n      animation: \"\".concat(i === 1 ? long : short, \" \").concat(2.1 / speedMultiplier, \"s \").concat(i === 2 ? \"\".concat(1.15 / speedMultiplier, \"s\") : \"\", \" \").concat(i === 1 ? \"cubic-bezier(0.65, 0.815, 0.735, 0.395)\" : \"cubic-bezier(0.165, 0.84, 0.44, 1)\", \" infinite\")\n    };\n  };\n  if (!loading) {\n    return null;\n  }\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(\"span\", __assign({\n    style: wrapper\n  }, additionalprops), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(\"span\", {\n    style: style(1)\n  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(\"span\", {\n    style: style(2)\n  }));\n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BarLoader);\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-spinners/esm/BarLoader.js?");
-
-/***/ }),
-
-/***/ "./node_modules/react-spinners/esm/helpers/animation.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/react-spinners/esm/helpers/animation.js ***!
-  \**************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   createAnimation: () => (/* binding */ createAnimation)\n/* harmony export */ });\nvar createAnimation = function createAnimation(loaderName, frames, suffix) {\n  var animationName = \"react-spinners-\".concat(loaderName, \"-\").concat(suffix);\n  if (typeof window == \"undefined\" || !window.document) {\n    return animationName;\n  }\n  var styleEl = document.createElement(\"style\");\n  document.head.appendChild(styleEl);\n  var styleSheet = styleEl.sheet;\n  var keyFrames = \"\\n    @keyframes \".concat(animationName, \" {\\n      \").concat(frames, \"\\n    }\\n  \");\n  if (styleSheet) {\n    styleSheet.insertRule(keyFrames, 0);\n  }\n  return animationName;\n};\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-spinners/esm/helpers/animation.js?");
-
-/***/ }),
-
-/***/ "./node_modules/react-spinners/esm/helpers/colors.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/react-spinners/esm/helpers/colors.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   calculateRgba: () => (/* binding */ calculateRgba)\n/* harmony export */ });\nvar BasicColors;\n(function (BasicColors) {\n  BasicColors[\"maroon\"] = \"#800000\";\n  BasicColors[\"red\"] = \"#FF0000\";\n  BasicColors[\"orange\"] = \"#FFA500\";\n  BasicColors[\"yellow\"] = \"#FFFF00\";\n  BasicColors[\"olive\"] = \"#808000\";\n  BasicColors[\"green\"] = \"#008000\";\n  BasicColors[\"purple\"] = \"#800080\";\n  BasicColors[\"fuchsia\"] = \"#FF00FF\";\n  BasicColors[\"lime\"] = \"#00FF00\";\n  BasicColors[\"teal\"] = \"#008080\";\n  BasicColors[\"aqua\"] = \"#00FFFF\";\n  BasicColors[\"blue\"] = \"#0000FF\";\n  BasicColors[\"navy\"] = \"#000080\";\n  BasicColors[\"black\"] = \"#000000\";\n  BasicColors[\"gray\"] = \"#808080\";\n  BasicColors[\"silver\"] = \"#C0C0C0\";\n  BasicColors[\"white\"] = \"#FFFFFF\";\n})(BasicColors || (BasicColors = {}));\nvar calculateRgba = function calculateRgba(color, opacity) {\n  if (Object.keys(BasicColors).includes(color)) {\n    color = BasicColors[color];\n  }\n  if (color[0] === \"#\") {\n    color = color.slice(1);\n  }\n  if (color.length === 3) {\n    var res_1 = \"\";\n    color.split(\"\").forEach(function (c) {\n      res_1 += c;\n      res_1 += c;\n    });\n    color = res_1;\n  }\n  var rgbValues = (color.match(/.{2}/g) || []).map(function (hex) {\n    return parseInt(hex, 16);\n  }).join(\", \");\n  return \"rgba(\".concat(rgbValues, \", \").concat(opacity, \")\");\n};\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-spinners/esm/helpers/colors.js?");
-
-/***/ }),
-
-/***/ "./node_modules/react-spinners/esm/helpers/unitConverter.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/react-spinners/esm/helpers/unitConverter.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   cssValue: () => (/* binding */ cssValue),\n/* harmony export */   parseLengthAndUnit: () => (/* binding */ parseLengthAndUnit)\n/* harmony export */ });\nvar cssUnit = {\n  cm: true,\n  mm: true,\n  in: true,\n  px: true,\n  pt: true,\n  pc: true,\n  em: true,\n  ex: true,\n  ch: true,\n  rem: true,\n  vw: true,\n  vh: true,\n  vmin: true,\n  vmax: true,\n  \"%\": true\n};\n/**\n * If size is a number, append px to the value as default unit.\n * If size is a string, validate against list of valid units.\n * If unit is valid, return size as is.\n * If unit is invalid, console warn issue, replace with px as the unit.\n *\n * @param {(number | string)} size\n * @return {LengthObject} LengthObject\n */\nfunction parseLengthAndUnit(size) {\n  if (typeof size === \"number\") {\n    return {\n      value: size,\n      unit: \"px\"\n    };\n  }\n  var value;\n  var valueString = (size.match(/^[0-9.]*/) || \"\").toString();\n  if (valueString.includes(\".\")) {\n    value = parseFloat(valueString);\n  } else {\n    value = parseInt(valueString, 10);\n  }\n  var unit = (size.match(/[^0-9]*$/) || \"\").toString();\n  if (cssUnit[unit]) {\n    return {\n      value: value,\n      unit: unit\n    };\n  }\n  console.warn(\"React Spinners: \".concat(size, \" is not a valid css value. Defaulting to \").concat(value, \"px.\"));\n  return {\n    value: value,\n    unit: \"px\"\n  };\n}\n/**\n * Take value as an input and return valid css value\n *\n * @param {(number | string)} value\n * @return {string} valid css value\n */\nfunction cssValue(value) {\n  var lengthWithunit = parseLengthAndUnit(value);\n  return \"\".concat(lengthWithunit.value).concat(lengthWithunit.unit);\n}\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-spinners/esm/helpers/unitConverter.js?");
 
 /***/ }),
 
@@ -2503,17 +2448,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "./web/models/ruleset.js":
-/*!*******************************!*\
-  !*** ./web/models/ruleset.js ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   Rules: () => (/* binding */ Rules),\n/* harmony export */   Ruleset: () => (/* binding */ Ruleset)\n/* harmony export */ });\n/* harmony import */ var _elements_feature_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../elements/feature.js */ \"./web/elements/feature.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n\n\nclass Ruleset extends Object {\n  constructor(data) {\n    super(data);\n    Object.assign(this, data);\n    Object.keys(this).forEach(table => {\n      this[table] = new Rules(this[table]);\n    });\n    this.reference = {\n      has_ancestry: ['class_features', 'tag_features', 'effects', 'ranges', 'durations'],\n      metadata: ['ranges', 'durations'],\n      base_hit_die_cost: {\n        \"Wizard\": 3,\n        \"Elementalist\": 3,\n        \"Beguiler\": 3,\n        \"Rogue\": 2,\n        \"Priest\": 2,\n        \"Barbarian\": 1,\n        \"Knight\": 1,\n        \"Sharpshooter\": 1,\n        \"Fighter\": 1\n      },\n      hd: ['d2', 'd3', 'd4', 'd6', '2d4'],\n      alignments: {\n        lg: 'Lawful Good',\n        ng: 'Neutral Good',\n        cg: 'Chaotic Good',\n        ln: 'Lawful Neutral',\n        tn: 'True Neutral',\n        cn: 'Chaotic Neutral',\n        le: 'Lawful Evil',\n        ne: 'Neutral Evil',\n        ce: 'Chaotic Evil'\n      },\n      injuries: {\n        blinded: 'Blinded',\n        advAgainst: 'Advantage on attacks against you',\n        uninjured: 'No active injury'\n      },\n      skill_codes: ['str', 'dex', 'con', 'int', 'wis', 'cha'],\n      armors: ['Light', 'Medium', 'Heavy'],\n      point_costs: {\n        \"-2\": 0,\n        \"-1\": 1,\n        \"0\": 2,\n        \"1\": 3,\n        \"2\": 5,\n        \"3\": 8,\n        \"4\": 12\n      },\n      grouping: ['tags', 'xp', 'tree', 'power', 'range', 'duration', 'class_paths', 'weapon_proficiencies', 'armor_proficiencies', 'hit_die'],\n      bins: {\n        classes: ['weapon_proficiencies', 'armor_proficiencies', 'hit_die'],\n        backgrounds: ['skills', 'attributes'],\n        tag_features: ['tags', 'xp'],\n        class_features: ['class_paths', 'xp'],\n        effects: ['power', 'xp', 'tree', 'tags'],\n        ranges: ['power', 'xp', 'tree'],\n        durations: ['power', 'xp', 'tree']\n      }\n    };\n  }\n  condition(url, character) {\n    const conditions = {\n      class: character => {\n        return character.classes.base != null;\n      },\n      backgrounds: character => {\n        return character.backgrounds.primary != null && character.backgrounds.secondary != null;\n      },\n      stats: character => {\n        return character.stats.points == 0;\n      },\n      bio: character => {\n        return true;\n      }\n    };\n    return conditions[url](character);\n  }\n  static async load() {\n    var data = JSON.parse(localStorage.getItem('HUBRIS-ruleset'));\n    if (data == null || data == undefined) {\n      var request = await fetch('/rules');\n      data = await request.json();\n    }\n    var ruleset = new Ruleset(data);\n    window.ruleset = ruleset;\n    localStorage.setItem('HUBRIS-ruleset', JSON.stringify(ruleset));\n    return ruleset;\n  }\n}\nclass Rules {\n  constructor(data) {\n    this.table = Object.entries(data)[0][1].table;\n    Object.keys(data).forEach(key => {\n      this[key] = _elements_feature_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].parse(data[key]);\n    });\n  }\n  list() {\n    return Array.from(Object.values(this)).slice(1);\n  }\n  ids() {\n    return Array.from(Object.keys(this));\n  }\n}\n\n//# sourceURL=webpack://hubris-web/./web/models/ruleset.js?");
-
-/***/ }),
-
 /***/ "./web/models/user.js":
 /*!****************************!*\
   !*** ./web/models/user.js ***!
@@ -2529,10 +2463,10 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /*!*********************************!*\
   !*** ./web/pages/characters.js ***!
   \*********************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _models_ruleset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/ruleset */ \"./web/models/ruleset.js\");\n/* harmony import */ var _components_components_containers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/components/containers */ \"./web/components/components/containers.js\");\n/* harmony import */ var _components_components_images_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/components/images.js */ \"./web/components/components/images.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);\n/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-dom/client */ \"./node_modules/react-dom/client.js\");\n/* harmony import */ var _models_character_sections_progression_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../models/character/sections/progression.js */ \"./web/models/character/sections/progression.js\");\n/* harmony import */ var react_async_hook__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-async-hook */ \"./node_modules/react-async-hook/dist/react-async-hook.esm.js\");\n/* harmony import */ var _models_character_character_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../models/character/character.js */ \"./web/models/character/character.js\");\n/* harmony import */ var _components_components_styles_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/components/styles.js */ \"./web/components/components/styles.js\");\n/* harmony import */ var _components_components_interactive_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/components/interactive.js */ \"./web/components/components/interactive.js\");\n/* harmony import */ var _models_character_sections_bio__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../models/character/sections/bio */ \"./web/models/character/sections/bio.js\");\n/* harmony import */ var _models_user__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../models/user */ \"./web/models/user.js\");\n/* harmony import */ var react_spinners__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react-spinners */ \"./node_modules/react-spinners/esm/BarLoader.js\");\n\n\n\n\n\n\n\n\n\n\n\n\nwindow.ruleset = await _models_ruleset__WEBPACK_IMPORTED_MODULE_0__.Ruleset.load();\n\nvar page = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_4__.createRoot)(document.getElementById('page'));\nvar user = _models_user__WEBPACK_IMPORTED_MODULE_11__.User.from_url();\nawait user.get_characters();\npage.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement((react__WEBPACK_IMPORTED_MODULE_3___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"h1\", null, \"Characters\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"div\", {\n  style: {\n    display: 'grid',\n    gridTemplateColumns: 'repeat(3, 33%)'\n  }\n}, user.characters.map(id => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(CharacterThumbnail, {\n  id: id\n})), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(NewCharacter, {\n  user: user\n}))));\nfunction CharacterThumbnail({\n  id\n}) {\n  const fetchCharacter = async id => await _models_character_character_js__WEBPACK_IMPORTED_MODULE_7__.Character.request(id);\n  const asyncHero = (0,react_async_hook__WEBPACK_IMPORTED_MODULE_6__.useAsync)(fetchCharacter, [id]);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_1__.LabeledItem, {\n    childStyles: (0,_components_components_styles_js__WEBPACK_IMPORTED_MODULE_8__.style)('thumbnail', {\n      display: 'flex'\n    }),\n    label: asyncHero.result ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"a\", {\n      href: asyncHero.result.routes.sheet\n    }, asyncHero.result.bio.name) : 'Loading...'\n  }, asyncHero.loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"div\", {\n    style: {\n      width: '80%',\n      height: '100px',\n      position: 'relative'\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(react_spinners__WEBPACK_IMPORTED_MODULE_12__[\"default\"], {\n    cssOverride: {\n      top: '50%'\n    },\n    color: _components_components_styles_js__WEBPACK_IMPORTED_MODULE_8__.styles.text\n  })), asyncHero.error && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"div\", null, \"Error: \", asyncHero.error.message), asyncHero.result && asyncHero.result.thumbnail());\n}\nfunction NewCharacter({\n  user\n}) {\n  function handleClick(e) {\n    user.create_character();\n  }\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(\"div\", {\n    style: {\n      margin: 5\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_components_components_interactive_js__WEBPACK_IMPORTED_MODULE_9__.Button, {\n    onClick: handleClick\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_components_components_images_js__WEBPACK_IMPORTED_MODULE_2__.Icon, {\n    name: \"plus\",\n    size: 100\n  })));\n}\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } }, 1);\n\n//# sourceURL=webpack://hubris-web/./web/pages/characters.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ characters)\n/* harmony export */ });\n/* harmony import */ var _components_components_containers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/components/containers */ \"./web/components/components/containers.js\");\n/* harmony import */ var _components_components_images_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/components/images.js */ \"./web/components/components/images.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var react_async_hook__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-async-hook */ \"./node_modules/react-async-hook/dist/react-async-hook.esm.js\");\n/* harmony import */ var _models_character_character_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../models/character/character.js */ \"./web/models/character/character.js\");\n/* harmony import */ var _components_components_styles_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/components/styles.js */ \"./web/components/components/styles.js\");\n/* harmony import */ var _components_components_interactive_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/components/interactive.js */ \"./web/components/components/interactive.js\");\n/* harmony import */ var _models_user__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../models/user */ \"./web/models/user.js\");\n\n\n\n\n\n\n\n\nasync function characters() {\n  var user = _models_user__WEBPACK_IMPORTED_MODULE_7__.User.from_url();\n  await user.get_characters();\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(\"div\", {\n    style: {\n      display: 'grid',\n      gridTemplateColumns: 'repeat(3, 33%)'\n    }\n  }, user.characters.map(id => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(CharacterThumbnail, {\n    id: id\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(NewCharacter, {\n    user: user\n  }));\n}\nfunction CharacterThumbnail({\n  id\n}) {\n  const fetchCharacter = async id => await _models_character_character_js__WEBPACK_IMPORTED_MODULE_4__.Character.request(id);\n  const asyncHero = (0,react_async_hook__WEBPACK_IMPORTED_MODULE_3__.useAsync)(fetchCharacter, [id]);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_0__.LabeledItem, {\n    childStyles: (0,_components_components_styles_js__WEBPACK_IMPORTED_MODULE_5__.style)('thumbnail', {\n      display: 'flex'\n    }),\n    label: asyncHero.result ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(\"a\", {\n      href: asyncHero.result.routes.sheet\n    }, asyncHero.result.bio.name) : 'Loading...'\n  }, asyncHero.loading && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(\"div\", {\n    style: {\n      width: '80%',\n      height: '100px',\n      position: 'relative'\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(BarLoader, {\n    cssOverride: {\n      top: '50%'\n    },\n    color: _components_components_styles_js__WEBPACK_IMPORTED_MODULE_5__.styles.text\n  })), asyncHero.error && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(\"div\", null, \"Error: \", asyncHero.error.message), asyncHero.result && asyncHero.result.thumbnail());\n}\nfunction NewCharacter({\n  user\n}) {\n  function handleClick(e) {\n    user.create_character();\n  }\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(\"div\", {\n    style: {\n      margin: 5\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_components_components_interactive_js__WEBPACK_IMPORTED_MODULE_6__.Button, {\n    onClick: handleClick\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_components_components_images_js__WEBPACK_IMPORTED_MODULE_1__.Icon, {\n    name: \"plus\",\n    size: 100\n  })));\n}\n\n//# sourceURL=webpack://hubris-web/./web/pages/characters.js?");
 
 /***/ }),
 
@@ -2929,75 +2863,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/async module */
-/******/ 	(() => {
-/******/ 		var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
-/******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
-/******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
-/******/ 		var resolveQueue = (queue) => {
-/******/ 			if(queue && queue.d < 1) {
-/******/ 				queue.d = 1;
-/******/ 				queue.forEach((fn) => (fn.r--));
-/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
-/******/ 			}
-/******/ 		}
-/******/ 		var wrapDeps = (deps) => (deps.map((dep) => {
-/******/ 			if(dep !== null && typeof dep === "object") {
-/******/ 				if(dep[webpackQueues]) return dep;
-/******/ 				if(dep.then) {
-/******/ 					var queue = [];
-/******/ 					queue.d = 0;
-/******/ 					dep.then((r) => {
-/******/ 						obj[webpackExports] = r;
-/******/ 						resolveQueue(queue);
-/******/ 					}, (e) => {
-/******/ 						obj[webpackError] = e;
-/******/ 						resolveQueue(queue);
-/******/ 					});
-/******/ 					var obj = {};
-/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
-/******/ 					return obj;
-/******/ 				}
-/******/ 			}
-/******/ 			var ret = {};
-/******/ 			ret[webpackQueues] = x => {};
-/******/ 			ret[webpackExports] = dep;
-/******/ 			return ret;
-/******/ 		}));
-/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
-/******/ 			var queue;
-/******/ 			hasAwait && ((queue = []).d = -1);
-/******/ 			var depQueues = new Set();
-/******/ 			var exports = module.exports;
-/******/ 			var currentDeps;
-/******/ 			var outerResolve;
-/******/ 			var reject;
-/******/ 			var promise = new Promise((resolve, rej) => {
-/******/ 				reject = rej;
-/******/ 				outerResolve = resolve;
-/******/ 			});
-/******/ 			promise[webpackExports] = exports;
-/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
-/******/ 			module.exports = promise;
-/******/ 			body((deps) => {
-/******/ 				currentDeps = wrapDeps(deps);
-/******/ 				var fn;
-/******/ 				var getResult = () => (currentDeps.map((d) => {
-/******/ 					if(d[webpackError]) throw d[webpackError];
-/******/ 					return d[webpackExports];
-/******/ 				}))
-/******/ 				var promise = new Promise((resolve) => {
-/******/ 					fn = () => (resolve(getResult));
-/******/ 					fn.r = 0;
-/******/ 					var fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
-/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
-/******/ 				});
-/******/ 				return fn.r ? promise : getResult();
-/******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
-/******/ 			queue && queue.d < 0 && (queue.d = 0);
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules

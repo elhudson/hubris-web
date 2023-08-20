@@ -1,23 +1,11 @@
 import React from 'react'
-import { Ruleset } from '../models/ruleset.js'
-import { createRoot } from 'react-dom/client'
 import { Character, useCharacter, generatePatch } from '../models/character/character.js'
-
-import '/node_modules/react-grid-layout/css/styles.css'
-import '/node_modules/react-resizable/css/styles.css'
-import GridLayout from "react-grid-layout";
-
 import { Tabbed } from '../components/components/containers.js'
 
-import '/node_modules/react-grid-layout/css/styles.css'
-import '/node_modules/react-resizable/css/styles.css'
-
-await Ruleset.load()
-
-const root = createRoot(document.getElementById('page'))
-var char=await Character.load()
-
-root.render(<CharacterSheet ch={char} />)
+export default async function sheet() {
+    var char=await Character.load()
+    return(<CharacterSheet char={char}/>)
+}
 
 function CharacterSheet({ ch }) {
     const [char, dispatch]=useCharacter(ch)

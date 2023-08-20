@@ -1,1 +1,1 @@
-npx webpack --watch & flask --app HUBRIS run --debug && fg
+npm run dev & flask --app HUBRIS run --debug && fg

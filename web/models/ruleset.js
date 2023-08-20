@@ -1,7 +1,7 @@
 import Entry from '../elements/feature.js';
 import React from 'react';
 
-export class Ruleset extends Object {
+export default class Ruleset extends Object {
     constructor(data) {
         super(data);
         Object.assign(this, data)

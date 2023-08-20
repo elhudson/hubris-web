@@ -1,15 +1,13 @@
 import React from "react"
-import { createRoot } from "react-dom/client"
 import { Character, useCharacter, generatePatch } from "../models/character/character"  
-import { Ruleset } from "../models/ruleset"
 import { Tabbed } from "../components/components/containers"
 
-await Ruleset.load()
-var ch=await Character.load()
 
-const root = createRoot(document.getElementById('page'))
+export default async function levelup() {
+    var ch=await Character.load()
+    return(<LevelUp ch={ch}/>)
 
-root.render(<LevelUp ch={ch}/>)
+}
 
 function LevelUp({ch}) {
     const [char, dispatchChanges] = useCharacter(ch)

@@ -1920,17 +1920,6 @@ eval("/**\n * @license React\n * react-dom.development.js\n *\n * Copyright (c) 
 
 /***/ }),
 
-/***/ "./node_modules/react-dom/client.js":
-/*!******************************************!*\
-  !*** ./node_modules/react-dom/client.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-eval("\n\nvar m = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\nif (false) {} else {\n  var i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;\n  exports.createRoot = function (c, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.createRoot(c, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n  exports.hydrateRoot = function (c, h, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.hydrateRoot(c, h, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n}\n\n//# sourceURL=webpack://hubris-web/./node_modules/react-dom/client.js?");
-
-/***/ }),
-
 /***/ "./node_modules/react-dom/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/react-dom/index.js ***!
@@ -2448,25 +2437,14 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "./web/models/ruleset.js":
-/*!*******************************!*\
-  !*** ./web/models/ruleset.js ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   Rules: () => (/* binding */ Rules),\n/* harmony export */   Ruleset: () => (/* binding */ Ruleset)\n/* harmony export */ });\n/* harmony import */ var _elements_feature_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../elements/feature.js */ \"./web/elements/feature.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n\n\nclass Ruleset extends Object {\n  constructor(data) {\n    super(data);\n    Object.assign(this, data);\n    Object.keys(this).forEach(table => {\n      this[table] = new Rules(this[table]);\n    });\n    this.reference = {\n      has_ancestry: ['class_features', 'tag_features', 'effects', 'ranges', 'durations'],\n      metadata: ['ranges', 'durations'],\n      base_hit_die_cost: {\n        \"Wizard\": 3,\n        \"Elementalist\": 3,\n        \"Beguiler\": 3,\n        \"Rogue\": 2,\n        \"Priest\": 2,\n        \"Barbarian\": 1,\n        \"Knight\": 1,\n        \"Sharpshooter\": 1,\n        \"Fighter\": 1\n      },\n      hd: ['d2', 'd3', 'd4', 'd6', '2d4'],\n      alignments: {\n        lg: 'Lawful Good',\n        ng: 'Neutral Good',\n        cg: 'Chaotic Good',\n        ln: 'Lawful Neutral',\n        tn: 'True Neutral',\n        cn: 'Chaotic Neutral',\n        le: 'Lawful Evil',\n        ne: 'Neutral Evil',\n        ce: 'Chaotic Evil'\n      },\n      injuries: {\n        blinded: 'Blinded',\n        advAgainst: 'Advantage on attacks against you',\n        uninjured: 'No active injury'\n      },\n      skill_codes: ['str', 'dex', 'con', 'int', 'wis', 'cha'],\n      armors: ['Light', 'Medium', 'Heavy'],\n      point_costs: {\n        \"-2\": 0,\n        \"-1\": 1,\n        \"0\": 2,\n        \"1\": 3,\n        \"2\": 5,\n        \"3\": 8,\n        \"4\": 12\n      },\n      grouping: ['tags', 'xp', 'tree', 'power', 'range', 'duration', 'class_paths', 'weapon_proficiencies', 'armor_proficiencies', 'hit_die'],\n      bins: {\n        classes: ['weapon_proficiencies', 'armor_proficiencies', 'hit_die'],\n        backgrounds: ['skills', 'attributes'],\n        tag_features: ['tags', 'xp'],\n        class_features: ['class_paths', 'xp'],\n        effects: ['power', 'xp', 'tree', 'tags'],\n        ranges: ['power', 'xp', 'tree'],\n        durations: ['power', 'xp', 'tree']\n      }\n    };\n  }\n  condition(url, character) {\n    const conditions = {\n      class: character => {\n        return character.classes.base != null;\n      },\n      backgrounds: character => {\n        return character.backgrounds.primary != null && character.backgrounds.secondary != null;\n      },\n      stats: character => {\n        return character.stats.points == 0;\n      },\n      bio: character => {\n        return true;\n      }\n    };\n    return conditions[url](character);\n  }\n  static async load() {\n    var data = JSON.parse(localStorage.getItem('HUBRIS-ruleset'));\n    if (data == null || data == undefined) {\n      var request = await fetch('/rules');\n      data = await request.json();\n    }\n    var ruleset = new Ruleset(data);\n    window.ruleset = ruleset;\n    localStorage.setItem('HUBRIS-ruleset', JSON.stringify(ruleset));\n    return ruleset;\n  }\n}\nclass Rules {\n  constructor(data) {\n    this.table = Object.entries(data)[0][1].table;\n    Object.keys(data).forEach(key => {\n      this[key] = _elements_feature_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].parse(data[key]);\n    });\n  }\n  list() {\n    return Array.from(Object.values(this)).slice(1);\n  }\n  ids() {\n    return Array.from(Object.keys(this));\n  }\n}\n\n//# sourceURL=webpack://hubris-web/./web/models/ruleset.js?");
-
-/***/ }),
-
 /***/ "./web/pages/levelup.js":
 /*!******************************!*\
   !*** ./web/pages/levelup.js ***!
   \******************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ \"./node_modules/react-dom/client.js\");\n/* harmony import */ var _models_character_character__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/character/character */ \"./web/models/character/character.js\");\n/* harmony import */ var _models_ruleset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/ruleset */ \"./web/models/ruleset.js\");\n/* harmony import */ var _components_components_containers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/components/containers */ \"./web/components/components/containers.js\");\n\n\n\n\n\nawait _models_ruleset__WEBPACK_IMPORTED_MODULE_3__.Ruleset.load();\nvar ch = await _models_character_character__WEBPACK_IMPORTED_MODULE_2__.Character.load();\nconst root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(document.getElementById('page'));\nroot.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LevelUp, {\n  ch: ch\n}));\nfunction LevelUp({\n  ch\n}) {\n  const [char, dispatchChanges] = (0,_models_character_character__WEBPACK_IMPORTED_MODULE_2__.useCharacter)(ch);\n  const patch = (0,_models_character_character__WEBPACK_IMPORTED_MODULE_2__.generatePatch)(dispatchChanges);\n  var binner = patch('options', 'regroup');\n  var handler = patch('options', 'addDrop', true);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, char.controls(), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_4__.Tabbed, {\n    names: ['Features', 'Powers', 'Skills', 'Hit Dice']\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_4__.Tabbed, {\n    names: ['Class Features', 'Tag Features']\n  }, char.options.features.class_features.display({\n    binner: binner,\n    handler: handler\n  }), char.options.features.tag_features.display({\n    binner: binner,\n    handler: handler\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_4__.Tabbed, {\n    names: ['Effects', 'Ranges', 'Durations']\n  }, char.options.powers.effects.display({\n    binner: binner,\n    handler: handler\n  }), char.options.powers.metadata.ranges.display({\n    binner: binner,\n    handler: handler\n  }), char.options.powers.metadata.durations.display({\n    binner: binner,\n    handler: handler\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", null, char.skills.display({\n    handler: patch('skills', 'addDrop', true)\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", null, char.health.hd.displayOption({\n    update: [patch('health', 'increment', true), patch('health', 'decrement', true)]\n  }))));\n}\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } }, 1);\n\n//# sourceURL=webpack://hubris-web/./web/pages/levelup.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ levelup)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _models_character_character__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/character/character */ \"./web/models/character/character.js\");\n/* harmony import */ var _components_components_containers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/components/containers */ \"./web/components/components/containers.js\");\n\n\n\nasync function levelup() {\n  var ch = await _models_character_character__WEBPACK_IMPORTED_MODULE_1__.Character.load();\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LevelUp, {\n    ch: ch\n  });\n}\nfunction LevelUp({\n  ch\n}) {\n  const [char, dispatchChanges] = (0,_models_character_character__WEBPACK_IMPORTED_MODULE_1__.useCharacter)(ch);\n  const patch = (0,_models_character_character__WEBPACK_IMPORTED_MODULE_1__.generatePatch)(dispatchChanges);\n  var binner = patch('options', 'regroup');\n  var handler = patch('options', 'addDrop', true);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, char.controls(), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_2__.Tabbed, {\n    names: ['Features', 'Powers', 'Skills', 'Hit Dice']\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_2__.Tabbed, {\n    names: ['Class Features', 'Tag Features']\n  }, char.options.features.class_features.display({\n    binner: binner,\n    handler: handler\n  }), char.options.features.tag_features.display({\n    binner: binner,\n    handler: handler\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_components_containers__WEBPACK_IMPORTED_MODULE_2__.Tabbed, {\n    names: ['Effects', 'Ranges', 'Durations']\n  }, char.options.powers.effects.display({\n    binner: binner,\n    handler: handler\n  }), char.options.powers.metadata.ranges.display({\n    binner: binner,\n    handler: handler\n  }), char.options.powers.metadata.durations.display({\n    binner: binner,\n    handler: handler\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", null, char.skills.display({\n    handler: patch('skills', 'addDrop', true)\n  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", null, char.health.hd.displayOption({\n    update: [patch('health', 'increment', true), patch('health', 'decrement', true)]\n  }))));\n}\n\n//# sourceURL=webpack://hubris-web/./web/pages/levelup.js?");
 
 /***/ }),
 
@@ -2863,75 +2841,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/async module */
-/******/ 	(() => {
-/******/ 		var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
-/******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
-/******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
-/******/ 		var resolveQueue = (queue) => {
-/******/ 			if(queue && queue.d < 1) {
-/******/ 				queue.d = 1;
-/******/ 				queue.forEach((fn) => (fn.r--));
-/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
-/******/ 			}
-/******/ 		}
-/******/ 		var wrapDeps = (deps) => (deps.map((dep) => {
-/******/ 			if(dep !== null && typeof dep === "object") {
-/******/ 				if(dep[webpackQueues]) return dep;
-/******/ 				if(dep.then) {
-/******/ 					var queue = [];
-/******/ 					queue.d = 0;
-/******/ 					dep.then((r) => {
-/******/ 						obj[webpackExports] = r;
-/******/ 						resolveQueue(queue);
-/******/ 					}, (e) => {
-/******/ 						obj[webpackError] = e;
-/******/ 						resolveQueue(queue);
-/******/ 					});
-/******/ 					var obj = {};
-/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
-/******/ 					return obj;
-/******/ 				}
-/******/ 			}
-/******/ 			var ret = {};
-/******/ 			ret[webpackQueues] = x => {};
-/******/ 			ret[webpackExports] = dep;
-/******/ 			return ret;
-/******/ 		}));
-/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
-/******/ 			var queue;
-/******/ 			hasAwait && ((queue = []).d = -1);
-/******/ 			var depQueues = new Set();
-/******/ 			var exports = module.exports;
-/******/ 			var currentDeps;
-/******/ 			var outerResolve;
-/******/ 			var reject;
-/******/ 			var promise = new Promise((resolve, rej) => {
-/******/ 				reject = rej;
-/******/ 				outerResolve = resolve;
-/******/ 			});
-/******/ 			promise[webpackExports] = exports;
-/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
-/******/ 			module.exports = promise;
-/******/ 			body((deps) => {
-/******/ 				currentDeps = wrapDeps(deps);
-/******/ 				var fn;
-/******/ 				var getResult = () => (currentDeps.map((d) => {
-/******/ 					if(d[webpackError]) throw d[webpackError];
-/******/ 					return d[webpackExports];
-/******/ 				}))
-/******/ 				var promise = new Promise((resolve) => {
-/******/ 					fn = () => (resolve(getResult));
-/******/ 					fn.r = 0;
-/******/ 					var fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
-/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
-/******/ 				});
-/******/ 				return fn.r ? promise : getResult();
-/******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
-/******/ 			queue && queue.d < 0 && (queue.d = 0);
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules

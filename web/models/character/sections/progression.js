@@ -1,6 +1,6 @@
 import Info from "../section"
 import { immerable } from "immer"
-import {Region, Block, Row, LabeledItem} from '../../../components/components/containers'
+import {Item} from '../../../components/components/containers'
 import React from 'react'
 import {Radio} from '../../../components/components/interactive'
 import { Tracker, Bonus } from '../../../components/components/numbers'
@@ -49,8 +49,11 @@ export default class Progression extends Info {
 
 export function Tier({ tier, update = null }) {
     var d = [1, 2, 3, 4].map(item => new Object({ label: item, value: item, selected: true && (tier == item) }))
+    console.log(d)
     return (
-        <Radio label={'tier'} data={d} onChange={update} readonly={true} vertical={false} />
+        <Item label={'tier'}>
+            <Radio label={'tier'} data={d} onChange={update} readonly={true} vertical={false} />
+        </Item>
     )
 }
 function XP({ xp, tier, update }) {

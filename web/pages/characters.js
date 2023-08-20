@@ -1,71 +1,98 @@
-import { Ruleset } from '../models/ruleset'
-import { Item, LabeledItem } from '../components/components/containers'
 import { Icon } from '../components/components/images.js';
-import React, { useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client'
-import { Tier } from '../models/character/sections/progression.js';
+import React from 'react';
 import { useAsync } from 'react-async-hook';
 import { Character } from '../models/character/character.js';
-import {style, styles, reusable} from '../components/components/styles.js'
 import { Button } from '../components/components/interactive.js';
-import { Alignment } from '../models/character/sections/bio';
 import { User } from '../models/user';
+import { css } from '@emotion/css';
+import { useTheme } from '@emotion/react';
 
-window.ruleset = await Ruleset.load()
+export default async function chs() {
+    var user=User.from_url()
+    await user.get_characters()
+    return <Characters user={user} />
+}
 
-
-
-import { BarLoader } from 'react-spinners';
-var page = createRoot(document.getElementById('page'))
-var user=User.from_url()
-await user.get_characters()
-
-page.render(
-    <>
-    <h1>Characters</h1>
-    <div style={{display:'grid', gridTemplateColumns:'repeat(3, 33%)'}}>
-        {user.characters.map(id => <CharacterThumbnail id={id} />)}
-        <NewCharacter user={user}/>
-    </div>
-    </>
-)
-
+export function Characters({user}) {
+    const theme=useTheme();
+    return(
+        <div className={css`
+            max-width: 800px;
+            margin: auto;
+        `}>
+            <div className={css`
+                max-width: 100%;
+                border: ${theme.border};
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: ${theme.big}px;
+                text-align: center;
+                margin-bottom:5px;
+            `}>
+                My Characters
+            </div>
+            <div className={css`
+                max-width: 100%;
+                padding: 5px;
+                border: ${theme.border};
+                display: grid;
+                grid-template-columns: repeat(auto-fit, 200px);
+                grid-column-gap: 20px;
+            `}>
+                {user.characters.map(id => <CharacterThumbnail id={id} />)}
+                <NewCharacter user={user}/>
+            </div>
+        </div>
+        )}
 
 function CharacterThumbnail({ id }) {
     const fetchCharacter = async id => (await Character.request(id))
     const asyncHero = useAsync(fetchCharacter, [id])
     return (
-    <LabeledItem 
-    childStyles={style('thumbnail', {
-        display:'flex'
-    })}
-    label={
-    asyncHero.result ? 
-        <a href={asyncHero.result.routes.sheet}>{asyncHero.result.bio.name}</a> : 
-        'Loading...'}>
-            {asyncHero.loading && 
-                <div style={{
-                    width:'80%',
-                    height:'100px',
-                    position:'relative'
-                }}>
-                    <BarLoader cssOverride={{top:'50%'}} color={styles.text} />
-                </div>}
-            {asyncHero.error && <div>Error: {asyncHero.error.message}</div>}
+        <>
             {asyncHero.result && (asyncHero.result.thumbnail())}
-    </LabeledItem>
+        </>
     )
 }
 
 function NewCharacter({user}) {
+    const theme=useTheme()
     function handleClick(e) {
         user.create_character()
     }
     return (
-        <div style={{margin:5}}>
-        <Button onClick={handleClick}>
-            <Icon name='plus' size={100} />
-        </Button>
+        <div className={css`
+            border: ${theme.border};
+            padding:5px;
+            height: fit-content;
+            width: 100%;
+            > div {
+                margin-bottom:5px;
+            }
+        `}>
+            <div className={css`
+                border: ${theme.border};
+                width: 100%;
+                white-space: nowrap;
+                text-transform: uppercase;
+                text-align: center;
+                font-weight: bold;
+                a {
+                    color: ${theme.text};
+                }
+            `}>
+                <text>New Character</text>
+            </div>
+            <div className={css`
+                svg {
+                    height: 150px !important;
+                    width: 150px !important;
+                }
+            `}>
+                <Button onClick={handleClick}>
+                    <Icon name={'plus'} />
+                </Button>
+            </div>
         </div>
     )
 }

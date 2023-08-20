@@ -1,30 +1,22 @@
 import React from "react"
 import { ReactSVG } from "react-svg"
-import {styles, style } from './styles'
+import { useTheme } from "@emotion/react"
+import { css } from "@emotion/css"
 
-export function Icon({ name, size = styles['size-img'], sx=null }) {
+export function Icon({ name }) {
+    const theme=useTheme()
     var path = `/static/assets/icons/${name}.svg`
-    var styled = style('icon', {
-        height: size,
-        maxHeight: size,
-        padding:3,
-        margin:'auto',
-        ...sx,
-        '& div, & svg': {
-            height: 'inherit',
-            maxHeight: 'inherit',
-            width: 'inherit',
-            maxWidth: 'inherit'
-        },
-        '& svg': {
-            '& path, & line': {
-                fill: styles.text,
-                stroke: styles.text
-            }
-        }
-    })
     return (
-        <ReactSVG className={styled} src={path} />
-    )
-}
+        <ReactSVG className={css`
+            height:fit-content;
+            width: fit-content;
+            margin: auto;
+            svg {
+                path, line {
+                    fill: ${theme.text};
+                    stroke: ${theme.text};
+                }
+            }
+        `} src={path} />
+    )}
 
