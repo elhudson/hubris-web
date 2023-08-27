@@ -1,34 +1,23 @@
-import React, {useState} from 'react'
-import {style, styles, get_font, reusable} from './styles'
+import React, { useState } from 'react'
+import { style, styles, get_font, reusable } from './styles'
 import { Button } from './interactive'
 import { Icon } from './images'
 import { TabList, Tab, Tabs, TabPanel } from 'react-tabs'
 import { useTheme } from '@emotion/react'
 import { css } from '@emotion/css'
-export function OptionList({children}) {
-    var display=style('options', {
-        display:'list-item',
-        listStyleType: 'none',
-        border: styles.border,
-        padding:5,
-        margin: 5,
-        width:'auto'
-        
-    })
-    return(
-        <div className={display}>
+import Collapsible from 'react-collapsible'
+
+export function OptionList({ children }) {
+    return (
+        <div className={css`
+            padding-bottom:5px;
+        `}>
             {children}
         </div>
     )
 }
 
-export function Region({ params, children }) {
-    const display = style('thumb', {
-        gridArea: params,
-        '& > *': {
-            height: 'inherit',
-        }
-    })
+export function Region({ children }) {
     return (
         <div className={display}>
             {children}
@@ -37,182 +26,115 @@ export function Region({ params, children }) {
 }
 
 
-export function Snippet({snip, children}) {
-    const [open, setOpen]=useState(false)
+export function Snippet({ snip, sx = null, children }) {
+    const theme = useTheme()
+    const [open, setOpen] = useState(false)
     function togl() {
         setOpen(!open)
     }
-    const snippet=style('snippet', {
-        display:'flex',
-        justifyContent:'space-between',
-        width:'100%',
-        '& button': {
-            width: 30
-        },
-        '&[open] svg': {
-            transform:'rotate(90deg)'
-        }
-        
-    })
-    const content=style('content', {
-        zIndex:1,
-        backgroundColor:styles.background,
-        "& div": {
-            justifyContent:'unset',
-            whiteSpace:'unset',
-        },
-        '& > div': {
-            marginLeft:0
-        }
-    })
     return (
         <div>
-            <div className={snippet} open={open}>
+            <div open={open} className={css`
+                border:${theme.border};
+                margin:5px;
+                display:flex;
+                >text {
+                    text-transform:uppercase;
+                    width:100%;
+                    font-weight:bold;
+                    padding:5px;
+                    
+                }
+                input[type='text'] {
+                        width:100%;
+                        text-align:left !important;
+                    }
+                button {
+                    border:none;
+                    width:fit-content;
+                    
+                    svg {
+                        transform:scaleX(-1);
+                        ${open == true && (css`{
+                            transform:scale(-1, -1)
+                        }`)}
+                    }
+                }
+            `}>
                 {snip}
                 <Button onClick={togl}>
-                    <Icon name={'right-arrow'} size={20} />
+                    <Icon name={'manicule'} size={20} />
                 </Button>
             </div>
-            <div className={content} style={{display:(open ? 'block' : 'none')}}>
+            <div className={css`
+                ${sx}
+                border:${theme.border};
+                margin:5px;
+            `} style={{ display: (open ? 'block' : 'none') }}>
                 {children}
             </div>
         </div>
     )
 }
 
-export function Row({children}) {
-    const width=100/children.length
-    const display=style('row', {
-        display:'flex',
-        '& > div': {
-            width:width+'%'
-        }
-    })
+export function Row({ children }) {
+
     return (
-        <div className={display}>
+        <div >
             {children}
         </div>
     )
 }
 
-export function Page({children, title}) {
-    return(
-        <>
-        <h1>{title}</h1>
-        <div>{children}</div>
-        </>
-    )
-}
-
-export function Border({children}) {
-    const styled=style('bordered',{
-        border:styles.border,
-        margin:5
-    })
+export function Block({ header, children, layout = 'block' }) {
+    const theme = useTheme()
     return (
-        <div className={styled}>
-            {children}
-        </div>
-    )
-}
-
-export function Grid({children}) {
-    const display=style('grid', {
-        display:'grid',
-        gridTemplateColumns:'repeat(12, auto)',
-        gridTemplateRows: 'repeat(12, auto)'
-    })
-    return(
-        <div className={display}>
-            {children}
-        </div>
-    )
-}
-
-export function Flex({children}) {
-    const display=style('flex', {
-        display:'flex'
-    })
-    return(
-        <div className={display}>
-            {children}
-        </div>
-    )
-}
-
-export function Default({children}) {
-    return (
-        <>
-            {children}
-        </>
-    )
-}
-
-
-export function Block({ header, children, key, layout='block', className=null }) {
-    function getLayout(desc) {
-        const layouts={
-            'grid':Grid,
-            'flex': Flex,
-            'block': Default
-        }
-        return layouts[desc]
-    }
-    const display=style('block', {
-        border: styles.border,
-        margin: 5,
-        minHeight:'100%',
-        height:'fit-content',
-        overflow:'scroll'
-    })
-    const content = style('content', {
-        borderTop: styles.border,
-        padding: 5
-
-    })
-    var title=style('header', {
-        margin:5,
-        textTransform: 'uppercase'
-    })
-    var layout=getLayout(layout)
-    return (
-        <div key={key} className={display}>
-            <h1 className={title}>{header}</h1>
-            <div className={[content, className].join(" ")}>
+        <div className={css`
+            h2:empty {
+                display:none;
+            }
+        `}>
+            <h2 className={css`
+                border:${theme.border};
+                text-align:center;
+            `}>{header}</h2>
+            <div className={css`
+                ${theme.layouts[layout]}
+                border:${theme.border};
+                padding:5px;
+            `}>
                 {children}
             </div>
         </div>
     )
 }
 
-export function LabeledItem({ childStyles=null, className=null, label, children }) {
-    var box = style('box', {
-        border: styles.border,
-        margin: '5px',
-        position: 'relative',
-        width:'auto',
-        height:'auto'
-
-    })
-    var header = style('header', {
-        width: '100%',
-        textTransform: 'uppercase',
-        padding: '3px',
-        textAlign: 'center',
-        margin: 'unset',
-        borderBottom: styles.border,
-        boxSizing: 'border-box',
-        display: 'block'
-    })
-    var content=style('content', {
-        width:'auto',
-        position: 'relative'
-        
-    })
+export function LabeledItem({ label, children, sx = null }) {
+    const theme = useTheme()
     return (
-        <div className={[box, className].join(" ")}>
-            <label className={header}>{label}</label>
-            <div className={[content, childStyles].join(" ")}>
+        <div className={css`
+            border:${theme.border};
+            height:fit-content;
+            margin:5px;
+            ${sx}
+            input {
+            text-align:center;
+            vertical-align:bottom;
+            }
+        `}>
+            <label className={css`
+                ${theme.styles.label}
+                width: 100%;
+                border-bottom:${theme.border};
+                font-size: ${theme.small + 3}px;
+                text-align: center;
+            `}>{label}</label>
+            <div className={css`
+            >div {
+                border:none !important;
+                
+            }
+            `}>
                 {children}
             </div>
         </div>)
@@ -221,8 +143,12 @@ export function LabeledItem({ childStyles=null, className=null, label, children 
 
 
 export function Item({ label, children }) {
-    const theme=useTheme()
-    const labelBelow=css`
+    const theme = useTheme()
+    const labelBelow = css`
+        margin:5px;
+        button {
+            display: block;
+        }
         input[type='text'], text {
             ${theme.styles.text};
         }`
@@ -234,15 +160,42 @@ export function Item({ label, children }) {
     )
 }
 
-export function Tabbed({names, children}) {
-    return(
-        <Tabs>
-            <TabList className={style('tab-links', {...reusable.buttons})}>
-            {names.map(n=><Tab className={style('tabs', {...reusable.button})}>{n}</Tab>)}
+export function Tabbed({ names, menus=null, children }) {
+    const [selected, setSelected]=React.useState(0)
+    return (
+        <Tabs onSelect={(index)=>setSelected(index)} className={css`
+            display:flex;
+            .react-tabs__tab-list {
+                width:fit-content;
+                padding:0px;
+                list-style-type:none;
+                white-space:nowrap;
+                margin-left:0px;
+                margin-right:10px;
+                margin-top:0px;
+                >button {
+                    position:relative;
+                    float:right;
+                }
+                li[role='tab'] {
+                    height:unset;
+                    text-align:right;
+                    text-transform:uppercase;
+                    font-weight:bold;
+                    &[aria-selected=true] {
+                        text-decoration:underline;
+                        text-underline-offset:3px;
+                        font-style:italic;
+                    }
+                }
+            }
+        `}>
+            <TabList>
+                {names.map(n => <Tab>{n}</Tab>)}
+                {menus!=null && menus[selected]}
             </TabList>
-            {children.map(c=><TabPanel selectedClassName={style('content', {
-                border:styles.border
-            })}>{c}</TabPanel>)}
+            {children.map(c => <TabPanel>{c}</TabPanel>)}
         </Tabs>
     )
 }
+

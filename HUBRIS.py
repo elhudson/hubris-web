@@ -57,8 +57,13 @@ class Database:
     def get_character(self, id):
         files=self.get_all()
         me=[f for f in files if id in f][0]
+        usr_id=me.split('__')[1].split('.')[0]
+        print(usr_id)
         with open(f'{self.storage}/{me}') as loc:
-            return json.load(loc)
+            js=json.load(loc)
+            js['user']=usr_id
+            print(js)
+            return js
     def as_list(self, txt):
         fr=self.run_query(txt)
         return list(chain(*fr.values.tolist()))
@@ -94,14 +99,13 @@ def init_character():
     args=request.args
     user=args.get('user')
     char_id=str(uuid.uuid4())
-    data={'id':char_id}
+    data={'id':char_id, 'user':user, 'url':url_for('creation', character=char_id, stage='class')}
     app.database.save_character(data, user)
-    return redirect(url_for('creation', character=char_id, stage='class'))
-
+    return json.dumps(data)
 
 @app.route('/login',methods=['POST'])
 def login():        
-    data=json.loads(request.get_data())
+    data=request.get_json()
     username=data['username']
     password=data['password']
     q=app.database.run_query(f"SELECT * FROM users WHERE username='{username}'")
@@ -111,7 +115,8 @@ def login():
         return redirect(url_for('wizard',error='wrong-password'))
     else:
         user_id=app.database.as_item(f"SELECT id FROM users WHERE username='{username}'")
-        return redirect(url_for('my_characters', user=user_id))
+        r={'id':user_id, 'msg':f'Welcome, back, {username}!'}
+        return json.dumps(r)
 
 @app.route('/register',methods=['POST'])
 def register():

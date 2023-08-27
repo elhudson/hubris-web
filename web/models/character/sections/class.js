@@ -1,6 +1,6 @@
 import { immerable } from "immer"
 import Info from "../section"
-import Entry from "../../../elements/feature"
+import Entry from "../../../elements/entry"
 import { Arsenal, Armory } from "./combat"
 
 export default class Classes extends Info {
@@ -16,7 +16,7 @@ export default class Classes extends Info {
     }
     static parse(raw) {
         var self=super.parse(raw)
-        self.base=Entry.parse(raw.base)
+        self.base!=null && (self.base=Entry.parse(raw.base))
         return self
     }
     class_features() {

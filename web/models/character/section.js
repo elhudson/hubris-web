@@ -105,17 +105,20 @@ export class RadioArray {
             val.value!=value && (val.active==false)
         })
     }
-    Radio({aray, path, group, handler}) {
-        const forceRerender=useState(true)
-        var processed=aray.list().map(item=> 
-            new Object({
-                label:item.value,
-                value:item.value,
-                selected:item.active,
-                path:path
-            })) 
-        return (
-            <Radio label={group} data={processed} onClick={forceRerender} onChange={handler} />
-        )
+    display({path, group, handler, vert=true}) {
+        function RadioArray({aray, path, group, handler}) {
+            var processed=aray.list().map(item=> 
+                new Object({
+                    label:item.value,
+                    value:item.value,
+                    selected:item.active,
+                    path:path
+                })) 
+            return (
+                <Radio vertical={vert} label={group} data={processed} onChange={handler} />
+            )
+        }
+        return(<RadioArray path={path} group={group} handler={handler} aray={this}/>)
     }
+   
 }

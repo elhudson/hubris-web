@@ -1,175 +1,16 @@
 import React from "react"
-import { SmallMod, Metadata as Meta, CheckboxItem } from "../components/components/text"
-import { LabeledItem, Row } from "../components/components/containers"
-import {style, styles, reusable} from '../components/components/styles'
+import { Metadata as Meta, SmallMod } from "../components/components/text"
+import { LabeledItem } from "../components/components/containers"
 import { Popper } from "@mui/base"
 import { Box } from "@mui/material"
 import { Button, Buttons } from "../components/components/interactive"
 import _ from 'lodash'
-import { immerable } from 'immer';
+import { css } from "@emotion/css"
+import { useTheme } from "@emotion/react"
 
-export default class Entry {
-    [immerable]=true
-    constructor(data) {
-        try {
-            Object.assign(this, ruleset[data.table][data.id])
-        }
-        catch {ReferenceError} {
-            Object.assign(this, data)
-        }
-        this.path=this.table
-        this.descendable=false
-        this.bought=false
-        this.buyable=true
-    }
-    aux_paths() {
-        try {
-            this.requires.forEach((r)=> {
-                r.path=this.path
-            })
-            this.required_for.forEach((f)=> {
-                f.path=this.path
-            })
-        }
-        catch{{TypeError}}
-    }
-    qualifies(character) {
-        if (Object.hasOwn(this,'tier') && Number(this.tier.split('T')[1]) > character.progression.tier()) {
-            return false
-        }
-        if (this.buyable && this.xp>character.progression.xp.earned-character.progression.xp.spent) {
-            return false
-        }
-        else {
-            return true
-        }
-    }
-    addable(character) {
-        if (character.has(this)==false) {
-            if (this.qualifies(character)==true) {
-                if (character && this.affordable(character)==true) {
-                    return true
-                }
-            }
-        }
-        else {
-            return false
-        }
-    }
-    affordable(character) {
-        if (Object.hasOwn(this, 'xp') && character.xp_spent+this.xp>character.xp_earned) {
-            return false
-        }
-        else {
-            return true
-        }
-    }
-    removeable(character) {
-        var p=true
-        if (this.descendable==true) {
-            this.required_for.forEach((postreq)=> {
-                if (character.has(postreq)) {
-                    p=false
-                }
-            })
-        }
-        return p
-    }
-    static parse(data) {
-        const mappings={
-            effects:Effect,
-            ranges:Metadata,
-            durations:Metadata,
-            skills:Skill,
-            classes:Class,
-            backgrounds:Background,
-            tags:Tag,
-            class_features:ClassFeature,
-            tag_features:TagFeature
-        }
-        try {
-            if (Object.keys(mappings).includes(data.table)) {
-                return new mappings[data.table](data)
-            }
-            else {
-                return new Entry(data)
-            }
-        }
-        catch {TypeError} {
-            return data
-        }
-    }
-    clone() {
-        const clone = Entry.parse(this);
-        return clone
-    }
-    links(target) {
-        var links = new Array()
-        var ids = this[target].map(i => i.id)
-        ids.forEach((id) => {
-            links.push(Entry.parse(ruleset[target][id]))
-        })
-        return links
-    }
-    legal(char) {
-        if (this.qualifies(char) && char.has(this)) {
-            return true
-        }
-        else {
-            return false
-        }
-    }
-    requirements(character) {
-        var q=false
-        if (this.requires==undefined || this.requires==null || this.requires.length==0) {
-            q=true
-            return q
-        }
-        for (var r of this.requires) {
-            if (character.has(r)) {
-                q = true
-            }
-        }
-        return q
-    }
-    get(property) {
-        if (this[property]==null) {
-            return 'None'
-        }
-        if (property=="") { return "" }
-        if (Object.hasOwn(this[property], 'name')) {
-            return this[property].name
-        }
-        if (property=='tags') {
-            return this.tags.map(t=>t.name)
-        }
-        else {
-            return this[property]
-        }
-    }
-    children() {
-        if (Object.hasOwn(this,'required_for') && this.required_for.length>0) {
-            var ids=this.required_for.map(i=>i.id)
-            return ids.map(id=>ruleset[this.table][id])
-        }
-        else {
-            var all=ruleset[this.table].list().filter(r=>r.requires.flatMap(a=>a.id).includes(this.id))
-            return all
-        }
-    }
-    parents() {
-        var ids=this.requires.map(i=>i.id)
-        return ids.map(id=>ruleset[this.table][id])
-    }
-    displayFeature() {
-        return <Feature feature={this} />
-    }
-    displayOption({handler}) {
-        return <Feature feature={this} check={<Checkbox feature={this} handler={handler}/>}/>
-    }
-}
 
-function Feature({ feature, meta=null, check=null }) {
+export default function Feature({ feature, meta=null, check=null }) {
+    const theme=useTheme()
     if (feature.description==undefined && feature.feature!=undefined) {
         feature.description=feature.feature.split(':')[1]
         feature.name=feature.feature.split(':')[0]
@@ -180,221 +21,36 @@ function Feature({ feature, meta=null, check=null }) {
         {check}
         </>
     )
-    var disable=style('disable', {
-        opacity:0.5
-    })
     return (
-        <LabeledItem className={(feature.buyable==false && feature.bought==false) && (disable)} label={header}>
-            <div style={{display:'flex'}}>
-                <FeatureData feature={feature} />
-                    {meta!=null && (<ApplicableMeta meta={meta} feature={feature} />)}
-                </div>
+        <LabeledItem sx={css`
+            ${feature.buyable==false && (theme.styles.disabled)}
+            width:200px;
+            >div>div {
+                margin:5px;
+                border:${theme.border} !important;
+            }
+            
+        `}
+        label={header}>
+            <FeatureData feature={feature} />
             <Description de={feature.description} />
         </LabeledItem>
 
     )
 }
 
-function Checkbox({ feature, handler }) {
-    var display=style('checkbox', {
-        ...reusable.checkbox,
-        position:'absolute',
-        left:0
-    })
-    return (<input className={display} type='checkbox' cost={feature.xp} checked={feature.bought} disabled={!feature.buyable} table={feature.table} path={feature.path} onChange={handler} value={feature.id}></input>)
-}
-
-
-export class Metadata extends Entry {
-    [immerable]=true
-    constructor(data) {
-        super(data)
-        this.descendable=true  
-        this.path=`powers.metadata.${this.table}`
-        this.aux_paths()
-    }
-    qualifies(character) {
-        var q=false
-        if (super.qualifies(character) && this.requirements(character)) {
-            var trees=[...new Set(character.powers.effects.map(e=>[e.tree]))]
-            if (trees.includes(this.tree)) {
-                q=true
-            }
-        }
-        return q
-    }
-}
-
-export class Effect extends Entry {
-    constructor(data) {
-        super(data);
-        this.defaults=[Entry.parse(data.range), Entry.parse(data.duration)]
-        this.descendable=true
-        this.path='powers.effects'
-        this.aux_paths()
-    }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q=true
-            }
-        }
-        return q
-    }
-    quald_by(char) {
-        var char_tags=char.classes.base.links('tags')
-        var my_tags=this.links('tags')
-        var rez=char_tags.filter(f=>my_tags.map(i=>i.id).includes(f.id))
-        this.tags=rez
-    }
-    displayFeature({ranges, durations}) {
-        return(
-            <Feature feature={this} meta={{ranges:ranges, durations:durations}}/>
-        )
-    }
-}
-
-export class ClassFeature extends Entry {
-    constructor(data) {
-        super(data);
-        this.descendable=true
-        this.path='features.class_features'
-        this.aux_paths()
-    }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q=true
-            }
-        }
-        return q
-    }
-}
-
-export class TagFeature extends Entry {
-    constructor(data) {
-        super(data);
-        this.descendable=true
-        this.path='features.tag_features'
-        this.aux_paths()
-    }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q=true
-            }
-        }
-        return q
-    }
-}
-
-export class Skill extends Entry {
-    constructor(data) {
-        super(data);
-        this.xp=0;
-        if (Object.hasOwn(this, 'attributes')) {
-            this.code = this.attributes.name.toLowerCase().slice(0, 3)
-        }
-    }
-    cost(int, skills) {
-        var free=2+int
-        var known=_.countBy(skills, s=>s.proficient==true)
-        known=known.true==undefined ? 0 : known.true
-        var left=free-known
-        if (left<=0) {
-            this.xp=1+Math.abs(left)
-        }
-        return this.xp
-    }
-    select(int, skills, progression) {
-        var cost=this.cost(int.value, skills)
-        if (progression.xp.earned-progression.xp.spent>=cost) {
-            this.proficient=true
-            progression.xp.spent+=cost
-        }
-
-    }
-    deselect(int, skills, progression) {
-        var cost=this.cost(int.value, skills)*-1
-        this.proficient=false
-        progression.xp.spent+=cost
-    }
-    proficiency(character) {
-        const v = character.skills[character.skills.findIndex(c => c.id == this.id)]
-        if (v.proficient) {
-            this.bonus = character.progression.proficiency() + character.stats.scores[this.code]
-        }
-        else {
-            this.bonus = character.stats.scores[this.code]
-        }
-    }
-    display() {
-        function Skill({skill}) {
-            return(
-                <CheckboxItem item={{label:skill.name}} checked={skill.proficient}>
-                    <SmallMod value={skill.bonus}/>
-                </CheckboxItem>
-            )
-        }
-        return <Skill skill={this} />
-
-    }
-}
-
-export class Class extends Entry {
-    constructor(data) {
-        super(data)
-    }
-    qualifies(character) {
-        if (Object.hasOwn(character, 'classes')==false) {
-            return true
-        }
-        if (super.qualifies(character) && character.classes.base!=null) {
-            return false
-        }
-        else {
-            return true
-        }
-    }
-}
-
-export class Background extends Entry {
-    constructor(data) {
-        super(data)
-        this.description=data.feature
-    }
-    qualifies(character) {
-        return (character.backgrounds.primary==null || character.backgrounds.secondary==null)
-    }
-}
-
-export class Tag extends Entry {
-    constructor(data) {
-        super(data)
-    }
-}
-
-export function FeatureInfo({value=null, label, children}) {
-    const styled=style('info', {
-            fontWeight:'bold',
-            textTransform:'uppercase'
-        })
-    const childs=style('children', {
-        display:'flex',
-        flexWrap:'wrap'
-    })
-    return (
-        <>
-        <label className={styled}>{label}</label>
-        <div className={childs}>
-        {value}
-        {children}
-        </div>
-        </>
-    )
+export function Checkbox({ feature, handler }) {
+    const theme=useTheme()
+    return (<input 
+        className={theme.styles.checkbox}
+        type='checkbox' 
+        cost={feature.xp} 
+        checked={feature.bought} 
+        disabled={!feature.buyable} 
+        table={feature.table} 
+        path={feature.path} 
+        onChange={handler} 
+        value={feature.id} />)
 }
 
 export function FeatureMeta({feature, meta_list}) {
@@ -439,51 +95,58 @@ export function FeatureMeta({feature, meta_list}) {
 function Ticks({ ticks }) {
     ticks == null && (ticks = 0)
     return (
-        <FeatureInfo label={'ticks'} value={ticks} />
+        <FeatureProperty label={'ticks'}>
+            <SmallMod value={ticks}/>
+        </FeatureProperty>
     )
 }
 
 function Xp({ xp }) {
     return (
-        <FeatureInfo label={'xp'} value={xp}/>
+        <FeatureProperty label={'xp'}>
+            <SmallMod value={xp}/>
+        </FeatureProperty>
     )
 }
 
 function Power({ power }) {
     return (
-        <FeatureInfo label={'power'} value={power} />
+        <FeatureProperty label={'power'}>
+            <SmallMod value={power}/>
+        </FeatureProperty>
     )
 
 }
 
 function Tags({ tags }) {
     return (
-        <FeatureInfo label={'Tags'}>
-            {tags.length==undefined ?
-                <Meta text={tags.name}/> :
-                tags.map(t=><Meta text={t.name} />)
-            }
-        </FeatureInfo>
+        <FeatureProperty label={'Tags'}>
+            <div>
+                {tags.length==undefined ?
+                    <Meta text={tags.name}/> :
+                    tags.map(t=><Meta text={t.name} />)
+                }
+            </div>
+        </FeatureProperty>
     )
 }
 
 function Tree({ tree }) {
     return (
-        <FeatureInfo label={'tree'}>
+        <FeatureProperty label={'tree'}>
             <Meta text={tree}/>
-        </FeatureInfo>
+        </FeatureProperty>
     )
 }
 
 function Description({ de }) {
-    const styled=style('desc', {
-        fontDecoration:'italic',
-        border: styles.border,
-        margin: 5,
-        padding:5
-    })
+    const theme=useTheme()
     return (
-        <div className={styled}>
+        <div className={css`
+            font-size:${theme.small+2}px;
+            padding:3px;
+            overflow:scroll;
+        `}>
             {de}
         </div>
     )
@@ -491,81 +154,84 @@ function Description({ de }) {
 
 function Attribute({ attr }) {
     return (
-        <FeatureInfo label='attribute'>
+        <FeatureProperty label='attribute'>
             <Meta text={attr.name} />
-        </FeatureInfo>
+        </FeatureProperty>
     )
 }
 
 function HitDice({ hd }) {
     return (
-        <FeatureInfo label={'hit die'} value={hd} />
+        <FeatureProperty label={'hit die'}>
+            <Meta text={hd} />
+        </FeatureProperty>
     )
 }
 
 function WeaponProf({ wpn }) {
     return (
-        <FeatureInfo label={'weaponry'} value={wpn} />
+        <FeatureProperty label={'weaponry'}>
+            <Meta text={wpn} />
+        </FeatureProperty>
     )
 }
 
 function ArmorProf({ arm }) {
+    arm==null && (arm='None')
     return (
-        <FeatureInfo label={'armor'} value={arm} />)
+        <FeatureProperty label={'armor'}>
+            <Meta text={arm} />
+        </FeatureProperty>)
 }
 
 function Paths({ pths }) {
-    return (<FeatureInfo label={'Paths'}>
+    return (<FeatureProperty label={'Paths'}>
             {pths.length==undefined ?
                 <Meta text={pths.name}/> :
                 pths.map(t=><Meta text={t.name} />)
             }
-        </FeatureInfo>)
+        </FeatureProperty>)
 }
 
 function Skills({ skills }) {
-    return (<FeatureInfo label={'Skills'}>
+    return (
+    <FeatureProperty label={'Skills'}>
     {skills.length==undefined ?
         <Meta text={skills.name}/> :
         skills.map(t=><Meta text={t.name} />)
     }
-</FeatureInfo>)
+    </FeatureProperty>)
 }
 
-export function DataGrid({children}) {
-    const datagrid=style('feature-info', {
-        display:'grid',
-        border:styles.border,
-        borderBottom:'none',
-        margin:5,
-        width:'100%',
-        gridTemplateColumns:'12ch auto',
-        '& > div': {
-            borderLeft:styles.border,
-            borderBottom:styles.border,
-            '& input': {
-                borderBottom:'none',
-                textAlign:'left'
-            },
-            '& button': {
-                fontWeight:'unset',
-                fontSize:'unset',
-                fontFamily: 'unset',
-                textTransform:'unset',
-                cursor: 'pointer'
-            }
-        },
-        '& > label': {
-            borderBottom:styles.border
-        },
-        '& > *': {
-            paddingLeft:5
-        }
-    })
+function FeatureProperty({label, children}) {
+    const theme=useTheme()
     return(
-        <div className={datagrid}>
+       <>
+        <label className={css`
+            ${theme.styles.label}
+            border-right:${theme.border};
+            :not(label:last-of-type) {
+                border-bottom:${theme.border};
+            }
+            padding:0px 5px;
+            
+        `}>{label}</label>
+        <div className={css`
+            width:100%;
+            >div:only-child {
+                display:flex;
+                flex-wrap:wrap;
+            }
+            :not(div:last-child) {
+                border-bottom:${theme.border};
+            }
+            input {
+                border:none;
+            }
+        `}>
             {children}
         </div>
+       </>
     )
 }
 
@@ -586,21 +252,24 @@ function FeatureData({ feature }) {
         prop == 'attributes' && data.push(<Attribute attr={feature.attributes} />)
     })
     return(
-        <DataGrid>
+        <div className={css`
+            display:grid;
+            grid-template-columns: min-content auto;
+        `}>
             {data}
-        </DataGrid>
+        </div>
     )}
 
 
 function ApplicableMeta({meta, feature}) {
 return (
-    <DataGrid>
-        <FeatureInfo label={'Ranges'}>
+    <>
+        <FeatureProperty label={'Ranges'}>
             <FeatureMeta meta_list={meta.ranges.pool()} feature={feature}/>
-        </FeatureInfo>
-        <FeatureInfo label={'Durations'}>
+        </FeatureProperty>
+        <FeatureProperty label={'Durations'}>
             <FeatureMeta meta_list={meta.durations.pool()} feature={feature}/>
-        </FeatureInfo>
-    </DataGrid>
+        </FeatureProperty>
+    </>
 )
 }

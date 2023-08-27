@@ -1,10 +1,13 @@
 import Info from "../section"
 import { immerable } from "immer"
 import React from "react";
-import { style } from "../../../components/components/styles";
 import { Groups } from "../../../elements/sorts";
 import { Block, Tabbed } from "../../../components/components/containers";
 import _ from "lodash";
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
+
+
 export default class Features extends Info {
     [immerable]=true
     constructor() {
@@ -34,25 +37,19 @@ export default class Features extends Info {
         _.get(this, action.path).regroup(action.data.value)
     }
     display({patch}) {
-        function Features({features, binner}) {
-            const styled=style('features', {
-                maxHeight:260,
-                overflow:'scroll',
-                '& > div': {
-                    marginBottom:5
-                }
-            })
+        function Features({features, binner}) {   
+            const theme=useTheme()
+            var items=Object.keys(features)         
             return(
-                    <Block header={'Features'} className={styled}>
-                        <Tabbed names={['Class', 'Tag', 'Background']}>
-                            {features.class_features.display({asOption:false, binner:binner})}
-                            {features.tag_features.display({asOption:false, binner:binner})}
-                            {features.backgrounds.display({asOption:false, binner:binner})}
-                        </Tabbed>
+                    <Block header={'Features'}>
+                        {items.map(key=>
+                            <div>
+                                {features[key].display({asOption:false, binner:binner})}
+                            </div>
+                            )}
                     </Block>
             )
         }
         return(<Features features={this} binner={patch('features', 'regroup')}/>)
     }
 }
-

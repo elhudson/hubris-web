@@ -1,10 +1,10 @@
 import Info from "../section"
 import React from "react";
-import { Region, Row, Block, OptionList, Snippet } from "../../../components/components/containers";
+import { Region, Row, Block, OptionList, LabeledItem } from "../../../components/components/containers";
 import { style } from "../../../components/components/styles";
 import { Bonus, Counter, DC } from "../../../components/components/numbers";
 import { Groups } from "../../../elements/sorts";
-
+import { css } from "@emotion/css";
 export default class Powers extends Info {
     constructor() {
         var skeleton = {
@@ -32,18 +32,23 @@ export default class Powers extends Info {
     }
     display({ patch }) {
         function Powers({ powers, patch }) {
-            const disp=style('powers', {
-                maxHeight:260, 
-                overflow:'scroll'
-            })
             const handlers = [patch('powers', 'increment'), patch('powers', 'decrement')]
             return (
-                <Block header={'Powers'} className={disp}>
-                    <Row>
-                        <Bonus item={{ label: 'Power Mod', value: powers.mod }} />
-                        <DC item={{ label: 'Power DC', value: powers.dc() }} />
-                        <Counter update={handlers} item={{ label: 'Powers Used', value: powers.used, path: "used", readOnly: false }} />
-                    </Row>
+                <Block header={'Powers'}>
+                        <div className={css`
+                            display:flex;
+                            >div {
+                                width:100%;
+                            }
+                        `}>
+                            <LabeledItem label='Power Mod'>
+                                <Bonus item={{ label: 'Power Mod', value: powers.mod }} />
+                            </LabeledItem>
+                            <DC item={{ label: 'Power DC', value: powers.dc() }} />
+                            <LabeledItem label='Powers Used'>
+                                <Counter update={handlers} item={{ label: 'Powers Used', value: powers.used, path: "used", readOnly: false }} />
+                            </LabeledItem>
+                        </div>
                     <OptionList>
                         {powers.effects.map(f => f.displayFeature({ranges:powers.metadata.ranges, durations:powers.metadata.durations}))}
                     </OptionList>

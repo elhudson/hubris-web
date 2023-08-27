@@ -1,5 +1,4 @@
-import Entry from '../elements/feature.js';
-import React from 'react';
+import Entry from '../elements/entry.js';
 
 export default class Ruleset extends Object {
     constructor(data) {
@@ -67,6 +66,7 @@ export default class Ruleset extends Object {
             class:(character) => {return character.classes.base!=null},
             backgrounds:(character)=>{return character.backgrounds.primary!=null && character.backgrounds.secondary!=null},
             stats:(character)=>{return character.stats.points==0},
+            skills:(character)=>{return ((2+character.stats.scores.int.value)-character.skills.filter(f=>f.proficient==true).length)<1},
             bio:(character)=>{return true}
         }
         return conditions[url](character)
@@ -86,6 +86,7 @@ export default class Ruleset extends Object {
 
 export class Rules {
     constructor(data) {
+        data=Object.fromEntries(Object.entries(data).filter(f=>f[0]!='table'))
         this.table=Object.entries(data)[0][1].table
         Object.keys(data).forEach((key)=> {
             this[key]=Entry.parse(data[key])

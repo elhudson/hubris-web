@@ -18,13 +18,16 @@ import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
 import { Alignment } from './sections/bio';
 import { Tier } from './sections/progression';
-import { Item } from '../../components/components/containers';
 import { useTheme } from '@emotion/react';
 import { css } from '@emotion/css';
+import { Block, Item } from '../../components/components/containers';
+
+
 export class Character {
     [immerable] = true
-    constructor(id) {
+    constructor(id, user) {
         this.id = id
+        this.user = user
         this.classes = new Classes()
         this.backgrounds = new Backgrounds()
         this.bio = new Bio()
@@ -39,20 +42,22 @@ export class Character {
             sheet: '/sheet?' + new URLSearchParams({ character: this.id }),
             ref: '/character?' + new URLSearchParams({ character: this.id }),
             levelup: '/levelup?' + new URLSearchParams({ character: this.id }),
-            trash: '/delete?' + new URLSearchParams({ character: this.id })
+            trash: '/delete?' + new URLSearchParams({ character: this.id }),
+            characters: '/characters?' + new URLSearchParams({ user: this.user })
         }
     }
     clone() {
         return _.cloneDeep(this)
     }
     static async request(id) {
-        var request = await fetch('/character?' + new URLSearchParams({ character: id }))
+        var url='/character?'+ new URLSearchParams({ character: id })
+        var request=await fetch(url)
         var json = await request.json()
         var character = Character.parse(json)
-        sessionStorage.setItem('character', JSON.stringify(character))
         return character
     }
     static assemble() {
+        console.log(JSON.parse(sessionStorage.getItem('character')))
         return Character.parse(JSON.parse(sessionStorage.getItem('character')))
     }
     async delete() {
@@ -61,7 +66,7 @@ export class Character {
         alert(resp.msg)
     }
     static parse(data) {
-        var ch = new Character(data.id)
+        var ch = new Character(data.id, data.user)
         ch.classes = Classes.parse(data.classes)
         ch.backgrounds = Backgrounds.parse(data.backgrounds)
         ch.stats = Stats.parse(data.stats)
@@ -97,11 +102,9 @@ export class Character {
             })
         })
     }
-    static async load(id = null) {
-        id == null && (id = new URLSearchParams(window.location.href.split('?')[1]).get('character'))
-        if (Object.hasOwn(sessionStorage, 'character')) {
+    static async load(id) {
+        if (Object.hasOwn(sessionStorage, 'character') && JSON.parse(sessionStorage.getItem('character')).id==id) {
             var v = Character.assemble()
-            v.id = id
             return v
         }
         else {
@@ -113,7 +116,6 @@ export class Character {
         sessionStorage.setItem('character', JSON.stringify(this))
     }
     async write() {
-        console.log(this.routes.ref)
         var req = {
             method: 'POST',
             body: JSON.stringify(this),
@@ -141,9 +143,10 @@ export class Character {
             features: {
                 class_features: this.classes.base == null ? new Groups([]) : new Groups(this.classes.class_features()),
                 tag_features: this.classes.base == null ? new Groups([]) : new Groups(this.classes.tag_features())
+
             },
             powers: {
-                effects: this.classes.base == null ? new Groups([]) : new Groups([this.classes.effects()]),
+                effects: this.classes.base == null ? new Groups([]) : new Groups(this.classes.effects()),
                 metadata: {
                     ranges: new Groups(ruleset.ranges.list()),
                     durations: new Groups(ruleset.durations.list())
@@ -152,42 +155,55 @@ export class Character {
         }
         return options
     }
-    controls() {
-        function CharacterControls({ ch }) {
-            const handleSave = async () => {
-                sessionStorage.setItem('character', JSON.stringify(ch))
-                var resp = await ch.write()
+    controls(action) {
+        const controls = {
+            save: async () => {
+                sessionStorage.setItem('character', JSON.stringify(this))
+                var resp = await this.write()
                 alert(resp.msg)
+            },
+            levelup: () => {
+                window.location.assign(this.routes.levelup)
+            },
+            sheet: () => {
+                window.location.assign(this.routes.sheet)
+            },
+            delete: async () => {
+                await this.delete()
+                window.location.assign(this.routes.characters)
+            },
+            characters: () => {
+                window.location.assign(this.routes.characters)
             }
-            const handleLevelup = () => {
-                window.location.assign(ch.routes.levelup)
-            }
-            const handleSheet = () => {
-                window.location.assign(ch.routes.sheet)
-            }
-            const handleTrash = async () => {
-                await ch.delete()
-            }
+        }
+
+        return controls[action]
+    }
+    header({ patch = null }) {
+        function Sheet({ ch, patch = null }) {
+            var update = patch('bio', 'update')
             return (
-                <Buttons>
-                    <Button onClick={handleSave}>
-                        <Icon name={'save'} /></Button>
-                    <Button onClick={handleLevelup}>
-                        <Icon name={'levelup'} />
-                    </Button>
-                    <Button onClick={handleSheet}>
-                        <Icon name={'character-sheet'} /></Button>
-                    <Button onClick={handleTrash}>
-                        <Icon name={'trash'} />
-                    </Button>
-                </Buttons>
+                <Block header={'Bio'}>
+                    <Item label={'name'}>
+                        <text>
+                            {ch.name}
+                        </text>
+                    </Item>
+                    <Item label={'class'}>
+                        <text>{ch.classes.base.name}</text>
+                    </Item>
+                    <Item label={'backgrounds'} >
+                        <text>{ch.backgrounds.primary.name + ' & ' + ch.backgrounds.secondary.name}</text>
+                    </Item>
+                    <Alignment update={update} selected={ch.bio.alignment} />
+                </Block>
             )
         }
-        return <CharacterControls ch={this} />
+        return (<Sheet ch={this} patch={patch} />)
     }
     thumbnail() {
         function Thumbnail({ ch }) {
-            const theme=useTheme()
+            const theme = useTheme()
             return (
                 <div className={css`
                     border: ${theme.border};
@@ -201,7 +217,6 @@ export class Character {
                     <div className={css`
                         border: ${theme.border};
                         width: 100%;
-                        white-space: nowrap;
                         text-transform: uppercase;
                         text-align: center;
                         font-weight: bold;
@@ -222,23 +237,25 @@ export class Character {
                     `}>
                         <Icon name={`classes__${ch.classes.base.name.toLowerCase()}`} />
                     </div>
-                    {ch.controls()}
+                    <div>
+                        <Buttons>
+                            <Button onClick={ch.controls('levelup')}>Level Up</Button>
+                            <Button onClick={ch.controls('delete')}>Delete</Button>
+                            <Button onClick={ch.controls('sheet')}>Sheet</Button>
+                        </Buttons>
+                    </div>
                     <div className={css`
                         border: ${theme.border};
                         padding: 5px;
                     `}>
-                        <div>
-                            <Item label={'Class'}>
-                                <text>{ch.classes.base.name}</text>
-                            </Item>
-                        </div>
-                        <div>
-                            <Item label={'Backgrounds'}>
-                                <text>
-                                    {ch.backgrounds.primary.name} & {ch.backgrounds.secondary.name}
-                                </text>
-                            </Item>
-                        </div>
+                        <Item label={'Class'}>
+                            <text>{ch.classes.base.name}</text>
+                        </Item>
+                        <Item label={'Backgrounds'}>
+                            <text>
+                                {ch.backgrounds.primary.name} & {ch.backgrounds.secondary.name}
+                            </text>
+                        </Item>
                         <Alignment selected={ch.bio.alignment} />
                         <Tier tier={ch.progression.tier()} />
                     </div>

@@ -1,5 +1,5 @@
 import Info from "../section";
-import Entry from "../../../elements/feature";
+import Entry from "../../../elements/entry";
 
 export default class Backgrounds extends Info {
     constructor() {
@@ -12,8 +12,8 @@ export default class Backgrounds extends Info {
     static parse(json) {
         var self=super.parse(json)
         try {
-        self.primary=Entry.parse(self.primary)
-        self.secondary=Entry.parse(self.secondary)}
+            self.primary=Entry.parse(self.primary)
+            self.secondary=Entry.parse(self.secondary)}
         catch {{Error}}
         return self
     }
@@ -23,16 +23,13 @@ export default class Backgrounds extends Info {
     add(background, character) {
         var available=_.find(Object.keys(this), f=>this[f]==null)
         this[available]=background
-        if (this.primary!=null & this.secondary!=null) {
-            character.stats.boosts(this)
-            character.skills.auto(this)
-        }
+        background.adjust_stats(character, 'add')
+        background.adjust_skills(character, 'add')
     }
-    remove(background) {
+    remove(background, character) {
         var occupied=_.find(Object.keys(this), f=>this[f].id==background.id)
         this[occupied]=null
-    }
-    display() {
-        return this.displayFeature()
+        background.adjust_stats(character, 'remove')
+        background.adjust_skills(character, 'remove')
     }
 }

@@ -7,12 +7,18 @@
     "Class Features",
     "Tag Features"
    ],
+   "MANY_TO_MANY":[
+      ["Classes", "Skills"],
+      ["Classes", "Tags"],
+      ["Effects", "Tags"]
+   ],
    "NO_PREREQS":[
     "Backgrounds",
     "Attributes",
     "Skills",
     "Classes",
-    "Tags"
+    "Tags",
+    "Class Paths"
    ],
    "NOTION_DB":"0e2c8717f10341a2a2d30f48eb2c6677",
    "NOTION_TOKEN":"secret_oPnTR8UwwPWeDeJReXH7rZwRb2ILunhXd35AQOn2xmY",

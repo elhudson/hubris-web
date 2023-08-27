@@ -1,10 +1,13 @@
 import { immerable, current} from "immer";
 import _ from "lodash";
 import React from "react";
-import {style, styles} from '../../../components/components/styles'
+import {style} from '../../../components/components/styles'
 
 import { CheckboxItem } from "../../../components/components/text";
 import { LabeledItem } from "../../../components/components/containers";
+import { DC } from "../../../components/components/numbers";
+
+
 export default class Skills extends Array {
     [immerable]=true
     constructor() {
@@ -32,17 +35,17 @@ export default class Skills extends Array {
         return self
     }
     bonuses(scores, pb) {
-        console.log(scores, pb)
         this.forEach((skill)=> scores.skill_bonus(skill, pb))
     }
-    auto(backgrounds) {
-        backgrounds.primary.skills.length>0 && (_.find(this, i=>i.id==backgrounds.primary.skills[0].id).proficient=true)
-        backgrounds.secondary.skills.length>0 && (_.find(this, i=>i.id==backgrounds.secondary.skills[0].id).proficient=true)
+    get(id) {
+        return _.find(this, i=>i.id==id)
     }
     addDrop(action) {
-        var target=_.find(this, i=>i.id==action.data.value)
-        action.data.checked ? target.select(action.context.stats.scores.int, action.context.skills, action.context.progression) 
-        : target.deselect(action.context.stats.scores.int, action.context.skills, action.context.progression)
+        var target=this.get(action.data.value)
+        var int=action.context.stats.scores.int.value
+        action.data.checked ? 
+            target.select(action.context.skills, action.context.progression, int) 
+            : target.deselect(action.context.skills, action.context.progression, int)
     }
     by_attribute() {
         let v={}
@@ -52,23 +55,21 @@ export default class Skills extends Array {
         })
         return v
     }
-    display({handler}) {
-        function Skills({skills, handler}) {
-            const display=style('skills', {
-                display:'grid',
-                gridTemplateColumns:'repeat(3, auto)'
-            })
+    display({handler=null, free, inCreation=false}) {
+        function Skills({skills, free, handler, inCreation}) {
             var groups=skills.by_attribute()
             return (
-            <div className={display}>
+            <div>
+                {inCreation && <DC item={{value:free, label:'Remaining'}} />}
                 {Object.keys(groups).map(group=> 
-                <LabeledItem label={group}>
-                    {groups[group].map(g=>
-                        <CheckboxItem hideValue={true} checked={g.proficient} item={{label:g.name, value:g.id}} handler={handler}/>
-                    )}
-                </LabeledItem>)}                
+                <div>
+                    <h4>{group}</h4>
+                    <div>
+                        {groups[group].map(g=>g.display({handler:handler}))}
+                    </div>
+                </div>)}                
             </div>)
         }
-        return(<Skills skills={this} handler={handler}/>)
+        return(<Skills skills={this} free={free} handler={handler} inCreation={inCreation}/>)
     }
 }
