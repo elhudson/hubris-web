@@ -58,11 +58,9 @@ class Database:
         files=self.get_all()
         me=[f for f in files if id in f][0]
         usr_id=me.split('__')[1].split('.')[0]
-        print(usr_id)
         with open(f'{self.storage}/{me}') as loc:
             js=json.load(loc)
             js['user']=usr_id
-            print(js)
             return js
     def as_list(self, txt):
         fr=self.run_query(txt)
@@ -81,7 +79,6 @@ class Database:
     def as_item(self, txt):
         fr=self.run_query(txt)
         attr=txt.split('SELECT ')[1].split(' ')[0]
-        print(attr)
         return fr[attr][0]
 
 app = Flask(__name__)
