@@ -328,15 +328,13 @@ export class Background extends Entry {
         character.stats[func](this)
     }
     get_feature() {
-        const parsed={
-            name: this.feature.split(':')[0],
-            description: this.feature.split(':')[1]
-        }
-        const blank={
+        const insert=this.feature==null ? {
             name:"",
             description:""
+        } : {
+            name: this.feature.split(':')[0],
+            description: this.feature.split(':').slice(1).join(':')
         } 
-        const insert=this.feature==null ? blank:parsed
         return ({
             ticks: this.ticks,
             ...insert
