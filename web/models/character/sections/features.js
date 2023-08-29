@@ -13,16 +13,15 @@ export default class Features extends Info {
     constructor() {
         var skeleton={
             class_features:new Groups([]),
-            tag_features:new Groups([]),
-            backgrounds:new Groups([])
+            tag_features:new Groups([])
         }
         super(skeleton)
     }
-    static parse(raw, backgrounds) {
+    static parse(raw) {
         var self=super.parse(raw)
         self.class_features=Groups.parse(self.class_features)
         self.tag_features=Groups.parse(self.tag_features)
-        self.backgrounds=new Groups([backgrounds.primary, backgrounds.secondary])
+        delete self.backgrounds
         return self
     }
     add(feature) {
@@ -36,20 +35,21 @@ export default class Features extends Info {
         action.path.includes('.') && (action.path=action.path.split(".").slice(1).join('.'))
         _.get(this, action.path).regroup(action.data.value)
     }
-    display({patch}) {
-        function Features({features, binner}) {   
-            const theme=useTheme()
-            var items=Object.keys(features)         
+    display(backgrounds) {
+        function Features({features}) {   
+            var items=Object.keys(features)
             return(
                     <Block header={'Features'}>
                         {items.map(key=>
                             <div>
-                                {features[key].display({asOption:false, binner:binner})}
+                                {features[key].display({asOption:false})}
                             </div>
                             )}
+                        {backgrounds.primary.displayFeature()}
+                        {backgrounds.secondary.displayFeature()}
                     </Block>
             )
         }
-        return(<Features features={this} binner={patch('features', 'regroup')}/>)
+        return(<Features features={this}/>)
     }
 }

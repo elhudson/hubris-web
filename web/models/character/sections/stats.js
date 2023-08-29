@@ -159,7 +159,6 @@ class AbilityScore {
         }
     }
     increment(points) {
-        console.log(this.cost())
         if (this.value < this.max) {
             var net_cost = Math.abs(this.cost() - this.cost(this.value + 1))
             if (this.affordable(points, net_cost)) {
@@ -188,7 +187,7 @@ class AbilityScore {
         }
         return false
     }
-    display() {
+    display(handler) {
         function Stat({ label, value, handler }) {
             return (
                 <LabeledItem label={label}>

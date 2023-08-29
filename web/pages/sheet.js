@@ -16,13 +16,13 @@ export default function CharacterSheet({ ch }) {
             padding:5px;
         `}>
             <CharControls char={char} />
-            {char.header({patch:patch})}
-            {char.progression.display({patch:patch})}
-            {char.stats.display({skills:char.skills})}
-            {char.health.display({patch:patch})}
-            {char.combat.display({patch:patch})}
-            {char.features.display({patch:patch})}
-            {char.powers.display({patch:patch})}
+                {char.header({patch:patch})}
+                {char.progression.display({patch:patch})}
+                {char.stats.display({skills:char.skills})}
+                {char.health.display({patch:patch})}
+                {char.combat.display({patch:patch})}
+                {char.features.display(char.backgrounds)}
+                {char.powers.display({patch:patch})}
         </div>
     )}
 

@@ -26,7 +26,7 @@ export default class Skills extends Array {
         }
         else {
             for (var i=0;i<skills.length;i++) {
-                if (skills[i].proficient) {
+                if (skills[i].proficient==true) {
                     self[i].proficient=true
                 }
             }
@@ -39,6 +39,9 @@ export default class Skills extends Array {
     }
     get(id) {
         return _.find(this, i=>i.id==id)
+    }
+    get_known() {
+        return _.countBy(this,f=>f.proficient==true).true
     }
     addDrop(action) {
         var target=this.get(action.data.value)
@@ -58,6 +61,7 @@ export default class Skills extends Array {
     display({handler=null, free, inCreation=false}) {
         function Skills({skills, free, handler, inCreation}) {
             var groups=skills.by_attribute()
+            var leeway=(free>0)
             return (
             <div>
                 {inCreation && <DC item={{value:free, label:'Remaining'}} />}
@@ -65,11 +69,12 @@ export default class Skills extends Array {
                 <div>
                     <h4>{group}</h4>
                     <div>
-                        {groups[group].map(g=>g.display({handler:handler}))}
+                        {groups[group].map(g=>g.display({handler:handler, disabled:leeway}))}
                     </div>
                 </div>)}                
             </div>)
         }
-        return(<Skills skills={this} free={free} handler={handler} inCreation={inCreation}/>)
+        var remain=free-this.get_known()
+        return(<Skills skills={this} free={remain} handler={handler} inCreation={inCreation}/>)
     }
 }

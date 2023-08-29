@@ -48,13 +48,18 @@ export class User {
         return Object.keys(sessionStorage).includes('user')
     }
     async login() {
-        var data = await fetch('/login', {
+        var request = await fetch('/login', {
             method: 'POST',
             body: JSON.stringify(this),
             headers: { 'Content-Type': 'application/json' }
-        }).then((response) => response.json())
-
-        return data
+        })
+        if (new Uri(request.url).hasQueryParam('error')) {
+            window.location.assign(request.url)
+        }
+        else {
+            var data=await request.json()
+            return data
+        }
     }
     logout() {
         sessionStorage.clear()
@@ -68,8 +73,9 @@ export class User {
         var request = await fetch('/register', {
             method: 'POST',
             body: data
-        }).then((request) => request.json())
+        })
         sessionStorage.setItem('user', JSON.stringify(this))
+        window.location.assign(request.url)
     }
     async get_characters() {
         var characters = await fetch('/user?' + new URLSearchParams({ user: this.id }))

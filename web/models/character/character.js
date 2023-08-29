@@ -57,7 +57,6 @@ export class Character {
         return character
     }
     static assemble() {
-        console.log(JSON.parse(sessionStorage.getItem('character')))
         return Character.parse(JSON.parse(sessionStorage.getItem('character')))
     }
     async delete() {
@@ -70,7 +69,7 @@ export class Character {
         ch.classes = Classes.parse(data.classes)
         ch.backgrounds = Backgrounds.parse(data.backgrounds)
         ch.stats = Stats.parse(data.stats)
-        ch.features = Features.parse(data.features, ch.backgrounds)
+        ch.features = Features.parse(data.features)
         ch.progression = Progression.parse(data.progression)
         ch.powers = Powers.parse(data.powers, {
             scores: ch.stats.scores,

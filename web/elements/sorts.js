@@ -21,7 +21,7 @@ export class Choices {
         _.get(this, action.path).regroup(action.data.getAttribute('value'))
     }
     filter(action) {
-        _.get(this, action.path).filterBy({[action.data.getAttribute('name')]: action.data.getAttribute('value')})
+        _.get(this, action.path).filterBy({ [action.data.getAttribute('name')]: action.data.getAttribute('value') })
     }
     sort(action) {
         _.get(this, action.path).sort(action.data.getAttribute('value'))
@@ -45,7 +45,6 @@ export class Choices {
     addDrop(action, ch, free = false) {
         var feature = ruleset[action.table][action.data.value].clone()
         free && (feature.xp = 0)
-        console.log(feature.removeable(ch))
         if ((action.data.checked == true && feature.qualifies(ch)) || (action.data.checked == false && feature.removeable(ch))) {
             var tree = _.get(this, action.path)
             var func = action.data.checked ? 'add' : 'remove'
@@ -59,9 +58,6 @@ export class Choices {
                     if (item.removeable(ch) == false || item.xp == 0) {
                         item.buyable = false
                     }
-                }
-                else {
-                    item.buyable = false
                 }
             })
         }
@@ -102,10 +98,12 @@ export class Options extends Choices {
         this.features = Choices.from(buyable.features)
         this.powers = Choices.from(buyable.powers)
         this.powers.metadata = Choices.from(buyable.powers.metadata)
-        this.classes = new Groups(ruleset.classes.list(), [character.classes.base])
+        this.classes = new Groups(ruleset.classes.list())
         this.backgrounds = new Groups(ruleset.backgrounds.list())
     }
-    
+    empty(path) {
+        return _.get(this,path).empty()
+    }
 }
 
 
@@ -114,15 +112,15 @@ export class Groups {
     [immerable] = true
     constructor(aray, possessions = null) {
         this.by = ''
-        this.filtered={'':''}
-        this.sorted=''
+        this.filtered = { '': '' }
+        this.sorted = ''
         this.content = { [this.by]: new Bin(aray) }
-        aray.length>0 && (this.apply_filters())
+        aray.length > 0 && (this.apply_filters())
         possessions != null && (this.owned(possessions))
-        
+
     }
     apply_filters() {
-        var tabl=this.content[this.by][0].table
+        var tabl = this.content[this.by][0].table
         this.regroup(fs[tabl].group)
         this.sort(fs[tabl].sort)
         this.filterBy(fs[tabl].filter)
@@ -143,7 +141,7 @@ export class Groups {
     }
     static parse(data) {
         var by = data.by
-        by=='None' && (by='')
+        by == 'None' && (by = '')
         var items = Object.values(data.content).flat(2)
         if (items.length > 0) {
             for (var i = 0; i < items.length; i++) {
@@ -172,13 +170,13 @@ export class Groups {
         }
     }
     filterBy(obj) {
-        if (Object.keys(obj).length>0) {
-            var attr=Object.entries(obj)[0][0]
-            var value=Object.entries(obj)[0][1]
-            this.forEach((item)=> {
-                item.visible=(item.get(attr)==value)
+        if (Object.keys(obj).length > 0) {
+            var attr = Object.entries(obj)[0][0]
+            var value = Object.entries(obj)[0][1]
+            this.forEach((item) => {
+                item.visible = (item.get(attr) == value)
             })
-            this.filtered={[attr]:value}
+            this.filtered = { [attr]: value }
         }
     }
     remove(feature, character) {
@@ -188,11 +186,11 @@ export class Groups {
         }
     }
     get_location(feature) {
-        var location=feature.get(this.by)
+        var location = feature.get(this.by)
         return location
     }
     get(feature) {
-        return _.find(this.content[this.get_location(feature)], f=>f.id==feature.id)
+        return _.find(this.content[this.get_location(feature)], f => f.id == feature.id)
     }
     pool() {
         var pool = []
@@ -210,8 +208,8 @@ export class Groups {
         }
     }
     sort(by) {
-        Object.keys(this.content).forEach((key)=> {
-            this.content[key]=new Bin(_.sortBy(this.content[key], item=>item.get(by)))
+        Object.keys(this.content).forEach((key) => {
+            this.content[key] = new Bin(_.sortBy(this.content[key], item => item.get(by)))
         })
     }
     regroup(prop) {
@@ -241,6 +239,9 @@ export class Groups {
             this.content = groups
         }
     }
+    empty() {
+        return this.pool().length>0
+    }
     get_options() {
         var pool = this.pool()
         if (pool.length > 0) {
@@ -252,28 +253,29 @@ export class Groups {
     }
     displayMenu({ binner, filterer, sorter }) {
         const options = this.get_options()
+        if (options!=undefined) {
         return (<BinControls fxs={{
-                binner:binner,
-                filterer:filterer,
-                sorter:sorter
-        }} filterValue={this.filtered} loc={options.table} path={options.path} possible={options.options} />)
+            binner: binner,
+            filterer: filterer,
+            sorter: sorter
+        }} filterValue={this.filtered} loc={options.table} path={options.path} possible={options.options} />) }
+        else {
+            return null
+        }
     }
     display({ handler = null, asOption = true }) {
         function Bins({ bins, handler }) {
-            var opts = Object.keys(bins.content)
             return (
                 <div>
                     {Object.keys(bins.content).map(by => bins.content[by].display({ label: by, handler: handler, asOption: asOption }))}
                 </div>)
         }
-        return <>
-            <Bins bins={this} handler={handler} />
-        </>
+        return <Bins bins={this} handler={handler} />      
     }
 }
 
 function BinControls({ fxs, filterValue, loc, path, possible }) {
-    const theme=useTheme()
+    const theme = useTheme()
     return (
         <Menu icon={<Icon name='group' sx={css`
             svg {
@@ -292,11 +294,11 @@ function BinControls({ fxs, filterValue, loc, path, possible }) {
                 }
             `}>
                 <Item label='Tier'>
-                    {[1, 2, 3, 4].map(t=><input type='radio' onChange={fxs.filterer} table={loc} path={path} name='tier' checked={`T${t}`==filterValue.tier} value={`T${t}`} />)}            
+                    {[1, 2, 3, 4].map(t => <input type='radio' onChange={fxs.filterer} table={loc} path={path} name='tier' checked={`T${t}` == filterValue.tier} value={`T${t}`} />)}
                 </Item>
             </LabeledItem>
             <LabeledItem label='Sort By'>
-                <MenuItem onClick={fxs.sorter} slotProps={{root: {table:loc, path:path, value:'xp'} }}>XP</MenuItem>
+                <MenuItem onClick={fxs.sorter} slotProps={{ root: { table: loc, path: path, value: 'xp' } }}>XP</MenuItem>
             </LabeledItem>
         </Menu>
     )
@@ -315,7 +317,7 @@ export class Bin extends Array {
         function Bin({ data, label, handler = null }) {
             return (
                 <div>
-                    {label!="" && <h4>{label}</h4>}
+                    {label != "" && <h4>{label}</h4>}
                     <div className={css`
                         display:flex;
                         flex-wrap:wrap;
@@ -328,6 +330,6 @@ export class Bin extends Array {
                 </div>
             )
         }
-        return this.filter(f=>f.visible==true).length>0 ? <Bin data={this.filter(f=>f.visible==true)} label={label} handler={handler} /> : <></>
+        return (this.length > 0 || this.filter(f => f.visible == true).length > 0) ? <Bin data={this.filter(f => f.visible == true)} label={label} handler={handler} /> : <></>
     }
 }

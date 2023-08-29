@@ -49,6 +49,7 @@ async function sheet() {
 
 export const userContext = React.createContext(null)
 const user = User.in_memory() ? User.parse(JSON.parse(sessionStorage.getItem('user'))) : null
+
 const root = createRoot(document.getElementById('page'))
 const page=window.location.pathname
 
@@ -58,6 +59,7 @@ page=='/characters' && (content=await characters(user))
 page=='/create' && (content=await create())
 page=='/levelup' && (content=await levelup())
 page=='/sheet' && (content=await sheet())
+
 
 root.render(
 <Page user={user}>

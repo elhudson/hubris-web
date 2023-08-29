@@ -2,7 +2,7 @@ import { immerable, current } from "immer"
 import Feature, { Checkbox } from './feature.js'
 import { CheckboxItem, SmallMod } from "../components/components/text.js"
 import React from "react"
-
+import Uri from "jsuri"
 export default class Entry {
     [immerable] = true
     constructor(data) {
@@ -34,15 +34,14 @@ export default class Entry {
     }
     qualifies(character) {
         if (Object.hasOwn(this, 'tier') && this.tier > character.progression.tier()) {
-            return false
+            this.buyable=false
         }
         if (this.buyable && this.xp > character.progression.xp.earned - character.progression.xp.spent) {
-            return false
+            this.buyable=false
         }
-        else {
-            return true
-        }
+        return this.buyable
     }
+
     addable(character) {
         if (character.has(this) == false) {
             if (this.qualifies(character) == true) {
@@ -114,17 +113,17 @@ export default class Entry {
         }
     }
     requirements(character) {
-        var q = false
         if (this.requires == undefined || this.requires == null || this.requires.length == 0) {
-            q = true
-            return q
+            this.buyable=true
         }
-        for (var r of this.requires) {
-            if (character.has(r)) {
-                q = true
+        else {
+            for (var r of this.requires) {
+                if (character.has(r)) {
+                    this.buyable=true
+                }
             }
         }
-        return q
+        return this.buyable
     }
     get(property) {
         if (property == "") { return "" }
@@ -172,14 +171,13 @@ export class Metadata extends Entry {
         this.aux_paths()
     }
     qualifies(character) {
-        var q = false
         if (super.qualifies(character) && this.requirements(character)) {
             var trees = [...new Set(character.powers.effects.map(e => [e.tree]))]
             if (trees.includes(this.tree)) {
-                q = true
+                this.buyable=true
             }
         }
-        return q
+        return this.buyable
     }
     removeable(character) {
         return !this.qualifies(character)
@@ -253,10 +251,11 @@ export class TagFeature extends Entry {
 }
 
 export class Skill extends Entry {
-    [immerable]=true
+    [immerable] = true
     constructor(data) {
         super(data);
         this.xp = 0;
+        Object.keys(data).includes(this.proficient) == false && (this.proficient = false)
         if (Object.hasOwn(this, 'attributes')) {
             this.code = this.attributes.name.toLowerCase().slice(0, 3)
         }
@@ -264,14 +263,23 @@ export class Skill extends Entry {
     cost(skills, int) {
         var known = _.countBy(skills, s => s.proficient == true)
         known = known.true == undefined ? 0 : known.true
-        var costly = known - (int+2)
-        return costly < 0 ? 0 : costly + 1
+        var costly = known - (int + 2)
+        return costly < 0 ? 0 : costly +2
     }
     select(skills, progression, int) {
         var cost = this.cost(skills, int)
-        if (progression.xp.earned - progression.xp.spent >= cost) {
-            this.proficient = true
-            progression.xp.spent += cost
+        var url = new Uri(window.location.href)
+        if (url.hasQueryParam('stage') && url.getQueryParamValue('stage') == 'skills') {
+            var limit = (int + 2) - skills.get_known() 
+            if (limit > 0) {
+                this.proficient = true
+            }
+        }
+        else {
+            if (progression.xp.earned - progression.xp.spent >= cost) {
+                this.proficient = true
+                progression.xp.spent += cost
+            }
         }
     }
     deselect(skills, progression, int) {
@@ -318,7 +326,7 @@ export class Background extends Entry {
         return (character.backgrounds.primary == null || character.backgrounds.secondary == null)
     }
     adjust_skills(character, direction) {
-        character.skills.get(this.id).proficient = direction == 'add' ? true : false
+        character.skills.get(this.skills[0].id).proficient = direction == 'add' ? true : false
     }
     code() {
         return this.attributes.name.slice(0, 3).toLowerCase()
@@ -328,13 +336,13 @@ export class Background extends Entry {
         character.stats[func](this)
     }
     get_feature() {
-        const insert=this.feature==null ? {
-            name:"",
-            description:""
+        const insert = this.feature == null ? {
+            name: "",
+            description: ""
         } : {
             name: this.feature.split(':')[0],
             description: this.feature.split(':').slice(1).join(':')
-        } 
+        }
         return ({
             ticks: this.ticks,
             ...insert
@@ -343,6 +351,7 @@ export class Background extends Entry {
     displayFeature() {
         return (<Feature feature={this.get_feature()} />)
     }
+
 }
 
 export class Tag extends Entry {
