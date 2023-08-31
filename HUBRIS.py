@@ -10,7 +10,6 @@ from db_connect import address, tunnel, engine
 from pandas import read_sql
 import sqlalchemy
 from itertools import chain
-import paramiko
 
 class Database:
     def __init__(self, address):

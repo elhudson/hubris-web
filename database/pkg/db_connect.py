@@ -26,8 +26,9 @@ cli=paramiko.SSHClient()
 cli.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 cli.connect(hostname=host, username=username, password=password, passphrase=passphrase)
 
+
 def engine(server):
-    configs=json.load(open('/home/el_hudson/projects/HUBRIS/database/db_config.json'))
+    configs=json.load(open(os.path.abspath(os.curdir)+'/db_config.json'))
     local_port = str(server.local_bind_port)
     engine = sqlalchemy.create_engine(f"mysql+pymysql://{configs['SERVER_USERNAME']}:{configs['DB_PWD']}@127.0.0.1:{local_port}/{configs['DB_NAME']}")
     return engine
