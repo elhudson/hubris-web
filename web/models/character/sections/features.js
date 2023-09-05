@@ -1,7 +1,7 @@
 import Info from "../section"
 import { immerable } from "immer"
 import React from "react";
-import { Groups } from "../../../elements/sorts";
+import { Groups } from "../featureset";
 import { Block, Tabbed } from "../../../components/components/containers";
 import _ from "lodash";
 import { css } from "@emotion/css";
@@ -12,15 +12,15 @@ export default class Features extends Info {
     [immerable]=true
     constructor() {
         var skeleton={
-            class_features:new Groups([]),
-            tag_features:new Groups([])
+            class_features:new ClassFeatures([]),
+            tag_features:new TagFeatures([])
         }
         super(skeleton)
     }
     static parse(raw) {
         var self=super.parse(raw)
-        self.class_features=Groups.parse(self.class_features)
-        self.tag_features=Groups.parse(self.tag_features)
+        self.class_features=ClassFeatures.parse(self.class_features)
+        self.tag_features=TagFeatures.parse(self.tag_features)
         delete self.backgrounds
         return self
     }
@@ -51,5 +51,17 @@ export default class Features extends Info {
             )
         }
         return(<Features features={this}/>)
+    }
+}
+
+export class TagFeatures extends Groups {
+    constructor(data) {
+        super(data)
+    }
+}
+
+export class ClassFeatures extends Groups {
+    constructor(data) {
+        super(data)
     }
 }

@@ -10,9 +10,9 @@ export default function LevelUp({ ch }) {
     const [char, dispatchChanges] = useCharacter(ch)
     const handleSave=async ()=> {
         await char.write()
+        sessionStorage.removeItem('character')
         window.location.assign(char.routes.characters)
     }
-    window.c=char
     const patch = generatePatch(dispatchChanges)
     var binner = patch('options', 'regroup')
     var filterer=patch('options', 'filter')

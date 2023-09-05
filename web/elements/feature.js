@@ -1,6 +1,6 @@
 import React from "react"
 import { Metadata as Meta, SmallMod } from "../components/components/text"
-import { LabeledItem } from "../components/components/containers"
+import { Item, LabeledItem } from "../components/components/containers"
 import { Popper } from "@mui/base"
 import { Box } from "@mui/material"
 import { Button, Buttons } from "../components/components/interactive"
@@ -34,6 +34,7 @@ export default function Feature({ feature, meta=null, check=null }) {
         label={header}>
             <FeatureData feature={feature} />
             <Description de={feature.description} />
+            {meta!=null && <ApplicableMeta meta={meta} feature={feature} />}
         </LabeledItem>
 
     )
@@ -53,43 +54,42 @@ export function Checkbox({ feature, handler }) {
         value={feature.id} />)
 }
 
-export function FeatureMeta({feature, meta_list}) {
+export function FeatureMeta({meta_list}) {
+    return (
+        <Buttons>{meta_list.map(r=> 
+        <MetaOption meta={r} />)}
+        </Buttons>
+    )
+}
+
+export function MetaOption({meta}) {
+    const theme=useTheme()
     const [open, setOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
       setOpen((previousOpen) => !previousOpen);
     };
-    const meta=meta_list
-        .filter(r=>r.tree=feature.tree)
-        .filter(f=>f.tier==feature.tier)
-        .map(r=> 
-        <div>
-            <Button onClick={handleClick}>{r.name}</Button>
-            <Popper 
-                id={r.id}
-                anchorEl={anchorEl}
-                open={open}>
-                <Box sx={{
-                    backgroundColor:styles.background,
-                    border:styles.border,
-                    minWidth:'min-content',
-                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-                }}>
-                    <Feature feature={r} />
-                </Box>
-            </Popper>
-        </div>)
-    return (
-        <Meta text={
-            <Buttons className={style('buttons', {
-                border:'none !important'
-            })}>
-                {meta}
-            </Buttons>}/>
-    )
-
-    
+    return(<>
+        <Button onClick={handleClick}>{meta.name}</Button>
+        <Popper 
+            id={meta.id}
+            anchorEl={anchorEl}
+            open={open}>
+            <Box className={css`
+                padding:0px;
+                margin:0px;
+                background-color:${theme.background};
+                z-index: 3;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                >div {
+                    margin:0px;
+                }
+            `}>
+                <Feature feature={meta} />
+            </Box>
+        </Popper>
+    </>)
 }
 
 function Ticks({ ticks }) {
@@ -263,13 +263,13 @@ function FeatureData({ feature }) {
 
 function ApplicableMeta({meta, feature}) {
 return (
-    <>
-        <FeatureProperty label={'Ranges'}>
-            <FeatureMeta meta_list={meta.ranges.pool()} feature={feature}/>
-        </FeatureProperty>
-        <FeatureProperty label={'Durations'}>
-            <FeatureMeta meta_list={meta.durations.pool()} feature={feature}/>
-        </FeatureProperty>
-    </>
+    <div>
+        <Item label={'Ranges'}>
+            <FeatureMeta meta_list={meta.ranges.pool().filter(f=>f.tree==feature.tree)} feature={feature}/>
+        </Item>
+        <Item label={'Durations'}>
+            <FeatureMeta meta_list={meta.durations.pool().filter(f=>f.tree==feature.tree)} feature={feature}/>
+        </Item>
+    </div>
 )
 }

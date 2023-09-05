@@ -37,6 +37,9 @@ export default class Entry {
         }
         catch { { TypeError } }
     }
+    affordable(character) {
+        return character.progression.budget()>=this.xp
+    }
     qualifies(character) {
         if (Object.hasOwn(this, 'tier') && this.tier == character.progression.tier()) {
             if (this.descendable) {
@@ -179,6 +182,7 @@ export class Effect extends Entry {
         this.tags = rez
     }
     displayFeature({ ranges, durations }) {
+        console.log(ranges, durations)
         return (
             <Feature feature={this} meta={{ ranges: ranges, durations: durations }} />
         )

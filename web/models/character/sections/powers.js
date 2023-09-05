@@ -3,15 +3,16 @@ import React from "react";
 import { Region, Row, Block, OptionList, LabeledItem } from "../../../components/components/containers";
 import { style } from "../../../components/components/styles";
 import { Bonus, Counter, DC } from "../../../components/components/numbers";
-import { Groups } from "../../../elements/sorts";
+import { Groups } from "../featureset";
 import { css } from "@emotion/css";
+
 export default class Powers extends Info {
     constructor() {
         var skeleton = {
-            effects: new Groups([]),
+            effects: new Effects([]),
             metadata: {
-                ranges: new Groups([]),
-                durations: new Groups([])
+                ranges: new Ranges([]),
+                durations: new Durations([])
             },
             used: 0,
             attr: null
@@ -23,9 +24,9 @@ export default class Powers extends Info {
     }
     static parse(raw, data) {
         var self = super.parse(raw)
-        self.effects =Groups.parse(self.effects)
-        self.metadata.ranges = Groups.parse(self.metadata.ranges)
-        self.metadata.durations = Groups.parse(self.metadata.durations)
+        self.effects =Effects.parse(self.effects)
+        self.metadata.ranges = Ranges.parse(self.metadata.ranges)
+        self.metadata.durations = Durations.parse(self.metadata.durations)
         self.attr=data.attr.name.slice(0,3).toLowerCase()
         self.mod = data.pb + data.scores[self.attr].value
         return self
@@ -50,7 +51,7 @@ export default class Powers extends Info {
                             </LabeledItem>
                         </div>
                     <OptionList>
-                        {powers.effects.map(f => f.displayFeature({ranges:powers.metadata.ranges, durations:powers.metadata.durations}))}
+                        {powers.effects.pool().map(p=>p.displayFeature({ranges:powers.metadata.ranges, durations:powers.metadata.durations}))}
                     </OptionList>
                 </Block>
             )
@@ -59,3 +60,20 @@ export default class Powers extends Info {
     }
 }
 
+export class Effects extends Groups {
+    constructor(data) {
+        super(data)
+    }
+}
+
+export class Ranges extends Groups {
+    constructor(data) {
+        super(data)
+    }
+}
+
+export class Durations extends Groups {
+    constructor(data) {
+        super(data)
+    }
+}

@@ -16,6 +16,9 @@ export default class Progression extends Info {
         }
         super(skeleton)
     }
+    budget() {
+        return this.xp.earned-this.xp.spent
+    }
     tier() {
         if (_.range(-1, 30).includes(this.xp.earned)) { return 1 }
         else if (_.range(30, 75).includes(this.xp.earned)) { return 2 }

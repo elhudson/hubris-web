@@ -1,8 +1,8 @@
 import { useImmerReducer } from 'use-immer'
 import React from 'react';
-import { immerable, current } from 'immer'
+import { immerable } from 'immer'
 import * as _ from 'lodash'
-import { Choices, Groups, Options } from '../../elements/sorts';
+import { Options } from '../../elements/options';
 import Bio from './sections/bio';
 import Skills from './sections/skills';
 import Stats from './sections/stats';
@@ -13,7 +13,7 @@ import Features from './sections/features';
 import Powers from './sections/powers';
 import Classes from './sections/class';
 import Backgrounds from './sections/backgrounds'
-import { Button, Buttons, Controls } from '../../components/components/interactive'
+import { Button, Buttons } from '../../components/components/interactive'
 import { Icon } from '../../components/components/images';
 import { styles } from '../../components/components/styles';
 import { Alignment } from './sections/bio';
@@ -21,7 +21,8 @@ import { Tier } from './sections/progression';
 import { useTheme } from '@emotion/react';
 import { css } from '@emotion/css';
 import { Block, Item } from '../../components/components/containers';
-
+import {ClassFeatures, TagFeatures} from './sections/features'
+import {Ranges, Durations, Effects} from './sections/powers'
 
 export class Character {
     [immerable] = true
@@ -140,15 +141,15 @@ export class Character {
     buyable() {
         var options = {
             features: {
-                class_features: this.classes.base == null ? new Groups([]) : new Groups(this.classes.class_features()),
-                tag_features: this.classes.base == null ? new Groups([]) : new Groups(this.classes.tag_features())
+                class_features: this.classes.base == null ? new ClassFeatures([]) : new ClassFeatures(this.classes.class_features()),
+                tag_features: this.classes.base == null ? new TagFeatures([]) : new TagFeatures(this.classes.tag_features())
 
             },
             powers: {
-                effects: this.classes.base == null ? new Groups([]) : new Groups(this.classes.effects()),
+                effects: this.classes.base == null ? new Effects([]) : new Effects(this.classes.effects()),
                 metadata: {
-                    ranges: new Groups(ruleset.ranges.list()),
-                    durations: new Groups(ruleset.durations.list())
+                    ranges: new Ranges(ruleset.ranges.list()),
+                    durations: new Durations(ruleset.durations.list())
                 }
             }
         }
