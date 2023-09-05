@@ -1,12 +1,9 @@
-import { style, styles, reusable } from './styles'
 import React from "react"
-import { createUseStyles } from 'react-jss'
 import { Icon } from './images'
 import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
 import { Menu as MenuBox } from '@mui/base/Menu';
 import { MenuButton } from '@mui/base/MenuButton';
-import { MenuItem } from '@mui/base/MenuItem';
 import { Dropdown as Drop } from '@mui/base/Dropdown';
 
 export function Buttons({ children }) {
@@ -35,7 +32,6 @@ export function Radio({ label, data, onChange = null, vertical = false, readonly
             ${theme.styles.text}
             ${vertical ? verticalCss : horizontalCss}
             margin:3px 0px;
-
         `}>
             {data.map(item =>
                 <RadioItem readOnly={readonly} item={item} isRadio={true} group={label} onChange={onChange} />
@@ -172,7 +168,7 @@ export function Dropdown({ name, path, data, handler, selected = null }) {
                 background-color: ${theme.background};
                 color:${theme.text};
                 border: none;
-                padding: 0px;
+                padding: 0px;jupyter
                 width: 100%;
                 font-size:${theme.size - 2}px;
                 font-family: ${theme.mono};

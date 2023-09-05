@@ -9,7 +9,7 @@ const filter_template=(table, filter, sort, group)=>{
 
 const filters=[]
 const sort='xp'
-const filter={'tier':'T1'}
+const filter={'tier':1}
 
 filters.push(filter_template('class_features', filter, sort, 'class_paths'))
 filters.push(filter_template('classes', {}, 'name', '""' ))

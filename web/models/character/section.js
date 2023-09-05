@@ -2,6 +2,7 @@ import { immerable, current } from "immer"
 import _ from "lodash"
 import React, { useState } from "react"
 import { Radio } from "../../components/components/interactive"
+import { nanoid } from "nanoid"
 
 export default class Info {
     [immerable]=true
@@ -107,6 +108,7 @@ export class RadioArray {
     }
     display({path, group, handler, vert=true}) {
         function RadioArray({aray, path, group, handler}) {
+            var uniq_group=group+'_'+nanoid()
             var processed=aray.list().map(item=> 
                 new Object({
                     label:item.value,
@@ -115,7 +117,7 @@ export class RadioArray {
                     path:path
                 })) 
             return (
-                <Radio vertical={vert} label={group} data={processed} onChange={handler} />
+                <Radio vertical={vert} label={uniq_group} data={processed} onChange={handler} />
             )
         }
         return(<RadioArray path={path} group={group} handler={handler} aray={this}/>)

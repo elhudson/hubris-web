@@ -97,7 +97,7 @@ export class Character {
         locations.forEach((location) => {
             _.get(this.options, location).forEach((feature) => {
                 feature.bought = _.get(this, location).includes(feature)
-                feature.buyable = feature.qualifies(this)
+                feature.buyable=feature.qualifies(this)
             })
         })
     }

@@ -3,6 +3,7 @@ import Feature, { Checkbox } from './feature.js'
 import { CheckboxItem, SmallMod } from "../components/components/text.js"
 import React from "react"
 import Uri from "jsuri"
+
 export default class Entry {
     [immerable] = true
     constructor(data) {
@@ -12,14 +13,18 @@ export default class Entry {
         catch { ReferenceError } {
             Object.assign(this, data)
         }
-        this.path = this.table
-        if (Object.keys(data).includes('tier') && typeof (this.tier) == Number) {
-            this.tier = Number(data.tier.split('T')[1])
+        if (Object.hasOwn(data, 'tier') && typeof (data.tier) != Number) {
+            try {
+                this.tier = Number(data.tier.split('T')[1])
+            }
+            catch { { Error } }
         }
+        this.path = this.table
         this.descendable = false
+        this.required = false
         this.bought = false
         this.visible = true
-        this.buyable = true
+        this.buyable = false
     }
     aux_paths() {
         try {
@@ -33,45 +38,21 @@ export default class Entry {
         catch { { TypeError } }
     }
     qualifies(character) {
-        if (Object.hasOwn(this, 'tier') && this.tier > character.progression.tier()) {
-            this.buyable=false
-        }
-        if (this.buyable && this.xp > character.progression.xp.earned - character.progression.xp.spent) {
-            this.buyable=false
-        }
-        return this.buyable
-    }
-
-    addable(character) {
-        if (character.has(this) == false) {
-            if (this.qualifies(character) == true) {
-                if (character && this.affordable(character) == true) {
-                    return true
-                }
+        if (Object.hasOwn(this, 'tier') && this.tier == character.progression.tier()) {
+            if (this.descendable) {
+                return this.requirements(character)
             }
         }
-        else {
-            return false
-        }
-    }
-    affordable(character) {
-        if (Object.hasOwn(this, 'xp') && character.xp_spent + this.xp > character.xp_earned) {
-            return false
-        }
-        else {
-            return true
-        }
+        return false
     }
     removeable(character) {
-        var p = true
         if (this.descendable == true) {
-            this.required_for.forEach((postreq) => {
+            for (var postreq of this.required_for)
                 if (character.has(postreq)) {
-                    p = false
+                    return false
                 }
-            })
         }
-        return p
+        return true
     }
     static parse(data) {
         const mappings = {
@@ -104,26 +85,16 @@ export default class Entry {
         })
         return links
     }
-    legal(char) {
-        if (this.qualifies(char) && char.has(this)) {
-            return true
-        }
-        else {
-            return false
-        }
-    }
     requirements(character) {
         if (this.requires == undefined || this.requires == null || this.requires.length == 0) {
-            this.buyable=true
+            return true
         }
-        else {
-            for (var r of this.requires) {
-                if (character.has(r)) {
-                    this.buyable=true
-                }
+        for (var r of this.requires) {
+            if (character.has(r)) {
+                return true
             }
         }
-        return this.buyable
+        return false
     }
     get(property) {
         if (property == "") { return "" }
@@ -170,17 +141,26 @@ export class Metadata extends Entry {
         this.path = `powers.metadata.${this.table}`
         this.aux_paths()
     }
-    qualifies(character) {
-        if (super.qualifies(character) && this.requirements(character)) {
-            var trees = [...new Set(character.powers.effects.map(e => [e.tree]))]
-            if (trees.includes(this.tree)) {
-                this.buyable=true
+    removeable(character) {
+        var trees = character.powers.effects.get_unique('tree')
+        if (trees.includes(this.tree)) {
+            if (this.xp == 1) {
+                return false
             }
         }
-        return this.buyable
+        return super.removeable(character)
     }
-    removeable(character) {
-        return !this.qualifies(character)
+    qualifies(character) {
+        var trees = character.powers.effects.get_unique('tree')
+        if (trees.includes(this.tree)) {
+            if (this.xp == 1) {
+                return true
+            }
+            else {
+                return super.qualifies(character)
+            }
+        }
+        return false
     }
 }
 
@@ -191,15 +171,6 @@ export class Effect extends Entry {
         this.descendable = true
         this.path = 'powers.effects'
         this.aux_paths()
-    }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q = true
-            }
-        }
-        return q
     }
     quald_by(char) {
         var char_tags = char.classes.base.links('tags')
@@ -221,15 +192,6 @@ export class ClassFeature extends Entry {
         this.path = 'features.class_features'
         this.aux_paths()
     }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q = true
-            }
-        }
-        return q
-    }
 }
 
 export class TagFeature extends Entry {
@@ -238,15 +200,6 @@ export class TagFeature extends Entry {
         this.descendable = true
         this.path = 'features.tag_features'
         this.aux_paths()
-    }
-    qualifies(character) {
-        var q = false
-        if (super.qualifies(character)) {
-            if (this.requirements(character)) {
-                q = true
-            }
-        }
-        return q
     }
 }
 
@@ -264,13 +217,13 @@ export class Skill extends Entry {
         var known = _.countBy(skills, s => s.proficient == true)
         known = known.true == undefined ? 0 : known.true
         var costly = known - (int + 2)
-        return costly < 0 ? 0 : costly +2
+        return costly < 0 ? 0 : costly + 2
     }
     select(skills, progression, int) {
         var cost = this.cost(skills, int)
         var url = new Uri(window.location.href)
         if (url.hasQueryParam('stage') && url.getQueryParamValue('stage') == 'skills') {
-            var limit = (int + 2) - skills.get_known() 
+            var limit = (int + 2) - skills.get_known()
             if (limit > 0) {
                 this.proficient = true
             }

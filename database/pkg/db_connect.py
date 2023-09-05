@@ -28,7 +28,7 @@ cli.connect(hostname=host, username=username, password=password, passphrase=pass
 
 
 def engine(server):
-    configs=json.load(open(os.path.abspath(os.curdir)+'/db_config.json'))
+    configs=json.load(open(os.path.abspath(os.curdir)+'/database/db_config.json'))
     local_port = str(server.local_bind_port)
     engine = sqlalchemy.create_engine(f"mysql+pymysql://{configs['SERVER_USERNAME']}:{configs['DB_PWD']}@127.0.0.1:{local_port}/{configs['DB_NAME']}")
     return engine

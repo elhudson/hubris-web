@@ -23,7 +23,7 @@ export default function Feature({ feature, meta=null, check=null }) {
     )
     return (
         <LabeledItem sx={css`
-            ${feature.buyable==false && (theme.styles.disabled)}
+            ${(feature.buyable==false && check!=null) && (theme.styles.disabled)}
             width:200px;
             >div>div {
                 margin:5px;

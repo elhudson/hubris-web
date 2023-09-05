@@ -17,6 +17,7 @@ export class Choices {
     [immerable] = true
     constructor() {
     }
+
     regroup(action) {
         _.get(this, action.path).regroup(action.data.getAttribute('value'))
     }
@@ -45,20 +46,17 @@ export class Choices {
     addDrop(action, ch, free = false) {
         var feature = ruleset[action.table][action.data.value].clone()
         free && (feature.xp = 0)
+        console.log(feature.name, feature.qualifies(ch), feature.removeable(ch))
         if ((action.data.checked == true && feature.qualifies(ch)) || (action.data.checked == false && feature.removeable(ch))) {
+            feature.buyable=true
             var tree = _.get(this, action.path)
             var func = action.data.checked ? 'add' : 'remove'
             var cost = _.get(ch, action.path)[func](feature, ch)
             cost != null && (ch.progression.xp.spent += cost)
             action.table == 'effects' && (this.handleMetadata(feature, func, ch))
-            tree.get(feature).bought = action.data.checked
+            tree.get(feature).bought=action.data.checked
             tree.forEach((item) => {
-                if (item.qualifies(ch) || item.bought == true) {
-                    item.buyable = true
-                    if (item.removeable(ch) == false || item.xp == 0) {
-                        item.buyable = false
-                    }
-                }
+                item.buyable=item.qualifies(ch)
             })
         }
     }
@@ -179,8 +177,8 @@ export class Groups {
             this.filtered = { [attr]: value }
         }
     }
-    remove(feature, character) {
-        if (feature.removeable(character)) {
+    remove(feature) {
+        if (feature.required==false) {
             _.remove(this.content[this.get_location(feature)], f => f.id == feature.id)
             return (-1 * feature.xp)
         }
@@ -192,6 +190,9 @@ export class Groups {
     get(feature) {
         return _.find(this.content[this.get_location(feature)], f => f.id == feature.id)
     }
+    get_unique(attr) {
+        return [...new Set(this.pool().map(t=>t[attr]))]
+    }
     pool() {
         var pool = []
         this.forEach((f) => { pool.push(f) })
@@ -201,8 +202,8 @@ export class Groups {
     includes(feature) {
         return _.find(this.pool(), item => item.id == feature.id) == undefined ? false : true
     }
-    add(feature, character) {
-        if (feature.qualifies(character)) {
+    add(feature) {
+        if (feature.buyable) {
             this.content[this.get_location(feature)].push(feature)
             return feature.xp
         }

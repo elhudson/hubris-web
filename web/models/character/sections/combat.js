@@ -3,13 +3,13 @@ import { immerable } from "immer"
 import { Region, Snippet, Block, LabeledItem, Item, OptionList, Row } from '../../../components/components/containers'
 import React from 'react'
 import { SmallMod, Metadata, Field, CheckboxItem, SmallHeader } from '../../../components/components/text'
-import { styles, style } from '../../../components/components/styles'
 import { DC, Bonus, Modifier, Tracker } from '../../../components/components/numbers'
-import { FeatureInfo, DataGrid } from '../../../elements/feature'
 import _ from "lodash"
 import { css } from "@emotion/css"
 import { Radio } from "../../../components/components/interactive"
 import { useTheme } from "@emotion/react"
+
+
 export default class Combat extends Info {
     [immerable] = true
     constructor() {
