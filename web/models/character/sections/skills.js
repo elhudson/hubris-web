@@ -1,37 +1,23 @@
 import { immerable, current} from "immer";
 import _ from "lodash";
 import React from "react";
-import {style} from '../../../components/components/styles'
-
-import { CheckboxItem } from "../../../components/components/text";
-import { LabeledItem } from "../../../components/components/containers";
 import { DC } from "../../../components/components/numbers";
-
-
+import {Skill} from '../../../elements/entry';
 export default class Skills extends Array {
     [immerable]=true
     constructor() {
         super()
         for (var i of _.range(0,18)) {
-            this[i]=ruleset.skills.list()[i]
+            this[i]=ruleset.skills.list()[i].clone()
+            this[i].proficient=false
         }
     }
-    static parse(skills, data) {
+    static parse(data, context) {
         var self=new Skills()
-        if (skills.length<18) {
-            var profs=skills.map(e=>e.id)
-            self.forEach((skill)=> {
-                profs.includes(skill.id) && (skill.proficient=true)
-            })
+        for (var i=0;i<self.length;i++) {
+            self[i]=Skill.parse(data[i])
         }
-        else {
-            for (var i=0;i<skills.length;i++) {
-                if (skills[i].proficient==true) {
-                    self[i].proficient=true
-                }
-            }
-        }
-        self.bonuses(data.scores, data.pb)
+        self.bonuses(context.scores, context.pb)
         return self
     }
     bonuses(scores, pb) {
@@ -61,7 +47,6 @@ export default class Skills extends Array {
     display({handler=null, free, inCreation=false}) {
         function Skills({skills, free, handler, inCreation}) {
             var groups=skills.by_attribute()
-            var leeway=(free>0)
             return (
             <div>
                 {inCreation && <DC item={{value:free, label:'Remaining'}} />}
@@ -69,12 +54,12 @@ export default class Skills extends Array {
                 <div>
                     <h4>{group}</h4>
                     <div>
-                        {groups[group].map(g=>g.display({handler:handler, disabled:leeway}))}
+                        {groups[group].map(g=>g.display({handler:handler}))}
                     </div>
                 </div>)}                
             </div>)
         }
-        var remain=free-this.get_known()
+        var remain=free-this.get_known()        
         return(<Skills skills={this} free={remain} handler={handler} inCreation={inCreation}/>)
     }
 }

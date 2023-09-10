@@ -262,14 +262,14 @@ function FeatureData({ feature }) {
 
 
 function ApplicableMeta({meta, feature}) {
-return (
-    <div>
-        <Item label={'Ranges'}>
-            <FeatureMeta meta_list={meta.ranges.pool().filter(f=>f.tree==feature.tree)} feature={feature}/>
-        </Item>
-        <Item label={'Durations'}>
-            <FeatureMeta meta_list={meta.durations.pool().filter(f=>f.tree==feature.tree)} feature={feature}/>
-        </Item>
-    </div>
-)
+    return (
+        <div>
+            <Item label={'Ranges'}>
+                <FeatureMeta meta_list={meta.ranges.pool().filter(f=>f.tree==feature.tree || f.tree.includes(feature.tree))} feature={feature}/>
+            </Item>
+            <Item label={'Durations'}>
+                <FeatureMeta meta_list={meta.durations.pool().filter(f=>f.tree==feature.tree || f.tree.includes(feature.tree))} feature={feature}/>
+            </Item>
+        </div>
+    )
 }

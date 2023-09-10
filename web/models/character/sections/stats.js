@@ -45,7 +45,7 @@ export default class Stats extends Info {
         this.scores[background.code()].boostify()
     }
     deboost(background) {
-        this.scores[background.code()] = new AbilityScore(this.background.code(), this.scores[background.code()].value)
+        this.scores[background.code()] = new AbilityScore(background.code(), this.scores[background.code()].value)
     }
     displayAllocate(update) {
         function Stats({ stats, update }) {

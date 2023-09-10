@@ -8,7 +8,6 @@ export default function CharacterSheet({ ch }) {
     const theme=useTheme()
     const [char, dispatch]=useCharacter(ch)
     const patch=generatePatch(dispatch)
-    console.log(char)
     return (
         <div className={css`
             width:400px;

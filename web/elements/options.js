@@ -36,7 +36,6 @@ export class Choices {
     addDrop(action, ch, free = false) {
         var feature = ruleset[action.table][action.data.value].clone()
         free && (feature.xp = 0)
-        console.log(feature.name, feature.qualifies(ch), feature.removeable(ch))
         if ((action.data.checked == true && feature.qualifies(ch) && feature.affordable(ch)) || (action.data.checked == false && feature.removeable(ch))) {
             feature.buyable=true
             var tree = _.get(this, action.path)
@@ -86,8 +85,8 @@ export class Options extends Choices {
         this.features = Choices.from(buyable.features)
         this.powers = Choices.from(buyable.powers)
         this.powers.metadata = Choices.from(buyable.powers.metadata)
-        this.classes = new Groups(ruleset.classes.list())
-        this.backgrounds = new Groups(ruleset.backgrounds.list())
+        this.classes = buyable.classes
+        this.backgrounds = buyable.backgrounds
     }
     empty(path) {
         return _.get(this,path).empty()

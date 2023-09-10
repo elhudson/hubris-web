@@ -22,7 +22,7 @@ export function SmallHeader({children}) {
     )
 }
 
-export function CheckboxItem({ item, checked = false, handler = null, children }) {
+export function CheckboxItem({ item, checked = false, handler = null, disabled=false, children }) {
     const theme=useTheme()
     return (
         <div className={css`
@@ -35,7 +35,7 @@ export function CheckboxItem({ item, checked = false, handler = null, children }
             <input className={css`
                 ${theme.styles.checkbox};
                 vertical-align:middle;
-            `} type='checkbox' path={item.path} checked={checked} value={item.value} onClick={handler} />
+            `} type='checkbox' path={item.path} disabled={disabled} checked={checked} value={item.value} onClick={handler} />
             {children}
             <label>{item.label}</label>
         </div>

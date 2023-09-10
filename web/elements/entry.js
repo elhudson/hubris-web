@@ -155,6 +155,9 @@ export class Metadata extends Entry {
     }
     qualifies(character) {
         var trees = character.powers.effects.get_unique('tree')
+        if (trees.includes('Damage') || trees.includes('Healing')) {
+            trees.push('Damage/Healing')
+        }
         if (trees.includes(this.tree)) {
             if (this.xp == 1) {
                 return true
@@ -212,10 +215,16 @@ export class Skill extends Entry {
     constructor(data) {
         super(data);
         this.xp = 0;
-        Object.keys(data).includes(this.proficient) == false && (this.proficient = false)
         if (Object.hasOwn(this, 'attributes')) {
             this.code = this.attributes.name.toLowerCase().slice(0, 3)
         }
+        this.proficient=false
+    }
+    static parse(data) {
+        var self=new Skill(data)
+        self.proficient=data.proficient
+        self.required=data.required
+        return self
     }
     cost(skills, int) {
         var known = _.countBy(skills, s => s.proficient == true)
@@ -240,9 +249,13 @@ export class Skill extends Entry {
         }
     }
     deselect(skills, progression, int) {
-        this.proficient = false
-        var cost = this.cost(skills, int) * -1
-        progression.xp.spent += cost
+        console.log(current(this))
+        if (this.required==false) {
+            console.log(this)
+            this.proficient = false
+            var cost = this.cost(skills, int) * -1
+            progression.xp.spent += cost
+        }
     }
     proficiency(character) {
         const v = character.skills[character.skills.findIndex(c => c.id == this.id)]
@@ -253,10 +266,10 @@ export class Skill extends Entry {
             this.bonus = character.stats.scores[this.code]
         }
     }
-    display({ handler = null }) {
+    display({ handler = null}) {
         function Skill({ skill }) {
             return (
-                <CheckboxItem handler={handler} item={{ label: skill.name, value: skill.id }} disabled={skill.buyable} checked={skill.proficient}>
+                <CheckboxItem handler={handler} item={{ label: skill.name, value: skill.id }} disabled={skill.required} checked={skill.proficient}>
                     <SmallMod value={skill.bonus} />
                 </CheckboxItem>
             )
@@ -271,19 +284,40 @@ export class Class extends Entry {
         super(data)
     }
     qualifies(character) {
-        return (character.classes.base == null)
+        if (character.classes.base==null) {
+            return true
+        }
+        else {
+            return character.classes.base.id==this.id
+        }
+    }
+    affordable(character) {
+        return true
     }
 }
 
 export class Background extends Entry {
     constructor(data) {
         super(data)
+        Object.keys(data).includes('setting')==false && (this.setting='Core')
     }
     qualifies(character) {
-        return (character.backgrounds.primary == null || character.backgrounds.secondary == null)
+        if (character.backgrounds.primary == null || character.backgrounds.secondary == null) {
+            return true
+        }
+        else {
+             return (character.backgrounds.primary.id==this.id || character.backgrounds.secondary.id==this.id)
+        }
+    }
+    affordable(character) {
+        return true
     }
     adjust_skills(character, direction) {
-        character.skills.get(this.skills[0].id).proficient = direction == 'add' ? true : false
+        if (this.skills.length>0) {
+            var skill=character.skills.get(this.skills[0].id)
+            skill.proficient = direction == 'add' ? true : false
+            direction=='add' && (skill.required=true)
+        }
     }
     code() {
         return this.attributes.name.slice(0, 3).toLowerCase()

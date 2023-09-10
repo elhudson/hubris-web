@@ -5,6 +5,7 @@ import { useTheme } from '@emotion/react'
 import { Menu as MenuBox } from '@mui/base/Menu';
 import { MenuButton } from '@mui/base/MenuButton';
 import { Dropdown as Drop } from '@mui/base/Dropdown';
+import {nanoid} from 'nanoid';
 
 export function Buttons({ children }) {
     const theme = useTheme()
@@ -18,6 +19,7 @@ export function Buttons({ children }) {
 
 export function Radio({ label, data, onChange = null, vertical = false, readonly = false }) {
     const theme = useTheme()
+    const uniqLabel=label+'_'+nanoid()
     const horizontalCss = css`
         display:flex;
         justify-content: space-between;
@@ -34,7 +36,7 @@ export function Radio({ label, data, onChange = null, vertical = false, readonly
             margin:3px 0px;
         `}>
             {data.map(item =>
-                <RadioItem readOnly={readonly} item={item} isRadio={true} group={label} onChange={onChange} />
+                <RadioItem readOnly={readonly} item={item} isRadio={true} group={uniqLabel} onChange={onChange} />
             )}
         </div>)
 }

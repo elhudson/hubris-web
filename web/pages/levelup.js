@@ -1,9 +1,6 @@
 import React, { useRef } from "react"
 import { Character, useCharacter, generatePatch } from "../models/character/character"
-import { Tabs, TabList, TabPanel, Tab } from 'react-tabs'
-import { css } from "@emotion/css"
 import { Button, Menu } from "../components/components/interactive"
-import { Icon } from "../components/components/images"
 import { Tabbed } from "../components/components/containers"
 
 export default function LevelUp({ ch }) {

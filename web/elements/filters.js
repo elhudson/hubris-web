@@ -13,7 +13,7 @@ const filter={'tier':1}
 
 filters.push(filter_template('class_features', filter, sort, 'class_paths'))
 filters.push(filter_template('classes', {}, 'name', '""' ))
-filters.push(filter_template('backgrounds', {}, 'name', '""' ))
+filters.push(filter_template('backgrounds', {}, 'name', 'setting' ))
 filters.push(filter_template('tag_features', filter, sort, 'tags'))
 filters.push(filter_template('effects', filter, sort, 'tree'))
 filters.push(filter_template('ranges', filter, sort, 'tree'))

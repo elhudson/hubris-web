@@ -23,6 +23,7 @@ import { css } from '@emotion/css';
 import { Block, Item } from '../../components/components/containers';
 import {ClassFeatures, TagFeatures} from './sections/features'
 import {Ranges, Durations, Effects} from './sections/powers'
+import { Groups } from './featureset';
 
 export class Character {
     [immerable] = true
@@ -89,16 +90,23 @@ export class Character {
             classname: ch.classes.base == null ? 'Wizard' : ch.classes.base.name
         })
         ch.health = Health.parse(data.health)
+        ch.health.set_max_hp(ch.progression.tier(), ch.stats.scores.con.value)
         ch.options = new Options(ch)
         ch.bought()
         return ch
     }
     bought() {
-        var locations = ['features.class_features', 'features.tag_features', 'powers.effects', 'powers.metadata.ranges', 'powers.metadata.durations']
+        var locations = ['classes', 'backgrounds', 'features.class_features', 'features.tag_features', 'powers.effects', 'powers.metadata.ranges', 'powers.metadata.durations']
         locations.forEach((location) => {
             _.get(this.options, location).forEach((feature) => {
-                feature.bought = _.get(this, location).includes(feature)
-                feature.buyable=feature.qualifies(this)
+                try {
+                    feature.bought = _.get(this, location).includes(feature)
+                    feature.bought=_.get(this, location).base.id==feature.id
+                    feature.bought=_.get(this,location).primary.id==feature.id
+                    feature.bought=_.get(this, location).secondary.id==feature.id
+                }
+                catch {Error}
+                feature.buyable = feature.qualifies(this)
             })
         })
     }
@@ -151,7 +159,10 @@ export class Character {
                     ranges: new Ranges(ruleset.ranges.list()),
                     durations: new Durations(ruleset.durations.list())
                 }
-            }
+            },
+            classes: new Groups(ruleset.classes.list()),
+            backgrounds: new Groups(ruleset.backgrounds.list())
+            
         }
         return options
     }

@@ -15,7 +15,7 @@ export default class Health extends Info {
             conditions: null,
             hp: {
                 max: 1,
-                current: 1
+                current: null
             },
             hd: new HitDice()
         }
@@ -24,8 +24,11 @@ export default class Health extends Info {
     static parse(raw) {
         var self = super.parse(raw)
         self.hd = HitDice.parse(raw.hd)
-        self.hp.max = self.hd.max_hp()
+        self.hp.current==null && (self.hp.current=self.hp.max)
         return self
+    }
+    set_max_hp(tier, con) {
+        this.hp.max=(3*tier)+con
     }
     increment(action) {
         Object.keys(action).includes('context') ?
@@ -71,11 +74,6 @@ class HitDice {
         self.max = raw.max
         self.used = raw.used
         return self
-    }
-    max_hp() {
-        var base = Number(this.die.split('d').at(-1))
-        Number(this.die.split('d')[0]) == 2 && (base = base * 2)
-        return base
     }
     cost(cls) {
         var initial = ruleset.reference.base_hit_die_cost[cls]
