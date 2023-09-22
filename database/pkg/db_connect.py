@@ -3,7 +3,6 @@ import sshtunnel
 import sqlalchemy
 import pandas as pd
 import os
-import paramiko
 
 address=f"mysql+pymysql://ehudson19:cicero63@ehudson19.mysql.pythonanywhere-services.com/ehudson19$HUBRIS"
 
@@ -21,10 +20,6 @@ def tunnel():
         remote_bind_address=(dbar, 3306) ) 
     server.start()
     return server
-
-cli=paramiko.SSHClient()
-cli.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-cli.connect(hostname=host, username=username, password=password, passphrase=passphrase)
 
 
 def engine(server):

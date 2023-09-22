@@ -22,10 +22,6 @@ def tunnel():
     server.start()
     return server
 
-cli=paramiko.SSHClient()
-cli.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-cli.connect(hostname=host, username=username, password=password, passphrase=passphrase)
-
 
 def engine(server):
     configs=json.load(open(os.path.abspath(os.curdir)+'/database/db_config.json'))

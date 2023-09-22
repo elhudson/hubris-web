@@ -1,1 +1,1 @@
-npm run dev & flask --app HUBRIS run --debug && fg
+flask --app HUBRIS run --debug & cd vite && npm run dev
