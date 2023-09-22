@@ -1,6 +1,7 @@
 character.py
 db_connect.py
 entry.py
+filesystem.py
 from_notion.py
 ruleset.py
 setup.py
