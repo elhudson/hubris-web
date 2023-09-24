@@ -1,6 +1,5 @@
 import { Button, Label, Buttons } from "@elements/interactive"
 import { Item, LabeledItem } from "@elements/containers"
-import { Metadata as Meta, SmallMod } from "@elements/text"
 import { Icon } from "./images"
 import { Box } from "@mui/material"
 import { Popper } from "@mui/base"
@@ -10,17 +9,12 @@ import { css } from "@emotion/css"
 import { useTheme } from "@emotion/react"
 import UsePower from '@elements/caster'
 
-import * as tag_icons from '@assets/icons/tags'
-import * as tree_icons from '@assets/icons/trees'
-import * as class_icons from '@assets/icons/classes'
-import stopwatch from '@assets/icons/stopwatch.svg'
+import * as icons from '@assets/icons'
+import durations from '@assets/icons/stopwatch.svg'
+import ranges from '@assets/icons/distance.svg'
 
 export default function Feature({ feature, meta = null, check = null }) {
     const theme = useTheme()
-    if (feature.description == undefined && feature.feature != undefined) {
-        feature.description = feature.feature.split(':')[1]
-        feature.name = feature.feature.split(':')[0]
-    }
     return (
         <div className={css`
             width:${check != null && '200px'};
@@ -31,10 +25,11 @@ export default function Feature({ feature, meta = null, check = null }) {
             }
         `}>
             <FeatureTopbar feature={feature}>
-                {check}
+                {check!=null ? check : meta!=null && <UsePower feature={feature} meta={meta} />}
             </FeatureTopbar>
-            <FeatureInfo feature={feature}/>
-            <Description de={feature.description}/>
+            <FeatureInfo feature={feature} />
+            <Description de={feature.description} />
+            <ApplicableMeta meta={meta} feature={feature} />
         </div>
     )
 }
@@ -57,7 +52,7 @@ export function FeatureTags({ tags }) {
         `}>
             {tags.map(t =>
                 <Label content={t.name}>
-                    <Icon path={tag_icons[t.name.toLowerCase()]} />
+                    <Icon path={icons.tags[t.name.toLowerCase()]} />
                 </Label>)}
         </div>
     )
@@ -81,6 +76,11 @@ export function FeatureHeader({ name, children }) {
             display:flex;
             flex-direction:row-reverse;
             justify-content:left;
+            button {
+                position:absolute;
+                right:0;
+                width:fit-content;
+            }
         `}>
             <span>
                 {name}
@@ -91,15 +91,17 @@ export function FeatureHeader({ name, children }) {
 }
 
 export function FeatureTopbar({ feature, children }) {
-    var [icon, text]=
-        feature.table=='effects' ? [tree_icons[feature.tree.toLowerCase()], feature.tree]  :
-        feature.table=='class_features' ? [class_icons[feature.classes.name.toLowerCase()], feature.classes.name] :
-        feature.table=='tag_features' ? [tag_icons[feature.tags.name.toLowerCase()], feature.tags.name] :
-        feature.table=='ranges' || feature.table=='durations' ? [[tree_icons[feature.tree.toLowerCase().split('/')[0]], tree_icons[feature.tree.toLowerCase().split('/')[1]]], feature.tree] : null
-    Array.isArray(icon)==false && (icon=[icon])
+    var [icon, text] =
+        feature.table == 'backgrounds' ? [icons.backgrounds[feature.background.toLowerCase()], feature.background] :
+            feature.table == 'effects' ? [icons.trees[feature.tree.toLowerCase()], feature.tree] :
+                feature.table == 'class_features' ? [icons.classes[feature.classes.name.toLowerCase()], feature.classes.name] :
+                    feature.table == 'tag_features' ? [icons.tags[feature.tags.name.toLowerCase()], feature.tags.name] :
+                        feature.table == 'ranges' || feature.table == 'durations' ? [[icons.trees[feature.tree.toLowerCase().split('/')[0]], icons.trees[feature.tree.toLowerCase().split('/')[1]]], feature.tree] :
+                            [undefined, undefined]
+    Array.isArray(icon) == false && icon!=undefined && (icon = [icon])
     return (
         <FeatureHeader name={feature.name}>
-            {icon!=null && icon.map(i=>
+            {icon != undefined && icon.map(i =>
                 <Label content={text}>
                     <Icon
                         path={i}
@@ -117,9 +119,9 @@ export function FeatureTopbar({ feature, children }) {
     )
 }
 
-export function FeatureTicks({ticks}) {
-    const theme=useTheme()
-    return(
+export function FeatureTicks({ ticks }) {
+    const theme = useTheme()
+    return (
         <div className={css`
             font-size:${theme.size}px;
             font-family:${theme.mono};
@@ -129,9 +131,9 @@ export function FeatureTicks({ticks}) {
             }
             border-bottom:${theme.border};
         `}>
-            <Icon 
-                path={stopwatch}
-                size={16}/>
+            <Icon
+                path={durations}
+                size={16} />
             {ticks}
         </div>
     )
@@ -155,14 +157,18 @@ export function Checkbox({ feature, handler }) {
             path={feature.path}
             onChange={handler}
             value={feature.id} />
-        )
-    }
+    )
+}
 
 export function FeatureMeta({ meta_list }) {
     return (
-        <Buttons>{meta_list.map(r =>
-            <MetaOption meta={r} />)}
-        </Buttons>
+        <div className={css`
+            button {
+                width:fit-content;
+            }
+        `}>
+            {meta_list.map(m => <MetaOption meta={m} />)}
+        </div>
     )
 }
 
@@ -192,10 +198,10 @@ export function FeatureInfo({ feature }) {
             {feature.tags != undefined && Array.isArray(feature.tags) &&
                 <FeatureTags tags={feature.tags} />
             }
-            {feature.ticks != undefined && feature.ticks!=0 &&
-                <FeatureTicks ticks={feature.ticks}/>
+            {feature.ticks != undefined && feature.ticks != 0 &&
+                <FeatureTicks ticks={feature.ticks} />
             }
-            {feature.power != undefined && <FeaturePower power={feature.power} />}        
+            {feature.power != undefined && <FeaturePower power={feature.power} />}
         </div>
     )
 }
@@ -226,59 +232,13 @@ export function MetaOption({ meta }) {
     </>)
 }
 
-function Ticks({ ticks }) {
-    ticks == null && (ticks = 0)
-    return (
-        <FeatureProperty label={'ticks'}>
-            <SmallMod value={ticks} />
-        </FeatureProperty>
-    )
-}
-
-function Xp({ xp }) {
-    return (
-        <FeatureProperty label={'xp'}>
-            <SmallMod value={xp} />
-        </FeatureProperty>
-    )
-}
-
-function Power({ power }) {
-    return (
-        <FeatureProperty label={'power'}>
-            <SmallMod value={power} />
-        </FeatureProperty>
-    )
-
-}
-
-function Tags({ tags }) {
-    return (
-        <FeatureProperty label={'Tags'}>
-            <div>
-                {tags.length == undefined ?
-                    <Meta text={tags.name} /> :
-                    tags.map(t => <Meta text={t.name} />)
-                }
-            </div>
-        </FeatureProperty>
-    )
-}
-
-function Tree({ tree }) {
-    return (
-        <FeatureProperty label={'tree'}>
-            <Meta text={tree} />
-        </FeatureProperty>
-    )
-}
-
 function Description({ de }) {
     const theme = useTheme()
+    de != null && de.includes('•') && (de = de.split('•'))
     return (
         <div className={css`
             font-size:${theme.small + 2}px;
-            height:${theme.small*6}px;
+            height:${theme.small * 6}px;
             padding:3px;
             overflow:scroll;
             border:${theme.border};
@@ -288,127 +248,18 @@ function Description({ de }) {
 
             }
         `}>
-            {de}
-        </div>
-    )
-}
-
-function Attribute({ attr }) {
-    return (
-        <FeatureProperty label='attribute'>
-            <Meta text={attr.name} />
-        </FeatureProperty>
-    )
-}
-
-function HitDice({ hd }) {
-    return (
-        <FeatureProperty label={'hit die'}>
-            <Meta text={hd} />
-        </FeatureProperty>
-    )
-}
-
-function WeaponProf({ wpn }) {
-    return (
-        <FeatureProperty label={'weaponry'}>
-            <Meta text={wpn} />
-        </FeatureProperty>
-    )
-}
-
-function ArmorProf({ arm }) {
-    arm == null && (arm = 'None')
-    return (
-        <FeatureProperty label={'armor'}>
-            <Meta text={arm} />
-        </FeatureProperty>)
-}
-
-function Paths({ pths }) {
-    return (<FeatureProperty label={'Paths'}>
-        {pths.length == undefined ?
-            <Meta text={pths.name} /> :
-            pths.map(t => <Meta text={t.name} />)
-        }
-    </FeatureProperty>)
-}
-
-function Skills({ skills }) {
-    return (
-        <FeatureProperty label={'Skills'}>
-            {skills.length == undefined ?
-                <Meta text={skills.name} /> :
-                skills.map(t => <Meta text={t.name} />)
-            }
-        </FeatureProperty>)
-}
-
-function FeatureProperty({ label, children }) {
-    const theme = useTheme()
-    return (
-        <>
-            <div className={css`
-                border-right:${theme.border};
-                padding-left:5px;
-                padding-right:5px;
-                &:not(:nth-last-child(2)) {
-                    border-bottom:${theme.border};
-                }
-            `
-            }>
-                <label className={css`
-                ${theme.styles.label}
-                height:fit-content;
-                display:inline;
-                margin:auto;
+            {Array.isArray(de) ?
+                <div className={css`
+                    >div:not(*:first-child) {
+                        border:${theme.border};
+                        margin:5px;
+                        padding:3px;
+                        font-style:italic;
+                    }
                 `}>
-                    {label}
-                </label>
-            </div>
-            <div className={css`
-            width:100%;
-            >div:only-child {
-                display:flex;
-                flex-wrap:wrap;
-            }
-            :not(div:last-child) {
-                border-bottom:${theme.border};
-            }
-            input {
-                border:none;
-            }
-        `}>
-                {children}
-            </div>
-        </>
-    )
-}
-
-function FeatureData({ feature, showXp = true }) {
-    const theme = useTheme()
-    var haveable = Object.keys(feature)
-    var data = new Array();
-    haveable.forEach((prop) => {
-        prop == 'tags' && data.push(<Tags tags={feature.tags} />)
-        prop == 'power' && data.push(<Power power={feature.power} />)
-        // (prop == 'xp' && showXp==true) && data.push(<Xp xp={feature.xp} />)
-        prop == 'tree' && data.push(<Tree tree={feature.tree} />)
-        prop == 'ticks' && data.push(<Ticks ticks={feature.ticks} />)
-        prop == 'weapon_proficiencies' && data.push(<WeaponProf wpn={feature.weapon_proficiencies} />)
-        prop == 'armor_proficiencies' && data.push(<ArmorProf arm={feature.armor_proficiencies} />)
-        prop == 'class_paths' && data.push(<Paths pths={feature.class_paths} />)
-        prop == 'skills' && data.push(<Skills skills={feature.skills} />)
-        prop == 'hit_die' && data.push(<HitDice hd={feature.hit_die} />)
-        prop == 'attributes' && data.push(<Attribute attr={feature.attributes} />)
-    })
-    return (
-        <div className={css`
-            border:${theme.border};
-            display:grid;
-            grid-template-columns: min-content auto;
-        `}>
-            {data}
+                    {de.map(d => <div>{d}</div>)}
+                </div> :
+                de}
         </div>
     )
 }
@@ -416,13 +267,35 @@ function FeatureData({ feature, showXp = true }) {
 
 function ApplicableMeta({ meta, feature }) {
     return (
-        <div>
-            <Item label={'Ranges'}>
-                <FeatureMeta meta_list={meta.ranges.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
-            </Item>
-            <Item label={'Durations'}>
-                <FeatureMeta meta_list={meta.durations.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
-            </Item>
-        </div>
+        <>
+         {meta!=null &&
+            <div className={css`
+                display:flex;
+                >div {
+                    display:flex;
+                    >div {
+                        margin:unset;
+                        margin-right:5px;
+                    }
+                }
+                
+            `}>
+                <div>
+                    <Label content={'Ranges'}>
+                        <Icon path={ranges} size={20}/>
+                    </Label>
+                    <FeatureMeta meta_list={meta.ranges.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
+                </div>
+                <div>
+                    <Label content={'Durations'}>
+                        <Icon path={durations} size={20}/>
+                    </Label>
+                    <FeatureMeta meta_list={meta.durations.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
+                </div>
+            </div>
+        }
+        </>
+       
+
     )
 }

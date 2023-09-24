@@ -6,25 +6,25 @@ import { useImmerReducer } from 'use-immer';
 import Uri from 'jsuri';
 
 import { Block, Item } from '@elements/containers';
-import { Button, Buttons } from '@elements/interactive';
+import { Button, Buttons, Alert } from '@elements/interactive';
 import { Icon } from '@elements/images';
 import { CharacterNotFoundError, CharacterUndefinedError } from '@components/errors';
 
-import Groups, {Ranges, Durations, Effects} from '@models/featureset';
+import Groups, { Ranges, Durations, Effects } from '@models/featureset';
 
 import Options from '@sections/options'
 import Classes from '@sections/class'
 import Backgrounds from '@sections/backgrounds'
-import Bio, {Alignment} from '@sections/bio'
+import Bio, { Alignment } from '@sections/bio'
 import Combat from '@sections/combat'
 import Stats from '@sections/stats'
 import Skills from '@sections/skills'
-import Progression, {Tier} from '@sections/progression'
+import Progression, { Tier } from '@sections/progression'
 import Health from '@sections/health';
 import Features, { ClassFeatures, TagFeatures } from '@sections/features';
 import Powers from '@sections/powers';
 
-import * as classes from '@assets/icons/classes'
+import { classes } from '@assets/icons'
 
 export class Character {
     [immerable] = true
@@ -50,6 +50,7 @@ export class Character {
         }
     }
     static parse(data) {
+        console.log(data)
         var ch = new Character(data.id, data.user)
         ch.classes = Classes.parse(data.classes)
         ch.backgrounds = Backgrounds.parse(data.backgrounds)
@@ -90,10 +91,10 @@ export class Character {
         return character
     }
     static retrieve(id) {
-        const in_focus=sessionStorage.getItem('character')
+        const in_focus = sessionStorage.getItem('character')
         if (!_.isNull(in_focus)) {
-            if (JSON.parse(in_focus).id==id) {
-                return Character.parse(in_focus)
+            if (JSON.parse(in_focus).id == id) {
+                return Character.parse(JSON.parse(in_focus))
             }
         }
         else {
@@ -102,9 +103,8 @@ export class Character {
             }
             else {
                 throw new CharacterNotFoundError('')
-            }             
+            }
         }
-       
     }
     async delete() {
         var resp = await fetch(this.routes.trash).then((j) => j.json())
@@ -113,7 +113,7 @@ export class Character {
         alert(resp.msg)
     }
     complete() {
-        return (!_.isUndefined(this) && this.classes.base!=null)
+        return (!_.isUndefined(this) && this.classes.base != null)
     }
     bought() {
         var locations = ['classes', 'backgrounds', 'features.class_features', 'features.tag_features', 'powers.effects', 'powers.metadata.ranges', 'powers.metadata.durations']
@@ -134,7 +134,7 @@ export class Character {
         try {
             return Character.retrieve(id)
         }
-        catch {CharacterNotFoundError} {
+        catch { CharacterNotFoundError } {
             var v = await Character.request(id)
             return v
         }
@@ -144,8 +144,8 @@ export class Character {
         sessionStorage.setItem('character', JSON.stringify(this))
     }
     static async from_url() {
-        const id=new Uri(window.location.href).getQueryParamValue('character')
-        const character=await Character.load(id)
+        const id = new Uri(window.location.href).getQueryParamValue('character')
+        const character = await Character.load(id)
         return character
     }
     async write() {
@@ -195,8 +195,10 @@ export class Character {
         const controls = {
             save: async () => {
                 sessionStorage.setItem('character', JSON.stringify(this))
-                var resp = await this.write()
-                alert(resp.msg)
+                var resp = await this.write().then((j)=>JSON.parse(j.body))
+                return (
+                    <Alert msg={resp.msg} />
+                )
             },
             levelup: () => {
                 window.location.assign(this.routes.levelup)
@@ -221,9 +223,7 @@ export class Character {
             return (
                 <Block header={'Bio'}>
                     <Item label={'name'}>
-                        <text>
-                            {ch.name}
-                        </text>
+                        <text>{ch.bio.name}</text>
                     </Item>
                     <Item label={'class'}>
                         <text>{ch.classes.base.name}</text>
@@ -270,14 +270,7 @@ export class Character {
                             width: 150px;
                         }
                     `}>
-                        <Icon path={classes[ch.classes.base.name.toLowerCase()].default} />
-                    </div>
-                    <div>
-                        <Buttons>
-                            <Button onClick={ch.controls('levelup')}>Level Up</Button>
-                            <Button onClick={ch.controls('delete')}>Delete</Button>
-                            <Button onClick={ch.controls('sheet')}>Sheet</Button>
-                        </Buttons>
+                        <Icon path={classes[ch.classes.base.name.toLowerCase()]} />
                     </div>
                     <div className={css`
                         border: ${theme.border};
@@ -316,7 +309,7 @@ export function SaveButton({ ch }) {
 }
 
 export function useCharacter(ch) {
-    if (ch!=null) {
+    if (ch != null) {
         const [character, dispatch] = useImmerReducer(dispatcher, ch)
         function dispatcher(draft, action) {
             if (action.needs_context) {
@@ -329,7 +322,7 @@ export function useCharacter(ch) {
     else {
         throw new CharacterUndefinedError('')
     }
-  
+
 }
 
 export function generatePatch(dispatcher) {

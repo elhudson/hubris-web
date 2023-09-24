@@ -3,7 +3,8 @@ import { User, UserMenu, userContext } from '@models/user'
 import Characters from '@pages/characters'
 import Login from '@pages/login'
 import CharacterSheet from '@pages/sheet'
-
+import CreationPage from '@pages/create'
+import LevelUp from '@pages/levelup'
 
 import { ThemeProvider } from "@emotion/react"
 import Uri from 'jsuri'
@@ -15,8 +16,7 @@ import themes from '@styles/themes'
 import { useState } from 'react'
 import Ruleset from '@models/ruleset'
 
-// import CreationPage from '@pages/create'
-import LevelUp from '@pages/levelup'
+
 
 await Ruleset.load()
 const user = User.in_memory() ? User.parse(JSON.parse(sessionStorage.getItem('user'))) : new User()
@@ -41,6 +41,7 @@ function App() {
           {currentPage == '/characters' && <Characters />}
           {currentPage == '/sheet' && <CharacterSheet />}
           {currentPage=='/levelup' && <LevelUp />}
+          {currentPage=='/create' && <CreationPage />}
         </ThemeProvider>
       </userContext.Provider>
     </div>

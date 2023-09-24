@@ -28,14 +28,21 @@ export function CheckboxItem({ item, checked = false, handler = null, disabled=f
         <div className={css`
             width:100%;
             display:flex;
+            align-items:flex-end;
             >div {
                 width:100%;
             }
-        `}>
-            <input className={css`
+            >input:first-child {
                 ${theme.styles.checkbox};
                 vertical-align:middle;
-            `} type='checkbox' path={item.path} disabled={disabled} checked={checked} value={item.value} onClick={handler} />
+            }
+            >label:last-child {
+                display:inline;
+                font-size:${theme.size-2}px;
+                vertical-align:bottom;
+            }   
+        `}>
+            <input type='checkbox' path={item.path} disabled={disabled} checked={checked} value={item.value} onClick={handler} />
             {children}
             <label>{item.label}</label>
         </div>

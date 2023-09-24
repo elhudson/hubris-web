@@ -112,7 +112,12 @@ class HitDice {
 }
 
 export function HD({ hd, update, isOption }) {
-    var data = ruleset.reference.hd.map(h => new Object({ label: h, value: h, selected: h == hd.die, available: false }))
+    console.log(data)
+    var data = ruleset.reference.hd.map(h => new Object({ 
+        label: h, 
+        value: h, 
+        selected: h == hd.die, 
+        available: false }))
     return (
         <>
             <LabeledItem label='Hit Dice'>

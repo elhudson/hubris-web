@@ -4,10 +4,11 @@ import { CheckboxItem, SmallMod } from "@elements/text"
 import Uri from "jsuri"
 import { Icon } from "@elements/images"
 
-import * as tags from '@assets/icons/tags'
 import { Tooltip } from "@nextui-org/react";
 import { css } from "@emotion/css"
 import { useTheme } from "@emotion/react"
+
+import _ from 'lodash'
 
 export default class Entry {
     [immerable] = true
@@ -365,7 +366,7 @@ export class Background extends Entry {
         character.stats[func](this)
     }
     get_feature() {
-        const insert = this.feature == null ? {
+        const insert = this.feature == null || this.feature==undefined ? {
             name: "",
             description: ""
         } : {
@@ -374,13 +375,15 @@ export class Background extends Entry {
         }
         return ({
             ticks: this.ticks,
+            background:this.name,
+            table: 'backgrounds',
             ...insert
         })
     }
     displayFeature() {
         return (<Feature feature={this.get_feature()} />)
     }
-
+    
 }
 
 export class Tag extends Entry {

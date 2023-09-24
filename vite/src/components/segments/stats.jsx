@@ -7,6 +7,8 @@ import React from 'react'
 import { css } from "@emotion/css"
 import { useTheme } from "@emotion/react"
 
+import _ from 'lodash'
+
 export default class Stats extends Info {
     [immerable] = true
     constructor() {

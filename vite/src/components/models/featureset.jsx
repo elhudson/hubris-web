@@ -45,6 +45,7 @@ export class Bin extends Array {
         Object.assign(this, Array.from(data))
     }
     display({ label, handler = null, asOption }) {
+        console.log(asOption)
         var func = asOption ? 'displayOption' : 'displayFeature'
         function Bin({ data, label, handler = null }) {
             return (
@@ -172,9 +173,11 @@ export default class Groups {
         }
     }
     map(func) {
+        var ls=[]
         for (var o of this) {
-            return func(o)
+            ls.push(func(o))
         }
+        return ls
     }
     filter(func) {
         var ls = []
@@ -197,9 +200,7 @@ export default class Groups {
                 [attr]: value 
             }
             this.forEach((item) => {
-                
                 item.visible=item.matches(this.filtered)
-                console.log(item.name, item.visible)
             })
            
         }
@@ -308,20 +309,20 @@ export default class Groups {
         }
     }
     display({ handler = null, asOption = true }) {
-        function Bins({ bins, handler }) {
-            return (
-                <div className={css`
-                    >* {
-                        margin:5px;
-                    }
-                `}>
-                    {Object.keys(bins.content).map(by => bins.content[by].display({ label: by, handler: handler, asOption: asOption }))}
-                </div>)
-        }
-        return <Bins bins={this} handler={handler} />
+        return(<Bins bins={this} handler={handler} asOption={asOption}/>)
     }
 }
 
+export function Bins({ bins, handler, asOption}) {
+    return (
+        <div className={css`
+            >* {
+                margin:5px;
+            }
+        `}>
+            {Object.keys(bins.content).map(by => bins.content[by].display({ label: by, handler: handler, asOption: asOption }))}
+        </div>)
+}
 
 export class Effects extends Groups {
     constructor(data) {

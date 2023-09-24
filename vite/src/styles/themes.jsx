@@ -16,6 +16,7 @@ const themes = {
             'text': Color('#282828'),
             'muted': Color('#A89984'),
             'light': Color('#7C6F64'),
+            'red': Color('#CC241D'),
             'size': 14,
             'mono': 'IBM Plex Mono',
             'sans': 'IBM Plex Sans'

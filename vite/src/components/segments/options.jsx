@@ -65,14 +65,6 @@ export class Choices {
         this.addDrop(range, ch, true)
         this.addDrop(duration, ch, true)
     }
-    display({ binner, handler }) {
-        return (
-            <div>
-                {Object.keys(this).map(key =>
-                    this[key].display({ binner: binner, handler: handler }))}
-            </div>
-        )
-    }
 }
 
 

@@ -20,7 +20,7 @@ export default defineConfig({
   },
   plugins: [react()],
   build: {
-    target: 'esnext' //browsers can handle the latest ES features
+    target: 'esnext', //browsers can handle the latest ES features,
   },
   esbuild: {
     supported: {

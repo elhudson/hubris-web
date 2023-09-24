@@ -22,7 +22,7 @@ def init_character():
     args=request.args
     user=args.get('user')
     char_id=str(uuid.uuid4())
-    data={'id':char_id, 'user':user, 'url':url_for('creation', character=char_id, stage='class')}
+    data={'id':char_id, 'user':user, 'url':url_for('vite.creation', character=char_id, stage='class')}
     app.database.save_character(data, user)
     return json.dumps(data)
 

@@ -161,6 +161,9 @@ export function Tabbed({ names, menus = null, children }) {
     return (
         <Tabs onSelect={(index) => setSelected(index)} className={css`
             display:flex;
+            .react-tabs__tab-panel--selected {
+                width:100%;
+            }
             .react-tabs__tab-list {
                 width:fit-content;
                 padding:0px;

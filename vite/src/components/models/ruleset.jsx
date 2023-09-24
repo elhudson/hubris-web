@@ -62,6 +62,7 @@ export default class Ruleset extends Object {
         }
     }
     condition(url, character) {
+        console.log(url)
         const conditions = {
             class:(character) => {return character.classes.base!=null},
             backgrounds:(character)=>{return character.backgrounds.primary!=null && character.backgrounds.secondary!=null},

@@ -23,11 +23,11 @@ export default function Dialog({ header, error, buttons, items, handler }) {
             }
         `}>
             <h1 className={css`
-            border-bottom: ${theme.border};
-            text-align: center;
-            padding: unset;
-            margin: unset;
-            `}>{header}</h1>
+                border-bottom: ${theme.border};
+                text-align: center;
+                padding: unset;
+                margin: unset;
+                `}>{header}</h1>
             <Error error={error} />
             <div>
                 {items.map(item =>

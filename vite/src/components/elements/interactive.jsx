@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Icon } from './images'
 import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
@@ -7,10 +7,12 @@ import { MenuButton } from '@mui/base/MenuButton';
 import { Backdrop, Box } from "@mui/material";
 import { Dropdown as Drop } from '@mui/base/Dropdown';
 import { nanoid } from 'nanoid';
-import plus from '@assets/icons/plus.svg'
-import minus from '@assets/icons/minus.svg'
+import up from '@assets/icons/up.svg'
+import down from '@assets/icons/down.svg'
 import { Modal } from '@mui/base/Modal';
 import { Tooltip } from "@nextui-org/react";
+
+import cancel from '@assets/icons/cancel.svg'
 
 export function Buttons({ children }) {
     const theme = useTheme()
@@ -34,12 +36,32 @@ export function Label({ content, children }) {
                     font-style:italic;
                     border-radius:3px;
                     box-shadow:${theme.shadow};
+                    width:fit-content;
+                   
 
             `}>
             <div>
                 {children}
             </div>
         </Tooltip>
+    )
+}
+
+export function Alert({ msg }) {
+    const theme=useTheme()
+    const [visible, setVisible]=useState(true)
+    useEffect(()=> {
+        setInterval(()=> {
+            setVisible(false)
+        }, 3000)
+    })
+    return (
+        <div className={css`
+            ${theme.styles.box}
+            display:${visible ? 'block' : 'none'};
+        `}>
+            {msg}
+        </div>
     )
 }
 
@@ -59,14 +81,38 @@ export function Popup({ preview, children }) {
                 open={open}>
                 <Box className={css`
                     width:200px;
-                    position:fixed;
                     margin:auto;
                     top:50%;
                     left:50%;
+                    position:absolute;
+                    border-radius:5px;
                     transform:translate(-50%, 50%);
                     ${theme.styles.box}
+                    h1 {
+                        position:absolute;
+                        left:0;
+                        top:0;
+                        margin:0;
+                        font-size:${theme.size}px;
+                        text-transform:uppercase;
+                        font-family:${theme.mono};
+                        border-bottom:${theme.border};
+                        margin:5px;
+
+                    }
                 `}>
-                    <Button onClick={handleOpen}>Close</Button>
+                    <button onClick={handleOpen} className={css`
+                        background-color:${theme.transparent};
+                        border: none;
+                        float:right;
+                        margin:5px;
+                        padding:0px;
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    `}>
+                        <Icon path={cancel} size={12} color={theme.red} />
+                    </button>
                     {children}
                 </Box>
             </Modal>
@@ -117,6 +163,7 @@ export function RadioItem({ item, readOnly, isRadio, group, onChange }) {
     const theme = useTheme()
     return (
         <div>
+
             <input
                 className={theme.styles.checkbox}
                 disabled={readOnly}
@@ -130,11 +177,11 @@ export function RadioItem({ item, readOnly, isRadio, group, onChange }) {
             <label>
                 {item.label}
             </label>
+
         </div>
 
     )
 }
-
 
 export function Button({ onClick, max = null, table = null, min = null, children, value, path }) {
     const theme = useTheme()
@@ -191,10 +238,10 @@ export function Toggles({ item, increaser, decreaser }) {
             }`
         }>
             <Button name={item.name} min={item.min} path={item.path} max={item.max} type="button" onClick={increaser}>
-                <Icon path={plus} />
+                <Icon path={up} />
             </Button>
             <Button name={item.name} min={item.min} path={item.path} max={item.max} type="button" onClick={decreaser}>
-                <Icon path={minus} />
+                <Icon path={down} />
             </Button>
         </div>)
 }

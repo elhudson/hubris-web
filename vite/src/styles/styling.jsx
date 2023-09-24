@@ -41,11 +41,16 @@ function makeStyles(theme) {
             appearance: none;
             border:${theme.border};
             border-radius: 100%;
-            :checked {
-                display:unset;
-                border:none;
-                content: url(${check});
+            &:hover {
+                background-color:${theme.text};
                 opacity:60%;
+            }
+            &:disabled {
+                pointer-events:none;
+            }
+            :checked {
+                background-color:${theme.text};
+                border:unset;
             }`,
         label: css`
             display: block;
