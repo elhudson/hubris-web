@@ -42,5 +42,6 @@
     },
     "[nunjucks]": {
         "editor.defaultFormatter": "mblode.pretty-formatter"
-    }
+    },
+    "explorer.excludeGitIgnore": true
 }

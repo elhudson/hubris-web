@@ -26,7 +26,8 @@ export function Label({ content, children }) {
     return (
         <Tooltip
             content={content}
-            className={css`
+            className={
+                css`
                     font-family:${theme.mono};
                     font-size:${theme.small}px;
                     background-color:${theme.background};
@@ -35,9 +36,7 @@ export function Label({ content, children }) {
                     border-radius:3px;
                     box-shadow:${theme.shadow};
                     width:fit-content;
-                   
-
-            `}>
+                `}>
             <div>
                 {children}
             </div>

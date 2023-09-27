@@ -1,7 +1,5 @@
-import { Button, Label, Buttons } from "@elements/interactive"
-import { Item, LabeledItem } from "@elements/containers"
+import { Button, Label } from "@elements/interactive"
 import { Icon } from "./images"
-import { Box } from "@mui/material"
 import { Popper } from "@mui/base"
 import React from "react"
 import _ from 'lodash'
@@ -217,14 +215,14 @@ export function MetaOption({ meta }) {
             id={meta.id}
             anchorEl={anchorEl}
             open={open}>
-            <Box className={css`
+            <div className={css`
                 padding:0px;
                 margin:0px;
                 z-index: 3;
                 ${theme.styles.box}
             `}>
                 <Feature feature={meta} />
-            </Box>
+            </div>
         </Popper>
     </>)
 }
