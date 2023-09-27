@@ -1,76 +1,83 @@
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 import json
-from flask import Flask, redirect, request, render_template, session, url_for, make_response
+from flask import Flask, redirect, request, url_for, make_response
 import os
 import uuid
 from db_connect import address
 
 from flask_vite import Vite
 from vite.views import bp
-from filesystem import Database
+from filesystem import start_engine
+
+from db import Character, User, Base, CharacterError, UserError
+
+from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
 vite=Vite(app)
 app.secret_key=os.urandom(19)
 app.register_blueprint(bp)
-app.database=Database(address)
-app.database.create_engine()
+
+app.engine=start_engine()
+Base.metadata.create_all(app.engine)
+
+app.characters=Character
+app.users=User
+
+@app.errorhandler(OperationalError)
+def handle_disconnect(e):
+    print(e)
 
 @app.route("/new_character")
 def init_character():
-    args=request.args
-    user=args.get('user')
+    user=request.args.get('user')
     char_id=str(uuid.uuid4())
-    data={'id':char_id, 'user':user, 'url':url_for('vite.creation', character=char_id, stage='class')}
-    app.database.save_character(data, user)
+    data={
+        'id':char_id, 
+        'user':user,
+        'url':url_for('vite.creation', character=char_id, stage='class')}
+    app.characters.set(app.engine, data)
     return json.dumps(data)
 
 @app.route('/user')
 def get_characters():
-    i=request.args.get('user')
-    return app.database.get_usr_characters(i)
+    res=app.characters.by_user(app.engine, request.args.get('user'))
+    return json.dumps(res)
 
 @app.route('/login',methods=['POST'])
 def login():        
-    data=request.get_json()
-    username=data['username']
-    password=data['password']
-    q=app.database.run_query(f"SELECT * FROM users WHERE username='{username}'")
-    if q.empty:
-        return redirect(url_for('wizard',error='no-account'))
-    elif q['password'][0]!=password:
-        return redirect(url_for('wizard',error='wrong-password'))
-    else:
-        user_id=app.database.as_item(f"SELECT id FROM users WHERE username='{username}'")
-        r={'id':user_id, 'msg':f'Welcome, back, {username}!'}
-        return json.dumps(r)
+    try:
+        data=app.users.validate(app.engine, request.get_json())
+        return redirect(url_for('vite.my_characters', user=data.id))
+    except UserError:
+        return redirect(url_for('vite.wizard', error='no-user'))
     
 @app.route('/register',methods=['POST'])
 def register():
     data=json.loads(request.get_data())
-    username=data['username']
-    password=data['password']
-    id=str(uuid.uuid4())
-    exists=app.database.run_query(f'''SELECT * FROM users WHERE username='{username}' ''')
-    if exists.empty:
-        app.database.write_data(f"INSERT INTO users VALUES('{id}','{username}','{password}')")
-        return redirect(url_for('my_characters', user=id))
-    else :
-        return redirect(url_for('vite.wizard',error='account-exists'))
+    data['id']=str(uuid.uuid4())
+    try:
+        app.users.set(app.engine, data)
+    except UserError:
+        data['url']=url_for('vite.wizard', error='account-exists')
+        data['validated']=False
+    else:
+        data['url']=url_for('vite.my_characters', user=data['id'])
+        data['validated']=True
+    return json.dumps(data)
 
 @app.route('/character',methods=['GET', 'POST'])
 def character():
     args=request.args
     if request.method=='GET':
-        return json.dumps(app.database.get_character(args.get('character')))
+        return json.dumps(app.characters.get(app.engine, args.get('character')))
     if request.method=='POST':
-        user_id=app.database.get_char_owner(args.get('character'))
         character=request.get_json()
-        app.database.save_character(character, user_id)
-        data={'msg':f'Character saved', 'user':user_id, 'character':character}
+        app.characters.set(app.engine, character)
+        data={'msg':f'Character saved', 'user':character['user'], 'character':character}
         response={
-            'url':url_for('vite.my_characters', user=user_id),
+            'url':url_for('vite.my_characters', user=character['user']),
             'body':json.dumps(data)
         }
         return make_response(response)
@@ -86,4 +93,3 @@ def get_rules():
     rules=json.load(open(f'{os.getcwd()}/database/ruleset.json'))
     return json.dumps(rules)
 
-    

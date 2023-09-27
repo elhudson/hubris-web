@@ -5,10 +5,6 @@ import { MenuItem, useTab } from "@mui/base"
 import { viewContext } from "@models/featureset"
 import { css } from "@emotion/css"
 import { useTheme } from "@emotion/react"
-import icons from '@assets/icons'
-import { Icon } from "../elements/images"
-
-import {Label} from '@elements/interactive'
 
 const view_template = (table, filter, sort, group) => {
     return ([table, {
@@ -164,13 +160,7 @@ function ViewOption({ data, handler, selected=false }) {
             {...data}
             onClick={handler}
             aria-selected={selected}>
-                {['tags', 'tree'].includes(data.name) ? 
-                        <Icon
-                        path={icons[data.value.toLowerCase()]} 
-                        size={14}
-                        color={selected ? theme.background : theme.text}
-                    />                     
-                    : data.value}
+                {data.value}
         </div>
     )
 }

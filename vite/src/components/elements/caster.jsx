@@ -6,11 +6,7 @@ import { DC } from '@elements/numbers'
 import { css } from '@emotion/css'
 import _, { indexOf } from 'lodash'
 import { useTheme } from "@emotion/react"
-import { Item } from '@elements/containers'
-
 import { Icon } from "@elements/images"
-import time from '@assets/icons/stopwatch.svg'
-import space from '@assets/icons/distance.svg'
 
 export default function UsePower({ feature, meta }) {
     const theme=useTheme()
@@ -74,13 +70,13 @@ export default function UsePower({ feature, meta }) {
             `}>
                 <div>
                     <Label content='Range'>
-                        <Icon path={space} size={16} />
+                        <Icon name={'ui/distance'} size={16} />
                     </Label>
                     <SelectMetadata label={'Range'} obj={applicable.ranges} index={range} handler={handleRange} />
                 </div>
                 <div>
                     <Label content='Duration'>
-                        <Icon path={time} size={16} />
+                        <Icon name={'ui/stopwatch'} size={16} />
                     </Label>
                     <SelectMetadata label={'Duration'} obj={applicable.durations} index={duration} handler={handleDuration} />
                 </div>

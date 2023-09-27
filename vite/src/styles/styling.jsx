@@ -1,5 +1,4 @@
 import { css } from "@emotion/css"
-import check from '@assets/icons/x.svg'
 
 function makeTheme(th) {
     const theme = {

@@ -11,15 +11,13 @@ import { views, Filters, Sorters, Groupers, sectionContext } from "@models/filte
 import { current, immerable, isDraft } from "immer"
 import { useTheme } from "@emotion/react"
 
-import icons from '@assets/icons'
-import toggles from '@assets/icons/toggles.svg'
 
 export const viewContext=createContext(null)
 
 function BinControls({ fxs, options, current }) {
     return (
         <Menu icon={
-            <Icon path={toggles} size={30} />
+            <Icon name={'ui/toggles'} size={30} />
         }>
             <sectionContext.Provider value={{
                 loc: options.table,
@@ -62,12 +60,6 @@ export class Bin extends Array {
 
 export function BinLabel({ text }) {
     const theme = useTheme()
-    var icon = ''
-    try {
-        icon = [icons[text.toLowerCase()]]
-        icon = text.toLowerCase().split('/').map(t => icons[t])
-    }
-    catch { Error }
     return (
         <>
             {(text != "" && text != 'None') && <div className={css`
@@ -83,7 +75,6 @@ export function BinLabel({ text }) {
                     margin-right:10px;
                 }
             `}>
-                {icon.map(i => <Icon path={i} size={16} />)}
                 {text}
             </div>}
         </>

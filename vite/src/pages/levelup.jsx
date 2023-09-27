@@ -3,10 +3,11 @@ import { Character, generatePatch, useCharacter } from "@models/character"
 import { useAsync } from 'react-async-hook'
 import { Tabbed } from "@elements/containers"
 import { Page } from '@elements/pages'
+import Uri from 'jsuri'
 
 export default function LevelUp() {
-    const getCharacter = async (data) => await Character.from_url()
-    const myCharacter = useAsync(getCharacter)
+    const getCharacter = async (id) => await Character.load(id)
+    const myCharacter = useAsync(()=>getCharacter(new Uri(window.location.href).getQueryParamValue('character')))
     return (
         <Page title={'Level Up'}>
             {myCharacter.result && <Level ch={myCharacter.result} />}

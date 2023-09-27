@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react'
 
-import { Button } from './interactive'
-import { Icon } from './images'
+import { Button } from '@elements/interactive'
+import { Icon } from '@elements/images'
 import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
 
@@ -96,7 +96,7 @@ export function Field({data, handler, size='small', hidden=false, toggleable=fal
             {size=='big' && <textarea disabled={!editable} path={data.path} onBlur={handler}>{data.text}</textarea>}
             {toggleable &&
             (<Button onClick={handleToggle}>
-                <Icon name='quill' size={14} />
+                <Icon name='ui/quill' size={14} />
             </Button>)}
         </div>
     )

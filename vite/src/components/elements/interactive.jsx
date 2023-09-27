@@ -7,12 +7,10 @@ import { MenuButton } from '@mui/base/MenuButton';
 import { Backdrop, Box } from "@mui/material";
 import { Dropdown as Drop } from '@mui/base/Dropdown';
 import { nanoid } from 'nanoid';
-import up from '@assets/icons/up.svg'
-import down from '@assets/icons/down.svg'
+
 import { Modal } from '@mui/base/Modal';
 import { Tooltip } from "@nextui-org/react";
 
-import cancel from '@assets/icons/cancel.svg'
 
 export function Buttons({ children }) {
     const theme = useTheme()
@@ -111,7 +109,7 @@ export function Popup({ preview, children }) {
                             cursor: pointer;
                         }
                     `}>
-                        <Icon path={cancel} size={12} color={theme.red} />
+                        <Icon name={'ui/cancel'} size={12} color={theme.red} />
                     </button>
                     {children}
                 </Box>
@@ -135,7 +133,7 @@ export function Overlay({ open }) {
 }
 
 
-export function Radio({ label, data, onChange = null, vertical = false, readonly = false }) {
+export function Radio({ label, data, icons=false, onChange = null, vertical = false, readonly = false }) {
     const theme = useTheme()
     const uniqLabel = label + '_' + nanoid()
     const horizontalCss = css`
@@ -147,6 +145,7 @@ export function Radio({ label, data, onChange = null, vertical = false, readonly
         list-style:none;
         border-bottom:none;
     `
+
     return (
         <div className={css`
             ${theme.styles.text}
@@ -154,16 +153,23 @@ export function Radio({ label, data, onChange = null, vertical = false, readonly
             margin:3px 0px;
         `}>
             {data.map(item =>
-                <RadioItem readOnly={readonly} item={item} isRadio={true} group={uniqLabel} onChange={onChange} />
+                <RadioItem 
+                    readOnly={readonly} 
+                    icon={icons}
+                    item={item}
+                    isRadio={true} 
+                    group={uniqLabel} 
+                    onChange={onChange} 
+                />
             )}
         </div>)
 }
 
-export function RadioItem({ item, readOnly, isRadio, group, onChange }) {
+export function RadioItem({ item, icon=false, readOnly, isRadio, group, onChange }) {
     const theme = useTheme()
+    icon!=false && (icon=icon+'/'+item.value.toLowerCase())
     return (
         <div>
-
             <input
                 className={theme.styles.checkbox}
                 disabled={readOnly}
@@ -174,10 +180,7 @@ export function RadioItem({ item, readOnly, isRadio, group, onChange }) {
                 type={isRadio ? 'radio' : 'checkbox'}
                 checked={item.selected}
             />
-            <label>
-                {item.label}
-            </label>
-
+            {icon ? <Icon name={icon}/> : item.label}
         </div>
 
     )
@@ -238,10 +241,10 @@ export function Toggles({ item, increaser, decreaser }) {
             }`
         }>
             <Button name={item.name} min={item.min} path={item.path} max={item.max} type="button" onClick={increaser}>
-                <Icon path={up} />
+                <Icon name={'ui/up'} />
             </Button>
             <Button name={item.name} min={item.min} path={item.path} max={item.max} type="button" onClick={decreaser}>
-                <Icon path={down} />
+                <Icon path={'ui/down'} />
             </Button>
         </div>)
 }

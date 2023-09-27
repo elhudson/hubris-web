@@ -105,7 +105,7 @@ export class RadioArray {
             val.value!=value && (val.active==false)
         })
     }
-    display({path, group, handler, vert=true}) {
+    display({path, group, handler, useIcon=false, vert=true}) {
         function RadioArray({aray, path, group, handler}) {
             var processed=aray.list().map(item=> 
                 new Object({
@@ -115,7 +115,7 @@ export class RadioArray {
                     path:path
                 })) 
             return (
-                <Radio vertical={vert} label={group} data={processed} onChange={handler} />
+                <Radio vertical={vert} icons={useIcon} label={group} data={processed} onChange={handler} />
             )
         }
         return(<RadioArray path={path} group={group} handler={handler} aray={this}/>)

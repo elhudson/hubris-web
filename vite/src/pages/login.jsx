@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { User, useUser, userContext } from '@models/user'
+import { useUser, userContext } from '@models/user'
 
 import Dialog from "@elements/dialog";
 import Uri from "jsuri";
@@ -16,22 +16,10 @@ export default function Login() {
         })
     }
     const handleLogin = async () => {
-        var response = await user.login()
-        editUser({
-            type: 'edit',
-            path: 'id',
-            value: response.id
-        })
-        var characters=await user.get_characters()
-        var clone={...user}
-        clone.id=response.id
-        clone.characters=characters
-        clone.validated=true
-        sessionStorage.setItem('user',JSON.stringify(clone))
-        window.location.assign('/characters?' + new URLSearchParams({ user: response.id }))
+        await user.login().then((url)=>window.location.assign(url))
     }
-    const handleRegister = () => {
-        user.register()
+    const handleRegister = async () => {
+        await user.register().then((url)=>window.location.assign(url))
     }
     return (
         <Dialog

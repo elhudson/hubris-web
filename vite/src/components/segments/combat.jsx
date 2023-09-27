@@ -261,7 +261,7 @@ export class Weapon extends item {
                     </div>
                     <div className="row">
                         <LabeledItem label={'Heft'}>
-                            {wpn.weight.display({ path: `weapons.${wpn.index}.weight`, handler: onChange, group: 'heft' })}
+                            {wpn.weight.display({ path: `weapons.${wpn.index}.weight`, handler: onChange, group: 'heft'})}
                         </LabeledItem>
                         <LabeledItem label='Speed'>
                             <Tracker left={{label:'Quick', readOnly:true, value:wpn.quick()}} right={{label:'Slow', readOnly:true, value:wpn.slow()}} />

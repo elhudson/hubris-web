@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
   server: {
-    host:true
+    host:true,
   },
   resolve: {
     alias: {
@@ -18,7 +19,12 @@ export default defineConfig({
       '@components':path.resolve(__dirname, './src/components')
     }
   },
-  plugins: [react()],
+  plugins: [react(), svgr({
+    svgrOptions:{
+      dimensions:false,
+      icon:true
+    }
+  })],
   build: {
     target: 'esnext', //browsers can handle the latest ES features,
   },

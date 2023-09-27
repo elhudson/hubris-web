@@ -4,7 +4,6 @@ import { Icon } from '@elements/images'
 import { TabList, Tab, Tabs, TabPanel } from 'react-tabs'
 import { useTheme } from '@emotion/react'
 import { css } from '@emotion/css'
-import manicule from '@assets/icons/manicule.svg'
 
 export function OptionList({ children }) {
     return (
@@ -60,7 +59,7 @@ export function Snippet({ snip, sx = null, children }) {
             `}>
                 {snip}
                 <Button onClick={togl}>
-                    <Icon path={manicule} size={20} />
+                    <Icon name={'ui/manicule'} size={20} />
                 </Button>
             </div>
             <div className={css`

@@ -1,4 +1,3 @@
-import { Character } from '@models/character';
 import { css } from '@emotion/css'
 import { Page } from '@elements/pages';
 
@@ -9,7 +8,8 @@ import { userContext } from '@models/user';
 
 export default function Characters() {
     const user = useContext(userContext)
-    const ids = user.characters
+    const getCharacters=async()=>await user.characters()
+    const characters=useAsync(getCharacters)
     return (
         <Page title='My Characters'>
             <div className={css`
@@ -17,18 +17,11 @@ export default function Characters() {
                 grid-gap:10px;
                 grid-template-columns:repeat(auto-fill, 200px);
              `}>
-                {ids.map(id => <CharacterThumbnail id={id} />)}
+                {characters.result && 
+                    characters.result.length>0 ? characters.result.map(c=>c.thumbnail()) :
+                    "You haven't created any characters yet."
+                }
             </div>
         </Page>
-    )
-}
-
-function CharacterThumbnail({ id }) {
-    const asyncChar=async (data)=> await Character.load(id)
-    const character=useAsync(asyncChar)
-    return (
-        <>
-            {character.result && (character.result.thumbnail())}
-        </>
     )
 }

@@ -9,10 +9,6 @@ import { css } from "@emotion/css"
 import { useTheme } from "@emotion/react"
 import UsePower from '@elements/caster'
 
-import * as icons from '@assets/icons'
-import durations from '@assets/icons/stopwatch.svg'
-import ranges from '@assets/icons/distance.svg'
-
 export default function Feature({ feature, meta = null, check = null }) {
     const theme = useTheme()
     return (
@@ -52,7 +48,7 @@ export function FeatureTags({ tags }) {
         `}>
             {tags.map(t =>
                 <Label content={t.name}>
-                    <Icon path={icons.tags[t.name.toLowerCase()]} />
+                    <Icon name={`tags/${t.name.toLowerCase()}`} />
                 </Label>)}
         </div>
     )
@@ -92,19 +88,20 @@ export function FeatureHeader({ name, children }) {
 
 export function FeatureTopbar({ feature, children }) {
     var [icon, text] =
-        feature.table == 'backgrounds' ? [icons.backgrounds[feature.background.toLowerCase()], feature.background] :
-            feature.table == 'effects' ? [icons.trees[feature.tree.toLowerCase()], feature.tree] :
-                feature.table == 'class_features' ? [icons.classes[feature.classes.name.toLowerCase()], feature.classes.name] :
-                    feature.table == 'tag_features' ? [icons.tags[feature.tags.name.toLowerCase()], feature.tags.name] :
-                        feature.table == 'ranges' || feature.table == 'durations' ? [[icons.trees[feature.tree.toLowerCase().split('/')[0]], icons.trees[feature.tree.toLowerCase().split('/')[1]]], feature.tree] :
+        feature.table == 'backgrounds' ? [`backgrounds/${feature.name.toLowerCase()}`, feature.name] :
+            feature.table == 'effects' ? [`trees/${feature.tree.toLowerCase()}`, feature.tree] :
+                feature.table == 'class_features' ? [`classes/${feature.classes.name.toLowerCase()}`, feature.classes.name] :
+                    feature.table == 'tag_features' ? [`tags/${feature.tags.name.toLowerCase()}`, feature.tags.name] :
+                        feature.table == 'ranges' || feature.table == 'durations' ? [[`trees/${feature.tree.toLowerCase().split('/')[0]}`, `trees/${feature.tree.toLowerCase().split('/')[1]}`], feature.tree] :
                             [undefined, undefined]
+    Object.hasOwn(feature, 'background') && ([icon, text]=[`backgrounds/${feature.background.toLowerCase()}`, feature.background])
     Array.isArray(icon) == false && icon!=undefined && (icon = [icon])
     return (
         <FeatureHeader name={feature.name}>
             {icon != undefined && icon.map(i =>
                 <Label content={text}>
                     <Icon
-                        path={i}
+                        name={i}
                         size={16}
                         sx={css`
                             svg {
@@ -132,7 +129,7 @@ export function FeatureTicks({ ticks }) {
             border-bottom:${theme.border};
         `}>
             <Icon
-                path={durations}
+                name={'ui/stopwatch'}
                 size={16} />
             {ticks}
         </div>
@@ -282,13 +279,13 @@ function ApplicableMeta({ meta, feature }) {
             `}>
                 <div>
                     <Label content={'Ranges'}>
-                        <Icon path={ranges} size={20}/>
+                        <Icon name={'ui/distance'} size={20}/>
                     </Label>
                     <FeatureMeta meta_list={meta.ranges.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
                 </div>
                 <div>
                     <Label content={'Durations'}>
-                        <Icon path={durations} size={20}/>
+                        <Icon name={'ui/stopwatch'} size={20}/>
                     </Label>
                     <FeatureMeta meta_list={meta.durations.pool().filter(f => f.tree == feature.tree || f.tree.includes(feature.tree))} feature={feature} />
                 </div>

@@ -8,12 +8,15 @@ import {userContext} from '@models/user'
 import { useContext } from 'react';
 
 export default function CreationPage() {
-    const getCharacter = async () => await Character.from_url()
-    const myCharacter = useAsync(getCharacter)
-    const stage = new Uri(window.location.href).getQueryParamValue('stage')
+    const params=new Uri(window.location.href)
+    const getCharacter = async (id)=>await Character.load(id)
+    const myCharacter=useAsync(()=>getCharacter(params.getQueryParamValue('character')))
     return (
-        <Page title={stage}>
-            {myCharacter.result && <Creation ch={myCharacter.result} stage={stage} />}
+        <Page title={params.getQueryParamValue('stage')}>
+            {myCharacter.result && <Creation 
+                ch={myCharacter.result} 
+                stage={params.getQueryParamValue('stage')} 
+            />}
         </Page>
     )
 }
@@ -29,7 +32,6 @@ function Creation({ ch, stage }) {
         if (ruleset.condition(stage, char) == true) {
             sessionStorage.setItem('character', JSON.stringify(char))
             if (next == 'save') {
-                user.characters.push(char.id)
                 sessionStorage.setItem('user', JSON.stringify(user))
                 char.save()
                 await char.write()

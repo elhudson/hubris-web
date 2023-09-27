@@ -16,7 +16,7 @@ import themes from '@styles/themes'
 import { useState } from 'react'
 import Ruleset from '@models/ruleset'
 
-
+import { Icon } from './components/elements/images'
 
 await Ruleset.load()
 const user = User.in_memory() ? User.parse(JSON.parse(sessionStorage.getItem('user'))) : new User()
@@ -34,9 +34,29 @@ function App() {
         width:${dimensions.width}px;
         min-height:${dimensions.height}px;
       `}>
+      <Icon/>
       <userContext.Provider value={user}>
         <ThemeProvider theme={currentTheme}>
-          <UserMenu />
+        <div className={css`
+            background-color:${theme.background};
+            border-bottom:${theme.border};
+            button.MuiMenuButton-root {
+                height:fit-content;
+                position:absolute;
+                top:10px;
+                left:10px;
+            }
+            h1 {
+                text-align:center;
+                width:100%;
+            }
+            display:inline-flex;
+            position:sticky;
+            width:100%;
+            `}>
+            <UserMenu />
+            <h1>HUBRIS</h1>
+          </div>
           {currentPage == '/' && <Login />}
           {currentPage == '/characters' && <Characters />}
           {currentPage == '/sheet' && <CharacterSheet />}

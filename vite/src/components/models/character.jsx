@@ -24,8 +24,6 @@ import Health from '@sections/health';
 import Features, { ClassFeatures, TagFeatures } from '@sections/features';
 import Powers from '@sections/powers';
 
-import { classes } from '@assets/icons'
-
 export class Character {
     [immerable] = true
     constructor(id, user) {
@@ -50,7 +48,6 @@ export class Character {
         }
     }
     static parse(data) {
-        console.log(data)
         var ch = new Character(data.id, data.user)
         ch.classes = Classes.parse(data.classes)
         ch.backgrounds = Backgrounds.parse(data.backgrounds)
@@ -142,11 +139,6 @@ export class Character {
     save() {
         localStorage.setItem(this.id, JSON.stringify(this))
         sessionStorage.setItem('character', JSON.stringify(this))
-    }
-    static async from_url() {
-        const id = new Uri(window.location.href).getQueryParamValue('character')
-        const character = await Character.load(id)
-        return character
     }
     async write() {
         var req = {
@@ -270,7 +262,7 @@ export class Character {
                             width: 150px;
                         }
                     `}>
-                        <Icon path={classes[ch.classes.base.name.toLowerCase()]} />
+                        <Icon name={'classes/'+ch.classes.base.name.toLowerCase()} />
                     </div>
                     <div className={css`
                         border: ${theme.border};
@@ -292,20 +284,6 @@ export class Character {
         }
         return this.complete() ? Thumbnail({ ch: this }) : <></>
     }
-}
-
-export function SaveButton({ ch }) {
-    const handleSave = () => {
-        sessionStorage.setItem(ch.id, JSON.stringify(ch))
-        ch.write()
-    }
-    return (
-        <div style={{ position: 'fixed', width: 'fit-content', background: styles.background, top: 30, right: 30 }}>
-            <Button onClick={handleSave}>
-                <Icon name={'save'} size={40} />
-            </Button>
-        </div>
-    )
 }
 
 export function useCharacter(ch) {

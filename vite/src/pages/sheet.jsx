@@ -4,13 +4,14 @@ import { generatePatch, useCharacter, Character } from '@models/character'
 
 import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
-import { useAsync } from 'react-async-hook'
 import { useEffect, useState } from 'react'
+import Uri from 'jsuri'
+import {useAsync} from 'react-async-hook'
 
 export default function CharacterSheet() {
     const theme = useTheme()
-    const getCharacter = async data => await Character.from_url()
-    const asyncCharacter = useAsync(getCharacter)
+    const getCharacter=async (id)=>await Character.load(id)
+    const asyncCharacter = useAsync(()=>getCharacter(new Uri(window.location.href).getQueryParamValue('character')))
     return (
         <div className={css`
             width:400px;
@@ -46,24 +47,21 @@ export function Sheet({ ch }) {
 
 export function CharControls({ char }) {
     const [saved, setSaved] = useState(null)
-    const levelup = useAsync(async () => await import('@assets/icons/levelup.svg').then((d) => d.default)).result
-    const save = useAsync(async () => await import('@assets/icons/save.svg').then((d) => d.default)).result
-    const remove = useAsync(async () => await import('@assets/icons/delete.svg').then((d) => d.default)).result
     return (
         <>  
             {saved}
             <Buttons>
                 <Button onClick={char.controls('levelup')}>
-                    <Icon path={levelup} />
+                    <Icon name={'ui/levelup'} />
                 </Button>
                 <Button onClick={async () => {
                     var alert = await char.controls('save')()
                     setSaved(alert)
                 }}>
-                    <Icon path={save} />
+                    <Icon name={'ui/save'} />
                 </Button>
                 <Button onClick={char.controls('delete')}>
-                    <Icon path={remove} />
+                    <Icon name={'ui/delete'} />
                 </Button>
             </Buttons>
         </>

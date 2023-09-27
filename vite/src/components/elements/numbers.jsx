@@ -4,8 +4,7 @@ import { LabeledItem } from './containers'
 import { Toggles } from './interactive'
 import { useTheme } from '@emotion/react'
 import { css } from '@emotion/css'
-import plus from '@assets/icons/plus.svg'
-import minus from '@assets/icons/minus.svg'
+
 export function Bonus({ item }) {
     const theme = useTheme()
     return (
@@ -27,9 +26,9 @@ export function Bonus({ item }) {
                     
                 }
             `}>
-                {item.value < 0 ?
-                    <Icon path={minus} /> :
-                    <Icon path={plus} />}
+                {Number(item.value) < 0 ?
+                    <Icon name={'ui/minus'} /> :
+                    <Icon path={'ui/plus'} />}
                 <Modifier editable={false} id={item.id} value={Math.abs(item.value)} />
             </div>
     )
