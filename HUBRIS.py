@@ -27,7 +27,7 @@ app.users=User
 
 @app.errorhandler(OperationalError)
 def handle_disconnect(e):
-    print(e)
+    app.engine=start_engine()
 
 @app.route("/new_character")
 def init_character():

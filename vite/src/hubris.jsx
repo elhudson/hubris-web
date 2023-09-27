@@ -23,7 +23,7 @@ const user = User.in_memory() ? User.parse(JSON.parse(sessionStorage.getItem('us
 
 function App() {
   const currentPage = new Uri(window.location.href).path()
-  const [base, setBase] = useState(themes.gruvbox.light)
+  const [base, setBase] = useState(themes.plain)
   const currentTheme = theme(base)
   const dimensions = makeResizable()
   return (
