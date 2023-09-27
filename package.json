@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@djthoms/pretty-checkbox": "^3.1.0",
-    "pretty-checkbox": "^3.0.3",
-    "pretty-checkbox-react": "^3.2.0"
-  }
-}

@@ -8,6 +8,7 @@ export default function Login() {
     const error=new Uri(window.location.href).getQueryParamValue('error')
     const usr=useContext(userContext)
     const [user, editUser] = useUser(usr)
+    console.log('here')
     const handleInput = (e) => {
         editUser({
             type: 'edit',
