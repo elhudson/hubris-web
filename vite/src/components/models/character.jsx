@@ -209,6 +209,11 @@ export class Character {
 
         return controls[action]
     }
+    long_rest() {
+        this.health.hp.current=this.health.hp.max
+        this.powers.used=0
+        this.health.hd.used=0
+    }
     header({ patch = null }) {
         function Sheet({ ch, patch = null }) {
             var update = patch('bio', 'update')

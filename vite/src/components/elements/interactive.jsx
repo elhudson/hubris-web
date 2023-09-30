@@ -4,8 +4,8 @@ import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
 import { Menu as MenuBox } from '@mui/base/Menu';
 import { MenuButton } from '@mui/base/MenuButton';
-import { Backdrop, Box } from "@mui/material";
 import { Dropdown as Drop } from '@mui/base/Dropdown';
+import { Box } from '@mui/material';
 import { nanoid } from 'nanoid';
 
 import { Modal } from '@mui/base/Modal';
@@ -46,10 +46,10 @@ export function Label({ content, children }) {
 }
 
 export function Alert({ msg }) {
-    const theme=useTheme()
-    const [visible, setVisible]=useState(true)
-    useEffect(()=> {
-        setInterval(()=> {
+    const theme = useTheme()
+    const [visible, setVisible] = useState(true)
+    useEffect(() => {
+        setInterval(() => {
             setVisible(false)
         }, 3000)
     })
@@ -133,7 +133,7 @@ export function Overlay({ open }) {
 }
 
 
-export function Radio({ label, data, icons=false, onChange = null, vertical = false, readonly = false }) {
+export function Radio({ label, data, icons = false, onChange = null, vertical = false, readonly = false }) {
     const theme = useTheme()
     const uniqLabel = label + '_' + nanoid()
     const horizontalCss = css`
@@ -153,21 +153,21 @@ export function Radio({ label, data, icons=false, onChange = null, vertical = fa
             margin:3px 0px;
         `}>
             {data.map(item =>
-                <RadioItem 
-                    readOnly={readonly} 
+                <RadioItem
+                    readOnly={readonly}
                     icon={icons}
                     item={item}
-                    isRadio={true} 
-                    group={uniqLabel} 
-                    onChange={onChange} 
+                    isRadio={true}
+                    group={uniqLabel}
+                    onChange={onChange}
                 />
             )}
         </div>)
 }
 
-export function RadioItem({ item, icon=false, readOnly, isRadio, group, onChange }) {
+export function RadioItem({ item, icon = false, readOnly, isRadio, group, onChange }) {
     const theme = useTheme()
-    icon!=false && (icon=icon+'/'+item.value.toLowerCase())
+    icon != false && (icon = icon + '/' + item.value.toLowerCase())
     return (
         <div>
             <input
@@ -180,14 +180,14 @@ export function RadioItem({ item, icon=false, readOnly, isRadio, group, onChange
                 type={isRadio ? 'radio' : 'checkbox'}
                 checked={item.selected}
             />
-            {icon ? <Icon name={icon}/> : item.label}
+            {icon ? <Icon name={icon} /> : item.label}
         </div>
 
     )
 }
 
-export function Button({ onClick, max = null, table = null, min = null, children, value, path }) {
-    const theme = useTheme()
+export function InnerButton({ onClick, max = null, table = null, min = null, children, value, path }) {
+    const theme = useTheme()        
     return (
         <button className={css`
             appearance:none;
@@ -220,6 +220,21 @@ export function Button({ onClick, max = null, table = null, min = null, children
     )
 }
 
+export function Button({hover=null, ...props}) {
+    return(
+        <>
+        {hover ? 
+            <Label content={hover}> 
+                <InnerButton props={{...props}} />
+            </Label> :
+            <InnerButton props={{...props}} />
+        }
+        </>
+    )
+}
+
+
+
 export function Toggles({ item, increaser, decreaser }) {
     const theme = useTheme()
     return (
@@ -244,7 +259,7 @@ export function Toggles({ item, increaser, decreaser }) {
                 <Icon name={'ui/up'} />
             </Button>
             <Button name={item.name} min={item.min} path={item.path} max={item.max} type="button" onClick={decreaser}>
-                <Icon path={'ui/down'} />
+                <Icon name={'ui/down'} />
             </Button>
         </div>)
 }

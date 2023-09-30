@@ -1,17 +1,17 @@
-import { Button, Buttons } from '@elements/interactive'
+import { Button, Buttons, Label } from '@elements/interactive'
 import { Icon } from '@elements/images'
 import { generatePatch, useCharacter, Character } from '@models/character'
 
 import { css } from '@emotion/css'
 import { useTheme } from '@emotion/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Uri from 'jsuri'
-import {useAsync} from 'react-async-hook'
+import { useAsync } from 'react-async-hook'
 
 export default function CharacterSheet() {
     const theme = useTheme()
-    const getCharacter=async (id)=>await Character.load(id)
-    const asyncCharacter = useAsync(()=>getCharacter(new Uri(window.location.href).getQueryParamValue('character')))
+    const getCharacter = async (id) => await Character.load(id)
+    const asyncCharacter = useAsync(() => getCharacter(new Uri(window.location.href).getQueryParamValue('character')))
     return (
         <div className={css`
             width:400px;
@@ -48,22 +48,31 @@ export function Sheet({ ch }) {
 export function CharControls({ char }) {
     const [saved, setSaved] = useState(null)
     return (
-        <>  
+        <>
             {saved}
-            <Buttons>
-                <Button onClick={char.controls('levelup')}>
-                    <Icon name={'ui/levelup'} />
-                </Button>
-                <Button onClick={async () => {
-                    var alert = await char.controls('save')()
-                    setSaved(alert)
-                }}>
-                    <Icon name={'ui/save'} />
-                </Button>
-                <Button onClick={char.controls('delete')}>
-                    <Icon name={'ui/delete'} />
-                </Button>
-            </Buttons>
+            <div>
+                <Buttons>
+                    <Button onClick={char.controls('levelup')} hover={'Level Up'}>
+                        <Icon name={'ui/levelup'} />
+                    </Button>                    
+                    <Button onClick={async () => {
+                        var alert = await char.controls('save')()
+                        setSaved(alert)
+                    }}>
+                        <Icon name={'ui/save'} />
+                    </Button>
+                    <Button onClick={char.controls('delete')}>
+                        <Icon name={'ui/delete'} />
+                    </Button>
+                </Buttons>
+            </div>
+            <div>
+                <Buttons>
+                    <Button onClick={char.long_rest()}>
+                        <Icon name='ui/long_rest'/>
+                    </Button>
+                </Buttons>
+            </div>
         </>
     )
 }

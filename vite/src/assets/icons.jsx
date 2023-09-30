@@ -51,6 +51,7 @@ import Stopwatch from '@assets/icons/ui/stopwatch.svg?react'
 import Toggles from '@assets/icons/ui/toggles.svg?react'
 import Up from '@assets/icons/ui/up.svg?react'
 import X from '@assets/icons/ui/x.svg?react'
+import LongRest from '@assets/icons/ui/long_rest.svg?react'
 
 import Damage from '@assets/icons/trees/damage.svg?react'
 import Healing from '@assets/icons/trees/healing.svg?react'
@@ -114,6 +115,7 @@ export const tags={
 }
 
 export const ui={
+    long_rest:LongRest,
     cancel:Cancel,
     d4:d4,
     d6:d6,
