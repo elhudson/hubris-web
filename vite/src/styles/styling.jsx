@@ -78,7 +78,7 @@ function makeStyles(theme) {
             display:flex;
             border:${theme.border};
             height:100%;
-            button {
+            >* {
                 margin:unset;
                 padding:unset;
                 height:100%;

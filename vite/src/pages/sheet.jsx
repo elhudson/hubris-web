@@ -1,4 +1,5 @@
-import { Button, Buttons, Label } from '@elements/interactive'
+import { Button, Buttons, Menu } from '@elements/interactive'
+import { MenuItem } from '@mui/base/MenuItem';
 import { Icon } from '@elements/images'
 import { generatePatch, useCharacter, Character } from '@models/character'
 
@@ -48,32 +49,18 @@ export function Sheet({ ch }) {
 export function CharControls({ char }) {
     const [saved, setSaved] = useState(null)
     return (
-        <>
-            {saved}
-            <div>
-                <Buttons>
-                    <Button onClick={char.controls('levelup')} hover={'Level Up'}>
-                        <Icon name={'ui/levelup'} />
-                    </Button>                    
-                    <Button onClick={async () => {
-                        var alert = await char.controls('save')()
-                        setSaved(alert)
-                    }}>
-                        <Icon name={'ui/save'} />
-                    </Button>
-                    <Button onClick={char.controls('delete')}>
-                        <Icon name={'ui/delete'} />
-                    </Button>
-                </Buttons>
-            </div>
-            <div>
-                <Buttons>
-                    <Button onClick={char.long_rest()}>
-                        <Icon name='ui/long_rest'/>
-                    </Button>
-                </Buttons>
-            </div>
-        </>
+        <Menu icon={<Icon name={'ui/dice'} />}>
+            <MenuItem onClick={char.controls('levelup')}>Level Up</MenuItem>
+            <MenuItem onClick={async () => {
+                alert = await char.controls('save')()
+                setSaved(alert)
+            }}> Save </MenuItem>
+            <MenuItem onClick={char.controls('delete')}>Delete</MenuItem>
+            <MenuItem onClick={() => {
+                char.long_rest()
+            }}>Long Rest</MenuItem>
+        </Menu>
+
     )
 }
 

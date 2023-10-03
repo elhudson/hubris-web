@@ -187,7 +187,7 @@ export function RadioItem({ item, icon = false, readOnly, isRadio, group, onChan
 }
 
 export function InnerButton({ onClick, max = null, table = null, min = null, children, value, path }) {
-    const theme = useTheme()        
+    const theme = useTheme()
     return (
         <button className={css`
             appearance:none;
@@ -214,21 +214,31 @@ export function InnerButton({ onClick, max = null, table = null, min = null, chi
                 background-color: ${theme.hover};
             }
         `}
-            type='button' value={value} table={table} max={max} min={min} path={path} onClick={onClick}>
+            type='button'
+            value={value}
+            table={table}
+            max={max}
+            min={min}
+            path={path}
+            onClick={onClick}>
             {children}
         </button>
     )
 }
 
-export function Button({hover=null, ...props}) {
-    return(
+export function Button({ hover = null, ...props }) {
+    return (
         <>
-        {hover ? 
-            <Label content={hover}> 
-                <InnerButton props={{...props}} />
-            </Label> :
-            <InnerButton props={{...props}} />
-        }
+            {hover ?
+                <Label content={hover}>
+                    <InnerButton {...props}>
+                        {props.children}
+                    </InnerButton>
+                </Label> :
+                <InnerButton {...props}>
+                    {props.children}
+                </InnerButton>
+            }
         </>
     )
 }

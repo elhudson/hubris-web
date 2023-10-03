@@ -151,7 +151,13 @@ function HP({ hp, update }) {
 
 function Injuries({ injury, update }) {
     return (
-        <Dropdown name='injury' path={'injury'} data={ruleset.reference.injuries} handler={update} selected={injury} />
-    )
+        <Dropdown 
+            name='injury' 
+            path={'injury'} 
+            data={ruleset.reference.injuries} 
+            handler={update} 
+            selected={injury} 
+        />
+        )
 }
 
