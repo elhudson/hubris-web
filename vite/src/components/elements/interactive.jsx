@@ -5,7 +5,6 @@ import { useTheme } from '@emotion/react'
 import { Menu as MenuBox } from '@mui/base/Menu';
 import { MenuButton } from '@mui/base/MenuButton';
 import { Dropdown as Drop } from '@mui/base/Dropdown';
-import { Box } from '@mui/material';
 import { nanoid } from 'nanoid';
 
 import { Modal } from '@mui/base/Modal';
@@ -77,7 +76,7 @@ export function Popup({ preview, children }) {
             <Button onClick={handleOpen}>{preview}</Button>
             <Modal
                 open={open}>
-                <Box className={css`
+                <div className={css`
                     width:200px;
                     margin:auto;
                     top:50%;
@@ -112,7 +111,7 @@ export function Popup({ preview, children }) {
                         <Icon name={'ui/cancel'} size={12} color={theme.red} />
                     </button>
                     {children}
-                </Box>
+                </div>
             </Modal>
 
         </>
