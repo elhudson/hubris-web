@@ -1,1 +1,0 @@
-flask --app HUBRIS run --debug & cd vite && npm run dev

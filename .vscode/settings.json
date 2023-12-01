@@ -43,5 +43,6 @@
     "[nunjucks]": {
         "editor.defaultFormatter": "mblode.pretty-formatter"
     },
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": true,
+    "git.ignoreLimitWarning": true
 }
