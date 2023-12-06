@@ -27,7 +27,7 @@
     ],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[javascript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
@@ -44,5 +44,6 @@
         "editor.defaultFormatter": "mblode.pretty-formatter"
     },
     "explorer.excludeGitIgnore": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "search-online.search-engine": "Duck"
 }
