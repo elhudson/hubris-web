@@ -17,7 +17,7 @@ String.prototype.toProperCase = function () {
 const sql_safe = (title) => title.toLowerCase().replace(" ", "_");
 const sql_danger = (title) => title.replace("_", " ").toProperCase();
 
-const prisma_safe = (title) => {
+export const prisma_safe = (title) => {
   if (title.includes("_")) {
     const s = title.split("_");
     const first = s.at(0);
