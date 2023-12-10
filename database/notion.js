@@ -2,56 +2,20 @@ import { Client } from "@notionhq/client";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import _ from "lodash";
+import {
+  prisma_safe,
+  sql_danger,
+  sql_safe,
+  toProperCase,
+  relationless,
+  relations,
+  not_relations,
+  simple_relations,
+  complex_relations
+} from "utilities";
 
 const prisma = new PrismaClient();
-
-String.prototype.toProperCase = function () {
-  if (this.length == 2) {
-    return this.toUpperCase();
-  }
-  return this.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-};
-
-const sql_safe = (title) => title.toLowerCase().replace(" ", "_");
-const sql_danger = (title) => title.replace("_", " ").toProperCase();
-
-export const prisma_safe = (title) => {
-  if (title.includes("_")) {
-    const s = title.split("_");
-    const first = s.at(0);
-    var last = s.at(-1).at(0).toUpperCase() + s.at(-1).slice(1);
-    return [first, last].join("_");
-  } else {
-    return title;
-  }
-};
-
-const not_relations = (table) =>
-  Object.keys(table[0]).filter((f) => !Array.isArray(table[0][f]));
-
-const simple_relations = (table) => {
-  return relations(table).filter((item) => {
-    const entries = table
-      .map((f) => f[item])
-      .map((e) => e.length)
-      .filter((i) => ![0, 1].includes(i));
-    return entries.length < 1;
-  });
-};
-
-const complex_relations = (table) =>
-  relations(table).filter((f) => !simple_relations(table).includes(f));
-
-const relations = (table) =>
-  Object.keys(table[0]).filter((f) => Array.isArray(table[0][f]));
-
-const relationless = (table) => {
-  return table.map((d) =>
-    Object.fromEntries(not_relations(table).map((n) => [n, d[n]]))
-  );
-};
+String.prototype.toProperCase = toProperCase;
 
 async function load_notion(number = 20) {
   const notion = new Client({
@@ -83,6 +47,10 @@ async function load_notion(number = 20) {
       case "title": {
         extracted = handler(data, (d) => d.title[0].plain_text);
         break;
+      }
+      case "checkbox": {
+        extracted = handler(data, (d) => (d.checkbox == true ? true : false));
+        break
       }
       case "rich_text": {
         extracted = handler(data, (d) => d.rich_text[0].plain_text);
@@ -196,18 +164,18 @@ function prismafy([title, entries]) {
 }
 
 const data = await load_notion();
+
 for (var [title, entries] of Object.entries(data)) {
   const parsed = prismafy([title, entries]);
   const db = prisma[prisma_safe(parsed.title)];
   for (var e of parsed.entries) {
-    try {
-      await db.create({
-        data: e
-      });
-    } catch (err) {
-      if (err.code == "2002") {
-        console.log(e);
-      }
-    }
+    console.log(e.title);
+    await db.upsert({
+      where: {
+        id: e.id
+      },
+      update: e,
+      create: e
+    });
   }
 }

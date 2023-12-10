@@ -1,0 +1,288 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tags {
+  id           String         @id @unique
+  title        String         @db.MediumText
+  description  String         @db.MediumText
+  effects      Effects[]
+  classes      Classes[]
+  tag_features Tag_Features[]
+  damage       Boolean        @default(false)
+  weapons      Weapons[]
+}
+
+model Hit_Dice {
+  id      String    @id @unique
+  title   String
+  classes Classes[]
+  HD      HD[]
+}
+
+model Tag_Features {
+  id           String         @id @unique
+  title        String
+  description  String         @db.MediumText
+  ticks        Int?
+  tier         Int
+  xp           Int
+  tags         Tags?          @relation(fields: [tagsId], references: [id])
+  tagsId       String?
+  requires     Tag_Features[] @relation("tag_features_prq")
+  required_for Tag_Features[] @relation("tag_features_prq")
+  Characters   Characters[]
+  charactersId String?
+}
+
+model Effects {
+  id           String       @id @unique
+  title        String?
+  description  String       @db.MediumText
+  power        Float
+  xp           Int
+  tier         Int
+  requires     Effects[]    @relation("effects_prq")
+  required_for Effects[]    @relation("effects_prq")
+  tags         Tags[]
+  trees        Trees?       @relation(fields: [treesId], references: [id])
+  treesId      String?
+  Characters   Characters[]
+  charactersId String?
+}
+
+model Trees {
+  id          String      @id @unique
+  title       String?
+  description String      @db.MediumText
+  effects     Effects[]
+  ranges      Ranges[]
+  durations   Durations[]
+}
+
+model Durations {
+  id           String       @id @unique
+  title        String?
+  description  String       @db.MediumText
+  power        Float
+  xp           Int
+  tier         Int
+  ticks        Int?
+  requires     Durations[]  @relation("durations_prq")
+  required_for Durations[]  @relation("durations_prq")
+  trees        Trees[]
+  Characters   Characters[]
+  charactersId String?
+}
+
+model Ranges {
+  id           String       @id @unique
+  title        String?
+  description  String       @db.MediumText
+  power        Float
+  xp           Int
+  tier         Int
+  requires     Ranges[]     @relation("ranges_prq")
+  required_for Ranges[]     @relation("ranges_prq")
+  trees        Trees[]
+  Characters   Characters[]
+  charactersId String?
+}
+
+model Classes {
+  id             String           @id @unique
+  title          String?
+  description    String           @db.MediumText
+  weaponry       String
+  armory         String           @default("None")
+  abilities      Abilities[]
+  skills         Skills[]
+  class_features Class_Features[]
+  class_paths    Class_Paths[]
+  tags           Tags[]
+  Characters     Characters[]
+  hit_dice       Hit_Dice?        @relation(fields: [hit_DiceId], references: [id])
+  hit_DiceId     String?
+}
+
+model Class_Features {
+  id            String           @id @unique
+  title         String?
+  description   String           @db.MediumText
+  xp            Int
+  ticks         Int?
+  tier          Int
+  class_paths   Class_Paths?     @relation(fields: [class_PathsId], references: [id])
+  classes       Classes?         @relation(fields: [classesId], references: [id])
+  class_PathsId String?
+  classesId     String?
+  requires      Class_Features[] @relation("class_features_prq")
+  required_for  Class_Features[] @relation("class_features_prq")
+  Characters    Characters[]
+}
+
+model Class_Paths {
+  id             String           @id @unique
+  title          String?
+  description    String           @db.MediumText
+  class_features Class_Features[]
+  classes        Classes?         @relation(fields: [classesId], references: [id])
+  classesId      String?
+}
+
+model Abilities {
+  id          String        @id @unique
+  title       String?
+  description String        @db.MediumText
+  code        String
+  backgrounds Backgrounds[]
+  skills      Skills[]
+  classes     Classes[]
+  conditions  Conditions[]
+}
+
+model Skills {
+  id            String       @id @unique
+  title         String?
+  description   String       @db.MediumText
+  abilities     Abilities?   @relation(fields: [abilitiesId], references: [id])
+  backgrounds   Backgrounds?
+  classes       Classes[]
+  characters    Characters[]
+  abilitiesId   String?
+  backgroundsId String?
+}
+
+model Backgrounds {
+  id                  String               @id @unique
+  title               String?
+  description         String               @db.MediumText
+  setting             String
+  abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
+  skills              Skills?              @relation(fields: [skillsId], references: [id])
+  background_features Background_Features?
+  skillsId            String?              @unique
+  abilitiesId         String?
+  Characters          Characters[]
+}
+
+model Background_Features {
+  id            String       @id @unique
+  title         String
+  description   String       @db.MediumText
+  ticks         Int?
+  backgrounds   Backgrounds? @relation(fields: [backgroundsId], references: [id])
+  backgroundsId String?      @unique
+}
+
+model Users {
+  id         String       @id @unique
+  username   String       @unique
+  password   String
+  Characters Characters[]
+}
+
+model HD {
+  id    Int        @id @default(autoincrement())
+  owner Characters @relation(fields: [charactersId], references: [id])
+  die   Hit_Dice   @relation(fields: [hit_diceId], references: [id])
+  max   Int        @default(1)
+  used 
+  charactersId String
+  hit_diceId   String
+}
+
+model Characters {
+  id             String           @id @unique
+  user           Users            @relation(fields: [usersId], references: [id])
+  updated        DateTime         @default(now())
+  biography      Json
+  xp_earned      Int
+  xp_spent       Int
+  HD             HD[]
+  classes        Classes[]
+  backgrounds    Backgrounds[]
+  effects        Effects[]
+  ranges         Ranges[]
+  durations      Durations[]
+  class_features Class_Features[]
+  tag_features   Tag_Features[]
+  skills         Skills[]
+  powers         Int              @default(0)
+  inventory      Inventories?
+  str            Int
+  dex            Int
+  con            Int
+  wis            Int
+  int            Int
+  cha            Int
+  health         Health?
+
+  usersId String
+}
+
+model Health {
+  character    Characters @relation(fields: [charactersId], references: [id])
+  injuries     Injuries   @relation(fields: [injuriesId], references: [id])
+  hp           Int
+  hd           Int        @default(1)
+  notes        String?    @db.MediumText
+  injuriesId   String
+  charactersId String     @id @unique
+}
+
+model Injuries {
+  id         String       @id @unique
+  title      String
+  duration   String
+  health     Health[]
+  conditions Conditions[]
+}
+
+model Conditions {
+  id          String      @id @unique
+  title       String
+  description String      @db.MediumText
+  abilities   Abilities[]
+  injuries    Injuries[]
+}
+
+model Inventories {
+  character Characters? @relation(fields: [charactersId], references: [id])
+  weapons   Weapons[]
+  armor     Armor[]
+  items     Items[]
+
+  charactersId String @id @unique
+}
+
+model Weapons {
+  id          String        @id @unique
+  name        String
+  description String?
+  uses        String?
+  tags        Tags[]
+  bonus       Int?
+  martial     Boolean
+  heavy       Boolean
+  Inventories Inventories[]
+}
+
+model Armor {
+  id          String        @id @unique
+  class       String
+  description String?
+  Inventories Inventories[]
+}
+
+model Items {
+  id          String        @id @unique
+  description String?
+  Inventories Inventories[]
+}
