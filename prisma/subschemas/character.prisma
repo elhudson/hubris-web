@@ -1,0 +1,61 @@
+import {Classes, Backgrounds, Injuries, Abilities, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
+import {Users} from "./user"
+import {Weapons, Armor, Items} from "./inventory"
+
+model Characters {
+  id             String           @id @unique
+  user           Users            @relation(fields: [usersId], references: [id])
+  updated        DateTime         @default(now())
+  biography      Json
+  xp_earned      Int
+  xp_spent       Int
+  HD             HD[]
+  classes        Classes[]
+  backgrounds    Backgrounds[]
+  effects        Effects[]
+  ranges         Ranges[]
+  durations      Durations[]
+  class_features Class_Features[]
+  tag_features   Tag_Features[]
+  skills         Skills[]
+  powers         Int              @default(0)
+  inventory      Inventories?
+  str            Int
+  dex            Int
+  con            Int
+  wis            Int
+  int            Int
+  cha            Int
+  health         Health?
+
+  usersId String
+}
+
+model HD {
+  id           Int        @id @default(autoincrement())
+  owner        Characters @relation(fields: [charactersId], references: [id])
+  die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
+  max          Int        @default(1)
+  used         Int        @default(0)
+  charactersId String
+  hit_diceId   String
+}
+
+model Health {
+  character    Characters @relation(fields: [charactersId], references: [id])
+  injuries     Injuries   @relation(fields: [injuriesId], references: [id])
+  hp           Int
+  hd           Int        @default(1)
+  notes        String?    @db.MediumText
+  injuriesId   String
+  charactersId String     @id @unique
+}
+
+model Inventories {
+  character Characters? @relation(fields: [charactersId], references: [id])
+  weapons   Weapons[]
+  armor     Armor[]
+  items     Items[]
+
+  charactersId String @id @unique
+}
