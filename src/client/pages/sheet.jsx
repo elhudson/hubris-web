@@ -1,11 +1,12 @@
 import { useAsync } from "react-async-hook";
 import { useParams } from "react-router-dom";
-import Bio, { Alignment } from "./sheet/bio";
-import Skills from "./sheet/skills";
-import Health from "./sheet/health";
-import Powers from "./sheet/powers"
-import Features from "./sheet/features"
-import { characterContext } from "../user";
+import Bio, { Alignment } from "@sheet/bio";
+import Skills from "@sheet/skills";
+import Health from "@sheet/health";
+import Powers from "@sheet/powers";
+import Features from "@sheet/features";
+import Inventory from "@sheet/inventory";
+import { characterContext } from "@contexts/character";
 import * as tabs from "@radix-ui/react-tabs";
 import { useImmer } from "use-immer";
 
@@ -60,13 +61,16 @@ const Sheet = () => {
               <Skills />
             </tabs.Content>
             <tabs.Content value="health">
-                <Health />
+              <Health />
             </tabs.Content>
             <tabs.Content value="powers">
-                <Powers />
+              <Powers />
             </tabs.Content>
             <tabs.Content value="features">
-                <Features />
+              <Features />
+            </tabs.Content>
+            <tabs.Content value="inventory">
+              <Inventory />
             </tabs.Content>
           </tabs.Root>
         </characterContext.Provider>

@@ -112,3 +112,4 @@ export function get_max_hp(ch) {
   const con=ch.con
   return 3*tier+con
 }
+

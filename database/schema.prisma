@@ -189,11 +189,11 @@ model Users {
 }
 
 model HD {
-  id    Int        @id @default(autoincrement())
-  owner Characters @relation(fields: [charactersId], references: [id])
-  die   Hit_Dice   @relation(fields: [hit_diceId], references: [id])
-  max   Int        @default(1)
-  used 
+  id           Int        @id @default(autoincrement())
+  owner        Characters @relation(fields: [charactersId], references: [id])
+  die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
+  max          Int        @default(1)
+  used         Int        @default(0)
   charactersId String
   hit_diceId   String
 }

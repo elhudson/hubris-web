@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import * as select from "@radix-ui/react-select";
 import _ from "lodash";
-import { characterContext } from "../../user";
+import { useCharacter } from "@contexts/character";
 
 const Bio = () => {
-  const { character } = useContext(characterContext);
+  const { character } = useCharacter();
   return (
     <>
       <h3>Bio</h3>
@@ -28,7 +28,7 @@ const Bio = () => {
 };
 
 export const Alignment = () => {
-  const { character, update } = useContext(characterContext);
+  const { character, update } = useCharacter();
   const handleAlign = (e) => {
     update((draft)=>{
         draft.biography.alignment=e

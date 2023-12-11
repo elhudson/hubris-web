@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { characterContext } from "../../user";
+import { useCharacter } from "@contexts/character";
+
 
 const Powers = () => {
-  const { character } = useContext(characterContext);
+  const { character } = useCharacter()
   return (
     <>
       <h3>Powers</h3>

@@ -113,8 +113,18 @@ app.get("/data/character", async (req, res) => {
       effects: true,
       ranges: true,
       durations: true,
-      health: true,
-      inventory: true,
+      health: {
+        include: {
+          injuries: true
+        }
+      },
+      inventory: {
+        include: {
+          weapons: true,
+          armor: true,
+          items: true
+        }
+      },
       class_features: true,
       tag_features: true,
       HD: {
@@ -131,6 +141,7 @@ app.get("/data/character", async (req, res) => {
       }
     }
   });
+  query.HD = _.uniqBy(query.HD, (f) => f.die.title);
   res.json(query);
 });
 

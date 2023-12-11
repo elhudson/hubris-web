@@ -1,8 +1,8 @@
 import * as nav from "@radix-ui/react-navigation-menu";
 import { sql_safe } from "utilities";
-import { userContext } from "./user";
+import { userContext } from "@contexts/user";
 import { useContext } from "react";
-import Login from "./pages/login";
+import Login from "@pages/login";
 
 const Menu = () => {
   const user = useContext(userContext);

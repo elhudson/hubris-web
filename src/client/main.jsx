@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Menu from "./menu";
-import { userContext } from "./user";
+import { userContext } from "@contexts/user";
 import { Srd } from "./pages/srd";
 import Characters from "./pages/characters";
 import Advance from "./pages/advance";

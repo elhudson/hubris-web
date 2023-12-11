@@ -1,11 +1,11 @@
-import { useContext } from "react";
-import { characterContext } from "../../user";
+import { useCharacter } from "@contexts/character";
+
 import { useAsync } from "react-async-hook";
 import _ from "lodash";
 import { is_proficient, get_bonus } from "utilities";
 
 const Skills = () => {
-  const { character } = useContext(characterContext);
+  const { character } = useCharacter()
   const abilities = useAsync(
     async () => await fetch("/data/rules?table=abilities").then((j) => j.json())
   );

@@ -1,5 +1,5 @@
 import { useAsync } from "react-async-hook";
-import { userContext } from "../user";
+import { userContext } from "@contexts/user";
 import { useContext } from "react";
 
 const Characters = () => {
