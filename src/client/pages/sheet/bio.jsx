@@ -1,27 +1,46 @@
-import { useContext, useState } from "react";
-import * as select from "@radix-ui/react-select";
 import _ from "lodash";
 import { useCharacter } from "@contexts/character";
-
+import { Select } from "../../ui/select";
 const Bio = () => {
-  const { character } = useCharacter();
+  const { character, update } = useCharacter();
+  const handleChange = (e, path) => {
+    update((draft) => {
+      _.set(draft, path, e.target.value);
+    });
+  };
   return (
     <>
       <h3>Bio</h3>
       <div>
-        <b>Name:</b> {character.biography.name}
+        <b>Name:</b>{" "}
+        <input
+          type="text"
+          value={character.biography.name}
+          onChange={(e) => handleChange(e, "biography.name")}
+        />
       </div>
       <div>
-        <b>Gender:</b> {character.biography.gender}
+        <b>Gender:</b>
+        <input
+          type="text"
+          value={character.biography.gender}
+          onChange={(e) => handleChange(e, "biography.gender")}
+        />
       </div>
       <div>
         <b>Alignment:</b> <Alignment />
       </div>
       <div>
-        <b>Backstory:</b> {character.biography.backstory}
+        <b>Backstory:</b>{" "}
+        <textarea onChange={(e) => handleChange(e, "biography.backstory")}>
+          {character.biography.backstory}
+        </textarea>
       </div>
       <div>
-        <b>Appearance:</b> {character.biography.appearance}
+        <b>Appearance:</b>
+        <textarea onChange={(e) => handleChange(e, "biography.appearance")}>
+          {character.biography.appearance}
+        </textarea>
       </div>
     </>
   );
@@ -30,9 +49,9 @@ const Bio = () => {
 export const Alignment = () => {
   const { character, update } = useCharacter();
   const handleAlign = (e) => {
-    update((draft)=>{
-        draft.biography.alignment=e
-    })
+    update((draft) => {
+      draft.biography.alignment = e;
+    });
   };
   const data = [
     {
@@ -73,19 +92,15 @@ export const Alignment = () => {
     }
   ];
   return (
-    <select.Root onValueChange={(e) => handleAlign(e)}>
-      <select.Trigger>
-        {_.find(data, (f) => f.code == character.biography.alignment).text}
-      </select.Trigger>
-      <select.Portal>
-        <select.Content>
-          {data.map((d) => (
-            <select.Item value={d.code}>{d.text}</select.Item>
-          ))}
-        </select.Content>
-      </select.Portal>
-    </select.Root>
+    <Select
+      current={_.find(data, (f) => f.code == character.biography.alignment)}
+      onChange={(e) => handleAlign(e)}
+      displayPath={"text"}
+      valuePath={"code"}
+      options={data}
+    />
   );
 };
 
 export default Bio;
+

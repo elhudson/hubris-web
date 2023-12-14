@@ -2,7 +2,14 @@ import express from "express";
 import ViteExpress from "vite-express";
 import "dotenv/config";
 import session from "express-session";
-import { prisma_safe, sql_danger, sql_safe } from "utilities";
+import {
+  character_update_query,
+  prisma_safe,
+  sql_danger,
+  sql_safe,
+  update_hd,
+  update_inventory
+} from "utilities";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { Client } from "@notionhq/client";
 import cookieParser from "cookie-parser";
@@ -54,13 +61,15 @@ app.get("/data/rules", async (req, res) => {
   const scheme = await schema();
   const table = db[prisma_safe(req.query.table)];
   const fields = scheme[prisma_safe(req.query.table)];
-  const query = req.query.query
+  var query = req.query.query
     ? await table.findMany({
         ...JSON.parse(req.query.query)
       })
-    : await table.findMany({
-        include: Object.fromEntries(fields.map((f) => [f, true]))
-      });
+    : await table.findMany();
+  req.query.relations &&
+    (query = await table.findMany({
+      include: Object.fromEntries(fields.map((f) => [f, true]))
+    }));
   res.json(query);
 });
 
@@ -146,8 +155,47 @@ app.get("/data/character", async (req, res) => {
 });
 
 app.post("/data/character", async (req, res) => {
-  const data = req.body;
-  console.log(data);
+  const char = req.body;
+  const id = req.query.id;
+  await db.characters.update({
+    where: {
+      id: id
+    },
+    data: character_update_query(char)
+  });
+  await update_hd(db, char.HD);
+  res.send("Character saved successfully.");
+});
+
+app.post("/data/query", async (req, res) => {
+  const query = req.body;
+  const method = req.query.method;
+  const table = req.query.table;
+  const q = await db[prisma_safe(table)][method](query);
+  res.json(q);
+});
+
+app.post("/data/inventory/add", async (req, res) => {
+  const item = req.body;
+  const char = req.query.character;
+  const table = req.query.table;
+  await db.inventories.update({
+    where: {
+      charactersId: char
+    },
+    data: {
+      [table]: {
+        upsert: {
+          where: {
+            id: item.id
+          },
+          create: item,
+          update: item
+        }
+      }
+    }
+  });
+  res.send("Inventory updated.");
 });
 
 app.post("/login", async (req, res) => {

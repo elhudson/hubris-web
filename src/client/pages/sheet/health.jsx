@@ -3,27 +3,43 @@ import { useCharacter } from "@contexts/character";
 import { get_max_hp } from "utilities";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
-import * as radio from "@radix-ui/react-radio-group";
-import * as select from "@radix-ui/react-select";
+import { Radio } from "@ui/radio";
+import { Select } from "@ui/select";
+import Counter from "@ui/counter";
+import Field from "@ui/field";
 
 const Health = () => {
-  const { character } = useCharacter();
+  const { character, update } = useCharacter();
+  const incrementHealth = (e) => {
+    update((draft) => {
+      if (draft.health.hp < get_max_hp(draft)) {
+        draft.health.hp += 1;
+      }
+    });
+  };
+  const decrementHealth = (e) => {
+    update((draft) => {
+      if (draft.health.hp > 0) {
+        draft.health.hp -= 1;
+      }
+    });
+  };
   return (
     <>
       <h3>Health</h3>
       <div>
-        <h4>HP</h4>
-        <div>
-          <b>Current:</b> {character.health.hp}
-        </div>
-        <div>
-          <b>Max:</b> {get_max_hp(character)}
-        </div>
+        <Counter
+          item={character.health}
+          valuePath={"hp"}
+          inc={incrementHealth}
+          dec={decrementHealth}
+          max={get_max_hp(character)}
+        />
       </div>
       <div>
         <h4>HD</h4>
         {character.HD.map((h) => (
-          <Hit_Dice die={h} />
+          <Hit_Dice index={_.indexOf(character.HD, h)} />
         ))}
       </div>
       <div>
@@ -34,39 +50,43 @@ const Health = () => {
   );
 };
 
-const Hit_Dice = ({ die }) => {
+const Hit_Dice = ({ index }) => {
+  const { character, update } = useCharacter();
   const hd = useAsync(
     async () => await fetch("/data/rules?table=hit_dice").then((j) => j.json())
   );
+  const incrementUsed = (e) => {
+    update((draft) => {
+      if (draft.HD[index].used < draft.HD[index].max) {
+        draft.HD[index].used += 1;
+      }
+    });
+  };
+  const decrementUsed = (e) => {
+    update((draft) => {
+      if (draft.HD[index].used > 0) {
+        draft.HD[index].used -= 1;
+      }
+    });
+  };
+  const current = character.HD[index].die;
   return (
     <div>
-      <div>
-        <input
-          type="number"
-          value={die.max}
+      <Counter
+        item={character.HD[index]}
+        valuePath={"used"}
+        inc={incrementUsed}
+        dec={decrementUsed}
+        max={character.HD[index].max}
+      />
+      {hd.result && (
+        <Radio
+          current={current}
+          data={hd.result}
+          valuePath={"title"}
+          labelPath={"title"}
         />
-        Max
-      </div>
-      <div>
-        <input
-          type="number"
-          value={die.used}
-        />
-        Used
-      </div>
-      <radio.Root value={die.die.title}>
-        {hd.result &&
-          hd.result.map((h) => (
-            <div>
-              <radio.Item
-                value={h.title}
-                id={h.id}>
-                <radio.Indicator>x</radio.Indicator>
-              </radio.Item>
-              <label>{h.title}</label>
-            </div>
-          ))}
-      </radio.Root>
+      )}
     </div>
   );
 };
@@ -82,21 +102,17 @@ const Injuries = ({ injury }) => {
     });
   };
   return (
-    <select.Root
-      defaultValue={injury.id}
-      onValueChange={handleValueChange}>
-      <select.Trigger>{injury.title}</select.Trigger>
-      <select.Portal>
-        <select.Content>
-          <select.Viewport>
-            {injuries.result &&
-              injuries.result.map((i) => (
-                <select.Item value={i.id}>{i.title}</select.Item>
-              ))}
-          </select.Viewport>
-        </select.Content>
-      </select.Portal>
-    </select.Root>
+    <>
+      {injuries.result && (
+        <Select
+          current={injury}
+          options={injuries.result}
+          valuePath={"id"}
+          displayPath={"title"}
+          onChange={handleValueChange}
+        />
+      )}
+    </>
   );
 };
 

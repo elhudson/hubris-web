@@ -108,8 +108,119 @@ export function get_proficiency(ch) {
 }
 
 export function get_max_hp(ch) {
-  const tier=get_tier(ch)
-  const con=ch.con
-  return 3*tier+con
+  const tier = get_tier(ch);
+  const con = ch.con;
+  return 3 * tier + con;
 }
 
+export function get_ac(character, armor) {
+  if (armor.class == "None") {
+    return 10 + character.dex;
+  } else if (armor.class == "Light") {
+    return 10 + get_proficiency(character) + character.dex;
+  } else if (armor.class == "Medium") {
+    return 14 + get_proficiency(character);
+  } else {
+    return 18 + get_proficiency(character);
+  }
+}
+
+export const character_update_query = (item) => {
+  return {
+    biography: item.biography,
+    health: {
+      update: {
+        hp: item.health.hp,
+        injuries: {
+          connect: item.health.injuries
+        }
+      }
+    },
+    xp_earned: item.xp_earned,
+    xp_spent: item.xp_spent,
+    powers: item.powers,
+    classes: {
+      connect: item.classes.map((i) => ({
+        id: i.id
+      }))
+    },
+    backgrounds: {
+      connect: item.backgrounds.map((i) => ({
+        id: i.id
+      }))
+    },
+    effects: {
+      connect: item.effects.map((i) => ({
+        id: i.id
+      }))
+    },
+    ranges: {
+      connect: item.ranges.map((i) => ({
+        id: i.id
+      }))
+    },
+    durations: {
+      connect: item.durations.map((i) => ({
+        id: i.id
+      }))
+    },
+    class_features: {
+      connect: item.class_features.map((i) => ({
+        id: i.id
+      }))
+    },
+    tag_features: {
+      connect: item.tag_features.map((i) => ({
+        id: i.id
+      }))
+    },
+    skills: {
+      connect: item.skills.map((i) => ({
+        id: i.id
+      }))
+    },
+    str: item.str,
+    dex: item.dex,
+    con: item.con,
+    int: item.int,
+    wis: item.wis,
+    cha: item.cha
+  };
+};
+
+export const update_inventory = async (engine, inventory) => {
+  for (var table of ["armor", "weapons", "items"]) {
+    for (var item of inventory[table]) {
+      await engine[table].upsert({
+        where: {
+          id: item.id
+        },
+        update: item,
+        create: item
+      });
+    }
+  }
+};
+
+export const update_hd = async (engine, hd) => {
+  for (var kind of hd) {
+    const data = {
+      used: Number(kind.used),
+      owner: {
+        connect: {
+          id: kind.charactersId
+        }
+      },
+      die: {
+        connect: kind.die
+      }
+    };
+    await engine.HD.upsert({
+      where: {
+        id: kind.id
+      },
+      update: data,
+      create: data
+    });
+  }
+};

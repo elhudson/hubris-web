@@ -6,9 +6,11 @@ import Health from "@sheet/health";
 import Powers from "@sheet/powers";
 import Features from "@sheet/features";
 import Inventory from "@sheet/inventory";
-import { characterContext } from "@contexts/character";
+import Notification from "@ui/notif";
+import { characterContext, useCharacter } from "@contexts/character";
 import * as tabs from "@radix-ui/react-tabs";
 import { useImmer } from "use-immer";
+import { character_update_query } from "utilities";
 
 const Sheet = () => {
   const { id } = useParams();
@@ -73,9 +75,28 @@ const Sheet = () => {
               <Inventory />
             </tabs.Content>
           </tabs.Root>
+          <SaveCharacter />
         </characterContext.Provider>
       )}
     </>
+  );
+};
+
+const SaveCharacter = () => {
+  const { character } = useCharacter();
+  const save = async () =>
+    await fetch(`/data/character/?method=update&id=${character.id}`, {
+      method: "POST",
+      body: JSON.stringify(character),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    });
+  return (
+    <Notification
+      func={save}
+      msg={"Save"}
+    />
   );
 };
 
