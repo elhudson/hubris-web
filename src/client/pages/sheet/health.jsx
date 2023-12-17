@@ -6,10 +6,12 @@ import { useAsync } from "react-async-hook";
 import { Radio } from "@ui/radio";
 import { Select } from "@ui/select";
 import Counter from "@ui/counter";
-import Field from "@ui/field";
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 
 const Health = () => {
   const { character, update } = useCharacter();
+  const { colors } = useTheme();
   const incrementHealth = (e) => {
     update((draft) => {
       if (draft.health.hp < get_max_hp(draft)) {
@@ -25,9 +27,9 @@ const Health = () => {
     });
   };
   return (
-    <>
-      <h3>Health</h3>
+    <div>
       <div>
+        <h4>HP</h4>
         <Counter
           item={character.health}
           valuePath={"hp"}
@@ -42,11 +44,8 @@ const Health = () => {
           <Hit_Dice index={_.indexOf(character.HD, h)} />
         ))}
       </div>
-      <div>
-        <h4>Injuries</h4>
-        <Injuries injury={character.health.injuries} />
-      </div>
-    </>
+      <Injuries injury={character.health.injuries} />
+    </div>
   );
 };
 
@@ -71,7 +70,7 @@ const Hit_Dice = ({ index }) => {
   };
   const current = character.HD[index].die;
   return (
-    <div>
+    <>
       <Counter
         item={character.HD[index]}
         valuePath={"used"}
@@ -85,9 +84,10 @@ const Hit_Dice = ({ index }) => {
           data={hd.result}
           valuePath={"title"}
           labelPath={"title"}
+          inline
         />
       )}
-    </div>
+    </>
   );
 };
 
@@ -102,7 +102,8 @@ const Injuries = ({ injury }) => {
     });
   };
   return (
-    <>
+    <div className="inline">
+      <h4>Injuries</h4>
       {injuries.result && (
         <Select
           current={injury}
@@ -112,7 +113,7 @@ const Injuries = ({ injury }) => {
           onChange={handleValueChange}
         />
       )}
-    </>
+    </div>
   );
 };
 

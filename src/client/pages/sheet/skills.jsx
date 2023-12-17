@@ -25,7 +25,6 @@ const Skills = () => {
   );
   return (
     <>
-      <h3>Skills & Abilities</h3>
       {abilities.result && (
         <div
           className={css`
@@ -60,11 +59,11 @@ const Skills = () => {
                       <div
                         className={css`
                           display: flex;
-                          >div {
-                            margin-right:5px;
+                          > div {
+                            margin-right: 5px;
                           }
-                          >div:nth-child(2) {
-                            border: 1px solid ${colors.text};
+                          > div:nth-child(2) {
+                            border-bottom: 1px solid ${colors.text};
                             padding-left: 3px;
                             padding-right: 3px;
                           }

@@ -3,6 +3,7 @@ import { get_ac } from "utilities";
 import { Radio } from "@ui/radio";
 import _ from "lodash";
 import { rename, ItemProperty } from "@components/items/ui";
+import { Base } from "@components/items/item";
 
 const Armor = ({ item, editable = false, update = null }) => {
   const { character } = useCharacter();
@@ -22,26 +23,20 @@ const Armor = ({ item, editable = false, update = null }) => {
   ];
   const current = _.find(armors, (a) => a.value == item.class);
   return (
-    <>
-      <input
-        type="text"
-        id={item.id}
-        value={item.name == undefined ? `${item.class} Armor` : item.name}
-        onChange={handleRename}
-      />
-      <div>
-        <ItemProperty title="AC">{get_ac(character, item)}</ItemProperty>
-        <ItemProperty title="Class">
-          <Radio
-            data={armors}
-            current={current}
-            valuePath={"value"}
-            labelPath={"label"}
-            onChange={handleClass}
-          />
-        </ItemProperty>
-      </div>
-    </>
+    <Base
+      name={item.name == undefined ? `${item.class} Armor` : item.name}
+      id={item.id}
+      handleRename={handleRename}>
+      <ItemProperty title="Class">
+        <Radio
+          data={armors}
+          current={current}
+          valuePath={"value"}
+          labelPath={"label"}
+          onChange={handleClass}
+        />
+      </ItemProperty>
+    </Base>
   );
 };
 

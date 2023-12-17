@@ -10,7 +10,6 @@ const Bio = () => {
   };
   return (
     <>
-      <h3>Bio</h3>
       <div>
         <b>Name:</b>{" "}
         <input

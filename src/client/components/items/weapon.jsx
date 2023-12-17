@@ -1,5 +1,6 @@
 import { Radio } from "@ui/radio";
 import { rename, ItemProperty } from "@components/items/ui";
+import { Base } from "@components/items/item";
 
 const Weapon = ({ item, editable = false, update = null }) => {
   const handleRename = editable ? rename(update) : null;
@@ -18,24 +19,20 @@ const Weapon = ({ item, editable = false, update = null }) => {
       }
     : null;
   return (
-    <div>
-      <input
-        type="text"
-        id={item.id}
-        value={item.name}
-        onChange={handleRename}
+    <Base
+      id={item.id}
+      name={item.name}
+      description={item.description}
+      value={handleRename}>
+      <Class
+        handler={handleClass}
+        item={item}
       />
-      <div>
-        <Class
-          handler={handleClass}
-          item={item}
-        />
-        <Weight
-          handler={handleWeight}
-          item={item}
-        />
-      </div>
-    </div>
+      <Weight
+        handler={handleWeight}
+        item={item}
+      />
+    </Base>
   );
 };
 
@@ -83,4 +80,4 @@ const Weight = ({ handler, item }) => {
   );
 };
 
-export default Weapon
+export default Weapon;

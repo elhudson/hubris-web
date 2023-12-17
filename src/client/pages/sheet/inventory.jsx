@@ -63,14 +63,11 @@ const Add = ({ table }) => {
 
 const Inventory = () => {
   return (
-    <>
-      <h3>Inventory</h3>
       <div>
         <List title="Weapons" />
         <List title="Armor" />
         <List title="Items" />
       </div>
-    </>
   );
 };
 
@@ -106,6 +103,9 @@ const List = ({ title }) => {
         className={css`
           width: 100%;
           position: relative;
+          [role="radiogroup"] {
+            display: block !important;
+          }
           >button {
             position: absolute;
             float: right;

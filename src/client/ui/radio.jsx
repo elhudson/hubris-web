@@ -1,6 +1,7 @@
 import * as radio from "@radix-ui/react-radio-group";
 import _ from "lodash";
 import { css } from "@emotion/css";
+import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
 
 export const Radio = ({
   data,
@@ -8,25 +9,36 @@ export const Radio = ({
   valuePath,
   labelPath,
   onChange = null,
-  children = null
+  children = null,
+  inline = false
 }) => {
   return (
     <radio.Root
       className={css`
+        display: ${inline ? "flex" : "block"};
         button {
-          position: absolute;
-          float: left;
+          &:hover {
+            background-color: unset;
+          }
         }
-        >*:not(button) {
-          margin-left: 30px;
-        }
+        
       `}
       value={_.get(current, valuePath)}
       onValueChange={onChange}>
       {data.map((d) => (
-        <>
-          <radio.Item value={_.get(d, valuePath)}>
-            <radio.Indicator>X</radio.Indicator>
+        <div className={css`
+          display: flex;
+        `}>
+          <radio.Item value={_.get(d, valuePath)} className={css`
+            background-color: rgba(0,0,0,0.0);
+            border:unset;
+          `}>
+            {_.get(d, valuePath) != _.get(current, valuePath) && (
+              <IoIosRadioButtonOff />
+            )}
+            <radio.Indicator>
+              <IoIosRadioButtonOn />
+            </radio.Indicator>
           </radio.Item>
           {children ? (
             <div>
@@ -42,7 +54,7 @@ export const Radio = ({
           ) : (
             <div>{_.get(d, labelPath)}</div>
           )}
-        </>
+        </div>
       ))}
     </radio.Root>
   );

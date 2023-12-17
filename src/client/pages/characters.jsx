@@ -1,6 +1,7 @@
 import { useAsync } from "react-async-hook";
 import { userContext } from "@contexts/user";
 import { useContext } from "react";
+import Grid from "@ui/grid";
 
 const Characters = () => {
   const user = useContext(userContext);
@@ -12,17 +13,17 @@ const Characters = () => {
   );
   return (
     <>
-      <h1>Characters</h1>
-      {characters.result &&
-        characters.result.map((c) => (
-          <ul>
-            <li>
-              <a href={`/${user.username}/${c.biography.name}/${c.id}`}>
-                {c.biography.name}
-              </a>
-            </li>
-          </ul>
-        ))}
+      {characters.result && (
+        <Grid>
+          {characters.result.map((c) => (
+            <a
+              className="center"
+              href={`/character/${c.id}`}>
+              {c.biography.name}
+            </a>
+          ))}
+        </Grid>
+      )}
     </>
   );
 };

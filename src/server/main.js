@@ -2,6 +2,7 @@ import express from "express";
 import ViteExpress from "vite-express";
 import "dotenv/config";
 import session from "express-session";
+
 import {
   character_update_query,
   prisma_safe,
@@ -61,22 +62,46 @@ app.get("/data/rules", async (req, res) => {
   const scheme = await schema();
   const table = db[prisma_safe(req.query.table)];
   const fields = scheme[prisma_safe(req.query.table)];
-  var query = req.query.query
-    ? await table.findMany({
-        ...JSON.parse(req.query.query)
-      })
-    : await table.findMany();
-  req.query.relations &&
-    (query = await table.findMany({
-      include: Object.fromEntries(fields.map((f) => [f, true]))
-    }));
+  if (req.query.relations) {
+    var query = req.query.query
+      ? await table.findMany({
+          ...JSON.parse(req.query.query),
+          include: Object.fromEntries(fields.map((f) => [f, true]))
+        })
+      : await table.findMany({
+          include: Object.fromEntries(fields.map((f) => [f, true]))
+        });
+  } else {
+    var query = req.query.query
+      ? await table.findMany({
+          ...JSON.parse(req.query.query)
+        })
+      : await table.findMany();
+  }
   res.json(query);
+});
+
+app.get("/data/icons", async (req, res) => {
+  const page = await notion.pages.retrieve({ page_id: req.query.id });
+  if (page.icon) {
+    const svg = await fetch(page.icon.file.url).then((r) => r.text());
+    res.setHeader("content-type", "image/svg+xml");
+    res.send(svg);
+  } else {
+    res.send(null);
+  }
 });
 
 app.get("/data/tables", async (req, res) => {
   const tabls = await notion.databases
     .query({
-      database_id: process.env.NOTION_DB
+      database_id: process.env.NOTION_DB,
+      filter: {
+        property: "Wiki",
+        checkbox: {
+          equals: true
+        }
+      }
     })
     .then((t) =>
       t.results

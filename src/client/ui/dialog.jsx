@@ -1,7 +1,9 @@
 import * as dialog from "@radix-ui/react-dialog";
 import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 
 export const Dialog = ({ trigger, children }) => {
+  const {colors}=useTheme()
   return (
     <dialog.Root>
       <dialog.Trigger>{trigger}</dialog.Trigger>
@@ -16,11 +18,11 @@ export const Dialog = ({ trigger, children }) => {
         />
         <dialog.Content
           className={css`
-            background-color: white;
-            border-radius: 6px;
+            border: 1px solid ${colors.text};
             box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
               hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
             position: fixed;
+            background-color: ${colors.background};
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);

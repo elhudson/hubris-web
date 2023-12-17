@@ -1,30 +1,27 @@
-import { useAsync } from "react-async-hook";
-import * as dialog from "@radix-ui/react-dialog";
-
+import { Dialog } from "@ui/dialog";
 const Login = () => {
   return (
-    <dialog.Root>
-      <dialog.Trigger asChild>
-        <button>Login</button>
-      </dialog.Trigger>
-      <dialog.Portal>
-        <dialog.Content>
-          <form
-            method="post"
-            action="/login">
-            <input
-              type="text"
-              name="user"
-            />
-            <input
-              type="text"
-              name="pwd"
-            />
-            <button type="submit">Submit</button>
-          </form>
-        </dialog.Content>
-      </dialog.Portal>
-    </dialog.Root>
+    <Dialog trigger={<button>Login</button>}>
+      <form
+        method="post"
+        action="/login">
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            name="user"
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            name="pwd"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </Dialog>
   );
 };
 

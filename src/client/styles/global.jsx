@@ -11,7 +11,9 @@ const Style = () => {
           color: ${colors.text};
           font-family: Iosevka Web;
         }
-        button {
+        button,
+        .button {
+          text-align: center;
           background-color: ${Color(colors.accent).fade(0.8).hsl().toString()};
           border: 1px solid ${colors.text};
           font-family: Iosevka Web;
@@ -21,8 +23,8 @@ const Style = () => {
               .fade(0.6)
               .hsl()
               .toString()};
-            text-decoration:underline;
-            text-underline-offset:2px;
+            text-decoration: underline;
+            text-underline-offset: 2px;
             font-style: italic;
           }
         }
@@ -35,14 +37,84 @@ const Style = () => {
           background-color: ${colors.background};
           border: 1px solid ${colors.text};
         }
-        input, textarea {
+        input,
+        textarea {
           font-family: Iosevka Web;
         }
-        h1, h2, h3, h4, h5, h6 {
-          margin:unset;
+        .inline {
+          display: flex;
+          h4 {
+            padding-right:5px;
+          }
+          [role="radiogroup"] {
+            display: flex;
+          }
+        }
+        .number {
+          font-size: 20px;
+          text-align: center;
+          border: 1px solid ${colors.text};
+          padding: 3px;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          margin: unset;
         }
         a {
           color: ${colors.accent};
+        }
+        .center {
+          margin: 0;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+        label {
+          padding-right: 10px;
+        }
+        .separator {
+          height: 1px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+          background-color: ${colors.accent};
+        }
+        [role="tabpanel"] {
+          border: 1px solid ${colors.text};
+          border-top: none;
+          padding: 10px;
+          >*{
+            margin-bottom:10px;
+          }
+        }
+        .bordered {
+          border: 1px solid ${colors.accent};
+          padding: 5px;
+        }
+        .buttons {
+          display: flex;
+          > * {
+            width: 100%;
+            border-right: none;
+            &[aria-selected="true"] {
+              background-color: ${colors.background};
+              border-bottom: none;
+            }
+            &:last-child {
+              border-right: 1px solid ${colors.text};
+            }
+          }
+        }
+        h6 {
+          font-size: 16px;
+        }
+        h3 {
+          text-decoration:underline;
+          text-underline-offset:2px;
         }
       `}
     />

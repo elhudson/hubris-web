@@ -20,10 +20,20 @@ export const Select = ({
       <select.Trigger>{disp}</select.Trigger>
       <select.Portal>
         <select.Content position="popper">
+          <select.ScrollUpButton>^</select.ScrollUpButton>
           <select.Viewport
             className={css`
               background-color: ${colors.background};
               border: 1px solid ${colors.text};
+              color: ${colors.text};
+              div[role="option"] {
+                padding:3px;
+                &:hover {
+                  font-style: italic;
+                  text-decoration:underline;
+                  text-underline-offset:2px;
+                }
+              }
             `}>
             {options.map((d) => (
               <select.Item value={_.get(d, valuePath)}>

@@ -1,7 +1,14 @@
-
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 export const ItemProperty = ({ title, children }) => {
   return (
-    <div>
+    <div
+      className={
+        "offset " +
+        css`
+          display: flex;
+        `
+      }>
       <h6>{title}</h6>
       <div>{children}</div>
     </div>
