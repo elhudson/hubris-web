@@ -170,6 +170,7 @@ for (var [title, entries] of Object.entries(data)) {
   const db = prisma[prisma_safe(parsed.title)];
   for (var e of parsed.entries) {
     console.log(e.title);
+    console.log(e)
     await db.upsert({
       where: {
         id: e.id

@@ -17,10 +17,8 @@ export const Dialog = ({ trigger, children }) => {
           `}
         />
         <dialog.Content
-          className={css`
+          className={"shadow "+css`
             border: 1px solid ${colors.text};
-            box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
-              hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
             position: fixed;
             background-color: ${colors.background};
             top: 50%;

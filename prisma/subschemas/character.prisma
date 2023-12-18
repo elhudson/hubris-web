@@ -27,8 +27,8 @@ model Characters {
   int            Int
   cha            Int
   health         Health?
-
-  usersId String
+  portrait       String?          @db.MediumText
+  usersId        String
 }
 
 model HD {

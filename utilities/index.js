@@ -191,6 +191,14 @@ export const character_update_query = (item) => {
 export const update_inventory = async (engine, inventory) => {
   for (var table of ["armor", "weapons", "items"]) {
     for (var item of inventory[table]) {
+      if (item.damage_types) {
+        item = {
+          ...Object.fromEntries(Object.keys(item).map((k) => [k, item[k]])),
+          damage_types: {
+            connect: item.damage_types
+          }
+        };
+      }
       await engine[table].upsert({
         where: {
           id: item.id

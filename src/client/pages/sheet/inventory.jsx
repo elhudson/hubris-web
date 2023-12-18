@@ -3,81 +3,46 @@ import { Dialog } from "@ui/dialog";
 import { useImmer } from "use-immer";
 import { Radio } from "@ui/radio";
 import _ from "lodash";
-import { v4 } from "uuid";
 import { css } from "@emotion/css";
-import { Armor, Weapon, Item } from "@items";
+import { Item } from "@items";
+import { useEffect } from "react";
 
 const Add = ({ table }) => {
-  const { character, update } = useCharacter();
-  var add, Elem;
+  var add;
   if (table == "weapons") {
     add = {
       name: "",
       martial: false,
       heavy: false
     };
-    Elem = Weapon;
   }
   if (table == "armor") {
     add = {
       name: "",
       class: "None"
     };
-    Elem = Armor;
   }
   if (table == "items") {
     add = { name: "" };
-    Elem = Item;
   }
-  const [item, setItem] = useImmer(add);
   return (
     <Dialog trigger={"+"}>
-      <Elem
-        editable={true}
-        item={item}
-        update={setItem}
-      />
-      <button
-        onClick={() => {
-          update(async () => {
-            await fetch(
-              `/data/inventory/add?character=${character.id}&table=${table}&method=create`,
-              {
-                method: "POST",
-                body: JSON.stringify({
-                  ...item,
-                  id: v4()
-                }),
-                headers: {
-                  "Content-Type": "application/json"
-                }
-              }
-            );
-          });
-        }}>
-        Add
-      </button>
+      <Item item={add} table={table} />
     </Dialog>
   );
 };
 
 const Inventory = () => {
   return (
-      <div>
-        <List title="Weapons" />
-        <List title="Armor" />
-        <List title="Items" />
-      </div>
+    <div>
+      <List title="Weapons" />
+      <List title="Armor" />
+      <List title="Items" />
+    </div>
   );
 };
 
 const List = ({ title }) => {
-  const map = {
-    armor: Armor,
-    weapons: Weapon,
-    items: Item
-  };
-  const Component = map[title.toLowerCase()];
   const { character, update } = useCharacter();
   var equipped = _.find(
     character.inventory[title.toLowerCase()],
@@ -96,7 +61,6 @@ const List = ({ title }) => {
       ).equipped = true;
     });
   };
-
   return (
     <>
       <div
@@ -106,7 +70,7 @@ const List = ({ title }) => {
           [role="radiogroup"] {
             display: block !important;
           }
-          >button {
+          > button {
             position: absolute;
             float: right;
             top: 0;
@@ -127,7 +91,7 @@ const List = ({ title }) => {
           data={character.inventory[title.toLowerCase()]}
           onChange={equip}>
           {character.inventory[title.toLowerCase()].map((c) => (
-            <Component item={c} />
+            <Item item={c} table={title.toLowerCase()} />
           ))}
         </Radio>
       )}

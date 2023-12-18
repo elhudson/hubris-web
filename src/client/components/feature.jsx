@@ -4,8 +4,10 @@ import { useParams } from "react-router-dom";
 import { prop_sorter, sql_danger } from "utilities";
 import { css } from "@emotion/css";
 import Icon from "@ui/icon";
+import Tooltip from "@ui/tooltip";
+import { useCharacter } from "@contexts/character";
 
-export default ({ feature = null, table = null }) => {
+const Feature = ({ feature = null, table = null }) => {
   const excl = ["code", "characters", "damage", "weapons"];
   if (feature == null) {
     const params = useParams();
@@ -14,7 +16,8 @@ export default ({ feature = null, table = null }) => {
   }
   const shared_icons = {
     background_features: "backgrounds",
-    class_features: "classes"
+    class_features: "class_paths",
+    damage_types: "tags"
   };
   const [icon, setIcon] = useState(null);
   const [props, setProps] = useState(null);
@@ -55,7 +58,6 @@ export default ({ feature = null, table = null }) => {
             sz={30}
           />
           <h2>{data.result.title}</h2>
-
           <div
             className={css`
               display: grid;
@@ -105,6 +107,8 @@ export default ({ feature = null, table = null }) => {
   );
 };
 
+export default Feature;
+
 export const Prop = ({ label, value }) => {
   return (
     <>
@@ -124,5 +128,30 @@ export const Prop = ({ label, value }) => {
         {value}
       </div>
     </>
+  );
+};
+
+export const FeatureTooltip = ({ feature, icon, table }) => {
+  return (
+    <li
+      className={css`
+        list-style: none;
+      `}>
+      <Tooltip
+        preview={
+          <div>
+            <Icon
+              id={icon}
+              sz={18}
+            />
+            {feature.title}
+          </div>
+        }>
+        <Feature
+          feature={feature.id}
+          table={table}
+        />
+      </Tooltip>
+    </li>
   );
 };

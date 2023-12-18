@@ -1,6 +1,5 @@
 import { useCharacter } from "@contexts/character";
-import Feature from "@components/feature";
-
+import Feature, { FeatureTooltip } from "@components/feature";
 
 const Features = () => {
   const { character } = useCharacter();
@@ -9,15 +8,29 @@ const Features = () => {
       <div>
         <div>
           <h4>Background</h4>
-          {character.backgrounds.filter(f=>f.background_features!=null).map((c) => (
-            <Feature feature={c.background_features.id} table="background_features" />
-          ))}
+          <ul>
+            {character.backgrounds
+              .filter((f) => f.background_features != null)
+              .map((c) => (
+                <FeatureTooltip
+                  icon={c.id}
+                  feature={c.background_features}
+                  table="background_features"
+                />
+              ))}
+          </ul>
         </div>
         <div>
           <h4>Class</h4>
-          {character.class_features.map((c) => (
-            <Feature feature={c.id} table="class_features" />
-          ))}
+          <ul>
+            {character.class_features.map((c) => (
+              <FeatureTooltip 
+                icon={c.classes.id}
+                feature={c}
+                table="class_features"
+              />
+            ))}
+          </ul>
         </div>
       </div>
     </>

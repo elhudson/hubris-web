@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Mon Dec 11 2023 15:28:35 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Mon Dec 18 2023 12:19:09 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -35,8 +35,8 @@ model Characters {
   int            Int
   cha            Int
   health         Health?
-
-  usersId String
+  portrait       String?          @db.MediumText
+  usersId        String
 }
 
 model HD {
@@ -69,16 +69,17 @@ model Inventories {
 }
 
 model Weapons {
-  id          String        @id @unique
-  name        String        @default("")
-  description String?
-  uses        String?
-  tags        Tags[]
-  bonus       Int?
-  martial     Boolean
-  heavy       Boolean
-  equipped    Boolean       @default(false)
-  Inventories Inventories[]
+  id             String        @id @unique
+  name           String        @default("")
+  description    String?
+  uses           String?
+  damage_types   Damage_Types? @relation(fields: [damage_typesId], references: [id])
+  bonus          Int?
+  martial        Boolean
+  heavy          Boolean
+  equipped       Boolean       @default(false)
+  Inventories    Inventories[]
+  damage_typesId String?
 }
 
 model Armor {
@@ -100,14 +101,14 @@ model Items {
 }
 
 model Tags {
-  id           String         @id @unique
-  title        String         @db.MediumText
-  description  String         @db.MediumText
-  effects      Effects[]
-  classes      Classes[]
-  tag_features Tag_Features[]
-  damage       Boolean        @default(false)
-  weapons      Weapons[]
+  id             String         @id @unique
+  title          String         @db.MediumText
+  description    String         @db.MediumText
+  effects        Effects[]
+  classes        Classes[]
+  tag_features   Tag_Features[]
+  damage_types   Damage_Types?
+  damage_typesId String?
 }
 
 model Hit_Dice {
@@ -115,6 +116,19 @@ model Hit_Dice {
   title   String
   classes Classes[]
   HD      HD[]
+}
+
+model Damage_Types {
+  id          String @id @unique
+  title       String @db.MediumText
+  description String @db.MediumText
+
+  tags           Tags?            @relation(fields: [tagsId], references: [id])
+  effects        Effects[]
+  class_features Class_Features[]
+  tag_features   Tag_Features[]
+  tagsId         String?          @unique
+  weapons        Weapons[]
 }
 
 model Tag_Features {
@@ -128,21 +142,23 @@ model Tag_Features {
   tagsId       String?
   requires     Tag_Features[] @relation("tag_features_prq")
   required_for Tag_Features[] @relation("tag_features_prq")
+  damage_types Damage_Types[]
   Characters   Characters[]
   charactersId String?
 }
 
 model Effects {
-  id           String       @id @unique
+  id           String         @id @unique
   title        String?
-  description  String       @db.MediumText
+  description  String         @db.MediumText
   power        Float
   xp           Int
   tier         Int
-  requires     Effects[]    @relation("effects_prq")
-  required_for Effects[]    @relation("effects_prq")
+  requires     Effects[]      @relation("effects_prq")
+  required_for Effects[]      @relation("effects_prq")
   tags         Tags[]
-  trees        Trees?       @relation(fields: [treesId], references: [id])
+  damage_types Damage_Types[]
+  trees        Trees?         @relation(fields: [treesId], references: [id])
   treesId      String?
   Characters   Characters[]
   charactersId String?
@@ -209,6 +225,7 @@ model Class_Features {
   xp            Int
   ticks         Int?
   tier          Int
+  damage_types  Damage_Types[]
   class_paths   Class_Paths?     @relation(fields: [class_PathsId], references: [id])
   classes       Classes?         @relation(fields: [classesId], references: [id])
   class_PathsId String?

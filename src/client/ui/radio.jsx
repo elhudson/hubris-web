@@ -10,7 +10,8 @@ export const Radio = ({
   labelPath,
   onChange = null,
   children = null,
-  inline = false
+  inline = false,
+  icons = null
 }) => {
   return (
     <radio.Root
@@ -21,18 +22,20 @@ export const Radio = ({
             background-color: unset;
           }
         }
-        
       `}
       value={_.get(current, valuePath)}
       onValueChange={onChange}>
       {data.map((d) => (
-        <div className={css`
-          display: flex;
-        `}>
-          <radio.Item value={_.get(d, valuePath)} className={css`
-            background-color: rgba(0,0,0,0.0);
-            border:unset;
+        <div
+          className={css`
+            display: flex;
           `}>
+          <radio.Item
+            value={_.get(d, valuePath)}
+            className={css`
+              background-color: rgba(0, 0, 0, 0);
+              border: unset;
+            `}>
             {_.get(d, valuePath) != _.get(current, valuePath) && (
               <IoIosRadioButtonOff />
             )}
@@ -54,6 +57,7 @@ export const Radio = ({
           ) : (
             <div>{_.get(d, labelPath)}</div>
           )}
+          {icons && icons[_.findIndex(data, d)]}
         </div>
       ))}
     </radio.Root>

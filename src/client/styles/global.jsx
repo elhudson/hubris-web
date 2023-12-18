@@ -43,12 +43,16 @@ const Style = () => {
         }
         .inline {
           display: flex;
+          >*:not(:last-child) {
+            margin-right: 5px;
+          }
           h4 {
-            padding-right:5px;
+            padding-right: 5px;
           }
           [role="radiogroup"] {
             display: flex;
           }
+
         }
         .number {
           font-size: 20px;
@@ -87,13 +91,21 @@ const Style = () => {
           border: 1px solid ${colors.text};
           border-top: none;
           padding: 10px;
-          >*{
-            margin-bottom:10px;
+          > * {
+            margin-bottom: 10px;
           }
+        }
+        .number {
+          font-size: 20px;
+          text-align: center;
         }
         .bordered {
           border: 1px solid ${colors.accent};
           padding: 5px;
+        }
+        .shadow {
+          box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
+            hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
         }
         .buttons {
           display: flex;
@@ -113,8 +125,8 @@ const Style = () => {
           font-size: 16px;
         }
         h3 {
-          text-decoration:underline;
-          text-underline-offset:2px;
+          text-decoration: underline;
+          text-underline-offset: 2px;
         }
       `}
     />

@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { useCharacter } from "@contexts/character";
-import { Select } from "../../ui/select";
+import { Select } from "@ui/select";
+import Avatar from "@ui/avatar";
 const Bio = () => {
   const { character, update } = useCharacter();
   const handleChange = (e, path) => {
@@ -9,39 +10,46 @@ const Bio = () => {
     });
   };
   return (
-    <>
+    <div className="inline">
+      <Avatar
+        id={character.id}
+        sz={200}
+      />
       <div>
-        <b>Name:</b>{" "}
-        <input
-          type="text"
-          value={character.biography.name}
-          onChange={(e) => handleChange(e, "biography.name")}
-        />
+        <div>
+          <label>Name</label>
+          <input
+            type="text"
+            value={character.biography.name}
+            onChange={(e) => handleChange(e, "biography.name")}
+          />
+        </div>
+        <div>
+          <label>Gender</label>
+          <input
+            type="text"
+            value={character.biography.gender}
+            onChange={(e) => handleChange(e, "biography.gender")}
+          />
+        </div>
+        <div>
+          <label>Alignment</label>
+          <Alignment />
+        </div>
+        <div>
+          <label>Backstory</label>
+          <textarea onChange={(e) => handleChange(e, "biography.backstory")}>
+            {character.biography.backstory}
+          </textarea>
+        </div>
+        <div>
+          <label>Appearance</label>
+          <textarea onChange={(e) => handleChange(e, "biography.appearance")}>
+            {character.biography.appearance}
+          </textarea>
+        </div>
       </div>
-      <div>
-        <b>Gender:</b>
-        <input
-          type="text"
-          value={character.biography.gender}
-          onChange={(e) => handleChange(e, "biography.gender")}
-        />
-      </div>
-      <div>
-        <b>Alignment:</b> <Alignment />
-      </div>
-      <div>
-        <b>Backstory:</b>{" "}
-        <textarea onChange={(e) => handleChange(e, "biography.backstory")}>
-          {character.biography.backstory}
-        </textarea>
-      </div>
-      <div>
-        <b>Appearance:</b>
-        <textarea onChange={(e) => handleChange(e, "biography.appearance")}>
-          {character.biography.appearance}
-        </textarea>
-      </div>
-    </>
+    </div>
   );
 };
 
@@ -102,4 +110,3 @@ export const Alignment = () => {
 };
 
 export default Bio;
-

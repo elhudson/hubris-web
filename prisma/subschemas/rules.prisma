@@ -1,15 +1,16 @@
 import {Weapons} from "./inventory"
 import {HD, Health, Characters} from "./character"
+import { Class_Features, Tag_Features } from "../schema"
 
 model Tags {
-  id           String         @id @unique
-  title        String         @db.MediumText
-  description  String         @db.MediumText
-  effects      Effects[]
-  classes      Classes[]
-  tag_features Tag_Features[]
-  damage       Boolean        @default(false)
-  weapons      Weapons[]
+  id             String         @id @unique
+  title          String         @db.MediumText
+  description    String         @db.MediumText
+  effects        Effects[]
+  classes        Classes[]
+  tag_features   Tag_Features[]
+  damage_types   Damage_Types?
+  damage_typesId String?
 }
 
 model Hit_Dice {
@@ -18,6 +19,20 @@ model Hit_Dice {
   classes Classes[]
   HD      HD[]
 }
+
+model Damage_Types {
+  id          String @id @unique
+  title       String @db.MediumText
+  description String @db.MediumText
+
+  tags           Tags?            @relation(fields: [tagsId], references: [id])
+  effects        Effects[]
+  class_features Class_Features[]
+  tag_features   Tag_Features[]
+  tagsId         String?          @unique
+  weapons        Weapons[]
+}
+
 
 model Tag_Features {
   id           String         @id @unique
@@ -30,21 +45,23 @@ model Tag_Features {
   tagsId       String?
   requires     Tag_Features[] @relation("tag_features_prq")
   required_for Tag_Features[] @relation("tag_features_prq")
+  damage_types Damage_Types[]
   Characters   Characters[]
   charactersId String?
 }
 
 model Effects {
-  id           String       @id @unique
+  id           String         @id @unique
   title        String?
-  description  String       @db.MediumText
+  description  String         @db.MediumText
   power        Float
   xp           Int
   tier         Int
-  requires     Effects[]    @relation("effects_prq")
-  required_for Effects[]    @relation("effects_prq")
+  requires     Effects[]      @relation("effects_prq")
+  required_for Effects[]      @relation("effects_prq")
   tags         Tags[]
-  trees        Trees?       @relation(fields: [treesId], references: [id])
+  damage_types Damage_Types[]
+  trees        Trees?         @relation(fields: [treesId], references: [id])
   treesId      String?
   Characters   Characters[]
   charactersId String?
@@ -111,6 +128,7 @@ model Class_Features {
   xp            Int
   ticks         Int?
   tier          Int
+  damage_types  Damage_Types[]
   class_paths   Class_Paths?     @relation(fields: [class_PathsId], references: [id])
   classes       Classes?         @relation(fields: [classesId], references: [id])
   class_PathsId String?

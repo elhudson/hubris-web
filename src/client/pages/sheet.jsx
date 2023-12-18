@@ -5,6 +5,7 @@ import Skills from "@sheet/skills";
 import Health from "@sheet/health";
 import Powers from "@sheet/powers";
 import Features from "@sheet/features";
+import Combat from "@sheet/combat";
 import Inventory from "@sheet/inventory";
 import Progress from "@sheet/progress";
 import Notification from "@ui/notif";
@@ -48,6 +49,9 @@ const Sheet = () => {
             </tabs.Content>
             <tabs.Content value="skills">
               <Skills />
+            </tabs.Content>
+            <tabs.Content value="combat">
+              <Combat />
             </tabs.Content>
             <tabs.Content value="health">
               <Health />

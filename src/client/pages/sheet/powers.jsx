@@ -1,5 +1,5 @@
 import { useCharacter } from "@contexts/character";
-import Feature from "@components/feature";
+import { FeatureTooltip } from "@components/feature";
 
 const Powers = () => {
   const { character } = useCharacter();
@@ -7,30 +7,39 @@ const Powers = () => {
     <>
       <div>
         <h4>Effects</h4>
-        {character.effects.map((c) => (
-          <Feature
-            feature={c.id}
-            table="effects"
-          />
-        ))}
+        <ul>
+          {character.effects.map((c) => (
+            <FeatureTooltip
+              icon={c.id}
+              feature={c}
+              table="effects"
+            />
+          ))}
+        </ul>
       </div>
       <div>
         <h4>Ranges</h4>
-        {character.ranges.map((c) => (
-          <Feature
-            feature={c.id}
-            table="ranges"
-          />
-        ))}
+        <ul>
+          {character.ranges.map((c) => (
+            <FeatureTooltip
+              icon={c.trees[0].id}
+              feature={c}
+              table="ranges"
+            />
+          ))}
+        </ul>
       </div>
       <div>
         <h4>Durations</h4>
-        {character.durations.map((c) => (
-          <Feature
-            feature={c.id}
-            table="durations"
-          />
-        ))}
+        <ul>
+          {character.durations.map((c) => (
+            <FeatureTooltip
+              icon={c.trees[0].id}
+              feature={c}
+              table="durations"
+            />
+          ))}
+        </ul>
       </div>
     </>
   );

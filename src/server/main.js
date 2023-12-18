@@ -2,7 +2,10 @@ import express from "express";
 import ViteExpress from "vite-express";
 import "dotenv/config";
 import session from "express-session";
+import { extension } from "mime-types";
+import fs from "fs";
 
+import process from "process";
 import {
   character_update_query,
   prisma_safe,
@@ -16,8 +19,11 @@ import { Client } from "@notionhq/client";
 import cookieParser from "cookie-parser";
 import _ from "lodash";
 import bodyParser from "body-parser";
+import multer from "multer";
 
 const app = express();
+const root = process.cwd();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +33,8 @@ app.use(
     cookie: {}
   })
 );
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const db = new PrismaClient();
 const notion = new Client({
@@ -52,7 +60,10 @@ const schema = async () => {
   const schema = Object.fromEntries(
     Prisma.dmmf.datamodel.models.map((m) => [
       prisma_safe(sql_safe(m.name)),
-      m.fields.filter((f) => tabls.includes(f.name)).map((n) => n.name)
+      m.fields
+        .filter((f) => tabls.includes(f.name))
+        .map((n) => n.name)
+        .filter((f) => !f.includes("Id"))
     ])
   );
   return schema;
@@ -139,14 +150,29 @@ app.get("/data/character", async (req, res) => {
       id: id
     },
     include: {
+      profile: false,
       backgrounds: {
         include: {
           background_features: true
         }
       },
-      effects: true,
-      ranges: true,
-      durations: true,
+      effects: {
+        include: {
+          damage_types: true,
+          trees: true,
+          tags: true
+        }
+      },
+      ranges: {
+        include: {
+          trees: true
+        }
+      },
+      durations: {
+        include: {
+          trees: true
+        }
+      },
       health: {
         include: {
           injuries: true
@@ -154,12 +180,21 @@ app.get("/data/character", async (req, res) => {
       },
       inventory: {
         include: {
-          weapons: true,
+          weapons: {
+            include: {
+              damage_types: true
+            }
+          },
           armor: true,
           items: true
         }
       },
-      class_features: true,
+      class_features: {
+        include: {
+          damage_types: true,
+          classes: true
+        }
+      },
       tag_features: true,
       HD: {
         include: {
@@ -170,14 +205,29 @@ app.get("/data/character", async (req, res) => {
       classes: {
         include: {
           hit_dice: true,
-          tags: true
+          tags: true,
+          abilities: true
         }
       }
     }
   });
+  query.inventory.weapons.forEach((wpn) => {
+    delete wpn.damage_typesId;
+  });
   query.HD = _.uniqBy(query.HD, (f) => f.die.title);
   res.json(query);
 });
+
+app.post(
+  "/data/character/avatar",
+  upload.single("profile"), (req, res) => {
+    const id = req.query.id;
+    const file = req.file;
+    const path = `${root}/public/portraits/${id}.png`;
+    fs.writeFileSync(path, file.buffer)
+    res.send("Portrait updated.")
+  }
+);
 
 app.post("/data/character", async (req, res) => {
   const char = req.body;
@@ -188,6 +238,7 @@ app.post("/data/character", async (req, res) => {
     },
     data: character_update_query(char)
   });
+  await update_inventory(db, char.inventory);
   await update_hd(db, char.HD);
   res.send("Character saved successfully.");
 });
@@ -201,9 +252,17 @@ app.post("/data/query", async (req, res) => {
 });
 
 app.post("/data/inventory/add", async (req, res) => {
-  const item = req.body;
+  var item = req.body;
   const char = req.query.character;
   const table = req.query.table;
+  if (item.damage) {
+    item = {
+      ...Object.fromEntries(Object.keys(item).map((k) => [k, item[k]])),
+      damage_types: {
+        connect: item.damage_types
+      }
+    };
+  }
   await db.inventories.update({
     where: {
       charactersId: char
@@ -218,6 +277,17 @@ app.post("/data/inventory/add", async (req, res) => {
           update: item
         }
       }
+    }
+  });
+  res.send("Inventory updated.");
+});
+
+app.post("/data/inventory/drop", async (req, res) => {
+  const item = req.body;
+  const table = req.query.table;
+  await db[table].delete({
+    where: {
+      id: item.id
     }
   });
   res.send("Inventory updated.");
