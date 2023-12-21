@@ -27,6 +27,8 @@ import multer from "multer";
 const app = express();
 const root = process.cwd();
 
+console.log('hello')
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -451,5 +453,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/user", (req, res) => {
-  
+
 })
+
+export default app
