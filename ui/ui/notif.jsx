@@ -2,7 +2,8 @@ import * as notif from "@radix-ui/react-toast";
 import { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-const Notification = ({ func, msg }) => {
+
+const Notification = ({ func, btn, msg = null }) => {
   const { colors } = useTheme();
   const [message, setMessage] = useState(null);
   const [open, setOpen] = useState(false);
@@ -10,8 +11,8 @@ const Notification = ({ func, msg }) => {
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
-  const handlePost = async () => {
-    const post = await func().then((result) => result.text());
+  const handleClick = async () => {
+    const post = msg ? msg : await func();
     setMessage(post);
     setOpen(false);
     timerRef.current = window.setTimeout(() => {
@@ -20,7 +21,7 @@ const Notification = ({ func, msg }) => {
   };
   return (
     <notif.Provider>
-      <button onClick={handlePost}>{msg}</button>
+      <button onClick={handleClick}>{btn}</button>
       <notif.Root
         className={css`
           box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,

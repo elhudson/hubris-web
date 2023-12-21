@@ -1,11 +1,7 @@
 import { useCharacter } from "@contexts/character";
-
 import { useAsync } from "react-async-hook";
-import _ from "lodash";
-import { is_proficient, get_bonus } from "utilities";
-
-import Checkbox from "@ui/checkbox";
 import { useTheme } from "@emotion/react";
+import Skill from "./skill";
 import { css } from "@emotion/css";
 
 const Skills = () => {
@@ -55,27 +51,7 @@ const Skills = () => {
                 {skills.result &&
                   skills.result
                     .filter((f) => f.abilities.code == a.code)
-                    .map((s) => (
-                      <div
-                        className={css`
-                          display: flex;
-                          > div {
-                            margin-right: 5px;
-                          }
-                          > div:nth-child(2) {
-                            border-bottom: 1px solid ${colors.text};
-                            padding-left: 3px;
-                            padding-right: 3px;
-                          }
-                        `}>
-                        <Checkbox checked={is_proficient(character, s)} />
-                        <div>
-                          {get_bonus(character, s) > 0 && <>+</>}
-                          {get_bonus(character, s)}
-                        </div>
-                        <div>{s.title}</div>
-                      </div>
-                    ))}
+                    .map((s) => <Skill skill={s} />)}
               </ul>
             </>
           ))}

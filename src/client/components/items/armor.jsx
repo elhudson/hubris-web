@@ -1,6 +1,6 @@
 import { useCharacter } from "@contexts/character";
 import { get_ac } from "utilities";
-import { Radio } from "@ui/radio";
+import Radio from "@ui/radio";
 import _ from "lodash";
 import { ItemProperty } from "@components/items/item";
 import { Base } from "@components/items/item";

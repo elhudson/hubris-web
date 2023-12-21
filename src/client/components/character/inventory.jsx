@@ -1,11 +1,9 @@
 import { useCharacter } from "@contexts/character";
-import { Dialog } from "@ui/dialog";
-import { useImmer } from "use-immer";
-import { Radio } from "@ui/radio";
+import Dialog from "@ui/dialog";
+import Radio from "@ui/radio";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { Item } from "@items";
-import { useEffect } from "react";
 
 const Add = ({ table }) => {
   var add;

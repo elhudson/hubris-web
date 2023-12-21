@@ -3,7 +3,7 @@ import _ from "lodash";
 import { useTheme } from "@emotion/react";
 import { css } from "@emotion/css";
 
-export const Select = ({
+export default ({
   current,
   options,
   displayPath,
@@ -24,6 +24,7 @@ export const Select = ({
           <select.Viewport
             className={css`
               background-color: ${colors.background};
+              z-index:5;
               border: 1px solid ${colors.text};
               color: ${colors.text};
               div[role="option"] {

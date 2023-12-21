@@ -1,49 +1,9 @@
 import { useCharacter } from "@contexts/character";
-import { get_ac, get_proficiency, get_tier } from "utilities";
+import { get_proficiency } from "utilities";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import Tag from "@components/tag";
 import { useTheme } from "@emotion/react";
-
-const Combat = () => {
-  const { character } = useCharacter();
-  const armor = _.find(character.inventory.armor, (f) => f.equipped);
-  const ac = get_ac(character, armor);
-  return (
-    <>
-      <div
-        className={css`
-          display: flex;
-          > * {
-            width: 50%;
-            margin: 5px;
-          }
-        `}>
-        <div>
-          <h4>AC</h4>
-          <div className="bordered number">{ac}</div>
-        </div>
-        <div>
-          <h4>Initiative</h4>
-          <div className="bordered number">+ {character.dex}</div>
-        </div>
-      </div>
-      <div>
-        <h4>Attacks</h4>
-        <div>
-          {character.inventory.weapons.map((w) => (
-            <WeaponAttack using={w} />
-          ))}
-          {character.class_features
-            .filter((c) => c.damage_types.length > 0)
-            .map((c) => (
-              <FeatureAttack using={c} />
-            ))}
-        </div>
-      </div>
-    </>
-  );
-};
 
 export const Attack = ({ name, speed, dmg, dtypes, bonus }) => {
   const { colors } = useTheme();
@@ -93,6 +53,7 @@ export const Attack = ({ name, speed, dmg, dtypes, bonus }) => {
     </div>
   );
 };
+
 export const WeaponAttack = ({ using }) => {
   const { character } = useCharacter();
   const speed = {
@@ -134,4 +95,7 @@ export const FeatureAttack = ({ using }) => {
   );
 };
 
-export default Combat;
+export default {
+  "Weapon": WeaponAttack,
+  "Feature": FeatureAttack
+}

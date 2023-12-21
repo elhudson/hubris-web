@@ -3,7 +3,7 @@ import _ from "lodash";
 import { css } from "@emotion/css";
 import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
 
-export const Radio = ({
+export default ({
   data,
   current,
   valuePath,

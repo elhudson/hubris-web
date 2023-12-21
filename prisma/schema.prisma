@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Mon Dec 18 2023 12:19:09 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Wed Dec 20 2023 21:35:48 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -51,11 +51,10 @@ model HD {
 
 model Health {
   character    Characters @relation(fields: [charactersId], references: [id])
-  injuries     Injuries   @relation(fields: [injuriesId], references: [id])
+  injuries     Injuries?  @relation(fields: [injuriesId], references: [id])
   hp           Int
-  hd           Int        @default(1)
   notes        String?    @db.MediumText
-  injuriesId   String
+  injuriesId   String?
   charactersId String     @id @unique
 }
 
@@ -114,6 +113,7 @@ model Tags {
 model Hit_Dice {
   id      String    @id @unique
   title   String
+  cost    Int       @default(1)
   classes Classes[]
   HD      HD[]
 }

@@ -11,6 +11,9 @@ const Style = () => {
           color: ${colors.text};
           font-family: Iosevka Web;
         }
+        [role="region"] {
+          display:none;
+        }
         button,
         .button {
           text-align: center;

@@ -74,6 +74,7 @@ export default ({ id = null, sz = 100 }) => {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: 0 0;
           }
         `}>
         <av.Image

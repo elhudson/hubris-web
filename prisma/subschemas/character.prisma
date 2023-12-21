@@ -43,11 +43,10 @@ model HD {
 
 model Health {
   character    Characters @relation(fields: [charactersId], references: [id])
-  injuries     Injuries   @relation(fields: [injuriesId], references: [id])
+  injuries     Injuries?  @relation(fields: [injuriesId], references: [id])
   hp           Int
-  hd           Int        @default(1)
   notes        String?    @db.MediumText
-  injuriesId   String
+  injuriesId   String?
   charactersId String     @id @unique
 }
 

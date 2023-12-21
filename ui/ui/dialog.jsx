@@ -2,7 +2,7 @@ import * as dialog from "@radix-ui/react-dialog";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
-export const Dialog = ({ trigger, children }) => {
+export default ({ trigger, children }) => {
   const {colors}=useTheme()
   return (
     <dialog.Root>

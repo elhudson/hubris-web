@@ -232,3 +232,30 @@ export const update_hd = async (engine, hd) => {
     });
   }
 };
+
+export const boost = (c, code) => {
+  return c.backgrounds.map((c) => c.abilities.code).includes(code);
+};
+
+export const owned = (feature, tabl, char) => {
+  return char[tabl].map((f) => f.id).includes(feature.id);
+};
+
+export const affordable = (feature, char) => {
+  const budget = char.xp_earned - char.xp_spent;
+  return feature.xp <= budget;
+};
+
+export const satisfies_prereqs = (feature, table, char) => {
+  if (_.isUndefined(feature.requires)) {
+    return true;
+  } else if (feature.requires.length == 0) {
+    return true;
+  } else {
+    return _.intersectionBy(feature.requires, char[table], "id").length > 0;
+  }
+};
+
+export const has_tree = (tree, char) => {
+  return char.effects.map((c) => c.trees.id).includes(tree.id);
+};

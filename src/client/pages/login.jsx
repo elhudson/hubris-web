@@ -1,4 +1,5 @@
-import { Dialog } from "@ui/dialog";
+import Dialog from "@ui/dialog";
+
 const Login = () => {
   return (
     <Dialog trigger={<button>Login</button>}>

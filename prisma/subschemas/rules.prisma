@@ -16,6 +16,7 @@ model Tags {
 model Hit_Dice {
   id      String    @id @unique
   title   String
+  cost    Int       @default(1)
   classes Classes[]
   HD      HD[]
 }
@@ -32,7 +33,6 @@ model Damage_Types {
   tagsId         String?          @unique
   weapons        Weapons[]
 }
-
 
 model Tag_Features {
   id           String         @id @unique

@@ -1,4 +1,4 @@
-import { Radio } from "@ui/radio";
+import Radio from "@ui/radio";
 import { ItemProperty } from "@components/items/item";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
