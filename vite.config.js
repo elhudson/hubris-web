@@ -14,6 +14,7 @@ export default defineConfig({
       "@contexts": resolve(__dirname, "./src/client/contexts"),
       "@ui": resolve(__dirname, "./ui/ui"),
       "interface": resolve(__dirname, "./ui/index.js"),
+      "utilities": resolve(__dirname, "./utilities/index.js"),
       "@styles": resolve(__dirname, "/src/client/styles"),
       "@components": resolve(__dirname, "/src/client/components"),
       "@items": resolve(__dirname, "/src/client/components/items/index.jsx"),
