@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server/main.js -w src/server utilities/index.js",
     "start": "NODE_ENV=production node src/server/main.js",
-    "build": "cd ./utilities && npm link && cd .. && npm link utilities && vite build",
+    "build": "prisma generate && cd ./utilities && npm link && cd .. && npm link utilities && vite build",
     "database": "prisma-multischema && prisma db push",
     "sync": "node database/notion.js"
   },
