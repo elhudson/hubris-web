@@ -7,18 +7,19 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@src": resolve(__dirname, "./src/client"),
+      "@src": resolve(__dirname, "./client"),
       "@database": resolve(__dirname, "./database"),
-      "@pages": resolve(__dirname, "./src/client/pages"),
-      "@sheet": resolve(__dirname, "./src/client/pages/sheet"),
-      "@contexts": resolve(__dirname, "./src/client/contexts"),
-      "@ui": resolve(__dirname, "./ui/ui"),
-      "interface": resolve(__dirname, "./ui/index.js"),
+      "@pages": resolve(__dirname, "./pages"),
+      "@sheet": resolve(__dirname, "./pages/sheet"),
+      "@contexts": resolve(__dirname, "./contexts"),
+      "@ui": resolve(__dirname, "./interface/ui"),
+      "interface": resolve(__dirname, "./interface/index.js"),
       "utilities": resolve(__dirname, "./utilities/index.js"),
-      "@styles": resolve(__dirname, "/src/client/styles"),
-      "@components": resolve(__dirname, "/src/client/components"),
-      "@items": resolve(__dirname, "/src/client/components/items/index.jsx"),
-      "@options": resolve(__dirname, "./src/client/components/options/index.js")
+      "@styles": resolve(__dirname, "./interface/styles"),
+      "@components": resolve(__dirname, "./components"),
+      "@items": resolve(__dirname, "./components/items/index.jsx"),
+      "@options": resolve(__dirname, "./components/packages/options.js"),
+      "@character": resolve(__dirname, "./components/packages/character.js")
     }
   }
 });

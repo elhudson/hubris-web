@@ -238,12 +238,14 @@ export const boost = (c, code) => {
 };
 
 export const owned = (feature, tabl, char) => {
-  return char[tabl].map((f) => f.id).includes(feature.id);
+  return _.isUndefined(char[tabl])
+    ? false
+    : char[tabl].map((f) => f.id).includes(feature.id);
 };
 
 export const affordable = (feature, char) => {
   const budget = char.xp_earned - char.xp_spent;
-  return feature.xp <= budget;
+  return _.isUndefined(feature.xp) || feature.xp <= budget;
 };
 
 export const satisfies_prereqs = (feature, table, char) => {
