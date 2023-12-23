@@ -5,6 +5,10 @@ import _ from "lodash";
 import { css } from "@emotion/css";
 import { Item } from "@items";
 
+import { GiBroadDagger } from "react-icons/gi";
+import { GiHeartArmor } from "react-icons/gi";
+import { GiFlatPlatform } from "react-icons/gi";
+
 const Add = ({ table }) => {
   var add;
   if (table == "weapons") {
@@ -25,7 +29,10 @@ const Add = ({ table }) => {
   }
   return (
     <Dialog trigger={"+"}>
-      <Item item={add} table={table} />
+      <Item
+        item={add}
+        table={table}
+      />
     </Dialog>
   );
 };
@@ -59,6 +66,15 @@ const List = ({ title }) => {
       ).equipped = true;
     });
   };
+  const getIcon = (table) => {
+    return table == "weapons" ? (
+      <GiBroadDagger />
+    ) : table == "armor" ? (
+      <GiHeartArmor />
+    ) : (
+      <GiFlatPlatform />
+    );
+  };
   return (
     <>
       <div
@@ -86,10 +102,14 @@ const List = ({ title }) => {
           current={equipped}
           valuePath={"id"}
           labelPath={"component"}
+          getIcon={()=>getIcon(title.toLowerCase())}
           data={character.inventory[title.toLowerCase()]}
           onChange={equip}>
           {character.inventory[title.toLowerCase()].map((c) => (
-            <Item item={c} table={title.toLowerCase()} />
+            <Item
+              item={c}
+              table={title.toLowerCase()}
+            />
           ))}
         </Radio>
       )}

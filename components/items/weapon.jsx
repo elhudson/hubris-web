@@ -1,8 +1,8 @@
 import Radio from "@ui/radio";
+import Icon from "@ui/icon"
 import { ItemProperty } from "@components/items/item";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
-import Tag from "@components/tag";
 
 const Weapon = ({ item, editable, update }) => {
   const dmgs = useAsync(
@@ -62,6 +62,7 @@ const Damage = ({ opts, handler, item }) => {
         current={current}
         valuePath={"id"}
         labelPath="title"
+        getIcon={(dtype)=> <Icon sz={14} id={dtype.tagsId} />}
         onChange={handler}
       />
     </ItemProperty>

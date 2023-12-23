@@ -2,30 +2,10 @@ import * as radio from "@radix-ui/react-radio-group";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
-import Indicator from "./indicator";
-
-const Active = ({ icon }) => {
-  return (
-    <Indicator
-      Component={icon}
-      style={{ height: 15, width: 15, color: "#fff" }}
-    />
-  );
-};
-
-const Inactive = ({ icon }) => {
-  return (
-    <Indicator
-      Component={icon}
-      style={{ height: 15, width: 15, color: "#fff" }}
-    />
-  );
-};
-
-const findIcon = (icons, data, d) => {
-  const index = _.indexOf(data, d);
-  return icons[index];
-};
+import SVG from "react-inlinesvg";
+import { useTheme } from "@emotion/react";
+import Tooltip from "./tooltip";
+import Switch from "./switch"
 
 export default (props) => {
   const {
@@ -33,10 +13,10 @@ export default (props) => {
     current,
     valuePath,
     labelPath,
+    getIcon = null,
     onChange,
     children,
-    inline,
-    icons = null
+    inline
   } = props;
   return (
     <radio.Root
@@ -51,17 +31,15 @@ export default (props) => {
       value={_.get(current, valuePath)}
       onValueChange={onChange}>
       {data.map((d) =>
-        icons==null ? (
+        getIcon == null ? (
           <RadioItem
             {...props}
             item={d}
-            hasIcon={false}
           />
         ) : (
           <RadioItem
             {...props}
             item={d}
-            hasIcon={true}
           />
         )
       )}
@@ -72,17 +50,31 @@ export default (props) => {
 export const RadioItem = ({
   item,
   data,
-  icons = null,
   current,
   valuePath,
   labelPath,
-  hasIcon,
-  children
+  children,
+  getIcon = null
 }) => {
+  const { colors } = useTheme();
   return (
     <div
       className={css`
         display: flex;
+        svg.toggle {
+          height: 14px;
+          width: 14px;
+          padding: 2px;
+          text-align: center;
+          border-radius: 100%;
+          border: 1px solid ${colors.text};
+          &.active {
+            background: ${colors.text};
+            path {
+              fill: ${colors.background};
+            }
+          }
+        }
       `}>
       <radio.Item
         value={_.get(item, valuePath)}
@@ -90,10 +82,22 @@ export const RadioItem = ({
           background-color: rgba(0, 0, 0, 0);
           border: unset;
         `}>
-        {_.get(item, valuePath) != _.get(current, valuePath) && 
-           <IoIosRadioButtonOff />}
+        {_.get(item, valuePath) != _.get(current, valuePath) &&
+          (getIcon ? (
+            <Tooltip preview={<Switch checked={false} src={getIcon(item)} />}>
+              {_.get(item, labelPath)}
+            </Tooltip>
+          ) : (
+            <IoIosRadioButtonOff />
+          ))}
         <radio.Indicator>
-          <IoIosRadioButtonOn />
+          {getIcon ? (
+            <Tooltip preview={<Switch checked={true} src={getIcon(item)} />}>
+              {_.get(item, labelPath)}
+            </Tooltip>
+          ) : (
+            <IoIosRadioButtonOn />
+          )}
         </radio.Indicator>
       </radio.Item>
       {children ? (
@@ -108,7 +112,7 @@ export const RadioItem = ({
           }
         </div>
       ) : (
-        <div>{_.get(item, labelPath)}</div>
+        getIcon == null && <div>{_.get(item, labelPath)}</div>
       )}
     </div>
   );

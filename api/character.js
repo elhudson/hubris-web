@@ -7,7 +7,8 @@ import { db, upload } from "../database/connections.js";
 import {
   boost,
   character_update_query,
-  get_max_hp, update_hd,
+  get_max_hp,
+  update_hd,
   update_inventory
 } from "utilities";
 import _ from "lodash";
@@ -54,7 +55,11 @@ app.get("/data/character", async (req, res) => {
         include: {
           weapons: {
             include: {
-              damage_types: true
+              damage_types: {
+                include: {
+                  tags: true
+                }
+              }
             }
           },
           armor: true,
@@ -185,9 +190,11 @@ app.post("/data/character/create", async (req, res) => {
         }))
       },
       skills: {
-        connect: character.backgrounds.filter(c=>c.skills!=null).map((s) => ({
-          id: s.skills.id
-        }))
+        connect: character.backgrounds
+          .filter((c) => c.skills != null)
+          .map((s) => ({
+            id: s.skills.id
+          }))
       },
       health: {
         create: {
