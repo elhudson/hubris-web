@@ -15,8 +15,6 @@ export default ({ checked, onChange = null, src }) => {
         border-radius: 100%;
         border: 1px solid ${colors.text};
         position: relative;
-        height: 100%;
-        width: 100%;
         margin: unset;
         svg {
           all: unset;

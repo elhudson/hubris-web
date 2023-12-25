@@ -12,6 +12,26 @@ const Style = () => {
           font-family: Iosevka Web;
           font-size: 14px;
         }
+        .abilities {
+          display:flex;
+          flex-wrap:wrap;
+          >* {
+            margin:5px;
+            width:fit-content;
+          }
+        }
+        .dashed {
+          border: 1px dashed ${colors.text};
+          background-color: ${Color(colors.text).fade(0.95).toString()};
+        }
+        .description {
+          max-width:50ch;
+          max-height: 10ch;
+          min-height:10ch;
+          overflow: scroll;
+          padding:5px;
+          margin:5px;
+        }
         .overlay {
           background-color: rgba(0, 0, 0, 0.5);
           position: fixed;

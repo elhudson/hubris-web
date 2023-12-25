@@ -27,17 +27,20 @@ export default (props) => {
             background-color: unset;
           }
         }
+        [role="radio"] {
+          margin:2px;
+        }
       `}
       value={_.get(current, valuePath)}
       onValueChange={onChange}>
       {data.map((d) =>
         getIcon == null ? (
-          <RadioItem
+          <RadioItem asChild
             {...props}
             item={d}
           />
         ) : (
-          <RadioItem
+          <RadioItem asChild
             {...props}
             item={d}
           />
@@ -61,6 +64,12 @@ export const RadioItem = ({
     <div
       className={css`
         display: flex;
+        button[role="radio"] {
+          height:fit-content;
+        }
+        >button {
+          padding:unset;
+        }
         svg.toggle {
           height: 14px;
           width: 14px;

@@ -14,7 +14,6 @@ export default ({ preview, children }) => {
               &:hover {
                 background-color: rgba(0, 0, 0, 0);
               }
-              padding: 5px;
             `}>
             {preview}
           </button>
@@ -22,19 +21,30 @@ export default ({ preview, children }) => {
         <tooltip.Portal>
           <tooltip.Content
             className={
-              "shadow " +css`
+              "shadow " +
+              css`
                 max-width: 50vw;
-                z-index: 3;
                 border: 1px solid ${colors.text};
                 padding: 5px;
                 background-color: ${colors.background};
                 .arrow {
-                  fill: ${colors.background};
+                  margin-top:-1px;
+                  polyline {
+                    fill: ${colors.background};
+                    stroke: ${colors.text};
+                    stroke-width: 1.5px;
+                  }
                 }
               `
             }>
             {children}
-            <tooltip.Arrow className="arrow" />
+            <tooltip.Arrow
+              className="arrow"
+              asChild>
+              <svg>
+                <polyline points="0,0 15,10 30,0" />
+              </svg>
+            </tooltip.Arrow>
           </tooltip.Content>
         </tooltip.Portal>
       </tooltip.Root>

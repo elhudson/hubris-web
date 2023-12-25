@@ -25,10 +25,11 @@ const Skills = () => {
         <div
           className={css`
             display: grid;
-            grid-template-columns: minmax(max-content, 15%) auto;
+            grid-template-columns: 50% 50%;
+            grid-gap:10px;
           `}>
           {abilities.result.map((a) => (
-            <>
+            <div>
               <div
                 className={css`
                   text-align: center;
@@ -47,13 +48,13 @@ const Skills = () => {
                 <h4>{a.title}</h4>
                 <div>{character[a.code]}</div>
               </div>
-              <ul>
+              <div>
                 {skills.result &&
                   skills.result
                     .filter((f) => f.abilities.code == a.code)
                     .map((s) => <Skill skill={s} />)}
-              </ul>
-            </>
+              </div>
+            </div>
           ))}
         </div>
       )}

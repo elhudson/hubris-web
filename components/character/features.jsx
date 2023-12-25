@@ -1,5 +1,6 @@
 import { useCharacter } from "@contexts/character";
 import Feature, { FeatureTooltip } from "@components/feature";
+import Ability from "./ability";
 
 const Features = () => {
   const { character } = useCharacter();
@@ -7,30 +8,25 @@ const Features = () => {
     <>
       <div>
         <div>
-          <h4>Background</h4>
-          <ul>
+          <h3>Background</h3>
+          <div className="abilities">
             {character.backgrounds
               .filter((f) => f.background_features != null)
               .map((c) => (
-                <FeatureTooltip
-                  icon={c.id}
-                  feature={c.background_features}
-                  table="background_features"
-                />
+                <Ability data={c.background_features} />
               ))}
-          </ul>
+          </div>
         </div>
         <div>
-          <h4>Class</h4>
-          <ul>
+          <h3>Class</h3>
+          <div className="abilities">
             {character.class_features.map((c) => (
-              <FeatureTooltip 
-                icon={c.classes.id}
-                feature={c}
+              <Ability
+                data={c}
                 table="class_features"
               />
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </>

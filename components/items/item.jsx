@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { IoTrash } from "react-icons/io5";
-import { MdOutlineEdit } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
 import { IoIosSave } from "react-icons/io";
 import { useImmer } from "use-immer";
 import _ from "lodash";
@@ -10,6 +10,7 @@ import { v4 } from "uuid";
 import { useContext, createContext } from "react";
 import { useCharacter } from "@contexts/character";
 import { Armor, Weapon } from "@items";
+import Switch from "@ui/switch";
 
 export const itemContext = createContext(null);
 
@@ -146,14 +147,16 @@ export const ItemButtons = ({ table, editable, toggleEdit, item }) => {
   };
   return (
     <div>
-      <button
-        onClick={toggleEdit}
-        data-active={editable}>
-        <MdOutlineEdit />
-      </button>
-      <button onClick={onDelete}>
-        <IoTrash />
-      </button>
+      <Switch
+        checked={editable}
+        onChange={toggleEdit}
+        src={<FaRegEdit />}
+      />
+      <Switch
+        checked={false}
+        onChange={onDelete}
+        src={<IoTrash />}
+      />
     </div>
   );
 };
