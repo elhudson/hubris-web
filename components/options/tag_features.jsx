@@ -23,6 +23,7 @@ export default () => {
         },
         select: {
           title: true,
+          id: true,
           tag_features: {
             where: {
               tier: get_tier(character)

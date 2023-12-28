@@ -24,8 +24,10 @@ const Style = () => {
           border: 1px dashed ${colors.text};
           background-color: ${Color(colors.text).fade(0.95).toString()};
         }
+        .disabled {
+          opacity:0.5;
+        }
         .description {
-          max-width:50ch;
           max-height: 10ch;
           min-height:10ch;
           overflow: scroll;

@@ -45,6 +45,7 @@ const Feature = ({ feature = null, table = null }) => {
       {data.result && (
         <div
           className={css`
+            position: relative;
             svg {
               position: absolute;
               float: left;
@@ -89,18 +90,25 @@ const Feature = ({ feature = null, table = null }) => {
               .map((p) => (
                 <Prop
                   label={sql_danger(p)}
-                  value={data.result[p].map((v) => (
-                    <a
-                      href={`/srd/${
-                        p == "requires" || p == "required_for" ? table : p
-                      }/${v.id}`}>
-                      {v.title}
-                    </a>
-                  ))}
+                  value={
+                    <div className={css`
+                      display: flex;
+                      flex-wrap:wrap;
+                    `}>
+                      {data.result[p].map((v) => (
+                        <a
+                          href={`/srd/${
+                            p == "requires" || p == "required_for" ? table : p
+                          }/${v.id}`}>
+                          {v.title}
+                        </a>
+                      ))}
+                    </div>
+                  }
                 />
               ))}
           </div>
-          <p>{data.result.description}</p>
+          <div className="description dashed">{data.result.description}</div>
         </div>
       )}
     </>

@@ -20,8 +20,6 @@ export function toProperCase() {
   });
 }
 
-String.prototype.toProperCase = toProperCase;
-
 export const sql_safe = (title) => title.toLowerCase().replace(" ", "_");
 export const sql_danger = (title) => title.replace("_", " ").toProperCase();
 

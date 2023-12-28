@@ -14,6 +14,7 @@ export default () => {
       `/data/rules?table=trees&query=${JSON.stringify({
         select: {
           title: true,
+          id: true,
           durations: {
             where: {
               tier: get_tier(character)

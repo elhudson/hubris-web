@@ -1,15 +1,23 @@
 import { useCharacter } from "@contexts/character";
 import { owned, affordable, satisfies_prereqs, has_tree } from "utilities";
-import Option from "./option";
-import { useOptions, useLimiter } from "@contexts/options";
+import Tree from "@components/tree";
+import { useOptions, useLimiter, handlerContext } from "@contexts/options";
 import _ from "lodash";
 import { current } from "immer";
+import { css } from "@emotion/css";
+import * as Tabs from "@radix-ui/react-tabs";
+import List from "../list";
+import Switch from "@ui/switch";
+import Icon from "@ui/icon";
+import Tooltip from "@ui/tooltip";
+import { useState } from "react";
+import Organizer from "../rules/organizer";
 
 const classHandler = ({ feat, draft, e }) => {
   const die = feat.hit_dice;
   if (e) {
     if (_.isUndefined(draft.HD)) {
-      draft.HD = []
+      draft.HD = [];
     }
     if (draft.HD.map((d) => d.die.id).includes(die.id)) {
       _.find(draft.HD, (d) => d.die.id == die.id).max += 1;
@@ -62,7 +70,7 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
       }
       if (e) {
         if (limiter) {
-          if (!limiter({draft: draft, feature:feat})) {
+          if (!limiter({ draft: draft, feature: feat })) {
             return;
           }
         }
@@ -87,7 +95,7 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
 };
 
 export default () => {
-  const { character, update } = useCharacter();
+  const { update } = useCharacter();
   const { searchable, options, table } = useOptions();
   const { limiter } = useLimiter();
   const handler = makeHandler({
@@ -96,45 +104,22 @@ export default () => {
     table: table,
     limiter: limiter
   });
-  if (searchable == options) {
-    return (
-      <OptionList
-        table={table}
-        items={options}
-        handler={handler}
-        character={character}
-      />
-    );
-  } else {
-    return (
-      <div>
-        {options.map((path) => (
-          <div>
-            <h4>{path.title}</h4>
-            <OptionList
-              table={table}
-              items={path[table]}
-              handler={handler}
-              character={character}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-};
-
-const OptionList = ({ items, handler, table, character }) => {
+  const notTrees = ["classes", "backgrounds", "skills"];
+  const HandlerProvider = ({ children }) => (
+    <handlerContext.Provider value={{ handler: handler, table: table }}>
+      {children}
+    </handlerContext.Provider>
+  );
   return (
-    <div>
-      {items.map((c) => (
-        <Option
-          data={c}
-          avail={affordable(c, character)}
-          owned={owned(c, table, character)}
-          buy={(e) => handler(e, c.id)}
+    <HandlerProvider>
+      {notTrees.includes(table) ? (
+        <List items={options} />
+      ) : (
+        <Organizer
+          options={options}
+          render={(path) => <Tree items={path[table]} />}
         />
-      ))}
-    </div>
+      )}
+    </HandlerProvider>
   );
 };

@@ -6,7 +6,7 @@ import { FaLevelUpAlt } from "react-icons/fa";
 import { redirect } from "react-router-dom";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-import Indicator from "@ui/indicator"
+import Switch from "@ui/switch"
 
 export default () => {
   const { character } = useCharacter();
@@ -21,16 +21,13 @@ export default () => {
   return (
     <div
       className={css`
-        button {
-          background-color: ${colors.accent};
-          border-radius: 100%;
-          border: unset;
-          margin:5px;
+        >button {
+          all:unset;
         }
       `}>
       <Alert
         confirm={handleDelete}
-        button={<Indicator Component={FaTrashAlt} />}>
+        button={<Switch src={<FaTrashAlt />} />}>
         <div>
           <h4>Are you sure?</h4>
           <p>Once you delete a character, you can't recover them.</p>
@@ -38,7 +35,7 @@ export default () => {
       </Alert>
       <button>
         <a href={`/character/${character.id}/advance`}>
-        <Indicator Component={FaLevelUpAlt} />
+        <Switch src={<FaLevelUpAlt />} />
         </a>
       </button>
     </div>

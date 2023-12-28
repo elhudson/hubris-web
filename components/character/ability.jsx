@@ -13,6 +13,9 @@ const Ability = ({ data, table, children = null }) => {
         border:1px dashed ${colors.text};
         padding:2px;
         background-color: ${colors.bg1};
+        .description {
+          max-width: 50ch;
+        }
       `}>
       <h4>
         <Icon

@@ -7,6 +7,11 @@ import { useAsync } from "react-async-hook";
 import _ from "lodash";
 import Options from "@options";
 import Save from "@components/character/save";
+import * as collapse from "@radix-ui/react-collapsible";
+import { IoIosPerson } from "react-icons/io";
+import Switch from "@ui/switch";
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 
 const tabs = [
   {
@@ -28,6 +33,7 @@ const tabs = [
 const Advance = () => {
   const { id } = useParams();
   const [character, update] = useImmer(null);
+  const {colors}=useTheme()
   useAsync(
     async () =>
       await fetch(`/data/character?id=${id}`)
@@ -42,7 +48,27 @@ const Advance = () => {
             character: character,
             update: update
           }}>
-          <Profile />
+          <collapse.Root>
+            <collapse.Trigger
+              className={css`
+                all: unset;
+                &:hover {
+                  background-color:rgba(0,0,0,0);
+                }
+                background-color:${colors.background};
+                border-radius: 100%;
+                padding:2px;
+                position:fixed;
+                z-index: 3;
+                left:0;
+                top:50px;
+              `}>
+              <Switch src={<IoIosPerson />} />
+            </collapse.Trigger>
+            <collapse.Content>
+              <Profile />
+            </collapse.Content>
+          </collapse.Root>
           <Tabs
             names={tabs.map((t) => t.title)}
             def={tabs[0].title}>

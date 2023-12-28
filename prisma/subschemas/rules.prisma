@@ -174,13 +174,21 @@ model Backgrounds {
   id                  String               @id @unique
   title               String?
   description         String               @db.MediumText
-  setting             String
+  settings            Settings?            @relation(fields: [settingsId], references: [id])
   abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
   skills              Skills?              @relation(fields: [skillsId], references: [id])
   background_features Background_Features?
   skillsId            String?              @unique
   abilitiesId         String?
+  settingsId          String?
   Characters          Characters[]
+}
+
+model Settings {
+  id          String        @id @unique
+  title       String
+  backgrounds Backgrounds[]
+  description String        @db.MediumText
 }
 
 model Background_Features {

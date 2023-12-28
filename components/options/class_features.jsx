@@ -21,6 +21,7 @@ export default () => {
         },
         select: {
           title: true,
+          id: true,
           classes: true,
           class_features: {
             where: {

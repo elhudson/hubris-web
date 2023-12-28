@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Wed Dec 20 2023 21:35:48 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Thu Dec 28 2023 13:04:22 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -271,13 +271,21 @@ model Backgrounds {
   id                  String               @id @unique
   title               String?
   description         String               @db.MediumText
-  setting             String
+  settings            Settings?            @relation(fields: [settingsId], references: [id])
   abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
   skills              Skills?              @relation(fields: [skillsId], references: [id])
   background_features Background_Features?
   skillsId            String?              @unique
   abilitiesId         String?
+  settingsId          String?
   Characters          Characters[]
+}
+
+model Settings {
+  id          String        @id @unique
+  title       String
+  backgrounds Backgrounds[]
+  description String        @db.MediumText
 }
 
 model Background_Features {
