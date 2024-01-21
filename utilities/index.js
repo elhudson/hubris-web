@@ -20,7 +20,7 @@ export function toProperCase() {
   });
 }
 
-String.prototype.toProperCase=toProperCase
+String.prototype.toProperCase = toProperCase;
 
 export const sql_safe = (title) => title.toLowerCase().replace(" ", "_");
 export const sql_danger = (title) => title.replace("_", " ").toProperCase();
@@ -193,7 +193,11 @@ export const update_inventory = async (engine, inventory) => {
     for (var item of inventory[table]) {
       if (item.damage_types) {
         item = {
-          ...Object.fromEntries(Object.keys(item).map((k) => [k, item[k]])),
+          ...Object.fromEntries(
+            Object.keys(item)
+              .filter((f) => !f.includes("Id"))
+              .map((k) => [k, item[k]])
+          ),
           damage_types: {
             connect: item.damage_types
           }

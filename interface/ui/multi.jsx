@@ -12,7 +12,6 @@ export default ({
   onChange,
   render = null
 }) => {
-  console.log(render)
   const { colors } = useTheme();
   const options = items.map((item) => ({
     label: _.get(item, labelPath),

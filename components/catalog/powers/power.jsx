@@ -63,7 +63,7 @@ export default ({ power }) => {
     });
   }
   return (
-    <Menu
+    <Context
       trigger={
         <div
           ref={ref}
