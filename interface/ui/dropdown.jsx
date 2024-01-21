@@ -3,16 +3,14 @@ import { BsThreeDots } from "react-icons/bs";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
-export default ({ children }) => {
+export default ({ children, trigger = <BsThreeDots />, dir="right"}) => {
   const { colors } = useTheme();
   return (
     <dropdown.Root>
-      <dropdown.Trigger>
-        <BsThreeDots />
-      </dropdown.Trigger>
+      <dropdown.Trigger>{trigger}</dropdown.Trigger>
       <dropdown.Portal>
         <dropdown.Content
-          side="right"
+          side={dir}
           className={css`
             &[data-side="left"],
             &[data-side="right"] {

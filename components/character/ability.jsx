@@ -4,36 +4,37 @@ import Metadata from "./metadata";
 import { css } from "@emotion/css";
 import Color from "color";
 import { useTheme } from "@emotion/react";
+import Option from "@components/options/option";
 
-const Ability = ({ data, table, children = null }) => {
+const Ability = ({ data, table, children = null, withHeader = true }) => {
   const { colors } = useTheme();
   return (
     <div
       className={css`
-        border:1px dashed ${colors.text};
-        padding:2px;
-        background-color: ${colors.bg1};
-        .description {
-          max-width: 50ch;
+        max-width: 25vw;
+        min-width: 100px;
+        border: 1px solid ${colors.accent};
+        > div:first-child {
+          button[role="checkbox"] {
+            display: none;
+          }
         }
       `}>
-      <h4>
-        <Icon
-          id={data.id}
-          sz={20}
-        />
-        {data.title}
-      </h4>
-      <div className="description dashed">{data.description}</div>
+      <Option
+        data={data}
+        table={table}
+        withHeader={withHeader}
+      />
       {children}
     </div>
   );
 };
 
-export const Effect = ({ data }) => {
+export const Effect = ({ data, withHeader = false }) => {
   return (
     <Ability
       data={data}
+      withHeader={withHeader}
       table="effects">
       <Metadata effect={data} />
     </Ability>

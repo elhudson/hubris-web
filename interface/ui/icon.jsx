@@ -9,6 +9,7 @@ export default ({ id, sz, style=null }) => {
     <SVG
       src={icon}
       width={sz}
+      height={sz}
       style={style}
       className={css`
         padding-right: 10px;

@@ -1,6 +1,6 @@
 import {Weapons} from "./inventory"
 import {HD, Health, Characters} from "./character"
-import { Class_Features, Tag_Features } from "../schema"
+import {Powers} from "./powers"
 
 model Tags {
   id             String         @id @unique
@@ -65,7 +65,10 @@ model Effects {
   treesId      String?
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
+
+
 
 model Trees {
   id          String      @id @unique
@@ -89,7 +92,10 @@ model Durations {
   trees        Trees[]
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
+
+
 
 model Ranges {
   id           String       @id @unique
@@ -103,7 +109,10 @@ model Ranges {
   trees        Trees[]
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
+
+
 
 model Classes {
   id             String           @id @unique

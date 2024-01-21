@@ -9,16 +9,12 @@ import Avatar from "@components/character/avatar";
 export default () => {
   const { character } = useCharacter();
   return (
+    <Actions>
     <div
       className={
         "bordered inline " +
         css`
           position: relative;
-          > div:last-child {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-          }
         `
       }
       style={{ marginBottom: 10 }}>
@@ -65,8 +61,9 @@ export default () => {
           </span>
         </div>
       </div>
-      <Actions />
     </div>
+    </Actions>
+
   );
 };
 

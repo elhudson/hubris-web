@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Thu Dec 28 2023 13:04:22 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Mon Jan 01 2024 17:28:12 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -17,6 +17,7 @@ model Characters {
   biography      Json
   xp_earned      Int
   xp_spent       Int
+  burn           Int              @default(0)
   HD             HD[]
   classes        Classes[]
   backgrounds    Backgrounds[]
@@ -26,7 +27,6 @@ model Characters {
   class_features Class_Features[]
   tag_features   Tag_Features[]
   skills         Skills[]
-  powers         Int              @default(0)
   inventory      Inventories?
   str            Int
   dex            Int
@@ -37,6 +37,7 @@ model Characters {
   health         Health?
   portrait       String?          @db.MediumText
   usersId        String
+  powerset       PowerSet?
 }
 
 model HD {
@@ -65,6 +66,12 @@ model Inventories {
   items     Items[]
 
   charactersId String @id @unique
+}
+
+model PowerSet {
+  character    Characters @relation(fields: [charactersId], references: [id])
+  charactersId String     @id @unique
+  powers       Powers[]
 }
 
 model Weapons {
@@ -97,6 +104,18 @@ model Items {
   description String?
   equipped    Boolean       @default(false)
   Inventories Inventories[]
+}
+
+model Powers {
+  id         String      @id @unique
+  name       String
+  flavortext String      @db.LongText
+  creator    Users       @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  effects    Effects[]
+  ranges     Ranges[]
+  durations  Durations[]
+  characters PowerSet[]
 }
 
 model Tags {
@@ -162,6 +181,7 @@ model Effects {
   treesId      String?
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
 
 model Trees {
@@ -186,6 +206,7 @@ model Durations {
   trees        Trees[]
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
 
 model Ranges {
@@ -200,6 +221,7 @@ model Ranges {
   trees        Trees[]
   Characters   Characters[]
   charactersId String?
+  Powers       Powers[]
 }
 
 model Classes {
@@ -318,4 +340,5 @@ model Users {
   username   String       @unique
   password   String
   Characters Characters[]
+  Powers     Powers[]
 }

@@ -12,12 +12,15 @@ const Style = () => {
           font-family: Iosevka Web;
           font-size: 14px;
         }
+        .pagetitle {
+          text-align: center;
+        }
         .abilities {
-          display:flex;
-          flex-wrap:wrap;
-          >* {
-            margin:5px;
-            width:fit-content;
+          display: flex;
+          flex-wrap: wrap;
+          > * {
+            margin: 5px;
+            width: fit-content;
           }
         }
         .dashed {
@@ -25,14 +28,14 @@ const Style = () => {
           background-color: ${Color(colors.text).fade(0.95).toString()};
         }
         .disabled {
-          opacity:0.5;
+          opacity: 0.5;
         }
         .description {
           max-height: 10ch;
-          min-height:10ch;
+          min-height: 10ch;
           overflow: scroll;
-          padding:5px;
-          margin:5px;
+          padding: 5px;
+          margin: 5px;
         }
         .overlay {
           background-color: rgba(0, 0, 0, 0.5);
@@ -70,6 +73,19 @@ const Style = () => {
           &:hover {
             background-color: ${Color(colors.red).fade(0.4).hsl().toString()};
           }
+        }
+        table {
+          width: 100%;
+        }
+        table,
+        th,
+        td {
+          border: 1px solid ${colors.accent};
+          padding: 3px;
+          text-align: left;
+        }
+        th {
+          background-color: ${Color(colors.accent).fade(0.8).hsl().toString()};
         }
         button,
         .button {
@@ -153,13 +169,15 @@ const Style = () => {
           font-size: 20px;
           text-align: center;
         }
+        .owned {
+          box-shadow: rgba(213,196,161, 0.5) 0px 3px 8px;
+        }
         .bordered {
           border: 1px solid ${colors.accent};
           padding: 5px;
         }
         .shadow {
-          box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
-            hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
         .buttons {
           display: flex;

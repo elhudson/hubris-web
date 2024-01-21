@@ -24,14 +24,14 @@ const classHandler = ({ feat, draft, e }) => {
     } else {
       draft.HD.push({
         id: Math.floor(Math.random() * 1000000),
-        max: 1,
+        max: 0,
         used: 0,
         die: die
       });
     }
   } else {
     const old_hd = _.find(draft.HD, (d) => d.die.id);
-    if (old_hd.max == 1) {
+    if (old_hd.max == 0) {
       _.remove(draft.HD, (d) => d.die.id == old_hd.die.id);
     } else {
       old_hd.max -= 1;

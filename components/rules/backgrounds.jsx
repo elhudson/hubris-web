@@ -1,7 +1,7 @@
 import { useAsync } from "react-async-hook";
 import Organizer from "./organizer";
-import List from "@components/list";
-import Feature from "@components/feature";
+import Card from '../card'
+import List from "../list"
 
 export default () => {
   const features = useAsync(
@@ -31,10 +31,7 @@ export default () => {
             <List
               items={path["backgrounds"]}
               render={(feat) => (
-                <Feature
-                  feature={feat.id}
-                  table={"backgrounds"}
-                />
+                <Card feature={feat} table="backgrounds" customDesc={(feature) => feature.background_features.description}/>
               )}
             />
           )}

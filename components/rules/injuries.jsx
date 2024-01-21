@@ -1,10 +1,11 @@
 import { useAsync } from "react-async-hook";
 import Organizer from "./organizer";
 import List from "@components/list";
-import Feature from "@components/feature";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { useTheme } from "@emotion/react";
+import Card from "@components/card";
 import { css } from "@emotion/css";
+
 export default () => {
   const { colors } = useTheme();
   const features = useAsync(
@@ -19,28 +20,16 @@ export default () => {
   ).result;
   return (
     <div>
-      {features &&
-        features.map((f) => (
-          <Collapsible.Root
-            className={css`
-              width: 100%;
-              border: 1px solid ${colors.accent};
-              margin:5px;
-              >button {
-                all:unset;
-                padding:5px;
-                font-size:16px;
-              }
-            `}>
-            <Collapsible.Trigger>{f.title}</Collapsible.Trigger>
-            <Collapsible.Content className={css`
-                display: grid;
-                grid-template-columns: repeat(2, auto);
-            `}>
-              <div className="description dashed">{f.conditions.map(c=> c.description)}</div>
-            </Collapsible.Content>
-          </Collapsible.Root>
-        ))}
+      {features && (
+        <List
+          items={features}
+          render={(f) => <Card feature={f} table="injuries" customDesc={makeDesc} />}
+        />
+      )}
     </div>
   );
 };
+
+const makeDesc=(feature)=> {
+  return feature.conditions.map(f=> f.description).join(" ")
+}

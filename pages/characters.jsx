@@ -9,7 +9,7 @@ const Characters = () => {
   const user = useContext(userContext);
   const characters = useAsync(
     async () =>
-      await fetch(`/data/characters?user=${user.username}&detailed=true`).then(
+      await fetch(`/data/characters?user=${user.username}`).then(
         (j) => j.json()
       )
   );

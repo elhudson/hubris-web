@@ -20,6 +20,8 @@ export function toProperCase() {
   });
 }
 
+String.prototype.toProperCase=toProperCase
+
 export const sql_safe = (title) => title.toLowerCase().replace(" ", "_");
 export const sql_danger = (title) => title.replace("_", " ").toProperCase();
 
@@ -136,7 +138,7 @@ export const character_update_query = (item) => {
     },
     xp_earned: item.xp_earned,
     xp_spent: item.xp_spent,
-    powers: item.powers,
+    burn: item.burn,
     classes: {
       connect: item.classes.map((i) => ({
         id: i.id
@@ -258,4 +260,12 @@ export const satisfies_prereqs = (feature, table, char) => {
 
 export const has_tree = (tree, char) => {
   return char.effects.map((c) => c.trees.id).includes(tree.id);
+};
+
+export const get_power_cost = ({ ranges, durations, effects }) => {
+  const div =
+    _.sumBy(ranges, "power") *
+    _.sumBy(durations, "power") *
+    _.sumBy(effects, "power");
+  return div / 5 < 1 ? 1 : Math.floor(div / 5);
 };

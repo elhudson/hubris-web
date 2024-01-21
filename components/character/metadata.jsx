@@ -13,9 +13,15 @@ export default ({ effect }) => {
     <div
       className={css`
         display: flex;
+        flex-wrap:wrap;
+        .metadata {
+          white-space:nowrap;
+          overflow:scroll;
+        }
         > div {
           display: flex;
           margin: 5px;
+          overflow:scroll;
         }
       `}>
       <Ranges effect={effect} />
@@ -30,7 +36,7 @@ const Ranges = ({ effect }) => {
   return (
     <div>
       <BiTargetLock size={20} />
-      <div style={{ display: "flex" }}>
+      <div className="metadata">
         {ranges.map((r) => (
           <Item data={r} />
         ))}
@@ -45,7 +51,7 @@ const Durations = ({ effect }) => {
   return (
     <div>
       <IoHourglassOutline size={20} />
-      <div style={{ display: "flex" }}>
+      <div className="metadata">
         {durations.map((r) => (
           <Item data={r} />
         ))}

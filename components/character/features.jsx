@@ -1,5 +1,4 @@
 import { useCharacter } from "@contexts/character";
-import Feature, { FeatureTooltip } from "@components/feature";
 import Ability from "./ability";
 
 const Features = () => {

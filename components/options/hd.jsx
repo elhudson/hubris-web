@@ -30,7 +30,7 @@ export default () => {
       {character.HD.map((h) => (
         <div>
           <Die die={h.die} />
-          <ui.counter
+          <ui.Counter
             item={h}
             valuePath="max"
             inc={() => incrementDie(h.id)}

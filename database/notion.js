@@ -2,6 +2,7 @@ import { Client } from "@notionhq/client";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import _ from "lodash";
+import fs from "fs"
 import {
   prisma_safe,
   sql_danger,
@@ -126,6 +127,11 @@ function prismafy([title, entries]) {
   const singles = simple_relations(entries);
   const basics = not_relations(entries);
   const complex = complex_relations(entries);
+  fs.writeFileSync('../public/properties.json', JSON.stringify({
+    single_links: singles,
+    multi_links: complex,
+    not_links: basics
+  }))
   const prismafied = [];
   entries.forEach(function (entry) {
     const prism = simple(Object.fromEntries(basics.map((s) => [s, entry[s]])));
@@ -170,7 +176,6 @@ for (var [title, entries] of Object.entries(data)) {
   const db = prisma[prisma_safe(parsed.title)];
   for (var e of parsed.entries) {
     console.log(e.title);
-    console.log(e)
     await db.upsert({
       where: {
         id: e.id

@@ -12,7 +12,8 @@ import Create from "@pages/create";
 import Advance from "@pages/advance";
 import Sheet from "@pages/sheet";
 import Wiki from "@pages/wiki";
-import Feature from "@components/feature";
+import Entry from "@pages/entry";
+import Powers from "@pages/powers"
 
 export default createBrowserRouter(
   createRoutesFromElements(
@@ -37,7 +38,7 @@ export default createBrowserRouter(
       />
       <Route
         path="srd/:table/:feature"
-        element={<Feature />}
+        element={<Entry />}
       />
       <Route
         path="character/:id"
@@ -51,6 +52,7 @@ export default createBrowserRouter(
         path="character/:id/advance"
         element={<Advance />}
       />
+      <Route path="db/powers" element={<Powers />} />
     </Route>
   )
 );

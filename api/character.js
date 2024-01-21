@@ -23,6 +23,21 @@ app.get("/data/character", async (req, res) => {
     },
     include: {
       profile: false,
+      powerset: {
+        select: {
+          powers: {
+            include: {
+              effects: {
+                include: {
+                  tags: true
+                }
+              },
+              durations: true,
+              ranges: true
+            }
+          }
+        }
+      },
       backgrounds: {
         include: {
           background_features: true,
@@ -87,9 +102,6 @@ app.get("/data/character", async (req, res) => {
         }
       }
     }
-  });
-  query.inventory.weapons.forEach((wpn) => {
-    delete wpn.damage_typesId;
   });
   query.HD = _.uniqBy(query.HD, (f) => f.die.title);
   res.json(query);

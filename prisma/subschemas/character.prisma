@@ -1,6 +1,8 @@
 import {Classes, Backgrounds, Injuries, Abilities, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
 import {Users} from "./user"
 import {Weapons, Armor, Items} from "./inventory"
+import { Characters } from "./character"
+import {Powers} from "./powers"
 
 model Characters {
   id             String           @id @unique
@@ -9,6 +11,7 @@ model Characters {
   biography      Json
   xp_earned      Int
   xp_spent       Int
+  burn           Int              @default(0)
   HD             HD[]
   classes        Classes[]
   backgrounds    Backgrounds[]
@@ -18,7 +21,6 @@ model Characters {
   class_features Class_Features[]
   tag_features   Tag_Features[]
   skills         Skills[]
-  powers         Int              @default(0)
   inventory      Inventories?
   str            Int
   dex            Int
@@ -29,7 +31,11 @@ model Characters {
   health         Health?
   portrait       String?          @db.MediumText
   usersId        String
+  powerset       PowerSet?
 }
+
+
+
 
 model HD {
   id           Int        @id @default(autoincrement())
@@ -57,4 +63,10 @@ model Inventories {
   items     Items[]
 
   charactersId String @id @unique
+}
+
+model PowerSet {
+  character    Characters @relation(fields: [charactersId], references: [id])
+  charactersId String     @id @unique
+  powers       Powers[]
 }

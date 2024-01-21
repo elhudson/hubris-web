@@ -7,17 +7,30 @@ const Wiki = () => {
   const getTables = useAsync(tables);
   return (
     <>
-      {getTables.result && (
+      <div>
+        <h3>Rules</h3>
+        {getTables.result && (
+          <Grid>
+            {getTables.result.map((title) => (
+              <a
+                className="center"
+                href={`/srd/${sql_safe(title)}`}>
+                {title}
+              </a>
+            ))}
+          </Grid>
+        )}
+      </div>
+      <div>
+        <h3>Resources</h3>
         <Grid>
-          {getTables.result.map((title) => (
-            <a
-              className="center"
-              href={`/srd/${sql_safe(title)}`}>
-              {title}
-            </a>
-          ))}
+          {[<a
+            className="center"
+            href="/db/powers">
+            Powers
+          </a>]}
         </Grid>
-      )}
+      </div>
     </>
   );
 };

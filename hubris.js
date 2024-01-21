@@ -10,6 +10,8 @@ import character from "./api/character.js";
 import inventory from "./api/inventory.js";
 import user from "./api/user.js";
 import rules from "./api/rules.js";
+import powers from "./api/powers.js";
+import { db } from "./database/connections.js";
 
 const app = express();
 
@@ -27,5 +29,7 @@ app.use(character);
 app.use(inventory);
 app.use(user);
 app.use(rules);
+app.use(powers);
 
 ViteExpress.listen(app, 3000, () => console.log("HUBRIS is online."));
+

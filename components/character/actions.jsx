@@ -6,9 +6,10 @@ import { FaLevelUpAlt } from "react-icons/fa";
 import { redirect } from "react-router-dom";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-import Switch from "@ui/switch"
+import Context from "@ui/context";
+import { useRef } from "react";
 
-export default () => {
+export default ({ children }) => {
   const { character } = useCharacter();
   const { colors } = useTheme();
   const { username } = useUser();
@@ -18,26 +19,39 @@ export default () => {
     });
     redirect(`/characters/${username}`);
   };
+  const deleteRef = useRef(null);
   return (
-    <div
-      className={css`
-        >button {
-          all:unset;
-        }
-      `}>
+    <div className={css`
+      >button:first-child {
+        display: none;
+      }
+    `}>
       <Alert
         confirm={handleDelete}
-        button={<Switch src={<FaTrashAlt />} />}>
+        button={
+          <button
+            ref={deleteRef}
+            style={{ display: "none" }}
+          />
+        }>
         <div>
           <h4>Are you sure?</h4>
           <p>Once you delete a character, you can't recover them.</p>
         </div>
       </Alert>
-      <button>
-        <a href={`/character/${character.id}/advance`}>
-        <Switch src={<FaLevelUpAlt />} />
-        </a>
-      </button>
+      <Context
+        trigger={children}
+        items={[
+          {
+            label: "Delete",
+            action: () => deleteRef.current.click()
+          },
+          {
+            label: "Level Up",
+            action: () => window.location.assign(`/character/${character.id}/advance`)
+          }
+        ]}
+      />
     </div>
   );
 };
