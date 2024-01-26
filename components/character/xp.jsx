@@ -1,5 +1,5 @@
 import { useCharacter } from "@contexts/character";
-import Toggles from "@ui/toggles"
+import Toggles from "@ui/toggles";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
@@ -27,15 +27,38 @@ export default () => {
           border: 1px solid ${colors.text};
           text-align: center;
           font-size: 20px;
+          height: 30px;
         `}>
         {character.xp_spent} / {character.xp_earned}
-        <Toggles
-          inc={inc}
-          dec={dec}
-        />
+        <div
+          className={css`
+            border-left: 1px solid ${colors.text};
+            position: relative;
+            width: 30px;
+            float: right;
+            > div {
+              bottom: 0;
+              height: unset;
+              width: unset;
+            }
+            > * > button {
+              display: block;
+              border: unset !important;
+              border-left: 1px solid ${colors.text};
+              &:first-child {
+                border-bottom: 1px solid ${colors.text} !important;
+              }
+              position: relative !important;
+              height: 15px;
+              width: 100% !important;
+            }
+          `}>
+          <Toggles
+            inc={inc}
+            dec={dec}
+          />
+        </div>
       </div>
     </div>
   );
 };
-
-

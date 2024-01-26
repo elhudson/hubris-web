@@ -17,7 +17,9 @@ export default () => {
           id: true,
           durations: {
             where: {
-              tier: get_tier(character)
+              tier: {
+                lte: get_tier(character)
+              }
             },
             include: {
               requires: true,

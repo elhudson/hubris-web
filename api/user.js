@@ -24,7 +24,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  if ((process.env.NODE_ENV = "production")) {
+  if ((process.env.NODE_ENV != "production")) {
     req.session.user = "ehudson19";
     req.session.user_id = "ddd0c0ad-13c4-47d4-bdfb-a343985187d8";
   }

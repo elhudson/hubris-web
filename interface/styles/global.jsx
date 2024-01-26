@@ -66,7 +66,7 @@ const Style = () => {
             right: 25px;
           }
         }
-        .cancel {
+        .danger {
           background-color: ${Color(colors.red).fade(0.6).hsl().toString()};
           color: ${Color(colors.red).darken(0.5).hsl().toString()};
           border: 1px solid ${Color(colors.red).darken(0.5).hsl().toString()};

@@ -16,11 +16,13 @@ const injuries = await prisma.injuries.findMany();
 const durations = await prisma.durations.findMany();
 const ranges = await prisma.ranges.findMany();
 const skills = await prisma.skills.findMany();
+const damage_types = await prisma.damage_Types.findMany();
 
+const users = await prisma.users.findMany();
 const uninjured = _.find(injuries, (p) => p.title == "Uninjured");
 
 // const usrs = [];
-// fs.createReadStream("/home/ehudson/users.csv")
+// fs.createReadStream("./_characters_.csv")
 //   .pipe(parse({ delimiter: ",", ltrim: true, columns: true }))
 //   .on("data", function (row) {
 //     // 👇 push the object row into the array
@@ -33,60 +35,74 @@ const uninjured = _.find(injuries, (p) => p.title == "Uninjured");
 //     // 👇 log the result array
 //     console.log("parsed csv data:");
 //     console.log(usrs);
-//     fs.writeFileSync('./users.json', JSON.stringify(usrs))
+//     fs.writeFileSync('./characters.json', JSON.stringify(usrs))
 //   });
-
-const users = JSON.parse(
-  fs.readFileSync("./users.json", { encoding: "utf-8" })
-);
 
 const chars = JSON.parse(
   fs.readFileSync("./characters.json", { encoding: "utf-8" })
 );
-
-const ids = Array.from(new Set(chars.map((c) => c.id)));
-
-const uniques = Object.fromEntries(
-  ids.map((i) => [i, chars.filter((c) => c.id == i)])
-);
-for (var [id, data] of Object.entries(uniques)) {
-  uniques[id] = _.sortBy(data, (d) => d.timestamp).at(-1).body;
-}
-
-const dudless = Object.values(uniques).filter((f) => _.has(f, "bio"));
-
-const uniq_usernames = Array.from(new Set(users.map((u) => u.username)));
-
-const with_all_possible_ids = uniq_usernames.map((u) => ({
-  username: u,
-  password: _.find(users, (f) => f.username == u).password,
-  ids: users.filter((f) => f.username == u).map((i) => i.id)
-}));
-
-const chars_to_usernames = dudless.map((c) => ({
-  char_id: c.id,
-  username: _.find(with_all_possible_ids, (f) => f.ids.includes(c.user))
-    .username,
-  user_id: c.user
-}));
-
-const correct_users = with_all_possible_ids
-  .map((user) => ({
-    username: user.username,
-    password: user.password,
-    id: _.find(chars_to_usernames, (c) => c.username == user.username)
-  }))
-  .filter((c) => c.id != undefined);
-
-correct_users.forEach((item) => {
-  item.id = item.id.user_id;
+chars.forEach((c) => {
+  c.body = JSON.parse(c.body);
 });
+const versions = _.groupBy(chars, (c) => c.id);
+Object.keys(versions).forEach((id) => {
+  versions[id].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+});
+
+const latest = Object.values(versions)
+  .map((v) => v.at(-1))
+  .filter((f) => f.user != "undefined");
+const user_in_db = latest
+  .filter((l) => users.map((u) => u.id).includes(l.user))
+  .filter((f) => _.has(f.body, "bio"));
+
+// const ids = Array.from(new Set(chars.map((c) => c.id)));
+
+// const uniques = Object.fromEntries(
+//   ids.map((i) => [i, chars.filter((c) => c.id == i)])
+// );
+// for (var [id, data] of Object.entries(uniques)) {
+//   uniques[id] = _.sortBy(data, (d) => d.timestamp).at(-1).body;
+// }
+
+// const uniq_usernames = users.map((u) => u.username)
+
+// const with_all_possible_ids = uniq_usernames.map((u) => ({
+//   username: u,
+//   password: _.find(users, (f) => f.username == u).password,
+//   ids: users.filter((f) => f.username == u).map((i) => i.id)
+// }));
+
+// const chars_to_usernames = dudless.map((c) => ({
+//   char_id: c.id,
+//   username: _.find(with_all_possible_ids, (f) => f.ids.includes(c.user))
+//     .username,
+//   user_id: c.user
+// }));
+
+// const correct_users = with_all_possible_ids
+//   .map((user) => ({
+//     username: user.username,
+//     password: user.password,
+//     id: _.find(chars_to_usernames, (c) => c.username == user.username)
+//   }))
+//   .filter((c) => c.id != undefined);
+
+// correct_users.forEach((item) => {
+//   item.id = item.id.user_id;
+// });
 
 const Character = (item) => {
   const cl = _.find(classes, (f) => f.id == item.classes.base.id);
-  const usr = _.find(correct_users, (f) => f.id == item.user);
-  Object.values(item.combat.weapons).forEach((item)=> item.id=crypto.randomUUID().toString())
-  Object.values(item.combat.armor).forEach((item)=> item.id=crypto.randomUUID().toString())
+  const usr = _.find(users, (f) => f.id == item.user);
+  Object.values(item.combat.weapons).forEach(
+    (item) => (item.id = crypto.randomUUID().toString())
+  );
+  Object.values(item.combat.armor).forEach(
+    (item) => (item.id = crypto.randomUUID().toString())
+  );
+  item.combat.weapons[0].equipped=true
+  item.combat.armor[0].equipped=true
   return {
     id: item.id,
     user: {
@@ -187,6 +203,18 @@ const Character = (item) => {
           create: _.find(skills, (e) => e.id == c.id)
         }))
     },
+    powerset: {
+      connectOrCreate: {
+        where: {
+          charactersId: item.id
+        },
+        create: {
+          powers: {
+            create: []
+          }
+        }
+      }
+    },
     inventory: {
       connectOrCreate: {
         where: {
@@ -203,15 +231,10 @@ const Character = (item) => {
                 name: w.name,
                 martial: w.value == "Martial",
                 heavy: w.weight.heavy.active,
-                tags: {
-                  connectOrCreate: tags
-                    .filter((f) =>
-                      ["Bludgeoning", "Piercing", "Slashing"].includes(f.title)
-                    )
-                    .map((t) => ({
-                      where: { id: t.id },
-                      create: t
-                    }))
+                damage_types: {
+                  connect: {
+                    id: damage_types[0].id
+                  }
                 }
               }
             }))
@@ -239,7 +262,7 @@ const Character = (item) => {
   };
 };
 
-const characters = dudless.map((c) => Character(c));
+const characters = user_in_db.map((c) => Character(c.body));
 
 for (var c of characters) {
   await prisma.characters.upsert({

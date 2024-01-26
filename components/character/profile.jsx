@@ -1,20 +1,25 @@
 import Alignment from "./alignment";
 import { css } from "@emotion/css";
 import Tier from "./tier";
-import Actions from "./actions"
+import Actions, { Buttons } from "./actions";
 import { useCharacter } from "@contexts/character";
 import Icon from "@ui/icon";
 import Avatar from "@components/character/avatar";
 
 export default () => {
   const { character } = useCharacter();
-  return (
-    <Actions>
+  const inner = (
     <div
       className={
         "bordered inline " +
         css`
           position: relative;
+    
+          .actions {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+          }
         `
       }
       style={{ marginBottom: 10 }}>
@@ -22,6 +27,7 @@ export default () => {
         id={character.id}
         sz={125}
       />
+      {character.HD && <Buttons />}
       <div>
         <h3>
           <a href={`/character/${character.id}`}>{character.biography.name}</a>
@@ -62,9 +68,6 @@ export default () => {
         </div>
       </div>
     </div>
-    </Actions>
-
   );
+  return <>{character.HD ? <Actions>{inner}</Actions> : inner}</>;
 };
-
-

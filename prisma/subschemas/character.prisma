@@ -34,9 +34,6 @@ model Characters {
   powerset       PowerSet?
 }
 
-
-
-
 model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])

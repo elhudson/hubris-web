@@ -20,6 +20,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
         font-size: 20px;
         text-align: center;
         position: relative;
+        height: 30px;
       `}>
       <div>
         {contents}
@@ -28,6 +29,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
       <div
         className={css`
           position: relative;
+          border-left: 1px solid ${colors.text};
           width: 30px;
           float:right;
           > div {
@@ -40,7 +42,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
             border: unset !important;
             border-left: 1px solid ${colors.text};
             &:first-child {
-              border-bottom: 1px solid ${colors.text};
+              border-bottom: 1px solid ${colors.text} !important;
             }
             position: relative !important;
             height: 15px;

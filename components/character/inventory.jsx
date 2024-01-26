@@ -4,6 +4,7 @@ import Radio from "@ui/radio";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { Item } from "@items";
+import { Row } from "@ui/layouts";
 
 import { GiBroadDagger } from "react-icons/gi";
 import { GiHeartArmor } from "react-icons/gi";
@@ -76,7 +77,7 @@ const List = ({ title }) => {
     );
   };
   return (
-    <>
+    <div>
       <div
         className={css`
           width: 100%;
@@ -113,7 +114,7 @@ const List = ({ title }) => {
           ))}
         </Radio>
       )}
-    </>
+    </div>
   );
 };
 

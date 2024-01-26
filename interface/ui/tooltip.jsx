@@ -23,6 +23,7 @@ export default ({ preview, children }) => {
             className={
               "shadow " +
               css`
+              z-index: 2;
                 max-width: 50vw;
                 border: 1px solid ${colors.text};
                 padding: 5px;

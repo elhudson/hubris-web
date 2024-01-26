@@ -20,7 +20,8 @@ export default defineConfig({
       "@items": resolve(__dirname, "./components/items/index.jsx"),
       "@options": resolve(__dirname, "./components/packages/options.js"),
       "@character": resolve(__dirname, "./components/packages/character.js"),
-      "@rules": resolve(__dirname, './components/packages/rules.js')
+      "@rules": resolve(__dirname, './components/packages/rules.js'),
+      "@actions": resolve(__dirname, './components/packages/actions.js')
     }
   }
 });

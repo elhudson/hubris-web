@@ -8,6 +8,7 @@ import {
   boost,
   character_update_query,
   get_max_hp,
+  get_tier,
   update_hd,
   update_inventory
 } from "utilities";
@@ -109,6 +110,7 @@ app.get("/data/character", async (req, res) => {
 
 app.post("/data/character", async (req, res) => {
   const char = req.body;
+  _.find(char.HD, (f) => f.src == "default").max = get_tier(char);
   const id = req.query.id;
   await db.characters.update({
     where: {

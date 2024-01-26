@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Mon Jan 01 2024 17:28:12 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Sun Jan 21 2024 19:22:15 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -44,6 +44,7 @@ model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
   die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
+  src          String     @default("default")
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
@@ -135,7 +136,9 @@ model Hit_Dice {
   cost    Int       @default(1)
   classes Classes[]
   HD      HD[]
+  Health  Health[]
 }
+
 
 model Damage_Types {
   id          String @id @unique

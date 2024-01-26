@@ -5,10 +5,11 @@ import { get_max_hp } from "utilities";
 import _ from "lodash";
 import Counter from "@ui/counter";
 import { useTheme } from "@emotion/react";
+import { css } from "@emotion/css";
+import { Row } from "@ui/layouts";
 
 const Health = () => {
   const { character, update } = useCharacter();
-  const { colors } = useTheme();
   const incrementHealth = (e) => {
     update((draft) => {
       if (draft.health.hp < get_max_hp(draft)) {
@@ -24,7 +25,7 @@ const Health = () => {
     });
   };
   return (
-    <div>
+    <Row>
       <div>
         <h4>HP</h4>
         <Counter
@@ -34,6 +35,7 @@ const Health = () => {
           dec={decrementHealth}
           max={get_max_hp(character)}
         />
+        <Injuries injury={character.health.injuries} />
       </div>
       <div>
         <h4>HD</h4>
@@ -41,8 +43,7 @@ const Health = () => {
           <HD index={_.indexOf(character.HD, h)} />
         ))}
       </div>
-      <Injuries injury={character.health.injuries} />
-    </div>
+    </Row>
   );
 };
 

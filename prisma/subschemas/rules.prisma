@@ -21,6 +21,7 @@ model Hit_Dice {
   HD      HD[]
 }
 
+
 model Damage_Types {
   id          String @id @unique
   title       String @db.MediumText

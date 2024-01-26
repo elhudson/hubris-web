@@ -25,7 +25,9 @@ export default () => {
           classes: true,
           class_features: {
             where: {
-              tier: get_tier(character)
+              tier: {
+                lte: get_tier(character)
+              }
             },
             include: {
               requires: true,

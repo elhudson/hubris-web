@@ -218,6 +218,8 @@ export const update_hd = async (engine, hd) => {
   for (var kind of hd) {
     const data = {
       used: Number(kind.used),
+      max: Number(kind.max),
+      src: kind.src,
       owner: {
         connect: {
           id: kind.charactersId

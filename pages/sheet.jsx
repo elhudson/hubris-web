@@ -4,7 +4,8 @@ import { characterContext } from "@contexts/character";
 import { useImmer } from "use-immer";
 import Tabs from "@ui/tabs";
 import Character from "@character";
-
+import { css } from "@emotion/css";
+import { Row } from "@ui/layouts";
 const components = [
   { title: "Skills & Abilities", content: <Character.skills /> },
   { title: "Health", content: <Character.health /> },
@@ -22,8 +23,10 @@ const components = [
     title: "Combat",
     content: (
       <div>
-        <Character.ac />
-        <Character.initiative />
+        <Row>
+          <Character.ac />
+          <Character.initiative />
+        </Row>
         <Character.attacks />
       </div>
     )

@@ -4,14 +4,15 @@ import {Effects, Ranges, Durations} from "./rules"
 import { Characters, PowerSet } from "./character"
 
 model Powers {
-  id          String      @id @unique
-  name        String
-  flavortext  String      @db.LongText
-  creator     Users       @relation(fields: [creatorId], references: [id])
-  creatorId   String
-  effects     Effects[]
-  ranges      Ranges[]
-  durations   Durations[]
-  characters  PowerSet[]
+  id         String      @id @unique
+  name       String
+  flavortext String      @db.LongText
+  creator    Users       @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  effects    Effects[]
+  ranges     Ranges[]
+  durations  Durations[]
+  characters PowerSet[]
 }
+
 
