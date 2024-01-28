@@ -21,7 +21,8 @@ export default defineConfig({
       "@options": resolve(__dirname, "./components/packages/options.js"),
       "@character": resolve(__dirname, "./components/packages/character.js"),
       "@rules": resolve(__dirname, './components/packages/rules.js'),
-      "@actions": resolve(__dirname, './components/packages/actions.js')
+      "@actions": resolve(__dirname, './components/packages/actions.js'),
+      "@user": resolve(__dirname, './components/user')
     }
   }
 });

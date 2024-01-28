@@ -11,6 +11,7 @@ import inventory from "./api/inventory.js";
 import user from "./api/user.js";
 import rules from "./api/rules.js";
 import powers from "./api/powers.js";
+import campaigns from "./api/campaigns.js"
 import { db } from "./database/connections.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(inventory);
 app.use(user);
 app.use(rules);
 app.use(powers);
+app.use(campaigns)
 
 ViteExpress.listen(app, 3000, () => console.log("HUBRIS is online."));
 

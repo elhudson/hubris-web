@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sun Jan 21 2024 19:22:15 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Fri Jan 26 2024 12:23:22 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -8,6 +8,31 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+}
+
+model Campaigns {
+  id           String       @id @unique @default(uuid())
+  name         String       @default("Untitled Campaign")
+  description  String?      @db.MediumText
+  settings     Settings[]
+  creator      Users?       @relation(fields: [creatorId], references: [id], name: "creator")
+  dm           Users?       @relation(fields: [dmId], references: [id], name: "dm")
+  players      Users[]      @relation(name: "players")
+  dmId         String?
+  creatorId    String?
+  characters   Characters[]
+  sessionCount Int          @default(0)
+  logbook      Summaries[]
+}
+
+model Summaries {
+  id         String     @id @unique @default(uuid())
+  session    Int
+  campaign   Campaigns  @relation(fields: [campaignId], references: [id])
+  campaignId String
+  text       String     @db.LongText
+  author     Characters @relation(fields: [authorId], references: [id])
+  authorId   String
 }
 
 model Characters {
@@ -38,13 +63,16 @@ model Characters {
   portrait       String?          @db.MediumText
   usersId        String
   powerset       PowerSet?
+  Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
+  campaignId     String?
+  summaries      Summaries[]
 }
 
 model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
-  die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
   src          String     @default("default")
+  die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
@@ -79,7 +107,7 @@ model Weapons {
   id             String        @id @unique
   name           String        @default("")
   description    String?
-  uses           String?
+  uses           String?       @default("str")
   damage_types   Damage_Types? @relation(fields: [damage_typesId], references: [id])
   bonus          Int?
   martial        Boolean
@@ -136,9 +164,7 @@ model Hit_Dice {
   cost    Int       @default(1)
   classes Classes[]
   HD      HD[]
-  Health  Health[]
 }
-
 
 model Damage_Types {
   id          String @id @unique
@@ -311,6 +337,7 @@ model Settings {
   title       String
   backgrounds Backgrounds[]
   description String        @db.MediumText
+  campaigns   Campaigns[]
 }
 
 model Background_Features {
@@ -344,4 +371,7 @@ model Users {
   password   String
   Characters Characters[]
   Powers     Powers[]
+  PlayingIn  Campaigns[]  @relation(name: "players")
+  DMing      Campaigns[]  @relation(name: "dm")
+  Campaigns  Campaigns[]  @relation(name: "creator")
 }

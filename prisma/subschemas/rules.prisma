@@ -1,6 +1,7 @@
 import {Weapons} from "./inventory"
 import {HD, Health, Characters} from "./character"
 import {Powers} from "./powers"
+import {Campaigns} from "./campaign"
 
 model Tags {
   id             String         @id @unique
@@ -20,7 +21,6 @@ model Hit_Dice {
   classes Classes[]
   HD      HD[]
 }
-
 
 model Damage_Types {
   id          String @id @unique
@@ -69,8 +69,6 @@ model Effects {
   Powers       Powers[]
 }
 
-
-
 model Trees {
   id          String      @id @unique
   title       String?
@@ -96,8 +94,6 @@ model Durations {
   Powers       Powers[]
 }
 
-
-
 model Ranges {
   id           String       @id @unique
   title        String?
@@ -112,8 +108,6 @@ model Ranges {
   charactersId String?
   Powers       Powers[]
 }
-
-
 
 model Classes {
   id             String           @id @unique
@@ -195,11 +189,13 @@ model Backgrounds {
 }
 
 model Settings {
-  id          String        @id @unique
-  title       String
-  backgrounds Backgrounds[]
-  description String        @db.MediumText
+    id          String        @id @unique
+    title       String
+    backgrounds Backgrounds[]
+    description String        @db.MediumText
+    campaigns   Campaigns[]
 }
+
 
 model Background_Features {
   id            String       @id @unique

@@ -5,24 +5,25 @@ import Actions, { Buttons } from "./actions";
 import { useCharacter } from "@contexts/character";
 import Icon from "@ui/icon";
 import Avatar from "@components/character/avatar";
+import { useTheme } from "@emotion/react";
 
 export default () => {
   const { character } = useCharacter();
+  const {colors}=useTheme()
   const inner = (
     <div
       className={
         "bordered inline " +
         css`
           position: relative;
-    
+          background-color: ${colors.background};
           .actions {
             position: absolute;
             right: 0;
             bottom: 0;
           }
         `
-      }
-      style={{ marginBottom: 10 }}>
+      }>
       <Avatar
         id={character.id}
         sz={125}
@@ -69,5 +70,5 @@ export default () => {
       </div>
     </div>
   );
-  return <>{character.HD ? <Actions>{inner}</Actions> : inner}</>;
+  return <div className="profile">{character.HD ? <Actions>{inner}</Actions> : inner}</div>;
 };

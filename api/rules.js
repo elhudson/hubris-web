@@ -85,7 +85,9 @@ app.post("/data/query", async (req, res) => {
   const query = req.body;
   const method = req.query.method;
   const table = req.query.table;
-  const q = await db[prisma_safe(table)][method](query);
+  const q = query
+    ? await db[prisma_safe(table)][method](query)
+    : await db[prisma_safe(table)][method]();
   res.json(q);
 });
 

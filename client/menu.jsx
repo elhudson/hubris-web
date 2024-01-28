@@ -1,12 +1,13 @@
 import * as nav from "@radix-ui/react-navigation-menu";
 import { userContext } from "@contexts/user";
 import { useContext } from "react";
-import Login from "@pages/login";
+import Login from "@pages/user/login";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { useAsync } from "react-async-hook";
 import Tables from "@components/tables";
+import actions from "@actions";
 
 const Menu = () => {
   const { colors } = useTheme();
@@ -56,15 +57,18 @@ const Menu = () => {
           <>
             <nav.Item>
               <nav.Link>
-                <Link to={`characters/${user.username}`}>My Characters</Link>
+                <Link to={`creations/${user.username}`}>My Stuff</Link>
               </nav.Link>
             </nav.Item>
             <nav.Item>
-              <nav.Link>
-                <Link to={`characters/${user.username}/create`}>
-                  New Character
-                </Link>
-              </nav.Link>
+              <nav.Trigger>Create</nav.Trigger>
+              <nav.Content>
+                {actions.user().map((u) => (
+                  <li>
+                    <a onClick={u.action}>{u.label}</a>
+                  </li>
+                ))}
+              </nav.Content>
             </nav.Item>
           </>
         )}

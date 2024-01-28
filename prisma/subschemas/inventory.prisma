@@ -5,7 +5,7 @@ model Weapons {
   id             String        @id @unique
   name           String        @default("")
   description    String?
-  uses           String        @default("str")
+  uses           String?       @default("str")
   damage_types   Damage_Types? @relation(fields: [damage_typesId], references: [id])
   bonus          Int?
   martial        Boolean
@@ -14,6 +14,7 @@ model Weapons {
   Inventories    Inventories[]
   damage_typesId String?
 }
+
 
 model Armor {
   id          String  @id @unique

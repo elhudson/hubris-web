@@ -55,11 +55,26 @@ app.get("/data/characters", async (req, res) => {
   res.json(query);
 });
 
+app.get("/data/campaigns", async (req, res) => {
+  const username = req.query.user;
+  const query = await db.campaigns.findMany({
+    where: {
+      creator: {
+        username: username
+      }
+    },
+    include: {
+      characters: true,
+      settings: true
+    }
+  });
+  res.json(query);
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
 
-app.post("/user", (req, res) => {});
 
 export default app;

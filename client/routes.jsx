@@ -6,14 +6,8 @@ import {
 } from "react-router-dom";
 
 import Menu from "./menu";
-import { Srd } from "@pages/srd";
-import Characters from "@pages/characters";
-import Create from "@pages/create";
-import Advance from "@pages/advance";
-import Sheet from "@pages/sheet";
-import Wiki from "@pages/wiki";
-import Entry from "@pages/entry";
-import Powers from "@pages/powers"
+import pages from "@pages/pages";
+const { rules, user, campaign, catalog, character } = pages;
 
 export default createBrowserRouter(
   createRoutesFromElements(
@@ -26,33 +20,48 @@ export default createBrowserRouter(
       }>
       <Route
         path="/"
-        element={<Wiki />}
+        element={<rules.wiki />}
       />
       <Route
-        path="characters/:user"
-        element={<Characters />}
+        path="creations/:user"
+        element={<user.creations />}
       />
       <Route
         path="srd/:table"
-        element={<Srd />}
+        element={<rules.srd />}
       />
       <Route
         path="srd/:table/:feature"
-        element={<Entry />}
+        element={<rules.entry />}
       />
       <Route
         path="character/:id"
-        element={<Sheet />}
+        element={<character.homepage />}
+      />
+      <Route
+        path="campaign/:id"
+        element={<campaign.homepage />}
       />
       <Route
         path="characters/:user/create"
-        element={<Create />}
+        element={<character.create />}
       />
       <Route
         path="character/:id/advance"
-        element={<Advance />}
+        element={<character.advance />}
       />
-      <Route path="db/powers" element={<Powers />} />
+      <Route
+        path="campaigns/:user/create"
+        element={<campaign.create />}
+      />
+      <Route
+        path="campaign/:id/summaries/create"
+        element={<campaign.summarize />}
+      />
+      <Route
+        path="db/powers"
+        element={<catalog.powers />}
+      />
     </Route>
   )
 );

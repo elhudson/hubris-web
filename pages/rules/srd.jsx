@@ -5,7 +5,7 @@ import { css } from "@emotion/css";
 import Rules from "@rules";
 console.log(Rules)
 
-export const Srd = () => {
+export default () => {
   const { table } = useParams();
   const Page=Rules[table]
   return (

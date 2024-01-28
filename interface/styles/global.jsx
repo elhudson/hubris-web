@@ -12,6 +12,10 @@ const Style = () => {
           font-family: Iosevka Web;
           font-size: 14px;
         }
+        body {
+          max-height: 100vh;
+          overflow: hidden;
+        }
         .pagetitle {
           text-align: center;
         }
@@ -65,6 +69,22 @@ const Style = () => {
             position: absolute;
             right: 25px;
           }
+        }
+        .container {
+          display: flex;
+          flex-wrap: wrap;
+          > div {
+            margin: 5px;
+          }
+        }
+        .thumbnail {
+          img {
+            height: 250px;
+            width: 500px;
+            object-fit: cover;
+            padding: 3px;
+          }
+          border: 1px solid ${colors.accent};
         }
         .danger {
           background-color: ${Color(colors.red).fade(0.6).hsl().toString()};
@@ -170,7 +190,7 @@ const Style = () => {
           text-align: center;
         }
         .owned {
-          box-shadow: rgba(213,196,161, 0.5) 0px 3px 8px;
+          box-shadow: rgba(213, 196, 161, 0.5) 0px 3px 8px;
         }
         .bordered {
           border: 1px solid ${colors.accent};

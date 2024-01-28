@@ -2,41 +2,47 @@ import {Classes, Backgrounds, Injuries, Abilities, Effects, Ranges, Durations, C
 import {Users} from "./user"
 import {Weapons, Armor, Items} from "./inventory"
 import { Characters } from "./character"
+import {Campaigns, Summaries} from "./campaign"
 import {Powers} from "./powers"
 
 model Characters {
-  id             String           @id @unique
-  user           Users            @relation(fields: [usersId], references: [id])
-  updated        DateTime         @default(now())
-  biography      Json
-  xp_earned      Int
-  xp_spent       Int
-  burn           Int              @default(0)
-  HD             HD[]
-  classes        Classes[]
-  backgrounds    Backgrounds[]
-  effects        Effects[]
-  ranges         Ranges[]
-  durations      Durations[]
-  class_features Class_Features[]
-  tag_features   Tag_Features[]
-  skills         Skills[]
-  inventory      Inventories?
-  str            Int
-  dex            Int
-  con            Int
-  wis            Int
-  int            Int
-  cha            Int
-  health         Health?
-  portrait       String?          @db.MediumText
-  usersId        String
-  powerset       PowerSet?
+    id             String           @id @unique
+    user           Users            @relation(fields: [usersId], references: [id])
+    updated        DateTime         @default(now())
+    biography      Json
+    xp_earned      Int
+    xp_spent       Int
+    burn           Int              @default(0)
+    HD             HD[]
+    classes        Classes[]
+    backgrounds    Backgrounds[]
+    effects        Effects[]
+    ranges         Ranges[]
+    durations      Durations[]
+    class_features Class_Features[]
+    tag_features   Tag_Features[]
+    skills         Skills[]
+    inventory      Inventories?
+    str            Int
+    dex            Int
+    con            Int
+    wis            Int
+    int            Int
+    cha            Int
+    health         Health?
+    portrait       String?          @db.MediumText
+    usersId        String
+    powerset       PowerSet?
+    Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
+    campaignId     String?
+    summaries      Summaries[]
 }
+
 
 model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
+  src          String     @default("default")
   die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
   max          Int        @default(1)
   used         Int        @default(0)

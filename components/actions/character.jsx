@@ -36,6 +36,13 @@ export default () => {
       icon: <GiNightSleep />
     },
     {
+      label: "Write Summary",
+      action: () =>
+        window.location.assign(
+          `/campaign/${character.campaign.id}/summaries/create`
+        )
+    },
+    {
       label: "Long Rest",
       icon: <BiSolidCastle />,
       action: () =>

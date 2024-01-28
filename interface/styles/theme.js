@@ -1,3 +1,5 @@
+import Color from "color";
+
 const theme = {
   colors: {
     background: "#FBF1C7",
@@ -7,4 +9,8 @@ const theme = {
   }
 };
 
-export default theme
+theme.palette = {
+  accent1: Color(theme.colors.text).fade(0.95).toString()
+};
+
+export default theme;
