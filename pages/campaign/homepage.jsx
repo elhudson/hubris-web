@@ -2,11 +2,16 @@ import { campaignContext } from "@contexts/campaign";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import { useAsync } from "react-async-hook";
-import Characters from "@components/campaigns/characters";
-import Summaries from "@components/campaigns/summaries";
+import Actions from "@campaigns/actions";
+import Campaign from "@packages/campaigns";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Notepad from "@ui/notepad";
+import Color from "color";
+import Title from "@ui/title";
+import Notif from "@ui/notif";
+
+import query from "@database/queries/campaign";
 
 export default () => {
   const { id } = useParams();
@@ -22,62 +27,84 @@ export default () => {
     <div
       className={css`
         max-height: 100vh;
-        width: 100vw;
         overflow: scroll;
+        margin: -5px;
+        section,
+        > button {
+          margin: 5px;
+          background-color: ${Color(colors.background).toString()};
+          border: 1px solid ${colors.accent};
+        }
+        .profile > div {
+          background-color: ${palette.accent1};
+        }
       `}>
       {campaign != null && (
-        <div
-          className={css`
-            padding: 10px;
-            > div {
-              margin-top: 5px;
-              margin-bottom: 5px;
-            }
-          `}>
+        <>
           <campaignContext.Provider
             value={{ campaign: campaign, update: update }}>
-            <div
-              className={css`
-                background-color: ${colors.background};
-                border: 1px solid ${colors.accent};
-              `}>
-              <h2 className="pagetitle">{campaign.name}</h2>
-            </div>
-            <div>
-              <Notepad text={campaign.description} />
+            <Actions>
+              <section>
+                <h2 className="pagetitle">{campaign.name}</h2>
+              </section>
+              <section>
+                <Notepad text={campaign.description} />
+              </section>
               <div
                 className={css`
                   display: flex;
-                  .profile>div {
-                    background-color: ${palette.accent1};
-                  }
-                  > div {
-                    width: 100%;
+                  > section {
                     &:first-child {
                       max-width: fit-content;
                     }
-                    margin: 5px;
-                    padding: 5px;
-                    border: 1px solid ${colors.text};
-                    background-color: ${colors.background};
+                    &:nth-child(2) {
+                      flex-grow: 1;
+                    }
+                    position: relative;
                     > h3 {
                       text-align: center;
                       text-transform: uppercase;
                     }
+                    > button {
+                      position: absolute;
+                      top: 5px;
+                      right: 5px;
+                    }
                   }
                 `}>
-                <div>
+                <section>
                   <h3>Our Intrepid Heroes</h3>
-                  <Characters />
-                </div>
-                <div>
+                  <Campaign.recruiter />
+                  <Campaign.characters />
+                </section>
+                <section>
                   <h3>The Journey So Far</h3>
-                  <Summaries />
-                </div>
+                  <button>
+                    <a
+                      href={`/campaign/${id}/summaries/${
+                        campaign.logbook.length + 1
+                      }`}>
+                      +
+                    </a>
+                  </button>
+                  <Campaign.summaries />
+                </section>
               </div>
-            </div>
+              <Notif
+                btn="Save"
+                func={async () =>
+                  await fetch(`/data/campaign?id=${id}`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(query(campaign))
+                  }).then((res) => res.text())
+                }
+              />
+            </Actions>
           </campaignContext.Provider>
-        </div>
+        </>
       )}
       <div
         className={css`
@@ -87,7 +114,7 @@ export default () => {
           right: 0;
           img {
             object-fit: cover;
-            opacity: 0.5;
+            opacity: 0.7;
             height: 100vh;
             width: 100vw;
           }

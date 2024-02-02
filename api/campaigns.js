@@ -20,7 +20,14 @@ app.get("/data/campaign", async (req, res) => {
           backgrounds: true
         }
       },
-      settings: true
+      dm: true,
+      creator: true,
+      settings: true,
+      logbook: {
+        include: {
+          author: true
+        }
+      }
     }
   });
   res.json(campaign);
@@ -59,6 +66,67 @@ app.post("/data/campaigns/create", async (req, res) => {
     }
   });
   res.send("Campaign created.");
+});
+
+app.post("/data/campaigns/logbook", async (req, res) => {
+  const summaries = req.body;
+  const id = req.query.id;
+  summaries.forEach(async (summary) => {
+    const query = {
+      author: {
+        connect: {
+          id: summary.author.id
+        }
+      },
+      text: summary.text,
+      session: summary.session,
+      campaign: {
+        connect: {
+          id: id
+        }
+      }
+    };
+    await db.summaries.upsert({
+      where: {
+        campaignId_session: {
+          campaignId: id,
+          session: summary.session
+        }
+      },
+      update: query,
+      create: query
+    });
+  });
+  res.send("Logbook updated");
+});
+
+app.get("/data/campaigns/logbook", async (req, res) => {
+  const summaries = await db.summaries.findMany({
+    where: {
+      campaign: {
+        id: req.query.id
+      }
+    },
+    include: {
+      author: true
+    }
+  });
+  res.json(summaries);
+});
+
+app.get("/data/logbook", async (req, res) => {
+  const campaign = req.query.campaign;
+  const session = Number(req.query.session);
+  const data = await db.summaries.findFirst({
+    where: {
+      campaignId: campaign,
+      session: session
+    },
+    include: {
+      author: true
+    }
+  });
+  res.json(data);
 });
 
 export default app;

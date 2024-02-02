@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   Outlet
 } from "react-router-dom";
+import { css } from "@emotion/css";
 
 import Menu from "./menu";
 import pages from "@pages/pages";
@@ -15,7 +16,14 @@ export default createBrowserRouter(
       element={
         <>
           <Menu />
-          <Outlet />
+          <div
+            className={css`
+              > * {
+                margin-bottom: 5px;
+              }
+            `}>
+            <Outlet />
+          </div>
         </>
       }>
       <Route
@@ -55,7 +63,7 @@ export default createBrowserRouter(
         element={<campaign.create />}
       />
       <Route
-        path="campaign/:id/summaries/create"
+        path="campaign/:id/summaries/:session"
         element={<campaign.summarize />}
       />
       <Route

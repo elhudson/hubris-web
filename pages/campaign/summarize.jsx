@@ -1,19 +1,15 @@
 import { useParams } from "react-router-dom";
 import _ from "lodash";
-import Notepad from "@ui/notepad";
 import { useUser } from "@contexts/user";
 import Select from "@ui/select";
 import { useAsync } from "react-async-hook";
 import { css } from "@emotion/css";
 import { useImmer } from "use-immer";
-
-import ReactQuill from "react-quill";
-import { useEffect, useRef } from "react";
-import "react-quill/dist/quill.snow.css";
-import { useTheme } from "@emotion/react";
+import Notif from "@ui/notif";
+import Doc from "@ui/doc";
 
 export default ({}) => {
-  const { id } = useParams();
+  const { id, session } = useParams();
   const user = useUser();
   const characters = useAsync(
     async () =>
@@ -24,11 +20,23 @@ export default ({}) => {
   const [summary, update] = useImmer({
     author: characters ? characters[0] : null,
     text: "",
-    session: 0
+    session: session
   });
+  useAsync(
+    async () =>
+      await fetch(`/data/logbook?campaign=${id}&session=${session}`).then(
+        (res) => res.json()
+      ).then(j=> update(j))
+  );
   return (
     <div
       className={css`
+        position: relative;
+        > button {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
         .metadata > div {
           display: flex;
           > h3 {
@@ -66,61 +74,26 @@ export default ({}) => {
           </div>
         </div>
       )}
-      <div>
-        <Doc
-          text={summary.text}
-          onChange={(e) => {
-            update((draft) => {
-              draft.text = e;
-            });
-          }}
-        />
-      </div>
+      <Doc
+        text={summary.text}
+        onChange={(e) => {
+          update((draft) => {
+            draft.text = e;
+          });
+        }}
+      />
+      <Notif
+        func={async () => {
+          return await fetch(`/data/campaigns/logbook?id=${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify([summary])
+          }).then((f) => f.text());
+        }}
+        btn="Save Summary"
+      />
     </div>
-  );
-};
-
-const Doc = ({ text, onChange }) => {
-  const ref = useRef(null);
-  const { colors, palette } = useTheme();
-  useEffect(() => {
-    ref.current?.editor.root.setAttribute("spellcheck", false);
-  }, []);
-  return (
-    <ReactQuill
-      theme={"snow"}
-      className={css`
-      height: 80vh;
-        .ql-toolbar,
-        .ql-container {
-          border: 1px solid ${colors.accent};
-        }
-        .ql-formats button {
-          border: 1px solid ${colors.accent};
-          &:hover {
-            background-color: ${palette.accent1};
-          }
-          &.ql-active {
-            background-color: ${colors.accent};
-            .ql-stroke {
-              stroke: ${colors.background};
-            }
-            .ql-fill {
-              fill: ${colors.background};
-            }
-          }
-        }
-        p {
-          max-width: 99%;
-        }
-      `}
-      ref={ref}
-      value={text}
-      onChange={onChange}
-      readOnly={onChange == null}
-      modules={{
-        toolbar: ["bold", "italic", "underline", "strike"]
-      }}
-    />
   );
 };

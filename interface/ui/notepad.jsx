@@ -13,6 +13,7 @@ export default ({ text, onChange = null }) => {
       className={css`
         p {
           max-width: 99%;
+          font-family: "Iosevka";
         }
       `}
       ref={ref}

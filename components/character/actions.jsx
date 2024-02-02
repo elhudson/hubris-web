@@ -1,10 +1,10 @@
-import actions from "@actions";
+import character from "@actions/character";
 import Context from "@ui/context";
 import { css } from "@emotion/css";
 import Tooltip from "@ui/tooltip";
 
 export default ({ children }) => {
-  const acts = actions.character();
+  const acts = character();
   return (
     <>
       <Context
@@ -17,7 +17,6 @@ export default ({ children }) => {
 };
 
 export const Buttons = ({}) => {
-  const acts = actions.character();
   return (
     <div
       className={"actions "+css`
@@ -26,7 +25,7 @@ export const Buttons = ({}) => {
           margin: 3px;
         }
       `}>
-      {acts.map((i) => (
+      {character().map((i) => (
         <Tooltip preview={<button onClick={i.action}>{i.icon}</button>}>
           {i.label}
         </Tooltip>
