@@ -25,19 +25,22 @@ const Skills = () => {
         <div
           className={css`
             display: grid;
-            grid-template-columns: 50% 50%;
-            grid-gap:10px;
+            grid-template-columns: repeat(3, auto);
+            grid-gap: 10px;
+            .skills {
+              margin-top: 5px;
+              padding-left: 5px;
+              border-left: 1px solid ${colors.accent};
+            }
           `}>
           {abilities.result.map((a) => (
-            <div>
+            <section>
               <div
                 className={css`
                   text-align: center;
-
-                  margin-top: 5px;
-                  border: 1px solid ${colors.text};
+                  border: 1px solid ${colors.accent};
                   h4 {
-                    border-bottom: 1px solid ${colors.text};
+                    border-bottom: 1px solid ${colors.accent};
                   }
                   > div:last-child {
                     font-size: 40px;
@@ -48,13 +51,13 @@ const Skills = () => {
                 <h4>{a.title}</h4>
                 <div>{character[a.code]}</div>
               </div>
-              <div>
+              <div className="skills">
                 {skills.result &&
                   skills.result
                     .filter((f) => f.abilities.code == a.code)
                     .map((s) => <Skill skill={s} />)}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       )}

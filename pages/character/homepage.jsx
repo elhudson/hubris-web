@@ -6,36 +6,44 @@ import Tabs from "@ui/tabs";
 import Character from "@character";
 import { css } from "@emotion/css";
 import { Row } from "@ui/layouts";
-const components = [
-  { title: "Skills & Abilities", content: <Character.skills /> },
-  { title: "Health", content: <Character.health /> },
-  {
-    title: "Progression",
-    content: (
-      <div>
-        <Character.proficiency />
-        <Character.xp />
-        <Character.tier />
-      </div>
-    )
-  },
-  {
-    title: "Combat",
-    content: (
-      <div>
-        <Row>
-          <Character.ac />
-          <Character.initiative />
-        </Row>
-        <Character.attacks />
-      </div>
-    )
-  },
-  { title: "Inventory", content: <Character.inventory /> },
-  { title: "Bio", content: <Character.bio /> },
-  { title: "Features", content: <Character.features /> },
-  { title: "Powers", content: <Character.powers /> }
-];
+import { useTheme } from "@emotion/react";
+
+const components = () => {
+  const { classes } = useTheme();
+  return [
+    { title: "Skills & Abilities", content: <Character.skills /> },
+    { title: "Health", content: <Character.health /> },
+    {
+      title: "Progression",
+      content: (
+        <div>
+          <Character.proficiency />
+          <Character.xp />
+          <div css={classes.elements.selectbox}>
+            <label>Tier</label>
+            <Character.tier />
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Combat",
+      content: (
+        <div>
+          <Row>
+            <Character.ac />
+            <Character.initiative />
+          </Row>
+          <Character.attacks />
+        </div>
+      )
+    },
+    { title: "Inventory", content: <Character.inventory /> },
+    { title: "Bio", content: <Character.bio /> },
+    { title: "Features", content: <Character.features /> },
+    { title: "Powers", content: <Character.powers /> }
+  ];
+};
 
 const Sheet = () => {
   const { id } = useParams();
@@ -46,6 +54,7 @@ const Sheet = () => {
         .then((j) => j.json())
         .then((ch) => update(ch))
   );
+  const comps = components();
   return (
     <>
       {character != null && (
@@ -56,9 +65,9 @@ const Sheet = () => {
           }}>
           <Character.profile />
           <Tabs
-            names={components.map((c) => c.title)}
-            def={components[0].title}>
-            {components.map((c) => c.content)}
+            names={comps.map((c) => c.title)}
+            def={comps[0].title}>
+            {comps.map((c) => c.content)}
           </Tabs>
           <Character.save />
         </characterContext.Provider>

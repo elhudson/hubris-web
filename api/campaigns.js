@@ -2,10 +2,19 @@ import { Router } from "express";
 import "dotenv/config";
 
 import _ from "lodash";
-import { db } from "../database/connections.js";
+import { db, upload } from "../database/connections.js";
 import schema from "../database/schema.js";
+import fs from "fs"
 
 const app = Router();
+
+app.post("/data/campaign/cover", upload.single("profile"), (req, res) => {
+  const id = req.query.id;
+  const file = req.file;
+  const path = `${process.cwd()}/public/campaigns/${id}.png`;
+  fs.writeFileSync(path, file.buffer);
+  res.send("Portrait updated.");
+});
 
 app.get("/data/campaign", async (req, res) => {
   const id = req.query.id;

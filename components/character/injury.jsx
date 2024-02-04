@@ -15,8 +15,7 @@ export default ({ injury }) => {
     });
   };
   return (
-    <div className="inline">
-      <h4>Injuries</h4>
+    <>
       {injuries.result && (
         <Select
           current={injury}
@@ -26,6 +25,6 @@ export default ({ injury }) => {
           onChange={handleValueChange}
         />
       )}
-    </div>
+    </>
   );
 };

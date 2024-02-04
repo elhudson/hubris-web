@@ -1,11 +1,11 @@
 import { useCharacter } from "@contexts/character";
 import Toggles from "@ui/toggles";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
+import NumberBox from "@ui/numberBox";
 
 export default () => {
   const { character, update } = useCharacter();
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
 
   const inc = () => {
     update((draft) => {
@@ -20,33 +20,32 @@ export default () => {
     });
   };
   return (
-    <div>
-      <h4>XP</h4>
+    <NumberBox label="XP">
       <div
-        className={css`
-          border: 1px solid ${colors.text};
-          text-align: center;
-          font-size: 20px;
-          height: 30px;
+        css={css`
+          position: relative;
         `}>
-        {character.xp_spent} / {character.xp_earned}
+        <div css={classes.elements.number}>
+          {character.xp_spent} / {character.xp_earned}
+        </div>
         <div
-          className={css`
-            border-left: 1px solid ${colors.text};
-            position: relative;
+          css={css`
+            border-left: 1px solid ${colors.accent};
             width: 30px;
-            float: right;
+            position: absolute;
+            top: 0;
+            right: 0;
             > div {
-              bottom: 0;
               height: unset;
               width: unset;
+              height: 100%;
             }
             > * > button {
               display: block;
               border: unset !important;
-              border-left: 1px solid ${colors.text};
+              border-left: 1px solid ${colors.accent};
               &:first-child {
-                border-bottom: 1px solid ${colors.text} !important;
+                border-bottom: 1px solid ${colors.accent} !important;
               }
               position: relative !important;
               height: 15px;
@@ -59,6 +58,6 @@ export default () => {
           />
         </div>
       </div>
-    </div>
+    </NumberBox>
   );
 };

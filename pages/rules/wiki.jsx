@@ -1,37 +1,56 @@
 import { useAsync } from "react-async-hook";
 import { sql_safe } from "utilities";
-import Grid from "@ui/grid";
+import { Link } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { css } from "@emotion/react";
+import { FaDiceD20 } from "react-icons/fa6";
 
 const Wiki = () => {
+  const { colors, classes } = useTheme();
   const tables = async () => await fetch("/data/tables").then((j) => j.json());
   const getTables = useAsync(tables);
   return (
-    <>
-      <div>
-        <h3>Rules</h3>
-        {getTables.result && (
-          <Grid>
-            {getTables.result.map((title) => (
-              <a
-                className="center"
-                href={`/srd/${sql_safe(title)}`}>
-                {title}
-              </a>
+    <div
+      css={css`
+        display: flex;
+        gap: 10px;
+        ul {
+          margin-left: unset;
+          padding-left: 5px;
+          border-left: 1px solid ${colors.accent};
+          li {
+            font-size: 16px;
+            a {
+              margin-left: 10px;
+            }
+            &::marker {
+              content: "";
+            }
+          }
+        }
+      `}>
+      <section>
+        <h2>Rules</h2>
+        <ul>
+          {getTables.result &&
+            getTables.result.map((title) => (
+              <li>
+                <FaDiceD20 />
+                <Link to={`/srd/${sql_safe(title)}`}>{title}</Link>
+              </li>
             ))}
-          </Grid>
-        )}
-      </div>
-      <div>
-        <h3>Resources</h3>
-        <Grid>
-          {[<a
-            className="center"
-            href="/db/powers">
-            Powers
-          </a>]}
-        </Grid>
-      </div>
-    </>
+        </ul>
+      </section>
+      <section>
+        <h2>Resources</h2>
+        <ul>
+          <li>
+            <FaDiceD20 />
+            <Link to={"/db/powers"}>Powers</Link>
+          </li>
+        </ul>
+      </section>
+    </div>
   );
 };
 

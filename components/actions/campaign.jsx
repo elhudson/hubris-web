@@ -5,7 +5,11 @@ import { useAsync } from "react-async-hook";
 import Alert from "@ui/alert";
 import Notepad from "@ui/notepad";
 import Select from "@ui/select";
+import Multi from "@ui/multi";
+import Upload from "@ui/upload";
 import _ from "lodash";
+import { css } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 import query from "@database/queries/campaign";
 
 export default () => {
@@ -78,6 +82,11 @@ const ChangeDM = forwardRef(function Func(props, ref) {
 
 const EditCampaign = forwardRef(function Func(props, ref) {
   const { campaign, update } = useCampaign();
+  const { colors, palette } = useTheme();
+  const settings = useAsync(
+    async () =>
+      await fetch(`/data/rules?table=settings`).then((res) => res.json())
+  ).result;
   return (
     <Alert
       confirm={async () =>
@@ -95,33 +104,73 @@ const EditCampaign = forwardRef(function Func(props, ref) {
           ref={ref}
         />
       }>
-      <div>
-        <label>Title</label>
-        <input
-          type="text"
-          value={campaign.name}
-          onChange={(e) =>
-            update((draft) => {
-              draft.name = e.currentTarget.value;
-            })
+      <span
+        className={css`
+          .quill {
+            border: 1px solid ${colors.accent};
+            background-color: ${palette.accent1};
           }
-        />
-      </div>
-      <div>
-        <label>Description</label>
-        <Notepad
-          text={campaign.description}
-          onChange={(e) =>
-            update((draft) => {
-              draft.description = e;
-            })
+          label {
+            font-weight: bold;
           }
-        />
-      </div>
+          .pic {
+            display: unset;
+          }
+        `}>
+        <EditCover />
+        <div>
+          <label>Title</label>
+          <input
+            type="text"
+            value={campaign.name}
+            onChange={(e) =>
+              update((draft) => {
+                draft.name = e.currentTarget.value;
+              })
+            }
+          />
+        </div>
+        <div>
+          <label>Description</label>
+          <Notepad
+            text={campaign.description}
+            onChange={(e) =>
+              update((draft) => {
+                draft.description = e;
+              })
+            }
+          />
+        </div>
+        <div>
+          <label>Settings</label>
+          <Multi
+            items={settings}
+            currents={campaign.settings}
+            valuePath="id"
+            labelPath="title"
+            onChange={(e) => {
+              update((draft) => {
+                draft.settings = e.map((v) =>
+                  _.find(settings, (c) => c.id == v.value)
+                );
+              });
+            }}
+          />
+        </div>
+      </span>
     </Alert>
   );
 });
 
-const EditCover=forwardRef(function Func(props, ref) {
-  
-})
+const EditCover = () => {
+  const { campaign } = useCampaign();
+  const url = `/campaigns/${campaign.id}.png`;
+  const endpoint = `/data/campaign/cover?id=${campaign.id}`;
+  return (
+    <Upload
+      path={url}
+      endpoint={endpoint}
+      sz={300}
+    />
+  );
+};

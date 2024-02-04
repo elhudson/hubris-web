@@ -8,7 +8,7 @@ import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Notepad from "@ui/notepad";
 import Color from "color";
-import Title from "@ui/title";
+import { FaPlusCircle } from "react-icons/fa";
 import Notif from "@ui/notif";
 
 import query from "@database/queries/campaign";
@@ -84,7 +84,7 @@ export default () => {
                       href={`/campaign/${id}/summaries/${
                         campaign.logbook.length + 1
                       }`}>
-                      +
+                      <FaPlusCircle />
                     </a>
                   </button>
                   <Campaign.summaries />
@@ -106,21 +106,6 @@ export default () => {
           </campaignContext.Provider>
         </>
       )}
-      <div
-        className={css`
-          z-index: -2;
-          position: absolute;
-          top: 0;
-          right: 0;
-          img {
-            object-fit: cover;
-            opacity: 0.7;
-            height: 100vh;
-            width: 100vw;
-          }
-        `}>
-        <img src={`/campaigns/${id}.jpg`} />
-      </div>
     </div>
   );
 };

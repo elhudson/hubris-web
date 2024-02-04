@@ -4,6 +4,7 @@ import Multi from "@ui/multi";
 import Notif from "@ui/notif";
 import _ from "lodash";
 import Popover from "@ui/pop";
+import { FaPlusCircle } from "react-icons/fa";
 
 export default () => {
   const { campaign, update } = useCampaign();
@@ -43,7 +44,7 @@ export default () => {
       })
     }).then((b) => b.text());
   return (
-    <Popover trigger="+">
+    <Popover trigger={<FaPlusCircle />}>
       {characters && (
         <div>
           <label>Add Character</label>

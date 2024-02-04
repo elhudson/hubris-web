@@ -16,7 +16,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
         > div:first-child {
           width: 100%;
         }
-        border: 1px solid ${colors.text};
+        border: 1px solid ${colors.accent};
         font-size: 20px;
         text-align: center;
         position: relative;
@@ -29,7 +29,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
       <div
         className={css`
           position: relative;
-          border-left: 1px solid ${colors.text};
+          border-left: 1px solid ${colors.accent};
           width: 30px;
           float:right;
           > div {
@@ -40,9 +40,9 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
           > * > button {
             display:block;
             border: unset !important;
-            border-left: 1px solid ${colors.text};
+            border-left: 1px solid ${colors.accent};
             &:first-child {
-              border-bottom: 1px solid ${colors.text} !important;
+              border-bottom: 1px solid ${colors.accent} !important;
             }
             position: relative !important;
             height: 15px;

@@ -7,7 +7,7 @@ import Context from "@ui/context";
 
 const Upload = forwardRef(({ accept, name, setImage }, ref) => {
   const { colors } = useTheme();
-  const handleChange = (ref) => {
+  const handleChange = () => {
     setImage({
       url: URL.createObjectURL(ref.current.files[0]),
       file: ref.current.files[0]
@@ -53,7 +53,7 @@ export default ({ endpoint, path, sz }) => {
             height: 100%;
           `}>
           <av.Root
-            className={css`
+            className={"pic "+css`
               display: inline-flex;
               align-items: center;
               justify-content: center;

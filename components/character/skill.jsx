@@ -15,7 +15,7 @@ export default ({ skill, onCheck = null, editable = false }) => {
           margin-right: 5px;
         }
         > div:nth-child(2) {
-          border-bottom: 1px solid ${colors.text};
+          border-bottom: 1px solid ${colors.accent};
           padding-left: 3px;
           padding-right: 3px;
         }
@@ -26,7 +26,7 @@ export default ({ skill, onCheck = null, editable = false }) => {
         onChange={onCheck}
       />
       <div>
-        {get_bonus(character, skill) > 0 && <>+</>}
+        {get_bonus(character, skill) >= 0 && <>+</>}
         {get_bonus(character, skill)}
       </div>
       <div>{skill.title}</div>

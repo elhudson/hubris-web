@@ -1,4 +1,3 @@
-import SVG from "react-inlinesvg";
 import * as witch from "@radix-ui/react-switch";
 import { useTheme } from "@emotion/react";
 import { css } from "@emotion/css";
@@ -12,10 +11,10 @@ export default ({ checked, onChange = null, src }) => {
       className={css`
         aspect-ratio: 1/1;
         text-align: center;
-        border-radius: 100%;
-        border: 1px solid ${colors.text};
+        border: 1px solid ${colors.accent};
         position: relative;
         margin: unset;
+        padding: unset;
         svg {
           all: unset;
           vertical-align:text-top;
@@ -24,10 +23,8 @@ export default ({ checked, onChange = null, src }) => {
           fill: ${colors.text};
         }
         &[data-state="checked"] {
-          background-color: ${colors.text};
-          svg path {
-            fill: ${colors.background};
-          }
+          background-color: ${colors.accent};
+          
         }
         &:hover&[data-state="checked"] {
           background-color: ${colors.accent};

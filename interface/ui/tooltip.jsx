@@ -1,6 +1,5 @@
 import * as tooltip from "@radix-ui/react-tooltip";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 
 export default ({ preview, children }) => {
   const { colors } = useTheme();
@@ -9,7 +8,7 @@ export default ({ preview, children }) => {
       <tooltip.Root>
         <tooltip.Trigger asChild>
           <button
-            className={css`
+            css={css`
               all: unset;
               &:hover {
                 background-color: rgba(0, 0, 0, 0);
@@ -20,24 +19,21 @@ export default ({ preview, children }) => {
         </tooltip.Trigger>
         <tooltip.Portal>
           <tooltip.Content
-            className={
-              "shadow " +
-              css`
+            css={css`
               z-index: 2;
-                max-width: 50vw;
-                border: 1px solid ${colors.text};
-                padding: 5px;
-                background-color: ${colors.background};
-                .arrow {
-                  margin-top:-1px;
-                  polyline {
-                    fill: ${colors.background};
-                    stroke: ${colors.text};
-                    stroke-width: 1.5px;
-                  }
+              max-width: 50vw;
+              border: 1px solid ${colors.text};
+              padding: 5px;
+              background-color: ${colors.background};
+              .arrow {
+                margin-top: -1px;
+                polyline {
+                  fill: ${colors.background};
+                  stroke: ${colors.text};
+                  stroke-width: 1.5px;
                 }
-              `
-            }>
+              }
+            `}>
             {children}
             <tooltip.Arrow
               className="arrow"

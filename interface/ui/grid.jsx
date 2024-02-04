@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { css } from "@emotion/css";
 
 export default ({ children }) => {
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
   return (
     <div
       className={css`
@@ -12,15 +12,13 @@ export default ({ children }) => {
       `}>
       {children.map((c) => (
         <div
-          className={
-            "button " +
-            css`
-              position: relative;
-              height: 100px;
-              width: 100%;
-              border: 1px solid ${colors.text};
-            `
-          }>
+          className={css`
+            ${classes.elements.button};
+            position: relative;
+            height: 100px;
+            width: 100%;
+            border: 1px solid ${colors.text};
+          `}>
           {c}
         </div>
       ))}

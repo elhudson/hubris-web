@@ -17,9 +17,10 @@ export default ({ children }) => {
 };
 
 export const Buttons = ({}) => {
+  const acts = character();
   return (
     <div
-      className={"actions "+css`
+      css={css`
         > button {
           border-radius: 100%;
           margin: 3px;

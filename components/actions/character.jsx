@@ -8,7 +8,7 @@ import Counter from "@ui/counter";
 import _ from "lodash";
 import { BiSolidCoin, BiSolidCastle } from "react-icons/bi";
 import { FaTrashAlt } from "react-icons/fa";
-import { GiFamilyTree, GiNightSleep } from "react-icons/gi";
+import { GiFamilyTree, GiNightSleep, GiQuill } from "react-icons/gi";
 import { useImmer } from "use-immer";
 import Roll from "roll";
 
@@ -40,7 +40,8 @@ export default () => {
       action: () =>
         window.location.assign(
           `/campaign/${character.campaign.id}/summaries/create`
-        )
+        ),
+      icon: <GiQuill />
     },
     {
       label: "Long Rest",

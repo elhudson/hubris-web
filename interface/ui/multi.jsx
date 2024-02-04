@@ -31,6 +31,23 @@ export default ({
   return (
     <div
       className={css`
+        div.dropdown-heading-value {
+          font-size: 16px;
+        }
+        li label.select-item {
+          font-size: 14px;
+          padding: 2px;
+          font-weight: normal;
+          input {
+            appearance: none;
+            outline: 1px solid ${colors.text};
+            height: 14px;
+            width: 14px;
+            &:checked {
+              background-color: ${colors.text};
+            }
+          }
+        }
         .rmsc {
           --rmsc-main: ${colors.accent};
           --rmsc-hover: ${Color(colors.accent).fade(0.8).hsl().toString()};
@@ -38,12 +55,12 @@ export default ({
           --rmsc-border: ${colors.accent};
           --rmsc-gray: ${colors.accent};
           --rmsc-bg: ${colors.background};
-          --rmsc-p: 2px; /* Spacing */
-          --rmsc-radius: 4px; /* Radius */
-          --rmsc-h: 30px; /* Height */
+          --rmsc-radius: 0px; /* Radius */
+          --rmsc-h: 16px; /* Height */
         }
       `}>
       <MultiSelect
+        disableSearch
         {...msProps}
       />
     </div>

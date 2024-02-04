@@ -11,10 +11,12 @@ export default ({ id, sz, style=null }) => {
       width={sz}
       height={sz}
       style={style}
+      preProcessor={(code) => code.replace(/fill=".*?"/g, 'fill="currentColor"')}
       className={css`
         padding-right: 10px;
-        path {
+        path, g {
           fill: ${colors.accent};
+          stroke: ${colors.accent};
         }
       `}
     />

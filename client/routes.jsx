@@ -4,11 +4,12 @@ import {
   createRoutesFromElements,
   Outlet
 } from "react-router-dom";
-import { css } from "@emotion/css";
 
 import Menu from "./menu";
 import pages from "@pages/pages";
 const { rules, user, campaign, catalog, character } = pages;
+import Background from "@ui/background";
+import { css } from "@emotion/react";
 
 export default createBrowserRouter(
   createRoutesFromElements(
@@ -16,12 +17,10 @@ export default createBrowserRouter(
       element={
         <>
           <Menu />
-          <div
-            className={css`
-              > * {
-                margin-bottom: 5px;
-              }
-            `}>
+          <div css={css`
+            width: 80%;
+            margin: auto;
+          `}>
             <Outlet />
           </div>
         </>
@@ -47,9 +46,21 @@ export default createBrowserRouter(
         element={<character.homepage />}
       />
       <Route
-        path="campaign/:id"
-        element={<campaign.homepage />}
-      />
+        element={
+          <>
+            <Outlet />
+            <Background type="campaigns" />
+          </>
+        }>
+        <Route
+          path="campaign/:id"
+          element={<campaign.homepage />}
+        />
+        <Route
+          path="campaign/:id/summaries/:session"
+          element={<campaign.summarize />}
+        />
+      </Route>
       <Route
         path="characters/:user/create"
         element={<character.create />}
@@ -62,10 +73,7 @@ export default createBrowserRouter(
         path="campaigns/:user/create"
         element={<campaign.create />}
       />
-      <Route
-        path="campaign/:id/summaries/:session"
-        element={<campaign.summarize />}
-      />
+
       <Route
         path="db/powers"
         element={<catalog.powers />}
