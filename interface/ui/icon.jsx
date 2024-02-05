@@ -4,7 +4,7 @@ import SVG from "react-inlinesvg";
 
 export default ({ id, sz, style=null }) => {
   const { colors } = useTheme();
-  const icon = `/data/icons?id=${id}`
+  const icon = `/icons/${id}.svg`
   return (
     <SVG
       src={icon}

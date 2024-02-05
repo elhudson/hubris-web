@@ -2,7 +2,7 @@ import { Client } from "@notionhq/client";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import _ from "lodash";
-import fs from "fs"
+import fs from "fs";
 import {
   prisma_safe,
   sql_danger,
@@ -18,65 +18,11 @@ import {
 const prisma = new PrismaClient();
 String.prototype.toProperCase = toProperCase;
 
-async function load_notion(number = 20) {
+async function load_notion(number = 40) {
   const notion = new Client({
     auth: process.env.NOTION_TOKEN
   });
-  const dbs = await notion.databases
-    .query({
-      database_id: process.env.NOTION_DB
-    })
-    .then((r) =>
-      r.results
-        .filter((r) => r.object == "database")
-        .map(
-          async (r) => await notion.databases.retrieve({ database_id: r.id })
-        )
-    )
-    .then((r) => Promise.all(r));
-
-  const property_parser = ([label, data]) => {
-    var extracted;
-    const handler = (property, alg) => {
-      try {
-        return alg(property);
-      } catch (Error) {
-        return property.type == "number" ? 0 : "";
-      }
-    };
-    switch (data.type) {
-      case "title": {
-        extracted = handler(data, (d) => d.title[0].plain_text);
-        break;
-      }
-      case "checkbox": {
-        extracted = handler(data, (d) => (d.checkbox == true ? true : false));
-        break
-      }
-      case "rich_text": {
-        extracted = handler(data, (d) => d.rich_text[0].plain_text);
-        break;
-      }
-      case "select": {
-        extracted = handler(data, (d) =>
-          label == "Tier"
-            ? Number(d.select.name.split("T").at(-1))
-            : d.select.name
-        );
-        break;
-      }
-      case "number": {
-        extracted = handler(data, (d) => d.number);
-        break;
-      }
-      case "relation": {
-        extracted = handler(data, (d) => d.relation.map((a) => a.id));
-        break;
-      }
-    }
-    return [sql_safe(label), extracted];
-  };
-
+  const dbs = await get_tables(notion);
   const tables = {};
   for (var table of dbs.slice(0, number)) {
     const title = sql_safe(table.title[0].text.content);
@@ -127,11 +73,6 @@ function prismafy([title, entries]) {
   const singles = simple_relations(entries);
   const basics = not_relations(entries);
   const complex = complex_relations(entries);
-  fs.writeFileSync('../public/properties.json', JSON.stringify({
-    single_links: singles,
-    multi_links: complex,
-    not_links: basics
-  }))
   const prismafied = [];
   entries.forEach(function (entry) {
     const prism = simple(Object.fromEntries(basics.map((s) => [s, entry[s]])));
@@ -175,7 +116,6 @@ for (var [title, entries] of Object.entries(data)) {
   const parsed = prismafy([title, entries]);
   const db = prisma[prisma_safe(parsed.title)];
   for (var e of parsed.entries) {
-    console.log(e.title);
     await db.upsert({
       where: {
         id: e.id

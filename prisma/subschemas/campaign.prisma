@@ -4,19 +4,20 @@ import {Users} from "./user"
 import { Characters } from "../schema"
 
 model Campaigns {
-    id           String       @id @unique @default(uuid())
-    name         String       @default("Untitled Campaign")
-    description  String?      @db.MediumText
-    settings     Settings[]
-    creator      Users?       @relation(fields: [creatorId], references: [id], name: "creator")
-    dm           Users?       @relation(fields: [dmId], references: [id], name: "dm")
-    players      Users[]      @relation(name: "players")
-    dmId         String?
-    creatorId    String?
-    characters   Characters[]
-    sessionCount Int          @default(0)
-    logbook      Summaries[]
+  id           String       @id @unique @default(uuid())
+  name         String       @default("Untitled Campaign")
+  description  String?      @db.MediumText
+  settings     Settings[]
+  creator      Users?       @relation(fields: [creatorId], references: [id], name: "creator")
+  dm           Users?       @relation(fields: [dmId], references: [id], name: "dm")
+  players      Users[]      @relation(name: "players")
+  dmId         String?
+  creatorId    String?
+  characters   Characters[]
+  sessionCount Int          @default(0)
+  logbook      Summaries[]
 }
+
 
 model Summaries {
     session    Int

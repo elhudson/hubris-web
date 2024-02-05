@@ -29,39 +29,6 @@ app.get("/data/rules", async (req, res) => {
   res.json(query);
 });
 
-app.get("/data/icons", async (req, res) => {
-  const page = await notion.pages.retrieve({ page_id: req.query.id });
-  const parent = await notion.databases.retrieve({
-    database_id: page.parent.database_id
-  });
-  const parent_title = sql_safe(parent.title[0].plain_text);
-  const icon_map = {
-    effects: "trees",
-    durations: "trees",
-    ranges: "trees"
-  };
-  if (!_.isUndefined(icon_map[parent_title])) {
-    const target = sql_danger(icon_map[parent_title]);
-    const relations = page.properties[target].relation.map((r) => r.id);
-    const icon_src = await notion.pages.retrieve({ page_id: relations[0] });
-    if (icon_src.icon) {
-      const svg = await fetch(icon_src.icon.file.url).then((r) => r.text());
-      res.setHeader("content-type", "image/svg+xml");
-      res.send(svg);
-    } else {
-      res.send(null);
-    }
-  } else {
-    if (page.icon) {
-      const svg = await fetch(page.icon.file.url).then((r) => r.text());
-      res.setHeader("content-type", "image/svg+xml");
-      res.send(svg);
-    } else {
-      res.send(null);
-    }
-  }
-});
-
 app.get("/data/tables", async (req, res) => {
   const tabls = await notion.databases
     .query({

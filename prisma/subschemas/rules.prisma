@@ -23,10 +23,10 @@ model Hit_Dice {
 }
 
 model Damage_Types {
-  id          String @id @unique
-  title       String @db.MediumText
-  description String @db.MediumText
-
+  id             String           @id @unique
+  title          String           @db.MediumText
+  description    String           @db.MediumText
+  damage_class   String?
   tags           Tags?            @relation(fields: [tagsId], references: [id])
   effects        Effects[]
   class_features Class_Features[]
@@ -178,6 +178,7 @@ model Backgrounds {
   id                  String               @id @unique
   title               String?
   description         String               @db.MediumText
+  questions           String?              @db.MediumText
   settings            Settings?            @relation(fields: [settingsId], references: [id])
   abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
   skills              Skills?              @relation(fields: [skillsId], references: [id])
@@ -189,13 +190,12 @@ model Backgrounds {
 }
 
 model Settings {
-    id          String        @id @unique
-    title       String
-    backgrounds Backgrounds[]
-    description String        @db.MediumText
-    campaigns   Campaigns[]
+  id          String        @id @unique
+  title       String
+  backgrounds Backgrounds[]
+  description String        @db.MediumText
+  campaigns   Campaigns[]
 }
-
 
 model Background_Features {
   id            String       @id @unique

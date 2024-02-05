@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Thu Feb 01 2024 20:34:41 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Sun Feb 04 2024 21:23:01 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -169,10 +169,10 @@ model Hit_Dice {
 }
 
 model Damage_Types {
-  id          String @id @unique
-  title       String @db.MediumText
-  description String @db.MediumText
-
+  id             String           @id @unique
+  title          String           @db.MediumText
+  description    String           @db.MediumText
+  damage_class   String?
   tags           Tags?            @relation(fields: [tagsId], references: [id])
   effects        Effects[]
   class_features Class_Features[]
@@ -324,6 +324,7 @@ model Backgrounds {
   id                  String               @id @unique
   title               String?
   description         String               @db.MediumText
+  questions           String?              @db.MediumText
   settings            Settings?            @relation(fields: [settingsId], references: [id])
   abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
   skills              Skills?              @relation(fields: [skillsId], references: [id])
