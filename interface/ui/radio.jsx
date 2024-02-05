@@ -57,19 +57,23 @@ export const RadioItem = ({
         display: flex;
         button[role="radio"] {
           height: fit-content;
+          svg {
+            text-align: center;
+          }
+          &[aria-checked=true] {
+            button {
+              background-color: ${colors.accent};
+              svg {
+                color: ${colors.text};
+                path {
+                  fill: ${colors.text};
+                }
+              }
+            }
+          }
         }
         > button {
           padding: unset;
-        }
-        svg.toggle {
-          text-align: center;
-          border: 1px solid ${colors.text};
-          &.active {
-            background: ${colors.text};
-            path {
-              fill: ${colors.background};
-            }
-          }
         }
       `}>
       <radio.Item

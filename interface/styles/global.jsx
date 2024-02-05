@@ -50,7 +50,7 @@ const Style = () => {
           margin: unset;
         }
         a {
-          color: ${colors.accent};
+          color: ${colors.text_accent};
           text-decoration: underline;
           text-underline-offset: 2px;
           &:hover {

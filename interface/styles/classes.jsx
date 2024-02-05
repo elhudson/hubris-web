@@ -48,9 +48,9 @@ export default ({ colors, palette }) => {
         border: 1px solid ${colors.accent};
         font-family: Iosevka Web;
         color: ${colors.text};
-        &:not(:only-child) {
+        &:not(:only-of-type(button)) {
           border-right: none;
-          &:last-child {
+          &:last-of-type(button) {
             border-right: 1px solid ${colors.accent};
           }
         }

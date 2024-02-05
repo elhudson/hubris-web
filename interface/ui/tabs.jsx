@@ -24,6 +24,7 @@ export default ({ names, children, def }) => {
         [role="tabpanel"] {
           border: 1px solid ${colors.accent};
           padding: 10px;
+          height: 100%;
         }
       `}>
       <tabs.List>

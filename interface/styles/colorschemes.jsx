@@ -16,6 +16,7 @@ export default ({ children }) => {
     background: themes[scheme].background,
     text: themes[scheme].foreground,
     accent: themes[scheme].accents["04"],
+    text_accent: themes[scheme].accents["05"],
     ...themes[scheme]
   };
   const palette={

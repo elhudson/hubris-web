@@ -4,9 +4,8 @@ import { characterContext } from "@contexts/character";
 import { useImmer } from "use-immer";
 import Tabs from "@ui/tabs";
 import Character from "@character";
-import { css } from "@emotion/css";
 import { Row } from "@ui/layouts";
-import { useTheme } from "@emotion/react";
+import { useTheme, css} from "@emotion/react";
 
 const components = () => {
   const { classes } = useTheme();
@@ -16,7 +15,11 @@ const components = () => {
     {
       title: "Progression",
       content: (
-        <div>
+        <div css={css`
+          >* {
+            margin-bottom: 5px;
+          }
+        `}>
           <Character.proficiency />
           <Character.xp />
           <div css={classes.elements.selectbox}>
@@ -70,6 +73,7 @@ const Sheet = () => {
             {comps.map((c) => c.content)}
           </Tabs>
           <Character.save />
+          
         </characterContext.Provider>
       )}
     </>
