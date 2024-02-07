@@ -3,13 +3,14 @@ import { useHandler } from "@contexts/options";
 import { useCharacter } from "@contexts/character";
 import { affordable, owned, satisfies_prereqs } from "utilities";
 import Tooltip from "@ui/tooltip";
-import { css } from "@emotion/css";
 import Link from "@components/link";
 import Dropdown from "@ui/dropdown";
 import Tag from "@components/tag";
 import _ from "lodash";
 import { IoPricetagsSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
+import { css, useTheme } from "@emotion/react";
+import Description from "@components/description";
 
 export const OptionHeader = ({
   data,
@@ -36,12 +37,10 @@ export const OptionHeader = ({
   }
   return (
     <div
-      className={
-        "inline " +css`
-          margin: 5px;
-          position: relative;
-        `
-      }>
+      css={css`
+        margin: 5px;
+        position: relative;
+      `}>
       {!_.isNull(character) && (
         <Checkbox
           checked={owned(data, handling.table, character.character)}
@@ -66,7 +65,7 @@ export const OptionHeader = ({
         )}
       </div>
       <div
-        className={css`
+        css={css`
           position: absolute;
           right: 0;
         `}>
@@ -105,6 +104,7 @@ export const OptionHeader = ({
 export default ({ data, table = null, withHeader = true }) => {
   const handling = useHandler();
   const character = useCharacter();
+  const { classes } = useTheme();
   var cl;
   if (!_.isNull(character)) {
     if (
@@ -115,7 +115,7 @@ export default ({ data, table = null, withHeader = true }) => {
     ) {
       cl = "disabled";
       if (owned(data, handling.table, character.character)) {
-        cl="owned"
+        cl = "owned";
       }
     }
   } else {
@@ -130,7 +130,9 @@ export default ({ data, table = null, withHeader = true }) => {
           table={table}
         />
       )}
-      <div className="description dashed">{data.description}</div>
+      <div css={[classes.decorations.dashed, classes.elements.description]}>
+        {data.description && <Description text={data.description} />}
+      </div>
     </div>
   );
 };

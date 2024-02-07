@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sun Feb 04 2024 21:23:01 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Mon Feb 05 2024 19:04:35 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -312,6 +312,7 @@ model Skills {
   id            String       @id @unique
   title         String?
   description   String       @db.MediumText
+  examples      String?      @db.MediumText
   abilities     Abilities?   @relation(fields: [abilitiesId], references: [id])
   backgrounds   Backgrounds?
   classes       Classes[]

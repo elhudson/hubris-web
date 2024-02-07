@@ -27,7 +27,7 @@ export default defineConfig({
       "@themes": resolve(__dirname, "./interface/styles/themes"),
       "@components": resolve(__dirname, "./components"),
       "@campaigns": resolve(__dirname, "./components/campaigns"),
-      "@items": resolve(__dirname, "./components/items/index.jsx"),
+      "@items": resolve(__dirname, "./components/catalog/items"),
       "@options": resolve(__dirname, "./components/packages/options.js"),
       "@character": resolve(__dirname, "./components/packages/character.js"),
       "@rules": resolve(__dirname, "./components/packages/rules.js"),

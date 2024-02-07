@@ -166,6 +166,7 @@ model Skills {
   id            String       @id @unique
   title         String?
   description   String       @db.MediumText
+  examples String? @db.MediumText
   abilities     Abilities?   @relation(fields: [abilitiesId], references: [id])
   backgrounds   Backgrounds?
   classes       Classes[]

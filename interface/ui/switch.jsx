@@ -1,6 +1,5 @@
 import * as witch from "@radix-ui/react-switch";
-import { useTheme } from "@emotion/react";
-import { css } from "@emotion/css";
+import { css, useTheme} from "@emotion/react";
 
 export default ({ checked, onChange = null, src }) => {
   const { colors } = useTheme();
@@ -8,13 +7,13 @@ export default ({ checked, onChange = null, src }) => {
     <witch.Root
       onCheckedChange={onChange}
       checked={checked}
-      className={css`
+      css={css`
         aspect-ratio: 1/1;
         text-align: center;
         border: 1px solid ${colors.accent};
         position: relative;
         margin: unset;
-        padding: unset;
+        padding: .5px;
         svg {
           all: unset;
           vertical-align:text-top;
@@ -23,8 +22,7 @@ export default ({ checked, onChange = null, src }) => {
           fill: ${colors.text};
         }
         &[data-state="checked"] {
-          background-color: ${colors.accent};
-          
+          background-color: ${colors.accent};          
         }
         &:hover&[data-state="checked"] {
           background-color: ${colors.accent};

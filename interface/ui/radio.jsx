@@ -29,7 +29,8 @@ export default (props) => {
         }
       `}
       value={_.get(current, valuePath)}
-      onValueChange={onChange}>
+      onValueChange={onChange}
+      {...props}>
       {data.map((d) => (
         <RadioItem
           asChild
@@ -60,13 +61,13 @@ export const RadioItem = ({
           svg {
             text-align: center;
           }
-          &[aria-checked=true] {
+          &[aria-checked="true"] {
             button {
-              background-color: ${colors.accent};
+              background-color: ${colors.text_accent};
               svg {
-                color: ${colors.text};
+                color: ${colors.background};
                 path {
-                  fill: ${colors.text};
+                  fill: ${colors.background};
                 }
               }
             }

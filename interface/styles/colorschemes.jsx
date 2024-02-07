@@ -10,7 +10,7 @@ import { useState } from "react";
 
 export default ({ children }) => {
   const [scheme, setScheme] = useState(
-    localStorage.getItem("colorscheme") ?? "gruvbox-light"
+    localStorage.getItem("colorscheme") ?? "default"
   );
   const colors = {
     background: themes[scheme].background,
@@ -38,8 +38,8 @@ export default ({ children }) => {
       }}>
       <IconContext.Provider
         value={{
-          color: scheme.foreground,
-          size: 15
+          color: scheme.text_accent,
+          size: 14
         }}>
         <Style />
         {children}

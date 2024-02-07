@@ -15,8 +15,8 @@ export default ({ id, sz, style=null }) => {
       className={css`
         padding-right: 10px;
         path, g {
-          fill: ${colors.accent};
-          stroke: ${colors.accent};
+          fill: ${colors.text_accent};
+          stroke: ${colors.text_accent};
         }
       `}
     />

@@ -50,13 +50,7 @@ const Style = () => {
           margin: unset;
         }
         a {
-          color: ${colors.text_accent};
-          text-decoration: underline;
-          text-underline-offset: 2px;
-          &:hover {
-            font-style: italic;
-            cursor: pointer;
-          }
+          ${classes.decorations.interactable};
         }
         label {
           padding-right: 10px;

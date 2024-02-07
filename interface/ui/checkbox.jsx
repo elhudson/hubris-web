@@ -31,6 +31,9 @@ export default ({
           position: absolute;
           right: 0;
         }
+        span[data-state=checked] svg {
+          color: ${colors.text_accent};
+        }
       `}>
       <RiCheckboxBlankLine />
       <Checkbox.Indicator>

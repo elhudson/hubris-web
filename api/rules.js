@@ -58,4 +58,18 @@ app.post("/data/query", async (req, res) => {
   res.json(q);
 });
 
+app.get("/data/table", async (req, res) => {
+  const feature = req.query.id;
+  const data = await notion.pages
+    .retrieve({
+      page_id: feature
+    })
+    .then((page) => page.parent.database_id)
+    .then(
+      async (parent) => await notion.databases.retrieve({ database_id: parent })
+    )
+    .then((par) => sql_safe(par.title[0].plain_text));
+  res.send(data);
+});
+
 export default app;

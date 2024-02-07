@@ -1,22 +1,13 @@
 import { Router } from "express";
 import { db } from "../database/connections.js"
+import query from "../database/queries/item.js"
 
 const app=Router()
 
-
-
 app.post("/data/inventory/add", async (req, res) => {
-    var item = req.body;
+    const item = query(req.body);
     const char = req.query.character;
     const table = req.query.table;
-    if (item.damage) {
-      item = {
-        ...Object.fromEntries(Object.keys(item).map((k) => [k, item[k]])),
-        damage_types: {
-          connect: item.damage_types
-        }
-      };
-    }
     await db.inventories.update({
       where: {
         charactersId: char
@@ -33,7 +24,7 @@ app.post("/data/inventory/add", async (req, res) => {
         }
       }
     });
-    res.send("Inventory updated.");
+    res.json(req.body)
   });
   
   app.post("/data/inventory/drop", async (req, res) => {

@@ -2,7 +2,7 @@ import * as tooltip from "@radix-ui/react-tooltip";
 import { useTheme, css } from "@emotion/react";
 
 export default ({ preview, children }) => {
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
   return (
     <tooltip.Provider>
       <tooltip.Root>
@@ -20,6 +20,7 @@ export default ({ preview, children }) => {
         <tooltip.Portal>
           <tooltip.Content
             css={css`
+              ${classes.decorations.shadowed};
               z-index: 2;
               max-width: 50vw;
               border: 1px solid ${colors.text};

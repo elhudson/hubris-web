@@ -17,6 +17,15 @@ export default ({ colors, palette }) => {
       `,
       owned: css`
         box-shadow: rgba(213, 196, 161, 0.5) 0px 3px 8px;
+      `,
+      interactable: css`
+        color: ${colors.text_accent};
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        &:hover {
+          font-style: italic;
+          cursor: pointer;
+        }
       `
     },
     qualities: {
@@ -30,6 +39,12 @@ export default ({ colors, palette }) => {
       `
     },
     elements: {
+      subhead: css`
+        text-decoration: unset;
+        margin-bottom: 5px;
+        width: 100%;
+        border-bottom: 1px solid ${colors.accent};
+      `,
       frame: css`
         border: 1px dashed ${colors.accent};
         max-width: fit-content;
@@ -119,6 +134,10 @@ export default ({ colors, palette }) => {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+      `,
+      inline: css`
+        display: inline-flex;
+        gap: 5px;
       `,
       overlay: css`
         background-color: rgba(0, 0, 0, 0.5);
