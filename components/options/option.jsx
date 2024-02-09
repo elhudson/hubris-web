@@ -27,7 +27,7 @@ export const OptionHeader = ({
       tags = _.intersectionBy(chartags, data.tags, "id");
     }
   }
-  if (handling == null) {
+  if (handling) {
     table = handling.table;
   } else {
     table = table == null ? useParams().table : table;

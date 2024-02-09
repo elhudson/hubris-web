@@ -11,18 +11,16 @@ export default () => {
   const [searchable, setSearchable] = useState(null);
   const options = useAsync(async () => {
     const cps = await fetch(
-      `/data/rules?table=class_paths&query=${JSON.stringify({
+      `/data/rules?table=classes&query=${JSON.stringify({
         where: {
-          classes: {
-            OR: character.classes.map((c) => ({
-              id: c.id
-            }))
-          }
+          OR: character.classes.map((c) => ({
+            id: c.id
+          }))
         },
         select: {
           title: true,
           id: true,
-          classes: true,
+          class_paths: true,
           class_features: {
             where: {
               tier: {

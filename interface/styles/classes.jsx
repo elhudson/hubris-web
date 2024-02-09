@@ -78,6 +78,7 @@ export default ({ colors, palette }) => {
         }
       `,
       description: css`
+        font-size: 12px;
         max-height: 10ch;
         min-height: 10ch;
         overflow: scroll;
@@ -128,6 +129,11 @@ export default ({ colors, palette }) => {
       `
     },
     layout: {
+      gallery: css`
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-gap: 10px;
+      `,
       center: css`
         margin: 0;
         position: absolute;

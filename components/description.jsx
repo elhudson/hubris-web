@@ -1,7 +1,7 @@
 import { useAsync } from "react-async-hook";
 import Link from "@components/link";
 export default ({ text }) => {
-  const mentionRegex = /\[\[.*]]/g;
+  const mentionRegex = /\[\[.+?]]/g;
   const mentions = text.match(mentionRegex)?.map((ment) => ({
     name: ment.match(/(?<=\[\[).*(?=\|)/)[0],
     id: ment.match(/(?<=\|).*(?=]])/)[0]

@@ -1,8 +1,15 @@
-import Option from "@components/options/option";
+import Rule from "@components/rule";
 import _ from "lodash";
-import { css } from "@emotion/css";
+import { useTheme, css } from "@emotion/react";
+import {
+  useEffect,
+  useLayoutEffect,
+  forwardRef,
+  useRef,
+  useState
+} from "react";
+
 import Tree from "react-d3-tree";
-import { useTheme } from "@emotion/react";
 
 function makeHierarchy(root, items) {
   const complete = _.has(root, "required_for")
@@ -18,103 +25,26 @@ function makeHierarchy(root, items) {
 }
 
 export default ({ items }) => {
-  const least = Object.keys(_.groupBy(items, "xp"))[0];
-  const entries = _.cloneDeep(items);
-  const roots = entries.filter((f) => f.xp == least);
-  roots.forEach((root) => {
-    root.children = makeHierarchy(root, entries);
+  const least = Object.entries(_.groupBy(items, "xp"))[0][0];
+  const self = useRef(null);
+  useEffect(() => {
+    const { top, bottom } = self.current.getBoundingClientRect();
+    const { innerHeight, innerWidth } = window;
+    const exclude = innerHeight - top;
+    self.current.setAttribute("style", `height:${exclude - 20}px`);
   });
+  const roots = items
+    .filter((i) => i.xp == least)
+    .map((root) => makeHierarchy(root, items)?.[0]);
   return (
-    <div>
-      <FeatureTree
-        root={{
-          name: "root",
-          id: "root",
-          children: roots
+    <div ref={self}>
+      <Tree
+        data={roots[0]}
+        renderCustomNodeElement={(node) => {
+          console.log(node)
+          
         }}
       />
     </div>
-  );
-};
-
-function getTreeWidth(roots) {
-  const minWidth = roots.length;
-  if (minWidth == 0) {
-    return 1;
-  } else {
-    return _.sum(roots.map((r) => getTreeWidth(r.children)));
-  }
-}
-
-function getTreeDepth(root) {
-  if (root.children.length == 0) {
-    return 1;
-  } else {
-    for (var c of root.children) {
-      return 1 + getTreeDepth(c);
-    }
-  }
-}
-
-const FeatureTree = ({ root }) => {
-  const { colors } = useTheme();
-  const width = getTreeWidth(root.children);
-  const depth = getTreeDepth(root);
-  console.log(depth);
-  return (
-    <Tree
-      orientation="horizontal"
-      data={root}
-      depthFactor={250}
-      zoomable={false}
-      draggable={false}
-      translate={{
-        x: -250,
-        y: 90 * (width - 1)
-      }}
-      svgClassName={css`
-        height: ${185 * width}px;
-        width: ${250 * depth}px;
-      `}
-      rootNodeClassName={css`
-        display: none;
-      `}
-      separation={{
-        siblings: 1.25,
-        nonSiblings: 1.25
-      }}
-      pathFunc={(link, orientation) => {
-        const { source, target } = link;
-        return `M${source.y + 200},${source.x + 50}L${target.y},${
-          target.x + 50
-        }`;
-      }}
-      pathClassFunc={() => css`
-        stroke: ${colors.accent} !important;
-        stroke-width: 1px;
-        stroke-dasharray: 1 2;
-      `}
-      renderCustomNodeElement={(node) => <FeatureNode node={node} />}
-    />
-  );
-};
-
-const FeatureNode = ({ node }) => {
-  const { colors } = useTheme();
-  return (
-    <foreignObject
-      height={120}
-      width={200}>
-      <div
-        className={css`
-          border: 1px solid ${colors.text};
-          width: 99%;
-          div {
-            font-size: 12px;
-          }
-        `}>
-        <Option data={node.nodeDatum} />
-      </div>
-    </foreignObject>
   );
 };

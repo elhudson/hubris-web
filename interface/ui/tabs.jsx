@@ -1,7 +1,8 @@
 import { useTheme, css } from "@emotion/react";
 import * as tabs from "@radix-ui/react-tabs";
 
-export default ({ names, children, def }) => {
+export default (props) => {
+  const { names, children, def } = props;
   const { classes, colors } = useTheme();
   const toVal = (name) => name.toLowerCase().replace(" ", "_");
   return (
@@ -15,9 +16,8 @@ export default ({ names, children, def }) => {
             flex-grow: 1;
             margin-top: 10px;
             border-bottom: unset;
-            &[aria-selected=true] {
+            &[aria-selected="true"] {
               background-color: ${colors.background};
-              
             }
           }
         }
@@ -26,7 +26,8 @@ export default ({ names, children, def }) => {
           padding: 10px;
           height: 100%;
         }
-      `}>
+      `}
+      {...props}>
       <tabs.List>
         {names.map((n) => (
           <tabs.Trigger value={toVal(n)}>{n}</tabs.Trigger>

@@ -1,31 +1,41 @@
 import Icon from "@ui/icon";
 import _ from "lodash";
 import Metadata from "./metadata";
-import { css } from "@emotion/css";
 import Color from "color";
-import { useTheme } from "@emotion/react";
-import Option from "@components/options/option";
+import { useTheme, css } from "@emotion/react";
+import Rule from "@components/rule";
+import { ruleContext } from "@contexts/rule";
 
-const Ability = ({ data, table, children = null, withHeader = true }) => {
-  const { colors } = useTheme();
+const Ability = ({ data, table, children = null }) => {
+  const { colors, classes } = useTheme();
   return (
     <div
-      className={css`
-        max-width: 25vw;
-        min-width: 100px;
+      css={css`
         border: 1px solid ${colors.accent};
-        > div:first-child {
-          button[role="checkbox"] {
-            display: none;
+        header {
+          border-bottom: 1px solid ${colors.accent};
+          padding: 2px 3px;
+          text-align: center;
+          white-space: nowrap;
+          a {
+            text-decoration: none;
+            font-weight: bold;
           }
         }
       `}>
-      <Option
-        data={data}
-        table={table}
-        withHeader={withHeader}
-      />
-      {children}
+      <ruleContext.Provider
+        value={{
+          table: table,
+          location: "character_sheet",
+          icon:
+            table == "background_features"
+              ? data.backgroundsId
+              : table == "class_features"
+              ? data.class_PathsId
+              : null
+        }}>
+        <Rule data={data} />
+      </ruleContext.Provider>
     </div>
   );
 };

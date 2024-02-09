@@ -12,6 +12,7 @@ import Icon from "@ui/icon";
 import Tooltip from "@ui/tooltip";
 import { useState } from "react";
 import Organizer from "../rules/organizer";
+import { ruleContext } from "@contexts/rule";
 
 const classHandler = ({ feat, draft, e }) => {
   const die = feat.hit_dice;
@@ -98,6 +99,9 @@ export default () => {
   const { update } = useCharacter();
   const { searchable, options, table } = useOptions();
   const { limiter } = useLimiter();
+  const iconPaths={
+    "class_features": "class_PathsId"
+  }
   const handler = makeHandler({
     update: update,
     searchable: searchable,
@@ -112,14 +116,25 @@ export default () => {
   );
   return (
     <HandlerProvider>
-      {notTrees.includes(table) ? (
-        <List items={options} />
-      ) : (
-        <Organizer
-          options={options}
-          render={(path) => <Tree items={path[table]} />}
-        />
-      )}
+      <ruleContext.Provider
+        value={{
+          location: "levelup",
+          table: table,
+          iconPath: iconPaths[table]
+        }}>
+        {notTrees.includes(table) ? (
+          <List items={options} />
+        ) : (
+          <Organizer
+            options={options}
+            render={(path) => (
+              <Tree
+                items={path[table]}
+              />
+            )}
+          />
+        )}
+      </ruleContext.Provider>
     </HandlerProvider>
   );
 };
