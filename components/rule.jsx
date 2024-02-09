@@ -11,12 +11,18 @@ export default ({ data }) => {
   return (
     <div
       css={css`
+      header {
+        white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+      }
         a {
           &:hover {
             text-decoration: underline;
             font-style: italic;
             text-underline-offset: 2px;
             cursor: pointer;
+            
           }
         }
       `}>

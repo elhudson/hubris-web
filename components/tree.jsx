@@ -27,6 +27,11 @@ function makeHierarchy(root, items) {
 export default ({ items }) => {
   const least = Object.entries(_.groupBy(items, "xp"))[0][0];
   const self = useRef(null);
+  const { colors } = useTheme();
+  const nodeDimensions={
+    x: 200,
+    y: 150
+  }
   useEffect(() => {
     const { top, bottom } = self.current.getBoundingClientRect();
     const { innerHeight, innerWidth } = window;
@@ -39,10 +44,32 @@ export default ({ items }) => {
   return (
     <div ref={self}>
       <Tree
+        orientation="vertical"
+        pathFunc={({ source, target }) => {
+          console.log(source, target)
+          return `
+          M ${source.x+nodeDimensions.x/2},${source.y-nodeDimensions.y}
+          L ${target.x+nodeDimensions.x/2},${target.y-nodeDimensions.y}
+          z
+          `;
+        }}
+        nodeSize={nodeDimensions}
         data={roots[0]}
         renderCustomNodeElement={(node) => {
-          console.log(node)
-          
+          return (
+            <foreignObject
+              height={nodeDimensions.x}
+              width={nodeDimensions.y}>
+              <div
+                css={css`
+                  padding: 5px;
+                  
+                  border: 1px solid ${colors.accent};
+                `}>
+                <Rule data={node.nodeDatum} />
+              </div>
+            </foreignObject>
+          );
         }}
       />
     </div>
