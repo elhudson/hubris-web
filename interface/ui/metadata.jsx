@@ -12,6 +12,7 @@ export default (params) => {
         label {
           text-decoration: underline;
           text-underline-offset: 2px;
+          white-space: nowrap;
         }
         input {
           padding-bottom: 2px;

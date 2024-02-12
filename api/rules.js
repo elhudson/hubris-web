@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { db, notion } from "../database/connections.js";
+import { db } from "../database/connections.js";
 import schema from "../database/schema.js";
 import { prisma_safe, sql_safe, sql_danger } from "utilities";
 import _ from "lodash";
+import fs from "fs"
+
+const index=JSON.parse(fs.readFileSync("./database/index.json"));
 
 const app = Router();
 
@@ -30,21 +33,7 @@ app.get("/data/rules", async (req, res) => {
 });
 
 app.get("/data/tables", async (req, res) => {
-  const tabls = await notion.databases
-    .query({
-      database_id: process.env.NOTION_DB,
-      filter: {
-        property: "Wiki",
-        checkbox: {
-          equals: true
-        }
-      }
-    })
-    .then((t) =>
-      t.results
-        .filter((f) => f.title != undefined)
-        .map((d) => d.title[0].plain_text)
-    );
+  const tabls=JSON.parse(fs.readFileSync('./database/tables.json'))
   res.json(tabls);
 });
 
@@ -60,16 +49,8 @@ app.post("/data/query", async (req, res) => {
 
 app.get("/data/table", async (req, res) => {
   const feature = req.query.id;
-  const data = await notion.pages
-    .retrieve({
-      page_id: feature
-    })
-    .then((page) => page.parent.database_id)
-    .then(
-      async (parent) => await notion.databases.retrieve({ database_id: parent })
-    )
-    .then((par) => sql_safe(par.title[0].plain_text));
-  res.send(data);
+  console.log(index[feature])
+  res.send(index[feature]);
 });
 
 export default app;

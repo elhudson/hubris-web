@@ -1,0 +1,18 @@
+INSERT INTO `HD`(`id`,`charactersId`,`hit_diceId`,`max`,`used`,`src`) VALUES
+(1,"06a622fc-0654-4fd2-b644-28c0e9fe1f57","c8a0ea1f-69b2-4acc-a9d7-7bdd74b35e2e",1,0,"default"),
+(2,"79b81355-3c09-44cd-92fc-f7c0b77c175e","29c8e9e0-6fc2-43ed-a9ac-1d13b3f83911",1,0,"default"),
+(3,"937572fd-ed82-42ee-90fe-f4d8b1d5b7e3","29c8e9e0-6fc2-43ed-a9ac-1d13b3f83911",1,0,"default"),
+(4,"c0e3369f-5969-49b2-84df-7bd992eeea2f","d5bbbfd2-b2b0-4d5b-a076-46ccf7d45238",1,0,"default"),
+(6,"cdbec9fe-a974-4048-b2a1-47bc18a8eb28","6ef4ce6f-f79c-4a01-95af-8f4cf8710278",1,0,"default"),
+(7,"d8b8fb00-cb5a-4988-b50f-898b1f5c6fc5","6e4d3282-3ff1-4b3e-9fda-094e7752fce5",1,0,"default"),
+(8,"f84e6580-631b-4b2f-a2cb-0f461a7d96da","6e4d3282-3ff1-4b3e-9fda-094e7752fce5",2,0,"default"),
+(9,"fa843e45-ab6c-42d0-80d4-4bdea4f7861a","6ef4ce6f-f79c-4a01-95af-8f4cf8710278",1,0,"default"),
+(10,"06a622fc-0654-4fd2-b644-28c0e9fe1f57","c8a0ea1f-69b2-4acc-a9d7-7bdd74b35e2e",1,0,"default"),
+(11,"79b81355-3c09-44cd-92fc-f7c0b77c175e","29c8e9e0-6fc2-43ed-a9ac-1d13b3f83911",1,0,"default"),
+(12,"937572fd-ed82-42ee-90fe-f4d8b1d5b7e3","29c8e9e0-6fc2-43ed-a9ac-1d13b3f83911",1,0,"default"),
+(13,"c0e3369f-5969-49b2-84df-7bd992eeea2f","d5bbbfd2-b2b0-4d5b-a076-46ccf7d45238",1,0,"default"),
+(15,"cdbec9fe-a974-4048-b2a1-47bc18a8eb28","6ef4ce6f-f79c-4a01-95af-8f4cf8710278",1,0,"default"),
+(16,"d8b8fb00-cb5a-4988-b50f-898b1f5c6fc5","6e4d3282-3ff1-4b3e-9fda-094e7752fce5",1,0,"default"),
+(17,"f84e6580-631b-4b2f-a2cb-0f461a7d96da","6e4d3282-3ff1-4b3e-9fda-094e7752fce5",1,0,"default"),
+(18,"fa843e45-ab6c-42d0-80d4-4bdea4f7861a","6ef4ce6f-f79c-4a01-95af-8f4cf8710278",1,0,"default"),
+(25,"c54d3ace-a0dd-4444-adc0-8ba35bdf2496","c8a0ea1f-69b2-4acc-a9d7-7bdd74b35e2e",2,0,"default");

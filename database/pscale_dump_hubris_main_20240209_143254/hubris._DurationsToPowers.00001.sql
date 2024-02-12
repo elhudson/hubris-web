@@ -1,0 +1,3 @@
+INSERT INTO `_DurationsToPowers`(`A`,`B`) VALUES
+("1c64e76f-50c5-40d9-b288-dbd64371424e","c575fc68-9a4c-4e49-b9af-24fc6f472b52"),
+("225052e7-5733-4fda-a18a-f644378fa5c5","cf5a9666-1652-4b3f-952f-149987ef5c2a");

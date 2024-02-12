@@ -1,5 +1,5 @@
 import Rule from "@components/rule";
-import _ from "lodash";
+import _, { head } from "lodash";
 import { useTheme, css } from "@emotion/react";
 import {
   useEffect,
@@ -8,6 +8,8 @@ import {
   useRef,
   useState
 } from "react";
+
+import { css as classNameCss } from "@emotion/css";
 
 import Tree from "react-d3-tree";
 
@@ -28,43 +30,53 @@ export default ({ items }) => {
   const least = Object.entries(_.groupBy(items, "xp"))[0][0];
   const self = useRef(null);
   const { colors } = useTheme();
-  const nodeDimensions={
-    x: 200,
+  const nodeDimensions = {
+    x: 250,
     y: 150
-  }
+  };
   useEffect(() => {
-    const { top, bottom } = self.current.getBoundingClientRect();
-    const { innerHeight, innerWidth } = window;
+    const { top } = self.current.getBoundingClientRect();
+    const { innerHeight } = window;
     const exclude = innerHeight - top;
     self.current.setAttribute("style", `height:${exclude - 20}px`);
   });
   const roots = items
     .filter((i) => i.xp == least)
-    .map((root) => makeHierarchy(root, items)?.[0]);
+    .map((root) => ({ ...root, children: makeHierarchy(root, items) }));
   return (
     <div ref={self}>
       <Tree
+        enableLegacyTransitions={true}
         orientation="vertical"
+        pathClassFunc={() => classNameCss`
+            stroke: ${colors.accent} !important;`}
         pathFunc={({ source, target }) => {
-          console.log(source, target)
-          return `
-          M ${source.x+nodeDimensions.x/2},${source.y-nodeDimensions.y}
-          L ${target.x+nodeDimensions.x/2},${target.y-nodeDimensions.y}
+          return source.parent
+            ? `
+          M ${source.x + nodeDimensions.x * 0.5},${source.y + nodeDimensions.y}
+          L ${target.x + nodeDimensions.x * 0.5},${target.y}
           z
-          `;
+          `
+            : null;
         }}
         nodeSize={nodeDimensions}
-        data={roots[0]}
+        data={{
+          children: roots
+        }}
+        depthFactor={200}
+        rootNodeClassName={classNameCss`
+          display: none;
+        `}
         renderCustomNodeElement={(node) => {
           return (
             <foreignObject
-              height={nodeDimensions.x}
-              width={nodeDimensions.y}>
+              width={nodeDimensions.x}
+              height={nodeDimensions.y}>
               <div
                 css={css`
-                  padding: 5px;
-                  
+                  height: 100%;
                   border: 1px solid ${colors.accent};
+                  box-sizing: border-box;
                 `}>
                 <Rule data={node.nodeDatum} />
               </div>

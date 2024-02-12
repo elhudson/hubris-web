@@ -1,5 +1,5 @@
 import { useAsync } from "react-async-hook";
-import { sql_safe } from "utilities";
+import { sql_danger, sql_safe } from "utilities";
 
 export default () => {
   const tables = useAsync(
@@ -10,7 +10,7 @@ export default () => {
       {tables &&
         tables.map((t) => (
           <li>
-            <a href={`/srd/${sql_safe(t)}`}>{t}</a>
+            <a href={`/srd/${sql_safe(t)}`}>{sql_danger(t)}</a>
           </li>
         ))}
     </>

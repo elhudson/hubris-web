@@ -91,7 +91,7 @@ const Menu = () => {
             <>
               <nav.Item>
                 <nav.Link>
-                  <Link to={`creations/${user.username}`}>My Stuff</Link>
+                  <Link to={`${user.username}/creations`}>My Stuff</Link>
                 </nav.Link>
               </nav.Item>
               <nav.Item>

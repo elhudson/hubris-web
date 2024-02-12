@@ -5,7 +5,11 @@ import multer from "multer";
 export const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
 
-export const db = new PrismaClient();
+export const db = new PrismaClient({
+  datasourceUrl: "mysql://'elhudson':cicero63@localhost:3306/hubris"
+});
+
+
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN
 });

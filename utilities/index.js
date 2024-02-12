@@ -1,4 +1,5 @@
 import _ from "lodash";
+import fs from "fs";
 
 export const prisma_safe = (title) => {
   if (title.includes("_")) {
@@ -72,14 +73,24 @@ export const multi_link_props = (entry) =>
     (p) => always_hide(entry, p) && Array.isArray(entry[p])
   );
 
-export const prop_sorter = (entry) => {
-  return {
-    basic: basic_props(entry),
-    links: {
-      single: single_link_props(entry),
-      multi: multi_link_props(entry)
-    }
-  };
+export const prop_sorter = (entry, tbls = false) => {
+  if (!tbls)
+    return {
+      basic: basic_props(entry),
+      links: {
+        single: single_link_props(entry),
+        multi: multi_link_props(entry)
+      }
+    };
+  else {
+    return {
+      basic: basic_props(entry),
+      links: {
+        single: single_link_props(entry).filter((f) => tbls.includes(f)),
+        multi: multi_link_props(entry).filter((f) => tbls.includes(f))
+      }
+    };
+  }
 };
 
 export function is_proficient(ch, skill) {

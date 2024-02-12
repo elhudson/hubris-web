@@ -6,15 +6,13 @@ const Style = () => {
   return (
     <Global
       styles={css`
-        :root {
+        :root,
+        #root {
           background-color: ${colors.background};
           color: ${colors.text};
           font-family: Iosevka Web;
           font-size: 14px;
-        }
-        body {
-          max-height: 100vh;
-          overflow: hidden;
+          
         }
         table {
           width: 100%;
@@ -71,7 +69,6 @@ const Style = () => {
           text-decoration: underline;
           text-underline-offset: 2px;
         }
-
       `}
     />
   );

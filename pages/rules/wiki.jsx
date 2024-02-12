@@ -1,9 +1,9 @@
 import { useAsync } from "react-async-hook";
-import { sql_safe } from "utilities";
+import { sql_danger, sql_safe } from "utilities";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { css } from "@emotion/react";
-import { FaDiceD20 } from "react-icons/fa6";
+import { FaD, FaDiceD20 } from "react-icons/fa6";
 
 const Wiki = () => {
   const { colors, classes } = useTheme();
@@ -36,7 +36,7 @@ const Wiki = () => {
             getTables.result.map((title) => (
               <li>
                 <FaDiceD20 />
-                <Link to={`/srd/${sql_safe(title)}`}>{title}</Link>
+                <Link to={`/srd/${sql_safe(title)}`}>{sql_danger(title)}</Link>
               </li>
             ))}
         </ul>
@@ -47,6 +47,10 @@ const Wiki = () => {
           <li>
             <FaDiceD20 />
             <Link to={"/db/powers"}>Powers</Link>
+          </li>
+          <li>
+            <FaDiceD20 />
+            <Link to={"/db/settings"}>Settings</Link>
           </li>
         </ul>
       </section>

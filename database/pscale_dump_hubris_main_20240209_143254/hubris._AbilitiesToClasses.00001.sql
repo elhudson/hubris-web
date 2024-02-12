@@ -1,0 +1,10 @@
+INSERT INTO `_AbilitiesToClasses`(`A`,`B`) VALUES
+("06911990-9f2d-494f-9d08-77c268d3c2ad","06374215-a0da-4584-a6ce-16ea154c41a9"),
+("06911990-9f2d-494f-9d08-77c268d3c2ad","3f152314-b576-4d96-ac26-41feead6b73e"),
+("b79ce121-e8fb-49b8-904c-d300a1498c7e","5120adc3-76ff-4d76-8b3e-bc294c8bbd23"),
+("f3d90b78-7b8d-4c50-b67b-2ff2767cff4a","63237e64-e287-4619-a286-e62e0d52ee4a"),
+("5ef90201-d601-4605-b4c0-b6814ffbdb1a","76d00682-dd84-4595-96b6-a5fad3d81d80"),
+("515e1331-adf8-467f-a196-4c848d6e43bb","84f524b1-2cce-4533-a801-b5fa872fd5aa"),
+("ceb69b2f-42ef-409d-b9f9-7dae9ea60ab2","90bc25a4-4d7f-4fea-9b2c-47f11e35c6cc"),
+("f3d90b78-7b8d-4c50-b67b-2ff2767cff4a","e90c276e-e866-4d65-8c6a-a06c9d79a955"),
+("ceb69b2f-42ef-409d-b9f9-7dae9ea60ab2","fdc08183-a929-4df2-8923-8b8588cf9ac1");

@@ -1,7 +1,7 @@
 import Icon from "@ui/icon";
 import Tooltip from "@ui/tooltip";
 
-export default ({ id, name }) => {
+export default ({ id, title }) => {
   return (
     <Tooltip
       preview={
@@ -10,7 +10,7 @@ export default ({ id, name }) => {
           sz={17}
         />
       }>
-      {name}
+      {title}
     </Tooltip>
   );
 };

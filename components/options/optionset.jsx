@@ -11,7 +11,7 @@ import Switch from "@ui/switch";
 import Icon from "@ui/icon";
 import Tooltip from "@ui/tooltip";
 import { useState } from "react";
-import Organizer from "../rules/organizer";
+import Organizer from "@components/organizer";
 import { ruleContext } from "@contexts/rule";
 
 const classHandler = ({ feat, draft, e }) => {

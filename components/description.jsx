@@ -1,5 +1,6 @@
 import { useAsync } from "react-async-hook";
 import Link from "@components/link";
+
 export default ({ text }) => {
   const mentionRegex = /\[\[.+?]]/g;
   const mentions = text.match(mentionRegex)?.map((ment) => ({
@@ -31,7 +32,6 @@ const Mention = ({ name, id }) => {
   ).result
   return (
     <span>
-
       {table ? (
         <Link
           table={table}
