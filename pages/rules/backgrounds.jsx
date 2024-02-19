@@ -16,7 +16,7 @@ export default () => {
               include: {
                 background_features: true,
                 skills: true,
-                abilities: true
+                attributes: true
               }
             }
           }
@@ -37,7 +37,7 @@ export default () => {
               <List
                 items={path["backgrounds"]}
                 render={(feat) => (
-                    <Card feature={feat} props={['abilities', 'skills']} />
+                    <Card feature={feat} props={['attributes', 'skills']} />
                 )}
               />
             )}

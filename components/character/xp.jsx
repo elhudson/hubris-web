@@ -2,7 +2,7 @@ import { useCharacter } from "@contexts/character";
 import Toggles from "@ui/toggles";
 import { useTheme, css } from "@emotion/react";
 import NumberBox from "@ui/numberBox";
-
+import { calc_xp } from "utilities";
 export default () => {
   const { character, update } = useCharacter();
   const { colors, classes } = useTheme();
@@ -19,6 +19,7 @@ export default () => {
       }
     });
   };
+
   return (
     <NumberBox label="XP">
       <div
@@ -26,7 +27,7 @@ export default () => {
           position: relative;
         `}>
         <div css={classes.elements.number}>
-          {character.xp_spent} / {character.xp_earned}
+          {calc_xp(character)} / {character.xp_earned}
         </div>
         <div
           css={css`

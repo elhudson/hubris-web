@@ -4,9 +4,14 @@
   "tag_features",
   "backgrounds",
   "classes",
-  "abilities",
+  "attributes",
   "tags",
   "ranges",
   "durations",
-  "skills"
+  "skills",
+  "background_features",
+  "timespans",
+  "distances",
+  "class_paths"
+
 ]

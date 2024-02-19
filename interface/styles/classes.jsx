@@ -18,6 +18,9 @@ export default ({ colors, palette }) => {
       owned: css`
         box-shadow: rgba(213, 196, 161, 0.5) 0px 3px 8px;
       `,
+      disabled: css`
+        opacity: 50%;
+      `,
       interactable: css`
         color: ${colors.text_accent};
         text-decoration: underline;

@@ -1,9 +1,14 @@
 import { sql_safe } from "utilities";
+import _ from "lodash";
+import { createBlockRenderer, NotionRenderer } from "@notion-render/client";
+import { get_description } from "./downloader.js";
+import { parse } from "uuid";
+import dash from 'add-dashes-to-uuid'
 
 export async function get_tables(client) {
   return await client.databases
     .query({
-      database_id: process.env.NOTION_DB
+      database_id: process.env.NOTION_CORE_RULES,
     })
     .then((r) =>
       r.results
@@ -29,6 +34,12 @@ export const property_parser = async ([label, data], client = null) => {
     }
   };
   switch (data.type) {
+    case "formula": {
+      extracted = label.includes("Id")
+        ? await get_linked_page(dash(data.formula.string), client)
+        : handler(data, (d) => d.formula.string);
+      break;
+    }
     case "title": {
       extracted = handler(data, (d) => d.title[0].plain_text);
       break;
@@ -68,30 +79,39 @@ export const property_parser = async ([label, data], client = null) => {
       const ids = data.relation.map((a) => a.id);
       const ps = [];
       for (var id of ids) {
-        const res = await get_page(client, id);
-        const props = await Promise.all(Object.entries(res.properties)
-          .filter((f) => f[1].type != "relation")
-          .map((prop) => property_parser(prop)))
-        const obj={
-          id: id,
-          ...Object.fromEntries(props)
-        }
-        ps.push(obj)
+        const obj = await get_linked_page(id, client);
+        ps.push(obj);
       }
       extracted = ps;
       break;
     }
   }
-  return [sql_safe(label), extracted];
+  return [sql_safe(label.replace('Id', '')), extracted];
 };
 
-const get_page = async (cl, id) => {
+async function get_linked_page(id, client) {
+  const res = await get_page(client, id);
+  const props = await Promise.all(
+    Object.entries(res.properties)
+      .filter((f) => f[1].type != "relation" && !f[0].includes('Id'))
+      .map((prop) => property_parser(prop, client))
+  );
+  const obj = {
+    id: id,
+    ...Object.fromEntries(props),
+  };
+  const desc = await get_description(id, client);
+  obj.description = desc;
+  return obj;
+}
+
+export const get_page = async (cl, id) => {
   return await cl.pages
     .retrieve({
-      page_id: id
+      page_id: id,
     })
     .catch(async (err) => {
-      console.log(err)
+      console.log(err);
       await sleep(3000);
       return await get_page(cl, id);
     });

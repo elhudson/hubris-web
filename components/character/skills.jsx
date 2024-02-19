@@ -7,9 +7,9 @@ import { css } from "@emotion/css";
 const Skills = () => {
   const { colors } = useTheme();
   const { character } = useCharacter();
-  const abilities = useAsync(
+  const attrs = useAsync(
     async () =>
-      await fetch("/data/rules?table=abilities&relations=true").then((j) =>
+      await fetch("/data/rules?table=attributes&relations=true").then((j) =>
         j.json()
       )
   );
@@ -21,7 +21,7 @@ const Skills = () => {
   );
   return (
     <>
-      {abilities.result && (
+      {attrs.result && (
         <div
           className={css`
             display: grid;
@@ -33,7 +33,7 @@ const Skills = () => {
               border-left: 1px solid ${colors.accent};
             }
           `}>
-          {abilities.result.map((a) => (
+          {attrs.result.map((a) => (
             <section>
               <div
                 className={css`
@@ -54,7 +54,7 @@ const Skills = () => {
               <div className="skills">
                 {skills.result &&
                   skills.result
-                    .filter((f) => f.abilities.code == a.code)
+                    .filter((f) => f.attributes.code == a.code)
                     .map((s) => <Skill skill={s} />)}
               </div>
             </section>

@@ -25,12 +25,12 @@ export default async () => {
       m.fields
         .filter((f) => tabls.includes(f.name))
         .map((n) => n.name)
-        .filter((f) => !f.includes("Id"))
+        .filter((f) => !f.includes("Id") || (f=="rangeId" || f=="durationId"))
     ])
   );
   return schema;
 };
 
 export const get_schema=(table_name)=> {
-  return _.find(Prisma.dmmf.datamodel.models, f=> f.name==table_name.replace(" ", "_"))
+  return _.find(Prisma.dmmf.datamodel.models, f=> f.name==prisma_safe(table_name))
 }

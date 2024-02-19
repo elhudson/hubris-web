@@ -12,28 +12,30 @@ import { IoIosPerson } from "react-icons/io";
 import Switch from "@ui/switch";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
+import { calc_xp } from "utilities";
+import XP from "@components/character/xp";
 
 const tabs = [
   {
     title: "Class Features",
-    contents: <Options.class_features />
+    contents: <Options.class_features />,
   },
   {
     title: "Tag Features",
-    contents: <Options.tag_features />
+    contents: <Options.tag_features />,
   },
   { title: "Effects", contents: <Options.effects /> },
   { title: "Ranges", contents: <Options.ranges /> },
   { title: "Durations", contents: <Options.durations /> },
   { title: "Skills", contents: <Options.skills /> },
   { title: "Hit Dice", contents: <Options.hd /> },
-  { title: "Classes", contents: <Options.classes /> }
+  { title: "Classes", contents: <Options.classes /> },
 ];
 
 const Advance = () => {
   const { id } = useParams();
   const [character, update] = useImmer(null);
-  const {colors}=useTheme()
+  const { colors } = useTheme();
   useAsync(
     async () =>
       await fetch(`/data/character?id=${id}`)
@@ -46,29 +48,9 @@ const Advance = () => {
         <characterContext.Provider
           value={{
             character: character,
-            update: update
+            update: update,
           }}>
-          <collapse.Root>
-            <collapse.Trigger
-              className={css`
-                all: unset;
-                &:hover {
-                  background-color:rgba(0,0,0,0);
-                }
-                background-color:${colors.background};
-                border-radius: 100%;
-                padding:2px;
-                position:fixed;
-                z-index: 3;
-                left:0;
-                top:50px;
-              `}>
-              <Switch src={<IoIosPerson />} />
-            </collapse.Trigger>
-            <collapse.Content>
-              <Profile />
-            </collapse.Content>
-          </collapse.Root>
+          <XP />
           <Tabs
             names={tabs.map((t) => t.title)}
             def={tabs[0].title}>

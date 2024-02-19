@@ -1,18 +1,19 @@
-import prisma, { get_schema } from "./schema.js";
+import prisma, { get_schema } from "../schema.js";
 import fs from "fs";
-import { db } from "./connections.js";
+import { db } from "../connections.js";
 import _ from "lodash";
 import progress from "cli-progress";
 
 export function get_fields(table_name) {
   const schema = get_schema(table_name);
   return {
+    scalars: schema.fields.filter((f) => f.kind == "scalar").map((f) => f.name).filter(f=> !f.includes('Id')),
     ones: schema.fields
       .filter((f) => f.kind == "object" && f.isList == false)
       .map((f) => f.name),
     manys: schema.fields
       .filter((f) => f.kind == "object" && f.isList)
-      .map((f) => f.name)
+      .map((f) => f.name),
   };
 }
 
@@ -27,11 +28,11 @@ export function make_query({ ones, manys }, data) {
           {
             connectOrCreate: data[r].map((tie) => ({
               where: {
-                id: tie.id
+                id: tie.id,
               },
-              create: tie
-            }))
-          }
+              create: tie,
+            })),
+          },
         ])
     ),
     ...Object.fromEntries(
@@ -42,12 +43,12 @@ export function make_query({ ones, manys }, data) {
           {
             connectOrCreate: {
               where: {
-                id: data[r][0].id
+                id: data[r][0].id,
               },
-              create: data[r][0]
-            }
-          }
+              create: data[r][0],
+            },
+          },
         ])
-    )
+    ),
   };
 }

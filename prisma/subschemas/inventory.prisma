@@ -1,19 +1,20 @@
-import {Tags, Damage_Types} from "./rules"
+import {Tags } from "./rules"
 import {Inventories} from "./character"
+import { Tags } from "rules"
 
 model Weapons {
-  id             String        @id @unique
-  name           String        @default("")
-  description    String?
-  uses           String?       @default("str")
-  damage_types   Damage_Types? @relation(fields: [damage_typesId], references: [id])
-  bonus          Int?
-  martial        Boolean
-  heavy          Boolean
-  equipped       Boolean       @default(false)
-  Inventories    Inventories[]
-  damage_typesId String?
+  id          String        @id @unique
+  name        String        @default("")
+  description String?
+  uses        String?       @default("str")
+  tags        Tags[]
+  bonus       Int?
+  martial     Boolean
+  heavy       Boolean
+  equipped    Boolean       @default(false)
+  Inventories Inventories[]
 }
+
 
 
 model Armor {

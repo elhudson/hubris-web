@@ -10,7 +10,7 @@ export default () => {
   const { enabled } = edit;
   const dmgs = useAsync(
     async () =>
-      await fetch("/data/rules?table=damage_types&relations").then((d) =>
+      await fetch("/data/rules?table=tags&relations").then((d) =>
         d.json()
       )
   ).result;
@@ -46,7 +46,7 @@ export default () => {
               opts={dmgs}
               handler={
                 enabled
-                  ? edit.generator("damage_types", (e) => {
+                  ? edit.generator("tags", (e) => {
                       return _.find(dmgs, (t) => t.id == e);
                     })
                   : null
@@ -61,7 +61,7 @@ export default () => {
 
 const Damage = ({ opts, handler, item }) => {
   var current =
-    item.damage_types != null
+    item.tags.length > 0
       ? _.find(opts, (f) => f.id == item.damage_types.id)
       : opts[0];
   return (
@@ -73,7 +73,7 @@ const Damage = ({ opts, handler, item }) => {
       getIcon={(dtype) => (
         <Icon
           sz={14}
-          id={dtype.tagsId}
+          id={dtype.id}
         />
       )}
       onChange={handler}

@@ -18,7 +18,7 @@ export default () => {
         <Create />
       </div>
       <div>
-        {character.powerset.powers.map((p) => (
+        {character.powers.map((p) => (
           <Power power={p} />
         ))}
       </div>

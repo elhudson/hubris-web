@@ -1,43 +1,32 @@
 import { useAsync } from "react-async-hook";
 import Link from "@components/link";
+import TurndownService from "turndown";
+import Markdown from "react-markdown";
+
+const turndowner=new TurndownService()
 
 export default ({ text }) => {
   const mentionRegex = /\[\[.+?]]/g;
   const mentions = text.match(mentionRegex)?.map((ment) => ({
+    input: ment,
     name: ment.match(/(?<=\[\[).*(?=\|)/)[0],
     id: ment.match(/(?<=\|).*(?=]])/)[0]
   }));
-  const plaintext = text.split(mentionRegex);
-  var parts = [];
-  for (var i = 0; i < plaintext.length; i++) {
-    parts[i] = {
-      text: <span>{plaintext[i]}</span>,
-      mention: plaintext.length > 1 && mentions[i - 1] && <Mention {...mentions[i - 1]} />
-    };
-  }
+  mentions?.forEach((mention)=> {
+    text=text.replace(mention.input, Reference(mention))
+  })
   return (
-    <div>
-      {parts.map((p) => (
-        <>
-        {p.mention} {p.text}
-        </>
-      ))}
-    </div>
+    <Markdown>
+      {turndowner.turndown(text)}
+    </Markdown>
   );
 };
 
-const Mention = ({ name, id }) => {
+const Reference = ({ name, id }) => {
   const table = useAsync(
     async () => await fetch(`/data/table?id=${id}`).then((res) => res.text())
   ).result
   return (
-    <span>
-      {table ? (
-        <Link
-          table={table}
-          feature={{ title: name, id: id }}
-        />
-      ) : name}
-    </span>
+    `<a href="/srd/${table}/${id}">${name}</a>`
   );
 };

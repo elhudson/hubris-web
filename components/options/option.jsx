@@ -10,129 +10,63 @@ import _ from "lodash";
 import { IoPricetagsSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { css, useTheme } from "@emotion/react";
+import { useRule } from "@contexts/rule";
 import Description from "@components/description";
+import { forwardRef, useEffect } from "react";
 
-export const OptionHeader = ({
-  data,
-  table = null,
-  showTags = false,
-  showTree = false
-}) => {
+export default forwardRef(({ data }, ref) => {
+  const { classes } = useTheme();
   const handling = useHandler();
   const character = useCharacter();
-  var tags;
-  if (!_.isNull(character)) {
-    if (_.has(data, "tags")) {
-      const chartags = _.flatMap(character.character.classes, (c) => c.tags);
-      tags = _.intersectionBy(chartags, data.tags, "id");
+  const { table } = useRule();
+  useEffect(() => {
+    var cl;
+    if (!_.isNull(character)) {
+      if (
+        !(
+          affordable(data, character.character) &&
+          satisfies_prereqs(data, handling.table, character.character)
+        )
+      ) {
+        cl = classes.decorations.disabled;
+      }
+        if (owned(data, handling.table, character.character)) {
+          cl = classes.decorations.owned;
+        
+      }
     }
-  }
-  if (handling) {
-    table = handling.table;
-  } else {
-    table = table == null ? useParams().table : table;
-  }
-  if (tags == null) {
-    tags = data.tags;
-  }
+  });
   return (
-    <div
-      css={css`
-        margin: 5px;
-        position: relative;
-      `}>
+    <>
       {!_.isNull(character) && (
         <Checkbox
-          checked={owned(data, handling.table, character.character)}
+          checked={owned(data, table, character.character)}
           value={data.id}
           onChange={(e) => handling.handler(e, data.id)}
         />
       )}
-      <h4>
-        <Link
-          feature={data}
-          table={table}>
-          {data.title}
-        </Link>
-      </h4>
-      <div>
-        <Tooltip preview={data.xp}>XP</Tooltip>
-        {_.has(data, "power") && (
-          <>
-            {" "}
-            / <Tooltip preview={data.power}>Power</Tooltip>
-          </>
-        )}
-      </div>
-      <div
-        css={css`
-          position: absolute;
-          right: 0;
-        `}>
-        {showTree &&
-          data.trees.map((t) => (
-            <Tag
-              id={t.id}
-              name={t.title}
-            />
-          ))}
-        {_.has(data, "tags") &&
-          (showTags ? (
-            tags.map((t) => (
-              <Tag
-                id={t.id}
-                name={t.title}
-              />
-            ))
-          ) : (
-            <Dropdown
-              trigger={<IoPricetagsSharp />}
-              dir={"left"}>
-              {tags.map((t) => (
-                <Tag
-                  id={t.id}
-                  name={t.title}
-                />
-              ))}
-            </Dropdown>
-          ))}
-      </div>
-    </div>
+    </>
   );
-};
+});
 
-export default ({ data, table = null, withHeader = true }) => {
-  const handling = useHandler();
-  const character = useCharacter();
-  const { classes } = useTheme();
-  var cl;
-  if (!_.isNull(character)) {
-    if (
-      !(
-        affordable(data, character.character) &&
-        satisfies_prereqs(data, handling.table, character.character)
-      )
-    ) {
-      cl = "disabled";
-      if (owned(data, handling.table, character.character)) {
-        cl = "owned";
-      }
-    }
-  } else {
-    cl = "";
-  }
+// export default ({ data, table = null, withHeader = true }) => {
+//   const handling = useHandler();
+//   const character = useCharacter();
+//   const { classes } = useTheme();
+//   var cl;
+//
 
-  return (
-    <div className={cl}>
-      {withHeader && (
-        <OptionHeader
-          data={data}
-          table={table}
-        />
-      )}
-      <div css={[classes.decorations.dashed, classes.elements.description]}>
-        {data.description && <Description text={data.description} />}
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className={cl}>
+//       {withHeader && (
+//         <OptionHeader
+//           data={data}
+//           table={table}
+//         />
+//       )}
+//       <div css={[classes.decorations.dashed, classes.elements.description]}>
+//         {data.description && <Description text={data.description} />}
+//       </div>
+//     </div>
+//   );
+// };

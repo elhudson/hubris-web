@@ -3,12 +3,13 @@ import {Powers} from "./powers"
 import {Campaigns} from "./campaign"
 
 model Users {
-    id         String       @id @unique
-    username   String       @unique
-    password   String
-    Characters Characters[]
-    Powers     Powers[]
-    PlayingIn  Campaigns[]  @relation(name: "players")
-    DMing      Campaigns[]  @relation(name: "dm")
-    Campaigns  Campaigns[]  @relation(name: "creator")
+  id         String       @id @unique
+  username   String       @unique
+  password   String
+  Characters Characters[]
+  Powers     Powers[]
+  PlayingIn  Campaigns[]  @relation(name: "players")
+  DMing      Campaigns[]  @relation(name: "dm")
+  Campaigns  Campaigns[]  @relation(name: "creator")
 }
+

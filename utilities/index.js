@@ -79,16 +79,16 @@ export const prop_sorter = (entry, tbls = false) => {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry),
-        multi: multi_link_props(entry)
-      }
+        multi: multi_link_props(entry),
+      },
     };
   else {
     return {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry).filter((f) => tbls.includes(f)),
-        multi: multi_link_props(entry).filter((f) => tbls.includes(f))
-      }
+        multi: multi_link_props(entry).filter((f) => tbls.includes(f)),
+      },
     };
   }
 };
@@ -98,18 +98,19 @@ export function is_proficient(ch, skill) {
 }
 
 export function get_bonus(ch, skill) {
-  const base = ch[skill.abilities.code];
+  const base = ch[skill.attributes.code];
   return is_proficient(ch, skill) ? base + get_proficiency(ch) : base;
 }
 
 export function get_tier(ch) {
-  if (ch.xp_spent < 25) {
+  const xp_spent=calc_xp(ch)
+  if (xp_spent < 25) {
     return 1;
-  } else if (25 <= ch.xp_spent < 75) {
+  } else if (25 <= xp_spent < 75) {
     return 2;
-  } else if (75 <= ch.xp_spent < 125) {
+  } else if (75 <= xp_spent < 125) {
     return 3;
-  } else if (125 <= ch.xp_spent < 200) {
+  } else if (125 <= xp_spent < 200) {
     return 4;
   }
 }
@@ -143,59 +144,59 @@ export const character_update_query = (item) => {
       update: {
         hp: item.health.hp,
         injuries: {
-          connect: item.health.injuries
-        }
-      }
+          connect: item.health.injuries,
+        },
+      },
     },
     xp_earned: item.xp_earned,
     xp_spent: item.xp_spent,
     burn: item.burn,
     classes: {
       connect: item.classes.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     backgrounds: {
       connect: item.backgrounds.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     effects: {
       connect: item.effects.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     ranges: {
       connect: item.ranges.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     durations: {
       connect: item.durations.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     class_features: {
       connect: item.class_features.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     tag_features: {
       connect: item.tag_features.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     skills: {
       connect: item.skills.map((i) => ({
-        id: i.id
-      }))
+        id: i.id,
+      })),
     },
     str: item.str,
     dex: item.dex,
     con: item.con,
     int: item.int,
     wis: item.wis,
-    cha: item.cha
+    cha: item.cha,
   };
 };
 
@@ -210,16 +211,16 @@ export const update_inventory = async (engine, inventory) => {
               .map((k) => [k, item[k]])
           ),
           damage_types: {
-            connect: item.damage_types
-          }
+            connect: item.damage_types,
+          },
         };
       }
       await engine[table].upsert({
         where: {
-          id: item.id
+          id: item.id,
         },
         update: item,
-        create: item
+        create: item,
       });
     }
   }
@@ -233,19 +234,19 @@ export const update_hd = async (engine, hd) => {
       src: kind.src,
       owner: {
         connect: {
-          id: kind.charactersId
-        }
+          id: kind.charactersId,
+        },
       },
       die: {
-        connect: kind.die
-      }
+        connect: kind.die,
+      },
     };
     await engine.HD.upsert({
       where: {
-        id: kind.id
+        id: kind.id,
       },
       update: data,
-      create: data
+      create: data,
     });
   }
 };
@@ -261,7 +262,7 @@ export const owned = (feature, tabl, char) => {
 };
 
 export const affordable = (feature, char) => {
-  const budget = char.xp_earned - char.xp_spent;
+  const budget = char.xp_earned - calc_xp(char);
   return _.isUndefined(feature.xp) || feature.xp <= budget;
 };
 
@@ -276,6 +277,7 @@ export const satisfies_prereqs = (feature, table, char) => {
 };
 
 export const has_tree = (tree, char) => {
+  console.log(char.effects, tree);
   return char.effects.map((c) => c.trees.id).includes(tree.id);
 };
 
@@ -286,3 +288,48 @@ export const get_power_cost = ({ ranges, durations, effects }) => {
     _.sumBy(effects, "power");
   return div / 5 < 1 ? 1 : Math.floor(div / 5);
 };
+
+export function calc_xp({
+  effects,
+  classes,
+  class_features,
+  tag_features,
+  skills,
+  ranges,
+  durations,
+  backgrounds,
+  HD,
+  int,
+}) {
+  const default_ranges = _.uniqBy(
+    effects.map((e) => e.range),
+    "id"
+  );
+  const default_durations = _.uniqBy(
+    effects.map((e) => e.duration),
+    "id"
+  );
+  var xp =
+    _.sumBy(effects, "xp") +
+    _.sumBy(class_features, "xp") +
+    _.sumBy(tag_features, "xp") +
+    _.sumBy(
+      ranges.filter((r) => !default_ranges.includes(r)),
+      "xp"
+    ) +
+    _.sumBy(
+      durations.filter((r) => !default_durations.includes(r)),
+      "xp"
+    ) +
+    (4 * (classes.length-1));
+  const costly_skills =
+    skills.filter((s) => !backgrounds.map((s) => s?.skills).includes(s))
+      .length -
+    (2 + int);
+  if (costly_skills > 0) {
+    for (var i = 0; i < costly_skills.length; i++) {
+      xp += 2 + i;
+    }
+  }
+  return xp;
+}

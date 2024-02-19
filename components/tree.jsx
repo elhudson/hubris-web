@@ -39,15 +39,20 @@ export default ({ items }) => {
     const { innerHeight } = window;
     const exclude = innerHeight - top;
     self.current.setAttribute("style", `height:${exclude - 20}px`);
+    const container=self.current.querySelector('svg')
   });
   const roots = items
     .filter((i) => i.xp == least)
-    .map((root) => ({ ...root, children: makeHierarchy(root, items) }));
+    .map((root) => ({ ...root, children: makeHierarchy(root, _.cloneDeep(items)) }));
   return (
     <div ref={self}>
       <Tree
-        enableLegacyTransitions={true}
+        enableLegacyTransitions={false}
         orientation="vertical"
+        translate={{
+          x: 0,
+          y: -150
+        }}
         pathClassFunc={() => classNameCss`
             stroke: ${colors.accent} !important;`}
         pathFunc={({ source, target }) => {
@@ -63,6 +68,7 @@ export default ({ items }) => {
         data={{
           children: roots
         }}
+        hasInteractiveNodes={false}
         depthFactor={200}
         rootNodeClassName={classNameCss`
           display: none;

@@ -14,18 +14,6 @@ export default () => {
     const data = await fetch(
       `/data/rules?table=trees&query=${JSON.stringify({
         include: {
-          ranges: {
-            where: {
-              tier: get_tier(character),
-              xp: 1
-            }
-          },
-          durations: {
-            where: {
-              tier: get_tier(character),
-              xp: 1
-            }
-          },
           effects: {
             where: {
               tags: {
@@ -42,7 +30,9 @@ export default () => {
             include: {
               requires: true,
               required_for: true,
-              trees: true
+              trees: true,
+              range: true,
+              duration: true
             }
           }
         }

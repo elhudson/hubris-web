@@ -44,20 +44,13 @@ const effectHandler = ({ feat, draft, e }) => {
   if (e) {
     _.isUndefined(draft.ranges) && (draft.ranges = []);
     _.isUndefined(draft.durations) && (draft.durations = []);
-    draft.ranges.push(
-      ...feat.meta.ranges.filter((f) => !owned(f, "ranges", draft))
-    );
-    draft.durations.push(
-      ...feat.meta.durations.filter((f) => !owned(f, "durations", draft))
-    );
+    !draft.ranges.includes(feat.range) && draft.ranges.push(feat.range);
+    !draft.ranges.includes(feat.duration) && draft.ranges.push(feat.duration);
   } else {
-    if (!has_tree(feat.trees, draft)) {
-      _.remove(draft.ranges, (f) =>
-        f.trees.map((t) => t.id).includes(feat.trees.id)
-      );
-      _.remove(draft.durations, (f) =>
-        f.trees.map((t) => t.id).includes(feat.trees.id)
-      );
+    if (!has_tree(feat.trees, current(draft))) {
+      console.log(feat)
+      _.remove(draft.ranges, feat.range);
+      _.remove(draft.durations, feat.duration);
     }
   }
 };
@@ -82,13 +75,13 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
               classHandler({ feat: feat, draft: draft, e: e });
             table == "effects" &&
               effectHandler({ feat: feat, draft: draft, e: e });
+            draft.xp_spent += feat.xp;
           }
-          draft.xp_spent += feat.xp;
         }
       } else {
+        _.remove(draft[table], (f) => f.id == id);
         table == "effects" && effectHandler({ feat: feat, draft: draft, e: e });
         table == "classes" && classHandler({ feat: feat, draft: draft, e: e });
-        _.remove(draft[table], (f) => f.id == id);
         draft.xp_spent -= feat.xp;
       }
     });

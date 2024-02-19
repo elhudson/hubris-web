@@ -20,13 +20,14 @@ model Campaigns {
 
 
 model Summaries {
-    session    Int
-    timestamp  DateTime   @default(now())
-    campaign   Campaigns  @relation(fields: [campaignId], references: [id])
-    campaignId String
-    text       String     @db.LongText
-    author     Characters @relation(fields: [authorId], references: [id])
-    authorId   String
+  session    Int
+  timestamp  DateTime   @default(now())
+  campaign   Campaigns  @relation(fields: [campaignId], references: [id])
+  campaignId String
+  text       String     @db.LongText
+  author     Characters @relation(fields: [authorId], references: [id])
+  authorId   String
 
-    @@unique([campaignId, session])
+  @@unique([campaignId, session])
 }
+

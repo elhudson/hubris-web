@@ -5,6 +5,7 @@ import { useCharacter } from "@contexts/character";
 import Icon from "@ui/icon";
 import Avatar from "@components/character/avatar";
 import { useTheme, css } from "@emotion/react";
+import { calc_xp } from "utilities";
 
 export default () => {
   const { character } = useCharacter();
@@ -61,7 +62,7 @@ export default () => {
         <div>
           <b>XP </b>
           <span>
-            {character.xp_spent} / {character.xp_earned}
+            {calc_xp(character)} / {character.xp_earned}
           </span>
         </div>
       </section>

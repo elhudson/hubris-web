@@ -1,0 +1,6 @@
+model Rules {
+    id     String  @unique
+    title  String
+    config Boolean @default(true)
+    src    String  @default("core-rules")
+}

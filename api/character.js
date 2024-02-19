@@ -18,109 +18,16 @@ const app = Router();
 
 app.get("/data/character", async (req, res) => {
   const id = req.query.id;
-  const query = await db.characters.findFirst({
-    where: {
-      id: id
-    },
-    include: {
-      profile: false,
-      powerset: {
-        select: {
-          powers: {
-            include: {
-              effects: {
-                include: {
-                  tags: true
-                }
-              },
-              durations: true,
-              ranges: true
-            }
-          }
-        }
-      },
-      backgrounds: {
-        include: {
-          background_features: true,
-          skills: true
-        }
-      },
-      effects: {
-        include: {
-          damage_types: true,
-          trees: true,
-          tags: true
-        }
-      },
-      ranges: {
-        include: {
-          trees: true
-        }
-      },
-      durations: {
-        include: {
-          trees: true
-        }
-      },
-      health: {
-        include: {
-          injuries: true
-        }
-      },
-      inventory: {
-        include: {
-          weapons: {
-            include: {
-              damage_types: {
-                include: {
-                  tags: true
-                }
-              }
-            }
-          },
-          armor: true,
-          items: true
-        }
-      },
-      class_features: {
-        include: {
-          damage_types: true,
-          classes: true
-        }
-      },
-      tag_features: true,
-      HD: {
-        include: {
-          die: true
-        }
-      },
-      skills: true,
-      classes: {
-        include: {
-          hit_dice: true,
-          tags: true,
-          abilities: true
-        }
-      }
-    }
-  });
-  query.HD = _.uniqBy(query.HD, (f) => f.die.title);
+  const query=await db.characters.retrieve({
+    id: id
+  })
   res.json(query);
 });
 
 app.post("/data/character", async (req, res) => {
   const char = req.body;
-  _.find(char.HD, (f) => f.src == "default").max = get_tier(char);
-  const id = req.query.id;
-  await db.characters.update({
-    where: {
-      id: id
-    },
-    data: character_update_query(char)
-  });
-  await update_inventory(db, char.inventory);
-  await update_hd(db, char.HD);
-  res.send("Character saved successfully.");
+  await db.characters.save({item: char})
+  res.send('Character saved.')
 });
 
 app.post("/data/character/avatar", upload.single("profile"), (req, res) => {

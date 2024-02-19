@@ -1,6 +1,6 @@
 import { useCharacter } from "@contexts/character";
 import Ability, { Effect } from "./ability";
-import { OptionHeader } from "@components/options/option";
+import Option from "@components/options/option";
 import Favs from "./favorites";
 import Counter from "@ui/counter";
 import { css } from "@emotion/css";
@@ -24,7 +24,7 @@ const Powers = () => {
   };
   const abilities = [
     ...new Set(
-      _.flatten(character.classes.map((c) => c.abilities)).map((a) => a.code)
+      _.flatten(character.classes.map((c) => c.attributes)).map((a) => a.code)
     )
   ];
   return (
@@ -88,11 +88,7 @@ const Powers = () => {
             {character.effects.map((c) => (
               <Collapsible
                 preview={
-                  <OptionHeader
-                    data={c}
-                    table="effects"
-                    showTags={true}
-                  />
+""
                 }>
                 <Effect
                   data={c}
@@ -108,11 +104,7 @@ const Powers = () => {
           {character.ranges.map((c) => (
               <Collapsible
                 preview={
-                  <OptionHeader
-                    data={c}
-                    table="ranges"
-                    showTree={true}
-                  />
+                  ""
                 }>
                 <Ability
                   data={c}
@@ -129,11 +121,7 @@ const Powers = () => {
           {character.durations.map((c) => (
               <Collapsible
                 preview={
-                  <OptionHeader
-                    data={c}
-                    showTree={true}
-                    table="durations"
-                  />
+                  ""
                 }>
                 <Ability
                   data={c}

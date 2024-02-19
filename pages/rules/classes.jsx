@@ -13,7 +13,7 @@ export default () => {
           include: {
             class_paths: true,
             tags: true,
-            abilities: true,
+            attributes: true,
             skills: true,
             hit_dice: true
           }

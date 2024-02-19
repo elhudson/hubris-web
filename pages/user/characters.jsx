@@ -10,7 +10,7 @@ const Characters = () => {
   const { classes } = useTheme();
   const characters = useAsync(
     async () =>
-      await fetch(`/data/characters?user=${user.username}`).then((j) =>
+      await fetch(`/data/characters?user=${user.username}&detailed=true`).then((j) =>
         j.json()
       )
   );

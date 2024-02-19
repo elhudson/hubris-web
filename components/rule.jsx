@@ -6,9 +6,12 @@ import Description from "@components/description";
 import { useRule } from "@contexts/rule";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
+import Option from "@components/options/option";
 import Metadata from "@ui/metadata";
+import { useRef } from "react";
 
 export default ({ data, children = null }) => {
+  const self=useRef()
   var { location, table, icon } = useRule();
   const { colors } = useTheme();
   if (table == null) {
@@ -19,6 +22,7 @@ export default ({ data, children = null }) => {
   const { classes } = useTheme();
   return (
     <div
+      ref={self}
       css={css`
         position: relative;
         header {
@@ -45,6 +49,16 @@ export default ({ data, children = null }) => {
           table={table}
           feature={data}
         />
+        {location == "levelup" && (
+          <span
+            css={css`
+              position: absolute;
+              right: 0;
+              top: 0;
+            `}>
+            <Option data={data} ref={self}/>
+          </span>
+        )}
       </header>
       {children && <section>{children}</section>}
       <section>

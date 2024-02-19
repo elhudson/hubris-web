@@ -13,8 +13,8 @@ export const Attack = ({
   name,
   speed,
   dmg,
-  dtypes,
   bonus,
+  dtypes,
   icon = null,
   description = null
 }) => {
@@ -59,7 +59,7 @@ export const Attack = ({
                 )}
                 {dtypes.map((d) => (
                   <Tag
-                    id={d.tagsId}
+                    id={d.id}
                     name={d.title}
                   />
                 ))}
@@ -90,21 +90,20 @@ export const WeaponAttack = ({ using }) => {
       speed={speed}
       dmg={dmg}
       bonus={bonus}
-      dtypes={[using.damage_types]}
+      dtypes={[using.tags]}
       icon={<GiPlainDagger />}
     />
   );
 };
 
 export const FeatureAttack = ({ using }) => {
-  console.log(using);
   const { character } = useCharacter();
   const attr = _.find(character.classes, (i) => i.id == using.classes.id)
     .abilities[0].code;
   const bonus = character[attr] + get_proficiency(character);
   const speed = using.ticks ? using.ticks : 10;
   const dmg = using.damage ? using.damage : "1d6";
-  const dtypes = using.damage_types;
+  const dtypes = using?.tags ?? []
   const desc = using.description;
   return (
     <Attack
