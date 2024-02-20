@@ -8,7 +8,13 @@ import { GiPathDistance } from "react-icons/gi";
 import { useTheme, css } from "@emotion/react";
 import { Link } from "react-router-dom";
 
-export default ({ items, render = null, icon = "id", props = null }) => {
+export default ({
+  items,
+  render = null,
+  icon = "id",
+  props = null,
+  checkbox = null,
+}) => {
   const { colors } = useTheme();
   return (
     <ul
@@ -47,6 +53,7 @@ export default ({ items, render = null, icon = "id", props = null }) => {
             <h3>
               <Link to={i.id}>{i.title}</Link>
             </h3>
+            {checkbox && checkbox(i)}
             <section>{props && props(i)}</section>
           </li>
         )

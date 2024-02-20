@@ -30,11 +30,6 @@ export default () => {
         id={character.id}
         sz={125}
       />
-      {character.HD && (
-        <div className="actions">
-          <Buttons />
-        </div>
-      )}
       <section>
         <h3>
           <a href={`/character/${character.id}`}>{character.biography.name}</a>

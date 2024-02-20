@@ -12,8 +12,8 @@ export default () => {
       await fetch(
         `/data/rules?table=${table}&query=${JSON.stringify({
           where: {
-            id: feature
-          }
+            id: feature,
+          },
         })}&relations=true`
       )
         .then((j) => j.json())
@@ -38,7 +38,12 @@ export default () => {
           `}>
           <h2>{data.title}</h2>
           <section>
-            <Metadata feature={data} />
+            <Metadata
+              feature={data}
+              props={Object.keys(data).filter(
+                (p) => !p.toLowerCase().includes("id") && p!="description"
+              )}
+            />
           </section>
           <section>
             <Description text={data.description} />

@@ -5,6 +5,8 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import Optionset from "./optionset";
 import { optionsContext } from "@contexts/options";
+import { ruleContext } from "@contexts/rule";
+import Class_Features from "@components/categories/class_features";
 
 export default () => {
   const { character } = useCharacter();
@@ -41,14 +43,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
+        <ruleContext.Provider
           value={{
-            searchable: searchable,
-            table: "class_features",
-            options: options
+            location: "levelup",
+            table: "class_features"
           }}>
-          <Optionset />
-        </optionsContext.Provider>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              options: options
+            }}>
+            <Optionset component={<Class_Features />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

@@ -16,8 +16,6 @@ export default () => {
     user: {
       id: user_id
     },
-    xp_earned: 6,
-    xp_spent: 0,
     biography: {
       name: `${username}'s Character`,
       gender: "",

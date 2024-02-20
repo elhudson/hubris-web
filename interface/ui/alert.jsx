@@ -1,6 +1,9 @@
 import * as alert from "@radix-ui/react-alert-dialog";
 import { useState } from "react";
+
+import { css, useTheme } from "@emotion/react";
 export default ({ button, confirm, children, open = null, setOpen = null }) => {
+  const {classes}=useTheme()
   open == null && ([open, setOpen] = useState(false));
   return (
     <alert.Root
@@ -8,12 +11,12 @@ export default ({ button, confirm, children, open = null, setOpen = null }) => {
       onOpenChange={setOpen}>
       <alert.Trigger>{button}</alert.Trigger>
       <alert.Portal>
-        <alert.Overlay className="overlay" />
-        <alert.Content className="popup">
+        <alert.Overlay css={classes.layout.overlay} />
+        <alert.Content css={classes.elements.popup}>
           {children}
-          <alert.Cancel className="cancel">Never mind</alert.Cancel>
+          <alert.Cancel>Never mind</alert.Cancel>
           <alert.Action
-            className="danger"
+            css={classes.qualities.danger}
             onClick={() => {
               confirm();
               setOpen(false);

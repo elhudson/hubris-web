@@ -103,7 +103,7 @@ export function get_bonus(ch, skill) {
 }
 
 export function get_tier(ch) {
-  const xp_spent=calc_xp(ch)
+  const xp_spent = calc_xp(ch);
   if (xp_spent < 25) {
     return 1;
   } else if (25 <= xp_spent < 75) {
@@ -137,122 +137,9 @@ export function get_ac(character, armor) {
   }
 }
 
-export const character_update_query = (item) => {
-  return {
-    biography: item.biography,
-    health: {
-      update: {
-        hp: item.health.hp,
-        injuries: {
-          connect: item.health.injuries,
-        },
-      },
-    },
-    xp_earned: item.xp_earned,
-    xp_spent: item.xp_spent,
-    burn: item.burn,
-    classes: {
-      connect: item.classes.map((i) => ({
-        id: i.id,
-      })),
-    },
-    backgrounds: {
-      connect: item.backgrounds.map((i) => ({
-        id: i.id,
-      })),
-    },
-    effects: {
-      connect: item.effects.map((i) => ({
-        id: i.id,
-      })),
-    },
-    ranges: {
-      connect: item.ranges.map((i) => ({
-        id: i.id,
-      })),
-    },
-    durations: {
-      connect: item.durations.map((i) => ({
-        id: i.id,
-      })),
-    },
-    class_features: {
-      connect: item.class_features.map((i) => ({
-        id: i.id,
-      })),
-    },
-    tag_features: {
-      connect: item.tag_features.map((i) => ({
-        id: i.id,
-      })),
-    },
-    skills: {
-      connect: item.skills.map((i) => ({
-        id: i.id,
-      })),
-    },
-    str: item.str,
-    dex: item.dex,
-    con: item.con,
-    int: item.int,
-    wis: item.wis,
-    cha: item.cha,
-  };
-};
-
-export const update_inventory = async (engine, inventory) => {
-  for (var table of ["armor", "weapons", "items"]) {
-    for (var item of inventory[table]) {
-      if (item.damage_types) {
-        item = {
-          ...Object.fromEntries(
-            Object.keys(item)
-              .filter((f) => !f.includes("Id"))
-              .map((k) => [k, item[k]])
-          ),
-          damage_types: {
-            connect: item.damage_types,
-          },
-        };
-      }
-      await engine[table].upsert({
-        where: {
-          id: item.id,
-        },
-        update: item,
-        create: item,
-      });
-    }
-  }
-};
-
-export const update_hd = async (engine, hd) => {
-  for (var kind of hd) {
-    const data = {
-      used: Number(kind.used),
-      max: Number(kind.max),
-      src: kind.src,
-      owner: {
-        connect: {
-          id: kind.charactersId,
-        },
-      },
-      die: {
-        connect: kind.die,
-      },
-    };
-    await engine.HD.upsert({
-      where: {
-        id: kind.id,
-      },
-      update: data,
-      create: data,
-    });
-  }
-};
 
 export const boost = (c, code) => {
-  return c.backgrounds.map((c) => c.abilities.code).includes(code);
+  return c.backgrounds.map((c) => c.attributes.code).includes(code);
 };
 
 export const owned = (feature, tabl, char) => {
@@ -302,34 +189,31 @@ export function calc_xp({
   int,
 }) {
   const default_ranges = _.uniqBy(
-    effects.map((e) => e.range),
+    effects?.map((e) => e.range),
     "id"
   );
   const default_durations = _.uniqBy(
-    effects.map((e) => e.duration),
+    effects?.map((e) => e.duration),
     "id"
   );
   var xp =
-    _.sumBy(effects, "xp") +
-    _.sumBy(class_features, "xp") +
-    _.sumBy(tag_features, "xp") +
+    _.sumBy(effects ?? [], "xp") +
+    _.sumBy(class_features ?? [], "xp") +
+    _.sumBy(tag_features ?? [], "xp") +
+    _.sumBy(ranges?.filter((r) => !default_ranges.includes(r)) ?? [], "xp") +
     _.sumBy(
-      ranges.filter((r) => !default_ranges.includes(r)),
+      durations?.filter((r) => !default_durations.includes(r)) ?? [],
       "xp"
     ) +
-    _.sumBy(
-      durations.filter((r) => !default_durations.includes(r)),
-      "xp"
-    ) +
-    (4 * (classes.length-1));
+    4 * (classes?.length - 1 < 0 && 0);
   const costly_skills =
-    skills.filter((s) => !backgrounds.map((s) => s?.skills).includes(s))
+    skills?.filter((s) => !backgrounds?.map((s) => s?.skills).includes(s))
       .length -
-    (2 + int);
+    (2 + int ?? 0);
   if (costly_skills > 0) {
     for (var i = 0; i < costly_skills.length; i++) {
       xp += 2 + i;
     }
   }
-  return xp;
+  return xp ?? 0;
 }

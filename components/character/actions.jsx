@@ -16,7 +16,7 @@ export default ({ children }) => {
   );
 };
 
-export const Buttons = ({}) => {
+export const Buttons = () => {
   const acts = character();
   return (
     <div

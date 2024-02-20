@@ -12,7 +12,8 @@ import Icon from "@ui/icon";
 import Tooltip from "@ui/tooltip";
 import { useState } from "react";
 import Organizer from "@components/organizer";
-import { ruleContext } from "@contexts/rule";
+import { ruleContext, useRule } from "@contexts/rule";
+import Rule from "@components/rule";
 
 const classHandler = ({ feat, draft, e }) => {
   const die = feat.hit_dice;
@@ -27,7 +28,7 @@ const classHandler = ({ feat, draft, e }) => {
         id: Math.floor(Math.random() * 1000000),
         max: 0,
         used: 0,
-        die: die
+        die: die,
       });
     }
   } else {
@@ -48,7 +49,6 @@ const effectHandler = ({ feat, draft, e }) => {
     !draft.ranges.includes(feat.duration) && draft.ranges.push(feat.duration);
   } else {
     if (!has_tree(feat.trees, current(draft))) {
-      console.log(feat)
       _.remove(draft.ranges, feat.range);
       _.remove(draft.durations, feat.duration);
     }
@@ -75,59 +75,35 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
               classHandler({ feat: feat, draft: draft, e: e });
             table == "effects" &&
               effectHandler({ feat: feat, draft: draft, e: e });
-            draft.xp_spent += feat.xp;
           }
         }
       } else {
         _.remove(draft[table], (f) => f.id == id);
         table == "effects" && effectHandler({ feat: feat, draft: draft, e: e });
         table == "classes" && classHandler({ feat: feat, draft: draft, e: e });
-        draft.xp_spent -= feat.xp;
       }
     });
   };
 };
 
-export default () => {
+export default ({ component }) => {
   const { update } = useCharacter();
-  const { searchable, options, table } = useOptions();
+  const { searchable, options } = useOptions();
+  const { table } = useRule();
   const { limiter } = useLimiter();
-  const iconPaths={
-    "class_features": "class_PathsId"
-  }
+  const iconPaths = {
+    class_features: "class_PathsId",
+  };
   const handler = makeHandler({
     update: update,
     searchable: searchable,
     table: table,
-    limiter: limiter
+    limiter: limiter,
   });
-  const notTrees = ["classes", "backgrounds", "skills"];
   const HandlerProvider = ({ children }) => (
     <handlerContext.Provider value={{ handler: handler, table: table }}>
       {children}
     </handlerContext.Provider>
   );
-  return (
-    <HandlerProvider>
-      <ruleContext.Provider
-        value={{
-          location: "levelup",
-          table: table,
-          iconPath: iconPaths[table]
-        }}>
-        {notTrees.includes(table) ? (
-          <List items={options} />
-        ) : (
-          <Organizer
-            options={options}
-            render={(path) => (
-              <Tree
-                items={path[table]}
-              />
-            )}
-          />
-        )}
-      </ruleContext.Provider>
-    </HandlerProvider>
-  );
+  return <HandlerProvider>{component}</HandlerProvider>;
 };

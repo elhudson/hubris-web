@@ -5,11 +5,11 @@ export default () => {
   return [
     {
       label: "New Character",
-      action: () => window.location.assign(`/characters/${user.username}/create`)
+      action: () => window.location.assign(`/${user.username}/create/character`)
     },
     {
       label: "New Campaign",
-      action: () => window.location.assign(`/campaigns/${user.username}/create`)
+      action: () => window.location.assign(`/${user.username}/create/campaign`)
     }
   ];
 };

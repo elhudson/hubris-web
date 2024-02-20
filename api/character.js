@@ -6,11 +6,7 @@ import { db, upload } from "../database/connections.js";
 
 import {
   boost,
-  character_update_query,
-  get_max_hp,
-  get_tier,
-  update_hd,
-  update_inventory
+  get_max_hp
 } from "utilities";
 import _ from "lodash";
 
@@ -53,7 +49,7 @@ app.post("/data/character/create", async (req, res) => {
       id: true
     }
   });
-  const dtype = await db.damage_Types.findFirst({
+  const dtype = await db.tags.findFirst({
     where: {
       title: "Piercing"
     }
@@ -62,8 +58,7 @@ app.post("/data/character/create", async (req, res) => {
   await db.characters.create({
     data: {
       ...character,
-      xp_earned: 0,
-      xp_spent: 6,
+      xp_earned: 6,
       inventory: {
         create: {
           weapons: {
@@ -74,7 +69,7 @@ app.post("/data/character/create", async (req, res) => {
               name: "Dagger",
               equipped: true,
               uses: "str",
-              damage_types: {
+              tags: {
                 connect: {
                   id: dtype.id
                 }
@@ -127,7 +122,7 @@ app.post("/data/character/create", async (req, res) => {
           }
         }
       },
-      powers: 0,
+      burn: 0,
       backgrounds: {
         connect: character.backgrounds.map((c) => ({
           id: c.id

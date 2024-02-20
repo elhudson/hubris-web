@@ -58,7 +58,7 @@ export default () => {
   ];
 };
 
-export const ShortRest = forwardRef(function Func(props, ref) {
+export const ShortRest = forwardRef(function Func(props=null, ref) {
   const { character, update } = useCharacter();
   const [isRolling, setIsRolling] = useState(false);
   const [hp, setHp] = useState(0);
@@ -163,8 +163,9 @@ export const ShortRest = forwardRef(function Func(props, ref) {
   );
 });
 
-export const Delete = forwardRef(function Func(props, ref) {
+export const Delete = forwardRef(function Func(props=null, ref) {
   const { character } = useCharacter();
+  console.log(character)
   const { username } = useUser();
   const handleDelete = async () => {
     await fetch(`/data/character/delete?id=${character.id}`, {

@@ -23,13 +23,30 @@ export const cost = (score) => {
     : 12;
 };
 
+const getCost = ({ code, character }) => {
+  const bonus = boost(character, code);
+  const current = bonus ? character[code] - 1 : character[code];
+  const refund = cost(current);
+  const next = cost(current + 1);
+  const diff = next - refund;
+  return diff;
+};
+
+const getPointsSpent = ({ char }) => {
+  var spent = 0;
+  ["str", "dex", "con", "int", "wis", "cha"].forEach((item) => {
+    spent += getCost({ code: item, character: char });
+  });
+  return spent;
+};
+
 export default () => {
   const [points, setPoints] = useState(28);
   const { colors } = useTheme();
   const { character, update } = useCharacter();
   const abilities = useAsync(
     async () =>
-      await fetch("/data/rules?table=abilities&relations=true").then((j) =>
+      await fetch("/data/rules?table=attributes&relations=true").then((j) =>
         j.json()
       )
   ).result;
@@ -61,14 +78,7 @@ export default () => {
       }
     });
   };
-  const getCost = ({ code, character }) => {
-    const bonus = boost(character, code);
-    const current = bonus ? character[code] - 1 : character[code];
-    const refund = cost(current);
-    const next = cost(current + 1);
-    const diff = next - refund;
-    return diff;
-  };
+
   return (
     <>
       <div className="number">{points} / 28</div>
@@ -97,7 +107,7 @@ export default () => {
                 prefill={
                   !_.isUndefined(character.backgrounds) &&
                   character.backgrounds
-                    .map((c) => c.abilities.code)
+                    .map((c) => c.attributes.code)
                     .includes(a.code)
                     ? -1
                     : -2

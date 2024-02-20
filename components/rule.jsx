@@ -49,7 +49,7 @@ export default ({ data, children = null }) => {
           table={table}
           feature={data}
         />
-        {location == "levelup" && (
+        {(location == "levelup" || location=="create") && (
           <span
             css={css`
               position: absolute;

@@ -8,7 +8,6 @@ export default ({ checked, onChange = null, src }) => {
       onCheckedChange={onChange}
       checked={checked}
       css={css`
-        aspect-ratio: 1/1;
         text-align: center;
         border: 1px solid ${colors.accent};
         position: relative;
