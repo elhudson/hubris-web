@@ -19,7 +19,7 @@ export default () => {
       </div>
       <div>
         {character.powers.map((p) => (
-          <Power power={p} />
+          <Power pwr={p} />
         ))}
       </div>
     </div>

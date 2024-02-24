@@ -79,16 +79,16 @@ export const prop_sorter = (entry, tbls = false) => {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry),
-        multi: multi_link_props(entry),
-      },
+        multi: multi_link_props(entry)
+      }
     };
   else {
     return {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry).filter((f) => tbls.includes(f)),
-        multi: multi_link_props(entry).filter((f) => tbls.includes(f)),
-      },
+        multi: multi_link_props(entry).filter((f) => tbls.includes(f))
+      }
     };
   }
 };
@@ -137,7 +137,6 @@ export function get_ac(character, armor) {
   }
 }
 
-
 export const boost = (c, code) => {
   return c.backgrounds.map((c) => c.attributes.code).includes(code);
 };
@@ -148,8 +147,13 @@ export const owned = (feature, tabl, char) => {
     : char[tabl].map((f) => f.id).includes(feature.id);
 };
 
-export const affordable = (feature, char) => {
+export const affordable = (feature, char, tbl = null) => {
   const budget = char.xp_earned - calc_xp(char);
+  if (tbl == "skills") {
+    const {next} = get_skill_xp(char);
+    console.log(next)
+    return next <= budget;
+  }
   return _.isUndefined(feature.xp) || feature.xp <= budget;
 };
 
@@ -164,7 +168,6 @@ export const satisfies_prereqs = (feature, table, char) => {
 };
 
 export const has_tree = (tree, char) => {
-  console.log(char.effects, tree);
   return char.effects.map((c) => c.trees.id).includes(tree.id);
 };
 
@@ -176,6 +179,25 @@ export const get_power_cost = ({ ranges, durations, effects }) => {
   return div / 5 < 1 ? 1 : Math.floor(div / 5);
 };
 
+export function get_skill_xp({ backgrounds, int, skills }) {
+  var xp = 0;
+  const s = skills?.filter(
+    (s) => !(backgrounds?.map((s) => s?.skills?.id).includes(s.id))
+  );
+  const num_skills=s.length
+  const costly_skills = num_skills - (int + 2);
+  if (costly_skills > 0) {
+    for (var i = 0; i < costly_skills; i++) {
+      xp += (2 + i);
+    }
+  }
+  return {
+    total: xp,
+    next: costly_skills > 0 ? 1+costly_skills : 0
+  };
+}
+
+
 export function calc_xp({
   effects,
   classes,
@@ -186,7 +208,7 @@ export function calc_xp({
   durations,
   backgrounds,
   HD,
-  int,
+  int
 }) {
   const default_ranges = _.uniqBy(
     effects?.map((e) => e.range),
@@ -200,20 +222,12 @@ export function calc_xp({
     _.sumBy(effects ?? [], "xp") +
     _.sumBy(class_features ?? [], "xp") +
     _.sumBy(tag_features ?? [], "xp") +
-    _.sumBy(ranges?.filter((r) => !default_ranges.includes(r)) ?? [], "xp") +
+    _.sumBy(ranges?.filter((r) => !(default_ranges.map(i=> i.id).includes(r.id))) ?? [], "xp") +
     _.sumBy(
-      durations?.filter((r) => !default_durations.includes(r)) ?? [],
+      durations?.filter((r) => !(default_durations.map(i=> i.id).includes(r.id))) ?? [],
       "xp"
     ) +
-    4 * (classes?.length - 1 < 0 && 0);
-  const costly_skills =
-    skills?.filter((s) => !backgrounds?.map((s) => s?.skills).includes(s))
-      .length -
-    (2 + int ?? 0);
-  if (costly_skills > 0) {
-    for (var i = 0; i < costly_skills.length; i++) {
-      xp += 2 + i;
-    }
-  }
+    4 * (classes?.length - 1 < 0 && 0) +
+    get_skill_xp({ backgrounds, int, skills }).total
   return xp ?? 0;
 }

@@ -15,7 +15,7 @@ export default () => {
           <WeaponAttack using={w} />
         ))}
         {character.class_features
-          .filter((c) => c.damage_types.length > 0)
+          .filter((c) => c.tags?.length > 0)
           .map((c) => (
             <FeatureAttack using={c} />
           ))}

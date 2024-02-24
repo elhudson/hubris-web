@@ -5,6 +5,8 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import Optionset from "./optionset";
 import { optionsContext } from "@contexts/options";
+import { ruleContext } from "@contexts/rule";
+import Effects from "@components/categories/effects"
 
 export default () => {
   const { character } = useCharacter();
@@ -19,30 +21,30 @@ export default () => {
               tags: {
                 some: {
                   OR: tags.map((c) => ({
-                    id: c.id
-                  }))
-                }
+                    id: c.id,
+                  })),
+                },
               },
               tier: {
-                lte: get_tier(character)
-              }
+                lte: get_tier(character),
+              },
             },
             include: {
               requires: true,
               required_for: true,
               trees: true,
               range: true,
-              duration: true
-            }
-          }
-        }
+              duration: true,
+            },
+          },
+        },
       })}`
     ).then((t) => t.json());
     data.forEach((tree) => {
       tree.effects.forEach((effect) => {
         effect.meta = {
           ranges: tree.ranges,
-          durations: tree.durations
+          durations: tree.durations,
         };
       });
     });
@@ -52,14 +54,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
-          value={{
-            searchable: searchable,
-            table: "effects",
-            options: options
-          }}>
-          <Optionset />
-        </optionsContext.Provider>
+        <ruleContext.Provider value={{
+          location: "levelup",
+          table: "effects"
+        }}>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              table: "effects",
+              options: options,
+            }}>
+            <Optionset component={<Effects />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

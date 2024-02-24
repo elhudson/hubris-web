@@ -1,32 +1,43 @@
 import { useAsync } from "react-async-hook";
 import Link from "@components/link";
-import TurndownService from "turndown";
-import Markdown from "react-markdown";
-
-const turndowner=new TurndownService()
+import { css, useTheme } from "@emotion/react";
+import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 
 export default ({ text }) => {
+  const { colors, palette } = useTheme();
   const mentionRegex = /\[\[.+?]]/g;
   const mentions = text.match(mentionRegex)?.map((ment) => ({
     input: ment,
-    name: ment.match(/(?<=\[\[).*(?=\|)/)[0],
+    title: ment.match(/(?<=\[\[).*(?=\|)/)[0],
     id: ment.match(/(?<=\|).*(?=]])/)[0]
   }));
-  mentions?.forEach((mention)=> {
-    text=text.replace(mention.input, Reference(mention))
-  })
+  const tables = useAsync(async () => {
+    if (mentions) {
+      for (var mention of mentions) {
+        const table = await fetch(`/data/table?id=${mention.id}`).then((res) =>
+          res.text()
+        );
+        text = text.replace(
+          mention.input,
+          `<a href="/srd/${table}/${mention.id}">${mention.title}</a>`
+        );
+      }
+    }
+    return text;
+  }).result;
   return (
-    <Markdown>
-      {turndowner.turndown(text)}
-    </Markdown>
-  );
-};
-
-const Reference = ({ name, id }) => {
-  const table = useAsync(
-    async () => await fetch(`/data/table?id=${id}`).then((res) => res.text())
-  ).result
-  return (
-    `<a href="/srd/${table}/${id}">${name}</a>`
+    <article
+      css={css`
+        padding: 5px;
+        table,
+        th,
+        td {
+          border-collapse: collapse;
+        }
+        
+      `}
+      dangerouslySetInnerHTML={{ __html: tables }}
+    />
   );
 };

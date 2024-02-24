@@ -24,16 +24,14 @@ export default () => {
       {data && (
         <main
           css={css`
-            section {
+            section:not(:last-of-type) {
               border: 1px solid ${colors.accent};
               padding: 5px;
               margin: 5px 0px;
               label {
                 font-weight: bold;
               }
-              &:last-of-type > * {
-                ${classes.decorations.dashed};
-              }
+             
             }
           `}>
           <h2>{data.title}</h2>

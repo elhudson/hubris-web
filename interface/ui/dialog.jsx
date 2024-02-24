@@ -4,7 +4,7 @@ export default ({ trigger, children }) => {
   const { classes } = useTheme();
   return (
     <dialog.Root>
-      <dialog.Trigger>{trigger}</dialog.Trigger>
+      <dialog.Trigger asChild>{trigger}</dialog.Trigger>
       <dialog.Portal>
         <dialog.Overlay css={classes.layout.overlay} />
         <dialog.Content

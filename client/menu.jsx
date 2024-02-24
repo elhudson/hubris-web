@@ -2,8 +2,7 @@ import * as nav from "@radix-ui/react-navigation-menu";
 import { userContext } from "@contexts/user";
 import { useContext } from "react";
 import Login from "@pages/user/login";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import Tables from "@components/tables";
 import usr from "@actions/user";
@@ -14,7 +13,7 @@ const Menu = () => {
   const user = useContext(userContext);
   return (
     <div
-      className={css`
+      css={css`
         position: sticky;
         background-color: ${colors.background};
         border: 1px solid ${colors.accent};
@@ -26,7 +25,7 @@ const Menu = () => {
       `}>
       <h1>HUBRIS</h1>
       <nav.Root
-        className={css`
+        css={css`
           position: absolute;
           right: 0;
           top: 0;

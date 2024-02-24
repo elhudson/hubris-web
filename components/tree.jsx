@@ -38,7 +38,7 @@ export default ({ items }) => {
     const { top } = self.current.getBoundingClientRect();
     const { innerHeight } = window;
     const exclude = innerHeight - top;
-    self.current.setAttribute("style", `height:${exclude - 20}px`);
+    self.current.setAttribute("style", `height:${exclude - 100}px; margin:-10px;`);
     const container=self.current.querySelector('svg')
   });
   const roots = items

@@ -1,7 +1,6 @@
 import {Characters} from "./character"
 import {Settings} from "./rules"
 import {Users} from "./user"
-import { Characters } from "../schema"
 
 model Campaigns {
   id           String       @id @unique @default(uuid())
@@ -11,13 +10,13 @@ model Campaigns {
   creator      Users?       @relation(fields: [creatorId], references: [id], name: "creator")
   dm           Users?       @relation(fields: [dmId], references: [id], name: "dm")
   players      Users[]      @relation(name: "players")
+  xp           Int          @default(0)
   dmId         String?
   creatorId    String?
   characters   Characters[]
   sessionCount Int          @default(0)
   logbook      Summaries[]
 }
-
 
 model Summaries {
   session    Int
@@ -30,4 +29,3 @@ model Summaries {
 
   @@unique([campaignId, session])
 }
-

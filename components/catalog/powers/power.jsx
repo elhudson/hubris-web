@@ -1,73 +1,30 @@
 import Link from "@components/link";
 import Tooltip from "@ui/tooltip";
+import Description from "@components/description";
 import { useCharacter } from "@contexts/character";
 import { useUser } from "@contexts/user";
 import { get_power_cost } from "utilities";
-import { css } from "@emotion/css";
 import { BiTargetLock } from "react-icons/bi";
 import { GiStarSwirl } from "react-icons/gi";
-import Tag from "@components/tag";
 import { IoHourglassOutline } from "react-icons/io5";
 import _ from "lodash";
-import { useTheme } from "@emotion/react";
-import Context from "@ui/context";
-import { useRef } from "react";
+import { useTheme, css } from "@emotion/react";
+import { powerContext } from "@contexts/power";
+import { useImmer } from "use-immer";
+import Tags from "./tags"
 
+import Actions from "@components/catalog/powers/actions";
 
-export default ({ power }) => {
+export default ({ pwr }) => {
   const { character } = useCharacter();
-  const user = useUser();
+  const [power, update] = useImmer(pwr);
   const { colors } = useTheme();
-  const ref = useRef();
-  const menu = [
-    {
-      label: "Remove",
-      action: async () => {
-        await fetch("/data/query?table=powerSet&method=update", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            where: {
-              charactersId: character.id
-            },
-            data: {
-              powers: {
-                disconnect: {
-                  id: power.id
-                }
-              }
-            }
-          })
-        }).then((r) => ref.current.remove());
-      }
-    }
-  ];
-  if (power.creatorId == user.user_id) {
-    menu.push({
-      label: "Delete",
-      action: async () => {
-        await fetch("/data/query?table=powers&method=delete", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            where: {
-              id: power.id
-            }
-          })
-        }).then((r) => ref.current.remove());
-      }
-    });
-  }
+  const { classes } = useTheme();
   return (
-    <Context
-      trigger={
+    <powerContext.Provider value={{ power: power, update: update }}>
+      <Actions>
         <div
-          ref={ref}
-          className={css`
+          css={css`
             border: 1px solid ${colors.accent};
             min-width: 100px;
             display: grid;
@@ -77,18 +34,18 @@ export default ({ power }) => {
               "desc desc desc desc props";
           `}>
           <div
-            className={css`
+            css={css`
               grid-area: header;
               position: relative;
-              border-bottom: 1px solid ${colors.text};
+              border-bottom: 1px solid ${colors.accent};
               padding: 2px 5px;
             `}>
             <h6 style={{ display: "flex" }}>
               {power.name}
-              <PowerTags power={power} />
+              <Tags />
             </h6>
             <div
-              className={css`
+              css={css`
                 position: absolute;
                 top: 2px;
                 right: 5px;
@@ -101,7 +58,7 @@ export default ({ power }) => {
             </div>
           </div>
           <div
-            className={css`
+            css={css`
               margin: 5px;
               grid-area: props;
               > div {
@@ -147,46 +104,21 @@ export default ({ power }) => {
               </div>
             </div>
           </div>
-          <div
-            style={{ gridArea: "desc" }}
-            className="dashed description">
-            {generatePowerDescription(power)}
-          </div>
+          <section
+            css={[classes.decorations.dashed, classes.elements.description]}>
+            <Description text={generatePowerDescription(power)} />
+          </section>
         </div>
-      }
-      items={menu}
-    />
+      </Actions>
+    </powerContext.Provider>
   );
 };
 
 function generatePowerDescription(power) {
-  return `${power.effects
+  const all = power.effects
     .map((e) => e.description)
-    .join("\n")} ${power.ranges.map((r) => r.description)}`;
+    .concat(power.ranges.map((r) => r.description))
+    .concat(power.durations.map((d) => d.description));
+  return all.map((p) => p.replace(/<\/?p>/g, "")).join("");
 }
 
-const PowerTags = ({ power }) => {
-  const { character } = useCharacter();
-  const tags = _.intersectionBy(
-    _.flatten(character.classes.map((f) => f.tags)),
-    _.flatten(power.effects.map((t) => t.tags)),
-    "id"
-  );
-  return (
-    <div
-      className={css`
-        margin-left: 5px;
-        svg {
-          height: 15px;
-          width: 15px;
-        }
-      `}>
-      {tags.map((t) => (
-        <Tag
-          id={t.id}
-          name={t.title}
-        />
-      ))}
-    </div>
-  );
-};

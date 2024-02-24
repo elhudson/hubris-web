@@ -1,7 +1,7 @@
 import { useTheme, css } from "@emotion/react";
 
 export default ({ label, children }) => {
-    const {colors}=useTheme()
+  const { colors } = useTheme();
   return (
     <div
       css={css`
@@ -9,7 +9,7 @@ export default ({ label, children }) => {
           text-transform: uppercase;
           font-weight: bold;
           text-align: center;
-          padding:unset;
+          padding: unset;
           margin: unset;
           display: block;
           border: 1px solid ${colors.accent};

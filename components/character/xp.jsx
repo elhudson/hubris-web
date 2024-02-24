@@ -14,7 +14,7 @@ export default () => {
   };
   const dec = () => {
     update((draft) => {
-      if (draft.xp_earned > draft.xp_spent) {
+      if (draft.xp_earned > calc_xp(character)) {
         draft.xp_earned -= 1;
       }
     });

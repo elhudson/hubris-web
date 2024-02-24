@@ -15,7 +15,6 @@ export default ({ feature, props = null }) => {
     const type = getPropType(feature, key);
     types[type].push(key);
   });
-  console.log(types)
   return (
     <Metadata
       pairs={[

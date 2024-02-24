@@ -1,8 +1,9 @@
 ## View merging
-- [ ] tag features
-- [ ] effects
-- [ ] ranges
-- [ ] durations
+- [x] tag features
+- [x] effects
+- [x] ranges
+- [x] durations
+- [ ] skills
 
 ## CSS cleanup
 - [ ] Tab scrolling issue

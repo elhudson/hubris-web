@@ -4,18 +4,17 @@ import { useImmer } from "use-immer";
 import { useAsync } from "react-async-hook";
 import Actions from "@campaigns/actions";
 import Campaign from "@packages/campaigns";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 import Notepad from "@ui/notepad";
 import Color from "color";
 import { FaPlusCircle } from "react-icons/fa";
 import Notif from "@ui/notif";
-
-import query from "@database/queries/campaign";
+import Link from "@components/link";
+import Metadata from "@ui/metadata";
 
 export default () => {
   const { id } = useParams();
-  const { colors, palette } = useTheme();
+  const { colors, palette, classes } = useTheme();
   const [campaign, update] = useImmer(null);
   useAsync(
     async () =>
@@ -25,13 +24,13 @@ export default () => {
   );
   return (
     <div
-      className={css`
+      css={css`
         max-height: 100vh;
         overflow: scroll;
-        margin: -5px;
-        section,
-        > button {
-          margin: 5px;
+        section:not(.profile section),
+        > * > button {
+          margin: 5px 0px;
+          padding: 5px;
           background-color: ${Color(colors.background).toString()};
           border: 1px solid ${colors.accent};
         }
@@ -44,15 +43,45 @@ export default () => {
           <campaignContext.Provider
             value={{ campaign: campaign, update: update }}>
             <Actions>
-              <section>
-                <h2 className="pagetitle">{campaign.name}</h2>
-              </section>
+              <h2>{campaign.name}</h2>
+              <div
+                css={css`
+                  width: 100%;
+                  display: flex;
+                  gap: 10px;
+                  >* {
+                    flex-grow: 1;
+                  }
+                `}>
+                <section>
+                  <Metadata
+                    pairs={[
+                      [
+                        "Settings",
+                        <span css={classes.layout.inline}>
+                          {campaign.settings.map((s) => (
+                            <Link
+                              feature={s}
+                              table="settings"
+                            />
+                          ))}
+                        </span>,
+                      ],
+                      ["DM", <span>{campaign.dm.username}</span>],
+                    ]}
+                  />
+                </section>
+                <section>
+                  <Campaign.xp />
+                </section>
+              </div>
               <section>
                 <Notepad text={campaign.description} />
               </section>
               <div
-                className={css`
+                css={css`
                   display: flex;
+                  gap: 10px;
                   > section {
                     &:first-child {
                       max-width: fit-content;
@@ -68,7 +97,7 @@ export default () => {
                     > button {
                       position: absolute;
                       top: 5px;
-                      right: 5px;
+                      right: 10px;
                     }
                   }
                 `}>
@@ -96,9 +125,9 @@ export default () => {
                   await fetch(`/data/campaign?id=${id}`, {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json"
+                      "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(query(campaign))
+                    body: JSON.stringify(campaign),
                   }).then((res) => res.text())
                 }
               />

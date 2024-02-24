@@ -5,6 +5,8 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import Optionset from "./optionset";
 import { optionsContext } from "@contexts/options";
+import Durations from "@components/categories/durations";
+import { ruleContext } from "@contexts/rule";
 
 export default () => {
   const { character } = useCharacter();
@@ -18,16 +20,16 @@ export default () => {
           durations: {
             where: {
               tier: {
-                lte: get_tier(character)
-              }
+                lte: get_tier(character),
+              },
             },
             include: {
               requires: true,
               required_for: true,
-              trees: true
-            }
-          }
-        }
+              trees: true,
+            },
+          },
+        },
       })}`
     ).then((t) => t.json());
     setSearchable(_.flatten(data.map((c) => c.durations)));
@@ -36,14 +38,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
+        <ruleContext.Provider
           value={{
-            searchable: searchable,
+            location: "levelup",
             table: "durations",
-            options: options
           }}>
-          <Optionset />
-        </optionsContext.Provider>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              options: options
+            }}>
+            <Optionset component={<Durations />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

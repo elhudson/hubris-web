@@ -24,7 +24,8 @@ export default (props) => {
         [role="tabpanel"] {
           border: 1px solid ${colors.accent};
           padding: 10px;
-          height: 100%;
+          max-height: 80vh;
+          overflow: scroll;
         }
       `}
       {...props}>

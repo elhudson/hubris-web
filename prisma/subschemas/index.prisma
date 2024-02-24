@@ -6,3 +6,8 @@ model Rules {
     config Boolean @default(true)
     src    String  @default("core-rules")
 }
+
+model Index {
+    id    String @unique
+    table String
+}

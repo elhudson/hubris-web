@@ -1,6 +1,5 @@
 import _ from "lodash";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 import Toggles from "./toggles";
 
 export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
@@ -11,10 +10,11 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
   }
   return (
     <div
-      className={css`
+      css={css`
         display: flex;
         > div:first-child {
           width: 100%;
+          margin-left: 30px;
         }
         border: 1px solid ${colors.accent};
         font-size: 20px;
@@ -27,7 +27,7 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
         {max != null && <> / {max}</>}
       </div>
       <div
-        className={css`
+        css={css`
           position: relative;
           border-left: 1px solid ${colors.accent};
           width: 30px;

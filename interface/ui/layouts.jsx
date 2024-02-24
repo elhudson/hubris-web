@@ -7,9 +7,9 @@ export const Row = ({ children }) => {
     className={css`
       display: flex;
       width: 100%;
+      gap: 5px;
       > * {
         width: 100%;
-        margin-right: 5px;
       }
     `}>
     {children}

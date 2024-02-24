@@ -1,8 +1,7 @@
-import { css } from "@emotion/css";
 import ReactQuill from "react-quill";
 import { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 
 export default ({ text, onChange }) => {
   const ref = useRef(null);
@@ -13,16 +12,28 @@ export default ({ text, onChange }) => {
   return (
     <ReactQuill
       theme={"snow"}
-      className={css`
-        height: 80vh;
+      css={css`
+        max-height: 80vh;
         .ql-toolbar,
         .ql-container {
           border: 1px solid ${colors.accent};
+        }
+        .ql-stroke {
+          stroke: ${colors.text};
+        }
+        .ql-fill {
+          fill: ${colors.text};
         }
         .ql-formats button {
           border: 1px solid ${colors.accent};
           &:hover {
             background-color: ${palette.accent1};
+            .ql-stroke {
+              stroke: ${colors.accent};
+            }
+            .ql-fill {
+              fill: ${colors.accent};
+            }
           }
           &.ql-active {
             background-color: ${colors.accent};
@@ -36,7 +47,7 @@ export default ({ text, onChange }) => {
         }
         p {
           max-width: 99%;
-          font-family: 'Iosevka';
+          font-family: "Iosevka";
         }
       `}
       ref={ref}
@@ -44,7 +55,7 @@ export default ({ text, onChange }) => {
       onChange={onChange}
       readOnly={onChange == null}
       modules={{
-        toolbar: ["bold", "italic", "underline", "strike"]
+        toolbar: ["bold", "italic", "underline", "strike"],
       }}
     />
   );

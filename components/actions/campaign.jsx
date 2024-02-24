@@ -10,8 +10,6 @@ import Upload from "@ui/upload";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-import query from "@database/queries/campaign";
-
 export default () => {
   const ownershipRef = useRef(null);
   const editorRef = useRef(null);

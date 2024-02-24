@@ -2,7 +2,7 @@ import {
   createBrowserRouter,
   Route,
   createRoutesFromElements,
-  Outlet
+  Outlet,
 } from "react-router-dom";
 
 import Menu from "./menu";
@@ -24,7 +24,7 @@ const Rules = () => {
         css={css`
           border: 1px solid ${colors.accent};
           padding: 10px;
-          max-height: 85vh;
+          max-height: 80vh;
           overflow: scroll;
           &::scrollbar-track-color {
             color: ${colors.accent};
@@ -42,22 +42,15 @@ export default createBrowserRouter(
       element={
         <>
           <Menu />
-          <container
+          <main
             css={css`
-              display: inline-block;
-              width: 100%;
-              height: 95vh;
-              overflow: hidden;
-              > main {
-                width: 80%;
-                margin: auto;
-                height: 90vh;
-              }
+              height: 90vh;
+              width: 80%;
+              margin: auto;
+              overflow: scroll;
             `}>
-            <main>
-              <Outlet />
-            </main>
-          </container>
+            <Outlet />
+          </main>
         </>
       }>
       <Route

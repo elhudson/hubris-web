@@ -12,7 +12,10 @@ const Style = () => {
           color: ${colors.text};
           font-family: Iosevka Web;
           font-size: 14px;
-          
+        }
+
+        #root {
+          background-color: transparent;
         }
         table {
           width: 100%;
@@ -63,6 +66,7 @@ const Style = () => {
           padding-left: 10px;
           padding-right: 10px;
           border: 1px solid ${colors.accent};
+          background-color: ${colors.background};
           margin-bottom: 5px;
         }
         h3 {

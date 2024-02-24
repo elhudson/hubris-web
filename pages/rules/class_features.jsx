@@ -1,34 +1,12 @@
-import { useAsync } from "react-async-hook";
-import Organizer from "@components/organizer";
-import Tree from "@components/tree";
+import { ruleContext } from "@contexts/rule";
+import Class_Features from "@components/categories/class_features";
 
 export default () => {
-  const features = useAsync(
-    async () =>
-      await fetch(
-        `/data/rules?table=classes&query=${JSON.stringify({
-          select: {
-            title: true,
-            id: true,
-            class_features: {
-              include: {
-                class_paths: true,
-                requires: true,
-                required_for: true
-              }
-            }
-          }
-        })}`
-      ).then((t) => t.json())
-  ).result;
-  return (
-    <>
-      {features && (
-        <Organizer
-          options={features}
-          render={(path) => <Tree items={path["class_features"]} />}
-        />
-      )}
-    </>
-  );
+  return <ruleContext.Provider
+    value={{
+      location: "wiki",
+      table: "class_features",
+    }}>
+    <Class_Features />
+  </ruleContext.Provider>;
 };

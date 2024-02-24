@@ -18,7 +18,18 @@ export default () => {
         body: JSON.stringify({
           include: {
             classes: true,
-            backgrounds: true
+            backgrounds: true,
+            effects: true,
+            tag_features: true,
+            class_features: true,
+            ranges: true,
+            durations: true,
+            skills: true,
+            HD: {
+              include: {
+                die: true
+              } 
+            }
           }
         })
       }).then((ch) => ch.json())

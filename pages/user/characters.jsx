@@ -1,18 +1,15 @@
 import { useAsync } from "react-async-hook";
-import { userContext } from "@contexts/user";
-import { useContext } from "react";
 import { characterContext } from "@contexts/character";
 import Profile from "@components/character/profile";
 import { useTheme, css } from "@emotion/react";
 
 const Characters = () => {
-  const user = useContext(userContext);
   const { classes } = useTheme();
   const characters = useAsync(
     async () =>
-      await fetch(`/data/characters?user=${user.username}&detailed=true`).then((j) =>
-        j.json()
-      )
+      await fetch(`/data/characters`)
+        .then((j) => j.json())
+        .then((a) => [a].flat())
   );
   return (
     <>
