@@ -1,4 +1,5 @@
-import db from "@prisma/index"
+import { db } from "~db/prisma.js";
+import { notion } from "notion";
 
 await db.rules.sync({ client: notion });
 

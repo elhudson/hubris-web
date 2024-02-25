@@ -35,13 +35,14 @@ const getCost = ({ code, character }) => {
 const getPointsSpent = ({ char }) => {
   var spent = 0;
   ["str", "dex", "con", "int", "wis", "cha"].forEach((item) => {
-    spent += getCost({ code: item, character: char });
+    const bonus = boost(char, item);
+    const current = bonus ? char[item] - 1 : char[item];
+    spent += cost(current);
   });
   return spent;
 };
 
 export default () => {
-  const [points, setPoints] = useState(28);
   const { colors } = useTheme();
   const { character, update } = useCharacter();
   const abilities = useAsync(
@@ -58,9 +59,8 @@ export default () => {
       const bonus = boost(draft, code);
       const max = bonus ? 5 : 4;
       const price = getCost({ code: code, character: draft });
-      if (draft[code] + 1 <= max && points - price >= 0) {
+      if (draft[code] + 1 <= max && getPointsSpent({char: character}) + price <= 28) {
         draft[code] += 1;
-        setPoints(points - price);
       }
     });
   };
@@ -72,16 +72,15 @@ export default () => {
       const bonus = boost(draft, code);
       const min = bonus ? -1 : -2;
       const price = getCost({ code: code, character: draft });
-      if (draft[code] - 1 >= min && points + price <= 28) {
+      if (draft[code] - 1 >= min && getPointsSpent({char: character}) - price >= 0) {
         draft[code] -= 1;
-        setPoints(points + price);
       }
     });
   };
 
   return (
     <>
-      <div className="number">{points} / 28</div>
+      <div className="number">{getPointsSpent({char: character})} / 28</div>
       {abilities && (
         <div
           className={css`

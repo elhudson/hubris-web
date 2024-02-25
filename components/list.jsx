@@ -2,13 +2,14 @@ import _ from "lodash";
 import Icon from "@ui/icon";
 import { useTheme, css } from "@emotion/react";
 import { Link } from "react-router-dom";
+import { useAsync } from "react-async-hook";
 
 export default ({
   items,
   render = null,
   icon = "id",
   props = null,
-  checkbox = null,
+  checkbox = null
 }) => {
   const { colors } = useTheme();
   return (
@@ -45,14 +46,27 @@ export default ({
               id={_.get(i, icon)}
               sz={18}
             />
-            <h3>
-              <Link to={i.id}>{i.title}</Link>
-            </h3>
+            <Item {...i} />
             {checkbox && checkbox(i)}
             <section>{props && props(i)}</section>
           </li>
         )
       )}
     </ul>
+  );
+};
+
+const Item = ({ title, id }) => {
+  const table = useAsync(
+    async () => await fetch(`/data/table?id=${id}`).then((r) => r.text())
+  ).result;
+  return (
+    <>
+      {table && (
+        <h3>
+          <Link to={`/srd/${table}/${id}`}>{title}</Link>
+        </h3>
+      )}
+    </>
   );
 };

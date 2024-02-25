@@ -17,7 +17,6 @@ export default ({ checkbox = null }) => {
             class_paths: true,
             tags: true,
             attributes: true,
-            skills: true,
             hit_dice: true,
           },
         })}`

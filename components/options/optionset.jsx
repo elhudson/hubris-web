@@ -31,15 +31,23 @@ const classHandler = ({ feat, draft, e }) => {
   }
 };
 
+const backgroundHandler = ({ feat, draft, e }) => {
+  if (e) {
+    draft[feat.attributes.code] += 1;
+  } else {
+    draft[feat.attributes.code] -= 1;
+  }
+};
+
 const effectHandler = ({ feat, draft, e }) => {
   if (e) {
     _.isUndefined(draft.ranges) && (draft.ranges = []);
     _.isUndefined(draft.durations) && (draft.durations = []);
-    if (draft.ranges.map(f=> f.id).includes(feat.range.id)==false) {
-      draft.ranges.push(feat.range)
+    if (draft.ranges.map((f) => f.id).includes(feat.range.id) == false) {
+      draft.ranges.push(feat.range);
     }
-    if (draft.durations.map(f=> f.id).includes(feat.duration.id)==false) {
-      draft.durations.push(feat.duration)
+    if (draft.durations.map((f) => f.id).includes(feat.duration.id) == false) {
+      draft.durations.push(feat.duration);
     }
   } else {
     if (!has_tree(feat.trees, current(draft))) {
@@ -48,7 +56,6 @@ const effectHandler = ({ feat, draft, e }) => {
     }
   }
 };
-
 
 const makeHandler = ({ update, searchable, table, limiter = null }) => {
   return (e, id) => {
@@ -70,6 +77,7 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
               effectHandler({ feat: feat, draft: draft, e: e });
             table == "classes" &&
               classHandler({ feat: feat, draft: draft, e: e });
+            table == "backgrounds" && backgroundHandler({ feat, draft, e });
           }
         }
       } else {
@@ -87,17 +95,17 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
 
 const required = ({ feat, draft }) => {
   if (
-    draft.effects.map((e) => e.range?.id).includes(feat.id) ||
-    draft.effects.map((e) => e.duration?.id).includes(feat.id)
+    draft?.effects?.map((e) => e.range?.id).includes(feat.id) ||
+    draft?.effects?.map((e) => e.duration?.id).includes(feat.id)
   ) {
     return true;
   } else if (
     _.concat(
-      draft.class_features,
-      draft.tag_features,
-      draft.effects,
-      draft.ranges,
-      draft.durations
+      draft?.class_features ?? [],
+      draft?.tag_features ?? [],
+      draft?.effects ?? [],
+      draft?.ranges ?? [],
+      draft?.durations ?? []
     )
       .map((d) => d?.requires?.map((j) => j.id))
       .flat(10)
