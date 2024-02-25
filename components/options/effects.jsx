@@ -30,6 +30,7 @@ export default () => {
               },
             },
             include: {
+              tags: true,
               requires: true,
               required_for: true,
               trees: true,

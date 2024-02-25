@@ -29,7 +29,12 @@ export default ({ text }) => {
   return (
     <article
       css={css`
-        padding: 5px;
+        p {
+          margin-top: 0px;
+          &:last-child {
+            margin-bottom: 0px;
+          }
+        }
         table,
         th,
         td {

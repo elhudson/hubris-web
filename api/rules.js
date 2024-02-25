@@ -1,11 +1,8 @@
 import { Router } from "express";
-import { db } from "../database/connections.js";
-import schema from "../database/schema.js";
+import { db } from "~db/prisma.js";
+import schema, { tables } from "~database/schema.js";
 import { prisma_safe, sql_safe, sql_danger } from "utilities";
 import _ from "lodash";
-import fs from "fs"
-
-const index=JSON.parse(fs.readFileSync("./database/index.json"));
 
 const app = Router();
 
@@ -33,8 +30,12 @@ app.get("/data/rules", async (req, res) => {
 });
 
 app.get("/data/tables", async (req, res) => {
-  const tabls=JSON.parse(fs.readFileSync('./database/tables.json'))
-  res.json(tabls);
+  const tables = await db.rules.findMany({
+    where: {
+      config: false
+    }
+  });
+  res.send(tables.map((t) => t.title));
 });
 
 app.post("/data/query", async (req, res) => {
@@ -48,9 +49,15 @@ app.post("/data/query", async (req, res) => {
 });
 
 app.get("/data/table", async (req, res) => {
-  const feature = req.query.id;
-  console.log(index[feature])
-  res.send(index[feature]);
+  const table = await db.index.findFirst({
+    where: {
+      id: req.query.id
+    },
+    select: {
+      table: true
+    }
+  });
+  res.send(table?.table);
 });
 
 export default app;

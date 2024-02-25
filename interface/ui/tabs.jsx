@@ -1,8 +1,7 @@
 import { useTheme, css } from "@emotion/react";
 import * as tabs from "@radix-ui/react-tabs";
 
-export default (props) => {
-  const { names, children, def } = props;
+export default ({names, children, def, ...props}) => {
   const { classes, colors } = useTheme();
   const toVal = (name) => name.toLowerCase().replace(" ", "_");
   return (

@@ -21,13 +21,16 @@ export default ({ checked, onChange = null, src }) => {
           fill: ${colors.text};
         }
         &[data-state="checked"] {
-          background-color: ${colors.accent};          
+          background-color: ${colors.text_accent};
+          path {
+            fill: ${colors.background};
+          }          
         }
         &:hover&[data-state="checked"] {
           background-color: ${colors.accent};
         }
       `}>
-      <witch.Thumb asChild>{src}</witch.Thumb>
+      <witch.Thumb>{src}</witch.Thumb>
     </witch.Root>
   );
 };

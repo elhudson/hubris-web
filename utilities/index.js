@@ -79,16 +79,16 @@ export const prop_sorter = (entry, tbls = false) => {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry),
-        multi: multi_link_props(entry)
-      }
+        multi: multi_link_props(entry),
+      },
     };
   else {
     return {
       basic: basic_props(entry),
       links: {
         single: single_link_props(entry).filter((f) => tbls.includes(f)),
-        multi: multi_link_props(entry).filter((f) => tbls.includes(f))
-      }
+        multi: multi_link_props(entry).filter((f) => tbls.includes(f)),
+      },
     };
   }
 };
@@ -126,7 +126,7 @@ export function get_max_hp(ch) {
 }
 
 export function get_ac(character, armor) {
-  if (armor.class == "None") {
+  if (!armor || armor.class == "None") {
     return 10 + character.dex;
   } else if (armor.class == "Light") {
     return 10 + get_proficiency(character) + character.dex;
@@ -150,8 +150,8 @@ export const owned = (feature, tabl, char) => {
 export const affordable = (feature, char, tbl = null) => {
   const budget = char.xp_earned - calc_xp(char);
   if (tbl == "skills") {
-    const {next} = get_skill_xp(char);
-    console.log(next)
+    const { next } = get_skill_xp(char);
+    console.log(next);
     return next <= budget;
   }
   return _.isUndefined(feature.xp) || feature.xp <= budget;
@@ -182,21 +182,28 @@ export const get_power_cost = ({ ranges, durations, effects }) => {
 export function get_skill_xp({ backgrounds, int, skills }) {
   var xp = 0;
   const s = skills?.filter(
-    (s) => !(backgrounds?.map((s) => s?.skills?.id).includes(s.id))
+    (s) => !backgrounds?.map((s) => s?.skills?.id).includes(s.id)
   );
-  const num_skills=s.length
+  const num_skills = s.length;
   const costly_skills = num_skills - (int + 2);
   if (costly_skills > 0) {
     for (var i = 0; i < costly_skills; i++) {
-      xp += (2 + i);
+      xp += 2 + i;
     }
   }
   return {
     total: xp,
-    next: costly_skills > 0 ? 1+costly_skills : 0
+    next: costly_skills > 0 ? 1 + costly_skills : 0,
   };
 }
 
+export function generate_power_description({ effects, ranges, durations }) {
+  const all = effects
+    .map((e) => e.description)
+    .concat(ranges.map((r) => r.description))
+    .concat(durations.map((d) => d.description));
+  return all.map((p) => p.replace(/<\/?p>/g, "")).join("");
+}
 
 export function calc_xp({
   effects,
@@ -208,7 +215,7 @@ export function calc_xp({
   durations,
   backgrounds,
   HD,
-  int
+  int,
 }) {
   const default_ranges = _.uniqBy(
     effects?.map((e) => e.range),
@@ -222,12 +229,18 @@ export function calc_xp({
     _.sumBy(effects ?? [], "xp") +
     _.sumBy(class_features ?? [], "xp") +
     _.sumBy(tag_features ?? [], "xp") +
-    _.sumBy(ranges?.filter((r) => !(default_ranges.map(i=> i.id).includes(r.id))) ?? [], "xp") +
     _.sumBy(
-      durations?.filter((r) => !(default_durations.map(i=> i.id).includes(r.id))) ?? [],
+      ranges?.filter((r) => !default_ranges.map((i) => i.id).includes(r.id)) ??
+        [],
+      "xp"
+    ) +
+    _.sumBy(
+      durations?.filter(
+        (r) => !default_durations.map((i) => i.id).includes(r.id)
+      ) ?? [],
       "xp"
     ) +
     4 * (classes?.length - 1 < 0 && 0) +
-    get_skill_xp({ backgrounds, int, skills }).total
+    get_skill_xp({ backgrounds, int, skills }).total;
   return xp ?? 0;
 }

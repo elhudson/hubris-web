@@ -1,4 +1,4 @@
-import { db } from "./connections.js";
+import { db } from "~db/prisma.js";
 import { sql_safe, prisma_safe } from "utilities";
 import { Prisma } from "@prisma/client";
 import _ from "lodash"

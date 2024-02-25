@@ -6,6 +6,8 @@ import { useUser } from "@contexts/user";
 import { useImmer } from "use-immer";
 import { powerContext } from "@contexts/power";
 
+import { FaPlus } from "react-icons/fa6";
+
 export default () => {
   const { username } = useUser();
   const [power, update] = useImmer({
@@ -14,10 +16,15 @@ export default () => {
     flavortext: "",
     effects: [],
     ranges: [],
-    durations: []
+    durations: [],
   });
   return (
-    <Dialog trigger={"+"}>
+    <Dialog
+      trigger={
+        <button>
+          <FaPlus />
+        </button>
+      }>
       <powerContext.Provider value={{ power: power, update: update }}>
         <Maker />
       </powerContext.Provider>

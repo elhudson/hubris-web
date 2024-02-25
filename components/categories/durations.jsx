@@ -18,6 +18,7 @@ export default () => {
                 include: {
                   requires: true,
                   required_for: true,
+                  trees: true
                 },
               },
             },

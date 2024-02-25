@@ -7,37 +7,38 @@ import Dialog from "@ui/dialog";
 import { useRef, createRef, forwardRef } from "react";
 
 export default () => {
-  const { character } = useCharacter();
+  const { character } = useCharacter() ?? { character: null };
   const user = useUser();
   const { power, update } = usePower();
   const { colors } = useTheme();
   const { classes } = useTheme();
   const editRef = useRef(null);
-  const menu = [
-    {
+  const menu = [];
+  if (character) {
+    menu.push({
       label: "Remove",
       action: async () => {
         await fetch("/data/query?table=characters&method=update", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             where: {
-              id: character.id
+              id: character.id,
             },
             data: {
               powers: {
                 disconnect: {
-                  id: power.id
-                }
-              }
-            }
-          })
+                  id: power.id,
+                },
+              },
+            },
+          }),
         });
-      }
-    }
-  ];
+      },
+    });
+  }
   if (power.creatorId == user.user_id) {
     menu.push({
       label: "Delete",
@@ -45,26 +46,26 @@ export default () => {
         await fetch("/data/query?table=powers&method=delete", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             where: {
-              id: power.id
-            }
-          })
+              id: power.id,
+            },
+          }),
         });
-      }
+      },
     });
     menu.push({
       label: "Edit",
       action: () => editRef.current.click(),
-      render: <Edit ref={editRef} />
+      render: <Edit ref={editRef} />,
     });
   }
   return menu;
 };
 
-const Edit = forwardRef(function Func(props={}, ref) {
+const Edit = forwardRef(function Func(props = {}, ref) {
   return (
     <Dialog
       trigger={

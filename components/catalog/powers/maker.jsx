@@ -8,25 +8,38 @@ import { FaPlus } from "react-icons/fa6";
 import { css, useTheme } from "@emotion/react";
 import { usePower } from "@contexts/power";
 import { forwardRef, useEffect } from "react";
+import { useAsync } from "react-async-hook";
+import { Effects, Ranges, Durations } from "./selections";
 
 export default () => {
   const { classes } = useTheme();
-  const { character } = useCharacter();
-  const { username } = useUser();
+  const { character } = useCharacter() ?? { character: null };
   const { power, update } = usePower();
+  const options = useAsync(async () => {
+    const effects =
+      character?.effects ??
+      (await fetch(`/data/rules?table=effects&relations=true`).then((e) => e.json()));
+    const ranges =
+      character?.ranges ??
+      (await fetch(`/data/rules?table=ranges&relations=true`).then((e) => e.json()));
+    const durations =
+      character?.durations ??
+      (await fetch(`/data/rules?table=durations&relations=true`).then((e) => e.json()));
+    return { effects, durations, ranges };
+  }).result;
   const addOption = (table) => {
     return (e) => {
       update((draft) => {
         if (table == "effects") {
           draft[table] = e.map((f) =>
-            _.find(character[table], (a) => a.id == f.value)
+            _.find(options[table], (a) => a.id == f.value)
           );
         } else {
           draft[table] = e
             .filter((f) =>
-              treeable(_.find(character[table], (a) => a.id == f.value))
+              treeable(_.find(options[table], (a) => a.id == f.value))
             )
-            .map((f) => _.find(character[table], (a) => a.id == f.value));
+            .map((f) => _.find(options[table], (a) => a.id == f.value));
         }
       });
     };
@@ -70,39 +83,13 @@ export default () => {
             <div css={classes.elements.number}>{get_power_cost(power)}</div>
           </ui.Numberbox>
         </div>
-        <div>
-          <label>Effects</label>
-          <ui.Multi
-            items={character.effects}
-            labelPath={"title"}
-            valuePath={"id"}
-            currents={power.effects}
-            onChange={addOption("effects")}
-            render={(props) => <PowerOption {...props} />}
-          />
-        </div>
-        <div>
-          <label>Range</label>
-          <ui.Multi
-            items={character.ranges}
-            labelPath={"title"}
-            valuePath={"id"}
-            currents={power.ranges}
-            onChange={addOption("ranges")}
-            render={(props) => <PowerOption {...props} />}
-          />
-        </div>
-        <div>
-          <label>Duration</label>
-          <ui.Multi
-            items={character.durations}
-            labelPath={"title"}
-            valuePath={"id"}
-            currents={power.durations}
-            onChange={addOption("durations")}
-            render={(props) => <PowerOption {...props} />}
-          />
-        </div>
+        {options && (
+          <section>
+            <Effects power={power} options={options} add={addOption}/>
+            <Ranges power={power} options={options} add={addOption} />
+            <Durations power={power} options={options} add={addOption} />
+          </section>
+        )}
       </section>
       <section>
         <ui.Notif
@@ -111,8 +98,8 @@ export default () => {
               method: "POST",
               body: JSON.stringify(power),
               headers: {
-                "Content-Type": "application/json"
-              }
+                "Content-Type": "application/json",
+              },
             });
           }}
           btn={"Create"}
@@ -122,13 +109,14 @@ export default () => {
   );
 };
 
-export const PowerOption = ({ option, checked, disabled, onClick }) => {
-  const { character } = useCharacter();
-  const all = _.flatten([
-    character.ranges,
-    character.durations,
-    character.effects
-  ]);
+export const PowerOption = ({
+  option,
+  options,
+  checked,
+  disabled,
+  onClick,
+}) => {
+  const all = _.flatten([options.ranges, options.durations, options.effects]);
   const item = _.find(all, (f) => f.id == option.value);
   const tooltip = Array.isArray(item.trees)
     ? item.trees[0].title

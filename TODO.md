@@ -3,12 +3,12 @@
 - [x] effects
 - [x] ranges
 - [x] durations
-- [ ] skills
+- [x] skills
 
 ## CSS cleanup
-- [ ] Tab scrolling issue
-- [ ] Campaigns
+- [x] Tab scrolling issue
+- [x] Campaigns
 
 ## Features
-- [ ] Sync campaign XP with character XP
-- [ ] Associate character with XP on creation
+- [x] Sync campaign XP with character XP
+- [ ] Associate character with campaign on creation

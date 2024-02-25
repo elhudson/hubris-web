@@ -4,15 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "_moduleAliases": {
-    "utilities": "./utilities",
-    "db": "./prisma",
-    "@database": "./database",
-    "@models": "./prisma/models",
-    "@api": "./api"
+    "utilities": "utilities/index.js",
+    "notion": "prisma/notion.js",
+    "~database": "database",
+    "~api": "api",
+    "~db": "prisma",
+    "~models": "prisma/models/index.js"
   },
+  "_moduleDirectories": [
+    "modules"
+  ],
   "scripts": {
     "postinstall": "link-module-alias",
-    "preinstall": "command -v link-module-alias && link-module-alias clean || true",
     "dev": "nodemon hubris.js -w hubris.js ./api/*.js",
     "start": "NODE_ENV=production node hubris.js",
     "build": "prisma generate && cd ./utilities && npm link && cd .. && npm link utilities && vite build",
@@ -26,7 +29,6 @@
     "@notionhq/client": "^2.2.14",
     "@prisma/client": "^5.7.0",
     "@prisma/internals": "^5.7.0",
-   
     "body-parser": "^1.20.2",
     "cli-progress": "^3.12.0",
     "color": "^4.2.3",
@@ -37,6 +39,7 @@
     "express-session": "^1.17.3",
     "immer": "^10.0.3",
     "lodash": "^4.17.21",
+    "luxon": "^3.4.4",
     "multer": "^1.4.5-lts.1",
     "prisma": "^5.7.0",
     "prisma-import": "^1.0.4",
@@ -61,6 +64,7 @@
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^4.2.0",
     "html-to-text": "^9.0.5",
+    "link-module-alias": "^1.2.0",
     "nodemon": "^3.0.1",
     "vite": "^5.0.2"
   }

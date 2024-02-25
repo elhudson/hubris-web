@@ -15,13 +15,12 @@ export default defineConfig({
   resolve: {
     alias: {
       "@src": resolve(__dirname, "./client"),
-      "@database": resolve(__dirname, "./database"),
       "@pages": resolve(__dirname, "./pages"),
       "@sheet": resolve(__dirname, "./pages/sheet"),
       "@contexts": resolve(__dirname, "./contexts"),
       "@ui": resolve(__dirname, "./interface/ui"),
-      interface: resolve(__dirname, "./interface/index.js"),
-      utilities: resolve(__dirname, "./utilities/index.js"),
+      "interface": resolve(__dirname, "./interface/index.js"),
+      "utilities": resolve(__dirname, "./utilities/index.js"),
       "@packages": resolve(__dirname, "./components/packages"),
       "@styles": resolve(__dirname, "./interface/styles"),
       "@themes": resolve(__dirname, "./interface/styles/themes"),

@@ -3,26 +3,37 @@ import Link from "@components/link";
 import { useUser } from "@contexts/user";
 import Dialog from "@ui/dialog";
 import Multi from "@ui/multi";
-import { htmlToText } from "html-to-text";
-import { get_power_cost } from "utilities";
-import { css } from "@emotion/css";
+import { get_power_cost, generate_power_description } from "utilities";
+import Description from "@components/description";
+import { css } from "@emotion/react";
 import { useImmer } from "use-immer";
 import _ from "lodash";
 import { useState } from "react";
+import Actions from "@components/catalog/powers/actions";
+import { powerContext } from "@contexts/power";
+
+import Create from "@components/catalog/powers/create";
+
 export default () => {
   const powers = useAsync(
     async () => await fetch("/data/powers").then((j) => j.json())
   ).result;
   return (
-    <div>
-      <h1 className="pagetitle">Powers</h1>
+    <main css={css`
+      >button {
+        width: 100%;
+        margin: 5px 0px;
+      }
+      td {
+        vertical-align: top;
+        a:not(:last-child)::after {
+          content: ", "
+        }
+      }
+    `}>
+      <h2>Powers</h2>
       {powers && (
-        <table
-          className={css`
-            /* thead th:last-child {
-                display:none;
-            } */
-          `}>
+        <table>
           <thead>
             <th>Name</th>
             <th>Description</th>
@@ -34,48 +45,71 @@ export default () => {
           </thead>
           <tbody>
             {powers.map((p) => (
-              <Entry power={p} />
+              <Entry pwr={p} />
             ))}
           </tbody>
         </table>
       )}
-    </div>
+      <Create />
+    </main>
   );
 };
 
-export const Entry = ({ power }) => {
+export const Entry = ({ pwr }) => {
+  const [power, update] = useImmer(pwr);
   return (
-    <tr>
-      <td>{power.name}</td>
-      <td>{htmlToText(power.flavortext)}</td>
-      <td>{power.creator.username}</td>
-      <td>
-        {power.effects.map((e) => (
-          <Link
-            feature={e}
-            table="effects"
+    <powerContext.Provider value={{ power, update }}>
+      <tr
+        css={css`
+          > span {
+            display: inline-block;
+            height: 100%;
+            > td {
+              height: inherit;
+            }
+          }
+        `}>
+        <Actions>
+          <td>{power.name}</td>
+        </Actions>
+        <td>
+          <Description
+            text={
+              power.flavortext
+                ? power.flavortext
+                : generate_power_description(power)
+            }
           />
-        ))}
-      </td>
-      <td>
-        {power.ranges.map((e) => (
-          <Link
-            feature={e}
-            table="ranges"
-          />
-        ))}
-      </td>
-      <td>
-        {power.durations.map((e) => (
-          <Link
-            feature={e}
-            table="durations"
-          />
-        ))}
-      </td>
-      <td>{get_power_cost(power)}</td>
-      <CharactersMenu power={power} />
-    </tr>
+        </td>
+        <td>{power.creator.username}</td>
+        <td>
+          {power.effects.map((e) => (
+            <Link
+              feature={e}
+              table="effects"
+            />
+          ))}
+        </td>
+        <td>
+          {power.ranges.map((e) => (
+            <Link
+              feature={e}
+              table="ranges"
+            />
+          ))}
+        </td>
+        <td>
+          {power.durations.map((e) => (
+            <Link
+              feature={e}
+              table="durations"
+            />
+          ))}
+        </td>
+        <td>{get_power_cost(power)}</td>
+        <CharactersMenu power={power} />
+      </tr>
+    </powerContext.Provider>
   );
 };
 
@@ -100,22 +134,22 @@ const CharactersMenu = ({ power }) => {
       await fetch("/data/query?method=findMany&table=characters", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           where: {
             user: {
-              id: user.user_id
-            }
+              id: user.user_id,
+            },
           },
           select: {
             biography: true,
             id: true,
             effects: true,
             ranges: true,
-            durations: true
-          }
-        })
+            durations: true,
+          },
+        }),
       })
         .then((r) => r.json())
         .then((f) => f.filter((c) => canUsePower(c, power)))
@@ -130,22 +164,22 @@ const CharactersMenu = ({ power }) => {
         charactersId: c.id,
         powers: {
           connect: {
-            id: power.id
-          }
-        }
+            id: power.id,
+          },
+        },
       };
       await fetch("/data/query?method=upsert&table=powerSet", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           where: {
-            charactersId: c.id
+            charactersId: c.id,
           },
           create: pw,
-          update: pw
-        })
+          update: pw,
+        }),
       });
     }
   };

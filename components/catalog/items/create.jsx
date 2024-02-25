@@ -8,7 +8,8 @@ export default ({ table }) => {
     add = {
       name: "",
       martial: false,
-      heavy: false
+      heavy: false,
+      tags: []
     };
   }
   if (table == "armor") {
@@ -21,7 +22,7 @@ export default ({ table }) => {
     add = { name: "" };
   }
   return (
-    <Dialog trigger={"New Item"}>
+    <Dialog trigger={<button>New Item</button>}>
       <Item
         data={add}
         type={table}

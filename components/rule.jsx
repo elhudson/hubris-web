@@ -11,7 +11,7 @@ import Metadata from "@ui/metadata";
 import { useRef } from "react";
 
 export default ({ data, children = null }) => {
-  const self=useRef()
+  const self = useRef();
   var { location, table, icon } = useRule();
   const { colors } = useTheme();
   if (table == null) {
@@ -49,14 +49,17 @@ export default ({ data, children = null }) => {
           table={table}
           feature={data}
         />
-        {(location == "levelup" || location=="create") && (
+        {(location == "levelup" || location == "create") && (
           <span
             css={css`
               position: absolute;
               right: 0;
               top: 0;
             `}>
-            <Option data={data} ref={self}/>
+            <Option
+              data={data}
+              ref={self}
+            />
           </span>
         )}
       </header>
@@ -86,10 +89,12 @@ export default ({ data, children = null }) => {
               vertical-align: top;
             }
           `}>
-          {data?.tags?.map((t) => (
-            <Tag {...t} />
-          ))}
-          <Tag {...data?.class_paths} />
+          {Array.isArray(data.children) &&
+          <Indicators
+            table={table}
+            data={data}
+          />
+          }
         </div>
         <div
           css={css`
@@ -102,5 +107,21 @@ export default ({ data, children = null }) => {
         </div>
       </section>
     </div>
+  );
+};
+
+const Indicators = ({ table, data }) => {
+  return (
+    <>
+      {table == "effects" ? (
+        data?.tags?.map((t) => <Tag {...t} />)
+      ) : table == "class_features" ? (
+        <Tag {...data?.class_paths} />
+      ) : table == "tag_features" ? (
+        <Tag {...data?.tags} />
+      ) : table == "ranges" || table == "durations" ? (
+        data?.trees?.map((t) => <Tag {...t} />)
+      ) : null}
+    </>
   );
 };

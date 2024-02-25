@@ -4,13 +4,12 @@ import _ from "lodash";
 import List from "@items/set";
 import Create from "@items/create";
 import { useTheme, css } from "@emotion/react";
-import { useState } from "react";
-
+import {Sections} from "@ui/layouts"
 export default () => {
   const { character, update } = useCharacter();
   const { items, armor, weapons } = character.inventory;
   return (
-    <>
+    <Sections>
       <Bin
         items={armor}
         type="armor"
@@ -26,7 +25,7 @@ export default () => {
         type="items"
         update={update}
       />
-    </>
+    </Sections>
   );
 };
 
@@ -36,9 +35,6 @@ const Bin = (props) => {
   return (
     <section
       css={css`
-        h3 {
-          ${classes.elements.subhead};
-        }
         >button {
           float: right;
         }

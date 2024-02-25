@@ -2,8 +2,9 @@ import { Router } from "express";
 import "dotenv/config";
 
 import _ from "lodash";
-import { db } from "../database/connections.js";
-import schema from "../database/schema.js";
+import { db } from "~db/prisma.js";
+
+import schema from "~database/schema.js";
 
 const app = Router();
 
@@ -24,7 +25,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  if ((process.env.NODE_ENV != "production")) {
+  if (process.env.NODE_ENV != "production") {
     req.session.user = "ehudson19";
     req.session.user_id = "ddd0c0ad-13c4-47d4-bdfb-a343985187d8";
   }
@@ -36,45 +37,25 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/data/characters", async (req, res) => {
-  const username = req.query.user;
-  const fields = await schema().then((s) => s.characters);
-  const include = req.query.detailed
-    ? Object.fromEntries(fields.map((f) => [f, true]))
-    : {
-        backgrounds: true,
-        classes: true
-      };
-  const query = await db.characters.findMany({
-    where: {
-      user: {
-        username: username
-      }
-    },
-    include
-  });
+  const query=await db.users.characters({ id: req.session.user_id });
   res.json(query);
 });
 
 app.get("/data/campaigns", async (req, res) => {
   const username = req.query.user;
-  const query = await db.campaigns.findMany({
+  const query = await db.campaigns.retrieve({
     where: {
       creator: {
         username: username
       }
-    },
-    include: {
-      characters: true,
-      settings: true
     }
   });
-  res.json(query);
+  res.json([query].flat());
 });
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
-
 
 export default app;

@@ -18,6 +18,10 @@ const imports = {
   user: import.meta.glob(`./user/*.jsx`, {
     import: "default",
     eager: true
+  }),
+  tools: import.meta.glob(`./tools/*.jsx`, {
+    import: "default",
+    eager: true
   })
 };
 export default Object.fromEntries(

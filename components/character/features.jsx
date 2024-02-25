@@ -1,17 +1,16 @@
 import { useCharacter } from "@contexts/character";
 import Ability from "./ability";
 import { css, useTheme } from "@emotion/react";
+import { Sections } from "@ui/layouts";
+
 const Features = () => {
   const { character } = useCharacter();
   const { classes } = useTheme();
   return (
-    <div
+    <Sections
       css={css`
         > section > div {
           ${classes.layout.gallery};
-        }
-        h3 {
-          ${classes.elements.subhead};
         }
       `}>
       <section>
@@ -38,7 +37,7 @@ const Features = () => {
           ))}
         </div>
       </section>
-    </div>
+    </Sections>
   );
 };
 

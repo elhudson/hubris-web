@@ -2,10 +2,9 @@ import { Router } from "express";
 import "dotenv/config";
 
 import _ from "lodash";
-import { db, upload } from "../database/connections.js";
-import schema from "../database/schema.js";
-import fs from "fs"
-
+import { db } from "~db/prisma.js";
+import fs from "fs";
+import { upload } from "~api/inbox.js";
 const app = Router();
 
 app.post("/data/campaign/cover", upload.single("profile"), (req, res) => {
@@ -17,74 +16,17 @@ app.post("/data/campaign/cover", upload.single("profile"), (req, res) => {
 });
 
 app.get("/data/campaign", async (req, res) => {
-  const id = req.query.id;
-  const campaign = await db.campaigns.findFirst({
-    where: {
-      id: id
-    },
-    include: {
-      characters: {
-        include: {
-          classes: true,
-          backgrounds: true,
-          effects: true,
-          class_features: true,
-          tag_features: true,
-          ranges: true,
-          durations: true,
-          HD: {
-            include: {
-              die: true
-            }
-          },
-          skills: true
-        }
-      },
-      dm: true,
-      creator: true,
-      settings: true,
-      logbook: {
-        include: {
-          author: true
-        }
-      }
-    }
-  });
+  const campaign = await db.campaigns.retrieve({ id: req.query.id });
   res.json(campaign);
 });
 
 app.post("/data/campaign", async (req, res) => {
-  const id = req.query.id;
-  await db.campaigns.update({
-    where: {
-      id: id
-    },
-    data: req.body
-  });
+  await db.campaigns.save({ data: req.body });
   res.send("Campaign updated.");
 });
 
 app.post("/data/campaigns/create", async (req, res) => {
-  const data = req.body;
-  await db.campaigns.create({
-    data: {
-      name: data.name,
-      description: data.description,
-      settings: {
-        connect: data.settings.map((s) => ({ id: s.id }))
-      },
-      creator: {
-        connect: {
-          id: data.creator.user_id
-        }
-      },
-      dm: {
-        connect: {
-          id: data.dm.user_id
-        }
-      }
-    }
-  });
+  await db.campaigns.create({ data: req.body });
   res.send("Campaign created.");
 });
 

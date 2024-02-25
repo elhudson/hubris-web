@@ -19,6 +19,7 @@ export default () => {
             id: true,
             tag_features: {
               include: {
+                tags: true,
                 requires: true,
                 required_for: true,
               },

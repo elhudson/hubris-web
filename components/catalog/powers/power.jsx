@@ -3,7 +3,7 @@ import Tooltip from "@ui/tooltip";
 import Description from "@components/description";
 import { useCharacter } from "@contexts/character";
 import { useUser } from "@contexts/user";
-import { get_power_cost } from "utilities";
+import { get_power_cost, generate_power_description } from "utilities";
 import { BiTargetLock } from "react-icons/bi";
 import { GiStarSwirl } from "react-icons/gi";
 import { IoHourglassOutline } from "react-icons/io5";
@@ -11,7 +11,8 @@ import _ from "lodash";
 import { useTheme, css } from "@emotion/react";
 import { powerContext } from "@contexts/power";
 import { useImmer } from "use-immer";
-import Tags from "./tags"
+import Tags from "./tags";
+import Components from "./components";
 
 import Actions from "@components/catalog/powers/actions";
 
@@ -57,68 +58,13 @@ export default ({ pwr }) => {
               </Tooltip>
             </div>
           </div>
-          <div
-            css={css`
-              margin: 5px;
-              grid-area: props;
-              > div {
-                display: flex;
-                svg {
-                  height: 18px;
-                  width: 18px;
-                  margin: 3px;
-                }
-              }
-            `}>
-            <div>
-              <BiTargetLock />
-              <div>
-                {power.ranges.map((e) => (
-                  <Link
-                    feature={e}
-                    table="ranges"
-                  />
-                ))}
-              </div>
-            </div>
-            <div>
-              <IoHourglassOutline />
-              <div>
-                {power.durations.map((e) => (
-                  <Link
-                    feature={e}
-                    table="durations"
-                  />
-                ))}
-              </div>
-            </div>
-            <div>
-              <GiStarSwirl />
-              <div>
-                {power.effects.map((e) => (
-                  <Link
-                    feature={e}
-                    table="effects"
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <Components />
           <section
             css={[classes.decorations.dashed, classes.elements.description]}>
-            <Description text={generatePowerDescription(power)} />
+            <Description text={generate_power_description(power)} />
           </section>
         </div>
       </Actions>
     </powerContext.Provider>
   );
 };
-
-function generatePowerDescription(power) {
-  const all = power.effects
-    .map((e) => e.description)
-    .concat(power.ranges.map((r) => r.description))
-    .concat(power.durations.map((d) => d.description));
-  return all.map((p) => p.replace(/<\/?p>/g, "")).join("");
-}
-

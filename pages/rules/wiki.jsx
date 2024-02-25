@@ -54,6 +54,15 @@ const Wiki = () => {
           </li>
         </ul>
       </section>
+      <section>
+        <h2>Tools</h2>
+        <ul>
+          <li>
+            <FaDiceD20 />
+            <Link to="/tools/calculator">Power Calculator</Link>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 };

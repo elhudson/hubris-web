@@ -2,28 +2,26 @@ import "dotenv/config";
 import fs from "fs";
 import { v4 } from "uuid";
 import { Router } from "express";
-import { db, upload } from "../database/connections.js";
+import { db } from "~db/prisma.js";
+import { upload } from "~api/inbox.js";
 
-import {
-  boost,
-  get_max_hp
-} from "utilities";
+import { boost, get_max_hp } from "utilities";
 import _ from "lodash";
 
 const app = Router();
 
 app.get("/data/character", async (req, res) => {
   const id = req.query.id;
-  const query=await db.characters.retrieve({
+  const query = await db.characters.retrieve({
     id: id
-  })
+  });
   res.json(query);
 });
 
 app.post("/data/character", async (req, res) => {
   const char = req.body;
-  await db.characters.save({item: char})
-  res.send('Character saved.')
+  await db.characters.save({ item: char });
+  res.send("Character saved.");
 });
 
 app.post("/data/character/avatar", upload.single("profile"), (req, res) => {

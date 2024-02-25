@@ -2,7 +2,7 @@ import "dotenv/config";
 import fs from "fs";
 import { v4 } from "uuid";
 import { Router } from "express";
-import { db, upload } from "../database/connections.js";
+import { db } from "~db/prisma.js";
 
 const app = Router();
 

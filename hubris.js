@@ -1,3 +1,4 @@
+
 import express from "express";
 import "dotenv/config";
 import session from "express-session";
@@ -6,19 +7,15 @@ import bodyParser from "body-parser";
 
 import ViteExpress from "vite-express";
 
-import character from "./api/character.js";
-import inventory from "./api/inventory.js";
-import user from "./api/user.js";
-import rules from "./api/rules.js";
-import powers from "./api/powers.js";
-import campaigns from "./api/campaigns.js";
-
-import multer from "multer";
+import character from "~api/character.js";
+import inventory from "~api/inventory.js";
+import user from "~api/user.js";
+import rules from "~api/rules.js";
+import powers from "~api/powers.js";
+import campaigns from "~api/campaigns.js";
 
 const app = express();
 
-app.storage = multer.memoryStorage();
-app.upload = multer({ storage: storage });
 
 app.use(express.json());
 app.use(cookieParser());

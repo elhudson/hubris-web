@@ -7,12 +7,14 @@ import {
 
 import Menu from "./menu";
 import pages from "@pages/pages";
-const { rules, user, campaign, catalog, character } = pages;
+const { rules, user, campaign, catalog, character, tools } = pages;
 import Background from "@ui/background";
 import { css, useTheme } from "@emotion/react";
 
 import { useParams } from "react-router-dom";
 import { sql_danger } from "utilities";
+
+console.log(tools)
 
 const Rules = () => {
   const { colors } = useTheme();
@@ -36,21 +38,30 @@ const Rules = () => {
   );
 };
 
+const App = ({ children }) => {
+  const { colors } = useTheme();
+  return (
+    <main
+      css={css`
+        height: 90vh;
+        width: 80%;
+        margin: auto;
+        overflow: scroll;
+      `}>
+      {children}
+    </main>
+  );
+};
+
 export default createBrowserRouter(
   createRoutesFromElements(
     <Route
       element={
         <>
           <Menu />
-          <main
-            css={css`
-              height: 90vh;
-              width: 80%;
-              margin: auto;
-              overflow: scroll;
-            `}>
+          <App>
             <Outlet />
-          </main>
+          </App>
         </>
       }>
       <Route
@@ -115,6 +126,11 @@ export default createBrowserRouter(
       <Route
         path="db/powers"
         element={<catalog.powers />}
+      />
+
+      <Route
+        path="tools/calculator"
+        element={<tools.calculator />}
       />
     </Route>
   )

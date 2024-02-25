@@ -5,7 +5,7 @@ import { useImmer } from "use-immer";
 import Tabs from "@ui/tabs";
 import Character from "@character";
 import { Row } from "@ui/layouts";
-import { useTheme, css} from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 
 const components = () => {
   const { classes } = useTheme();
@@ -15,11 +15,12 @@ const components = () => {
     {
       title: "Progression",
       content: (
-        <div css={css`
-          >* {
-            margin-bottom: 5px;
-          }
-        `}>
+        <div
+          css={css`
+            > * {
+              margin-bottom: 5px;
+            }
+          `}>
           <Character.proficiency />
           <Character.xp />
           <div css={classes.elements.selectbox}>
@@ -50,6 +51,7 @@ const components = () => {
 
 const Sheet = () => {
   const { id } = useParams();
+  const { colors } = useTheme();
   const [character, update] = useImmer(null);
   useAsync(
     async () =>
@@ -59,7 +61,13 @@ const Sheet = () => {
   );
   const comps = components();
   return (
-    <>
+    <main css={css`
+      
+      > button {
+        width: 100%;
+        margin: 5px 0px;
+      }
+    `}>
       {character != null && (
         <characterContext.Provider
           value={{
@@ -68,15 +76,19 @@ const Sheet = () => {
           }}>
           <Character.profile />
           <Tabs
+            css={css`
+              > [role="tabpanel"] {
+                max-height: 65vh;
+              }
+            `}
             names={comps.map((c) => c.title)}
             def={comps[0].title}>
             {comps.map((c) => c.content)}
           </Tabs>
           <Character.save />
-          
         </characterContext.Provider>
       )}
-    </>
+    </main>
   );
 };
 
