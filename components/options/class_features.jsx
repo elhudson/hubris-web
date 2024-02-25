@@ -5,24 +5,24 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import Optionset from "./optionset";
 import { optionsContext } from "@contexts/options";
+import { ruleContext } from "@contexts/rule";
+import Class_Features from "@components/categories/class_features";
 
 export default () => {
   const { character } = useCharacter();
   const [searchable, setSearchable] = useState(null);
   const options = useAsync(async () => {
     const cps = await fetch(
-      `/data/rules?table=class_paths&query=${JSON.stringify({
+      `/data/rules?table=classes&query=${JSON.stringify({
         where: {
-          classes: {
-            OR: character.classes.map((c) => ({
-              id: c.id
-            }))
-          }
+          OR: character.classes.map((c) => ({
+            id: c.id
+          }))
         },
         select: {
           title: true,
           id: true,
-          classes: true,
+          class_paths: true,
           class_features: {
             where: {
               tier: {
@@ -43,14 +43,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
+        <ruleContext.Provider
           value={{
-            searchable: searchable,
-            table: "class_features",
-            options: options
+            location: "levelup",
+            table: "class_features"
           }}>
-          <Optionset />
-        </optionsContext.Provider>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              options: options
+            }}>
+            <Optionset component={<Class_Features />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

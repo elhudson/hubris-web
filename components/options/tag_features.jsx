@@ -5,6 +5,8 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import { optionsContext } from "@contexts/options";
 import Optionset from "./optionset";
+import Tag_Features from "@components/categories/tag_features";
+import { ruleContext } from "@contexts/rule";
 
 export default () => {
   const { character } = useCharacter();
@@ -16,10 +18,10 @@ export default () => {
           classes: {
             some: {
               OR: character.classes.map((c) => ({
-                id: c.id
-              }))
-            }
-          }
+                id: c.id,
+              })),
+            },
+          },
         },
         select: {
           title: true,
@@ -27,15 +29,15 @@ export default () => {
           tag_features: {
             where: {
               tier: {
-                lte: get_tier(character)
-              }
+                lte: get_tier(character),
+              },
             },
             include: {
               requires: true,
-              required_for: true
-            }
-          }
-        }
+              required_for: true,
+            },
+          },
+        },
       })}`
     ).then((t) => t.json());
     setSearchable(_.flatten(cps.map((c) => c.tag_features)));
@@ -44,14 +46,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
+        <ruleContext.Provider
           value={{
-            searchable: searchable,
+            location: "levelup",
             table: "tag_features",
-            options: options
           }}>
-          <Optionset />
-        </optionsContext.Provider>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              options: options,
+            }}>
+            <Optionset component={<Tag_Features />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

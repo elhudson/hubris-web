@@ -15,10 +15,10 @@ export default ({ inc, dec }) => {
           bottom: 0;
           width: 50%;
           border: unset;
-          border-top: 1px solid ${colors.text};
+          border-top: 1px solid ${colors.accent};
           &:first-child {
             left: 0;
-            border-right: 1px solid ${colors.text};
+            border-right: 1px solid ${colors.accent};
           }
         }
       `}>

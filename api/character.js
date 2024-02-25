@@ -2,131 +2,32 @@ import "dotenv/config";
 import fs from "fs";
 import { v4 } from "uuid";
 import { Router } from "express";
-import { db, upload } from "../database/connections.js";
+import { db } from "~db/prisma.js";
+import { upload } from "~api/inbox.js";
 
-import {
-  boost,
-  character_update_query,
-  get_max_hp,
-  get_tier,
-  update_hd,
-  update_inventory
-} from "utilities";
+import { boost, get_max_hp } from "utilities";
 import _ from "lodash";
 
 const app = Router();
 
 app.get("/data/character", async (req, res) => {
   const id = req.query.id;
-  const query = await db.characters.findFirst({
-    where: {
-      id: id
-    },
-    include: {
-      profile: false,
-      powerset: {
-        select: {
-          powers: {
-            include: {
-              effects: {
-                include: {
-                  tags: true
-                }
-              },
-              durations: true,
-              ranges: true
-            }
-          }
-        }
-      },
-      backgrounds: {
-        include: {
-          background_features: true,
-          skills: true
-        }
-      },
-      effects: {
-        include: {
-          damage_types: true,
-          trees: true,
-          tags: true
-        }
-      },
-      ranges: {
-        include: {
-          trees: true
-        }
-      },
-      durations: {
-        include: {
-          trees: true
-        }
-      },
-      health: {
-        include: {
-          injuries: true
-        }
-      },
-      inventory: {
-        include: {
-          weapons: {
-            include: {
-              damage_types: {
-                include: {
-                  tags: true
-                }
-              }
-            }
-          },
-          armor: true,
-          items: true
-        }
-      },
-      class_features: {
-        include: {
-          damage_types: true,
-          classes: true
-        }
-      },
-      tag_features: true,
-      HD: {
-        include: {
-          die: true
-        }
-      },
-      skills: true,
-      classes: {
-        include: {
-          hit_dice: true,
-          tags: true,
-          abilities: true
-        }
-      }
-    }
+  const query = await db.characters.retrieve({
+    id: id
   });
-  query.HD = _.uniqBy(query.HD, (f) => f.die.title);
   res.json(query);
 });
 
 app.post("/data/character", async (req, res) => {
   const char = req.body;
-  _.find(char.HD, (f) => f.src == "default").max = get_tier(char);
-  const id = req.query.id;
-  await db.characters.update({
-    where: {
-      id: id
-    },
-    data: character_update_query(char)
-  });
-  await update_inventory(db, char.inventory);
-  await update_hd(db, char.HD);
-  res.send("Character saved successfully.");
+  await db.characters.save({ item: char });
+  res.send("Character saved.");
 });
 
 app.post("/data/character/avatar", upload.single("profile"), (req, res) => {
   const id = req.query.id;
   const file = req.file;
-  const path = `${root}/public/portraits/${id}.png`;
+  const path = `./public/portraits/${id}.png`;
   fs.writeFileSync(path, file.buffer);
   res.send("Portrait updated.");
 });
@@ -146,7 +47,7 @@ app.post("/data/character/create", async (req, res) => {
       id: true
     }
   });
-  const dtype = await db.damage_Types.findFirst({
+  const dtype = await db.tags.findFirst({
     where: {
       title: "Piercing"
     }
@@ -155,8 +56,7 @@ app.post("/data/character/create", async (req, res) => {
   await db.characters.create({
     data: {
       ...character,
-      xp_earned: 0,
-      xp_spent: 6,
+      xp_earned: 6,
       inventory: {
         create: {
           weapons: {
@@ -167,7 +67,7 @@ app.post("/data/character/create", async (req, res) => {
               name: "Dagger",
               equipped: true,
               uses: "str",
-              damage_types: {
+              tags: {
                 connect: {
                   id: dtype.id
                 }
@@ -220,7 +120,7 @@ app.post("/data/character/create", async (req, res) => {
           }
         }
       },
-      powers: 0,
+      burn: 0,
       backgrounds: {
         connect: character.backgrounds.map((c) => ({
           id: c.id

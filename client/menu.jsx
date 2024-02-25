@@ -1,19 +1,19 @@
 import * as nav from "@radix-ui/react-navigation-menu";
 import { userContext } from "@contexts/user";
 import { useContext } from "react";
-import Login from "@pages/login";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import Login from "@pages/user/login";
+import { useTheme, css } from "@emotion/react";
 import { Link } from "react-router-dom";
-import { useAsync } from "react-async-hook";
 import Tables from "@components/tables";
+import usr from "@actions/user";
+import Switcher from "@styles/switcher";
 
 const Menu = () => {
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
   const user = useContext(userContext);
   return (
     <div
-      className={css`
+      css={css`
         position: sticky;
         background-color: ${colors.background};
         border: 1px solid ${colors.accent};
@@ -25,16 +25,41 @@ const Menu = () => {
       `}>
       <h1>HUBRIS</h1>
       <nav.Root
-        className={css`
+        css={css`
           position: absolute;
           right: 0;
           top: 0;
-          display: flex;
           li {
-            list-style-type: none;
+            list-style: none;
+            padding: 5px;
+            position: relative;
+          }
+          .nav {
+            display: flex;
+            justify-content: center;
             margin: 5px;
-            padding: 3px;
-            height: fit-content;
+          }
+          .content {
+            position: absolute;
+            top: 35px;
+            right: 100%;
+            width: 0%;
+            li {
+              ${classes.decorations.shadowed};
+              width: fit-content;
+              white-space: nowrap;
+              background-color: ${colors.background};
+              margin: 5px;
+              margin-left: 0px;
+              margin-top: 0px;
+              border: 1px solid ${colors.accent};
+            }
+          }
+          ul > li:last-child .content {
+            right: -25%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: right;
           }
           a,
           button {
@@ -49,42 +74,46 @@ const Menu = () => {
             }
           }
         `}>
-        <nav.Item>
-          {user.logged_in ? <a href="/logout">Log Out</a> : <Login />}
-        </nav.Item>
-        {user.logged_in && (
-          <>
-            <nav.Item>
-              <nav.Link>
-                <Link to={`characters/${user.username}`}>My Characters</Link>
-              </nav.Link>
-            </nav.Item>
-            <nav.Item>
-              <nav.Link>
-                <Link to={`characters/${user.username}/create`}>
-                  New Character
-                </Link>
-              </nav.Link>
-            </nav.Item>
-          </>
-        )}
-        <nav.Item>
-          <nav.Trigger>
-            <a href="/">Wiki</a>
-          </nav.Trigger>
-          <nav.Content>
-            <Tables />
-          </nav.Content>
-        </nav.Item>
-        <nav.Viewport
-          className={css`
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: ${colors.background};
-            border: 1px solid ${colors.accent};
-          `}
-        />
+        <nav.List className="nav">
+          <nav.Item>
+            <nav.Trigger>Appearance</nav.Trigger>
+            <nav.Content className="content">
+              <li>
+                <Switcher />
+              </li>
+            </nav.Content>
+          </nav.Item>
+          <nav.Item>
+            {user.logged_in ? <a href="/logout">Log Out</a> : <Login />}
+          </nav.Item>
+          {user.logged_in && (
+            <>
+              <nav.Item>
+                <nav.Link>
+                  <Link to={`${user.username}/creations`}>My Stuff</Link>
+                </nav.Link>
+              </nav.Item>
+              <nav.Item>
+                <nav.Trigger>Create</nav.Trigger>
+                <nav.Content className="content">
+                  {usr().map((u) => (
+                    <li>
+                      <a onClick={u.action}>{u.label}</a>
+                    </li>
+                  ))}
+                </nav.Content>
+              </nav.Item>
+            </>
+          )}
+          <nav.Item>
+            <nav.Trigger>
+              <a href="/">Wiki</a>
+            </nav.Trigger>
+            <nav.Content className="content">
+              <Tables />
+            </nav.Content>
+          </nav.Item>
+        </nav.List>
       </nav.Root>
     </div>
   );

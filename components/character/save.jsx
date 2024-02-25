@@ -1,6 +1,6 @@
 import Notification from "@ui/notif";
 import { useCharacter } from "@contexts/character";
-
+import { css } from "@emotion/react";
 export default () => {
   const { character } = useCharacter();
   const save = async () =>
@@ -10,7 +10,7 @@ export default () => {
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       }
-    }).then(s=>s.text());
+    }).then((s) => s.text());
   return (
     <Notification
       func={save}

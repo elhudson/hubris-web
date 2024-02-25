@@ -1,20 +1,41 @@
-import { css } from "@emotion/css";
+import { css, useTheme } from "@emotion/react";
 
-
-
-export const Row = ({ children }) => {
-  return <div
-    className={css`
-      display: flex;
-      width: 100%;
-      > * {
+export const Row = ({children, ...props}) => {
+  return (
+    <div
+      css={css`
+        display: flex;
         width: 100%;
-        margin-right: 5px;
-      }
-    `}>
-    {children}
-  </div>;
+        gap: 5px;
+        > * {
+          width: 100%;
+        }
+      `}
+      {...props}>
+      {children}
+    </div>
+  );
 };
 
-export default {
-}
+export const Sections = ({children, ...props}) => {
+  const { classes } = useTheme();
+  return (
+    <main
+      css={css`
+        > section {
+          margin-bottom: 20px;
+          > h3 {
+            ${classes.elements.subhead};
+          }
+        }
+        > section:last-child {
+          margin-bottom: unset;
+        }
+      `}
+      {...props}>
+      {children}
+    </main>
+  );
+};
+
+export default {};

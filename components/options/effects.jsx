@@ -5,6 +5,8 @@ import { get_tier } from "utilities";
 import _ from "lodash";
 import Optionset from "./optionset";
 import { optionsContext } from "@contexts/options";
+import { ruleContext } from "@contexts/rule";
+import Effects from "@components/categories/effects"
 
 export default () => {
   const { character } = useCharacter();
@@ -14,45 +16,36 @@ export default () => {
     const data = await fetch(
       `/data/rules?table=trees&query=${JSON.stringify({
         include: {
-          ranges: {
-            where: {
-              tier: get_tier(character),
-              xp: 1
-            }
-          },
-          durations: {
-            where: {
-              tier: get_tier(character),
-              xp: 1
-            }
-          },
           effects: {
             where: {
               tags: {
                 some: {
                   OR: tags.map((c) => ({
-                    id: c.id
-                  }))
-                }
+                    id: c.id,
+                  })),
+                },
               },
               tier: {
-                lte: get_tier(character)
-              }
+                lte: get_tier(character),
+              },
             },
             include: {
+              tags: true,
               requires: true,
               required_for: true,
-              trees: true
-            }
-          }
-        }
+              trees: true,
+              range: true,
+              duration: true,
+            },
+          },
+        },
       })}`
     ).then((t) => t.json());
     data.forEach((tree) => {
       tree.effects.forEach((effect) => {
         effect.meta = {
           ranges: tree.ranges,
-          durations: tree.durations
+          durations: tree.durations,
         };
       });
     });
@@ -62,14 +55,19 @@ export default () => {
   return (
     <>
       {options && (
-        <optionsContext.Provider
-          value={{
-            searchable: searchable,
-            table: "effects",
-            options: options
-          }}>
-          <Optionset />
-        </optionsContext.Provider>
+        <ruleContext.Provider value={{
+          location: "levelup",
+          table: "effects"
+        }}>
+          <optionsContext.Provider
+            value={{
+              searchable: searchable,
+              table: "effects",
+              options: options,
+            }}>
+            <Optionset component={<Effects />} />
+          </optionsContext.Provider>
+        </ruleContext.Provider>
       )}
     </>
   );

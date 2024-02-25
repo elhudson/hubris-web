@@ -1,7 +1,9 @@
 import { useAsync } from "react-async-hook";
-import _ from "lodash";
 import { optionsContext, limitsContext } from "@contexts/options";
 import Optionset from "./optionset";
+import { ruleContext } from "@contexts/rule";
+import Classes from "@components/categories/classes";
+import Option from "./option";
 
 export default () => {
   const classes = useAsync(async () => {
@@ -9,9 +11,9 @@ export default () => {
       `/data/rules?table=classes&relations=true&query=${JSON.stringify({
         include: {
           hit_dice: {
-            die: true
-          }
-        }
+            die: true,
+          },
+        },
       })}`
     ).then((j) => j.json());
     if (!window.location.href.includes("create")) {
@@ -34,14 +36,21 @@ export default () => {
         <optionsContext.Provider
           value={{
             searchable: classes,
-            table: "classes",
-            options: classes
+            options: classes,
           }}>
           <limitsContext.Provider
             value={{
-              limiter: limiter
+              limiter: limiter,
             }}>
-            <Optionset />
+            <ruleContext.Provider
+              value={{
+                location: "create",
+                table: "classes",
+              }}>
+              <Optionset
+                component={<Classes checkbox={(item)=> <Option data={item} />} />}
+              />
+            </ruleContext.Provider>
           </limitsContext.Provider>
         </optionsContext.Provider>
       )}

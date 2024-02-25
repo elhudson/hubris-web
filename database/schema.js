@@ -1,6 +1,7 @@
-import { db } from "./connections.js";
+import { db } from "~db/prisma.js";
 import { sql_safe, prisma_safe } from "utilities";
 import { Prisma } from "@prisma/client";
+import _ from "lodash"
 
 export const tables = async () =>
   await db.$queryRaw`
@@ -24,8 +25,12 @@ export default async () => {
       m.fields
         .filter((f) => tabls.includes(f.name))
         .map((n) => n.name)
-        .filter((f) => !f.includes("Id"))
+        .filter((f) => !f.includes("Id") || (f=="rangeId" || f=="durationId"))
     ])
   );
   return schema;
 };
+
+export const get_schema=(table_name)=> {
+  return _.find(Prisma.dmmf.datamodel.models, f=> f.name==prisma_safe(table_name))
+}

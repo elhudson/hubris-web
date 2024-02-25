@@ -1,8 +1,17 @@
-import Option from "@components/options/option";
-import _ from "lodash";
-import { css } from "@emotion/css";
+import Rule from "@components/rule";
+import _, { head } from "lodash";
+import { useTheme, css } from "@emotion/react";
+import {
+  useEffect,
+  useLayoutEffect,
+  forwardRef,
+  useRef,
+  useState
+} from "react";
+
+import { css as classNameCss } from "@emotion/css";
+
 import Tree from "react-d3-tree";
-import { useTheme } from "@emotion/react";
 
 function makeHierarchy(root, items) {
   const complete = _.has(root, "required_for")
@@ -18,103 +27,69 @@ function makeHierarchy(root, items) {
 }
 
 export default ({ items }) => {
-  const least = Object.keys(_.groupBy(items, "xp"))[0];
-  const entries = _.cloneDeep(items);
-  const roots = entries.filter((f) => f.xp == least);
-  roots.forEach((root) => {
-    root.children = makeHierarchy(root, entries);
+  const least = Object.entries(_.groupBy(items, "xp"))[0][0];
+  const self = useRef(null);
+  const { colors } = useTheme();
+  const nodeDimensions = {
+    x: 250,
+    y: 150
+  };
+  useEffect(() => {
+    const { top } = self.current.getBoundingClientRect();
+    const { innerHeight } = window;
+    const exclude = innerHeight - top;
+    self.current.setAttribute("style", `height:${exclude - 100}px; margin:-10px;`);
+    const container=self.current.querySelector('svg')
   });
+  const roots = items
+    .filter((i) => i.xp == least)
+    .map((root) => ({ ...root, children: makeHierarchy(root, _.cloneDeep(items)) }));
   return (
-    <div>
-      <FeatureTree
-        root={{
-          name: "root",
-          id: "root",
+    <div ref={self}>
+      <Tree
+        enableLegacyTransitions={false}
+        orientation="vertical"
+        translate={{
+          x: 0,
+          y: -150
+        }}
+        pathClassFunc={() => classNameCss`
+            stroke: ${colors.accent} !important;`}
+        pathFunc={({ source, target }) => {
+          return source.parent
+            ? `
+          M ${source.x + nodeDimensions.x * 0.5},${source.y + nodeDimensions.y}
+          L ${target.x + nodeDimensions.x * 0.5},${target.y}
+          z
+          `
+            : null;
+        }}
+        nodeSize={nodeDimensions}
+        data={{
           children: roots
+        }}
+        hasInteractiveNodes={false}
+        depthFactor={200}
+        rootNodeClassName={classNameCss`
+          display: none;
+        `}
+        renderCustomNodeElement={(node) => {
+          return (
+            <foreignObject
+              width={nodeDimensions.x}
+              height={nodeDimensions.y}>
+              <div
+                css={css`
+                  height: 100%;
+                  border: 1px solid ${colors.accent};
+                  box-sizing: border-box;
+                `}>
+                <Rule data={node.nodeDatum} />
+              </div>
+            </foreignObject>
+          );
         }}
       />
     </div>
-  );
-};
-
-function getTreeWidth(roots) {
-  const minWidth = roots.length;
-  if (minWidth == 0) {
-    return 1;
-  } else {
-    return _.sum(roots.map((r) => getTreeWidth(r.children)));
-  }
-}
-
-function getTreeDepth(root) {
-  if (root.children.length == 0) {
-    return 1;
-  } else {
-    for (var c of root.children) {
-      return 1 + getTreeDepth(c);
-    }
-  }
-}
-
-const FeatureTree = ({ root }) => {
-  const { colors } = useTheme();
-  const width = getTreeWidth(root.children);
-  const depth = getTreeDepth(root);
-  console.log(depth);
-  return (
-    <Tree
-      orientation="horizontal"
-      data={root}
-      depthFactor={250}
-      zoomable={false}
-      draggable={false}
-      translate={{
-        x: -250,
-        y: 90 * (width - 1)
-      }}
-      svgClassName={css`
-        height: ${185 * width}px;
-        width: ${250 * depth}px;
-      `}
-      rootNodeClassName={css`
-        display: none;
-      `}
-      separation={{
-        siblings: 1.25,
-        nonSiblings: 1.25
-      }}
-      pathFunc={(link, orientation) => {
-        const { source, target } = link;
-        return `M${source.y + 200},${source.x + 50}L${target.y},${
-          target.x + 50
-        }`;
-      }}
-      pathClassFunc={() => css`
-        stroke: ${colors.accent} !important;
-        stroke-width: 1px;
-        stroke-dasharray: 1 2;
-      `}
-      renderCustomNodeElement={(node) => <FeatureNode node={node} />}
-    />
-  );
-};
-
-const FeatureNode = ({ node }) => {
-  const { colors } = useTheme();
-  return (
-    <foreignObject
-      height={120}
-      width={200}>
-      <div
-        className={css`
-          border: 1px solid ${colors.text};
-          width: 99%;
-          div {
-            font-size: 12px;
-          }
-        `}>
-        <Option data={node.nodeDatum} />
-      </div>
-    </foreignObject>
   );
 };

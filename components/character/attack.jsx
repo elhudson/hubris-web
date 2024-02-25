@@ -1,56 +1,75 @@
 import { useCharacter } from "@contexts/character";
 import { get_proficiency } from "utilities";
 import _ from "lodash";
-import { css } from "@emotion/css";
+import { useTheme, css } from "@emotion/react";
 import Tag from "@components/tag";
-import { useTheme } from "@emotion/react";
+import Description from "@components/description";
+import Icon from "@ui/icon";
+import { GiPlainDagger } from "react-icons/gi";
+import Metadata from "@ui/metadata";
+import Action from "@components/action";
 
-export const Attack = ({ name, speed, dmg, dtypes, bonus }) => {
-  const { colors } = useTheme();
+export const Attack = ({
+  name,
+  speed,
+  dmg,
+  bonus,
+  dtypes,
+  icon = null,
+  description = null
+}) => {
+  const { colors, classes } = useTheme();
   return (
-    <div>
-      <h4>{name}</h4>
-      <div
-        className={css`
-          padding-left: 10px;
-          border-left: 1.5px solid ${colors.accent};
-          label {
-            text-decoration: underline;
-            text-underline-offset: 2px;
-          }
-        `}>
-        <div>
-          <label>Speed</label>
-          {speed.fast ? (
-            <span>
-              {speed.fast} / {speed.slow}
-            </span>
-          ) : (
-            speed
-          )}
-        </div>
-        <div>
-          <label>Damage</label>
-          {dmg.slow ? (
-            <span>
-              {dmg.fast} / {dmg.slow}
-            </span>
-          ) : (
-            dmg
-          )}
-          {dtypes.map((d) => (
-            <Tag
-              id={d.tagsId}
-              name={d.title}
-            />
-          ))}
-        </div>
-        <div>
-          <label>Bonus</label>
-          {bonus}
-        </div>
-      </div>
-    </div>
+    <Action
+      title={
+        <>
+          {icon}
+          {name}
+        </>
+      }>
+      <section>
+        <Metadata
+          css={css`
+            svg {
+              padding-left: 5px;
+            }
+          `}
+          pairs={[
+            [
+              "Speed",
+              <span>
+                {speed.fast ? (
+                  <>
+                    {speed.fast} / {speed.slow}
+                  </>
+                ) : (
+                  speed
+                )}
+              </span>
+            ],
+            [
+              "Damage",
+              <span>
+                {dmg.slow ? (
+                  <>
+                    {dmg.fast} / {dmg.slow}
+                  </>
+                ) : (
+                  dmg
+                )}
+                {dtypes.map((d) => (
+                  <Tag
+                    id={d.id}
+                    name={d.title}
+                  />
+                ))}
+              </span>
+            ]
+          ]}
+        />
+      </section>
+      <section>{description && <Description text={description} />}</section>
+    </Action>
   );
 };
 
@@ -71,7 +90,8 @@ export const WeaponAttack = ({ using }) => {
       speed={speed}
       dmg={dmg}
       bonus={bonus}
-      dtypes={[using.damage_types]}
+      dtypes={[using.tags]}
+      icon={<GiPlainDagger />}
     />
   );
 };
@@ -83,7 +103,8 @@ export const FeatureAttack = ({ using }) => {
   const bonus = character[attr] + get_proficiency(character);
   const speed = using.ticks ? using.ticks : 10;
   const dmg = using.damage ? using.damage : "1d6";
-  const dtypes = using.damage_types;
+  const dtypes = using?.tags ?? []
+  const desc = using.description;
   return (
     <Attack
       name={using.title}
@@ -91,11 +112,18 @@ export const FeatureAttack = ({ using }) => {
       speed={speed}
       dmg={dmg}
       dtypes={dtypes}
+      description={desc}
+      icon={
+        <Icon
+          sz={16}
+          id={using.class_PathsId}
+        />
+      }
     />
   );
 };
 
 export default {
-  "Weapon": WeaponAttack,
-  "Feature": FeatureAttack
-}
+  Weapon: WeaponAttack,
+  Feature: FeatureAttack
+};

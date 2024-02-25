@@ -1,7 +1,8 @@
-import {Classes, Backgrounds, Injuries, Abilities, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
+import {Classes, Backgrounds, Injuries, Attributes, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
 import {Users} from "./user"
 import {Weapons, Armor, Items} from "./inventory"
 import { Characters } from "./character"
+import {Campaigns, Summaries} from "./campaign"
 import {Powers} from "./powers"
 
 model Characters {
@@ -10,7 +11,6 @@ model Characters {
   updated        DateTime         @default(now())
   biography      Json
   xp_earned      Int
-  xp_spent       Int
   burn           Int              @default(0)
   HD             HD[]
   classes        Classes[]
@@ -29,19 +29,22 @@ model Characters {
   int            Int
   cha            Int
   health         Health?
-  portrait       String?          @db.MediumText
   usersId        String
-  powerset       PowerSet?
+  powers         Powers[]
+  Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
+  campaignId     String?
+  summaries      Summaries[]
 }
 
 model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
-  die          Hit_Dice   @relation(fields: [hit_diceId], references: [id])
+  src          String     @default("default")
+  die          Hit_Dice?  @relation(fields: [hit_diceId], references: [id])
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
-  hit_diceId   String
+  hit_diceId   String?
 }
 
 model Health {
@@ -60,10 +63,4 @@ model Inventories {
   items     Items[]
 
   charactersId String @id @unique
-}
-
-model PowerSet {
-  character    Characters @relation(fields: [charactersId], references: [id])
-  charactersId String     @id @unique
-  powers       Powers[]
 }

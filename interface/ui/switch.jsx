@@ -1,7 +1,5 @@
-import SVG from "react-inlinesvg";
 import * as witch from "@radix-ui/react-switch";
-import { useTheme } from "@emotion/react";
-import { css } from "@emotion/css";
+import { css, useTheme} from "@emotion/react";
 
 export default ({ checked, onChange = null, src }) => {
   const { colors } = useTheme();
@@ -9,13 +7,12 @@ export default ({ checked, onChange = null, src }) => {
     <witch.Root
       onCheckedChange={onChange}
       checked={checked}
-      className={css`
-        aspect-ratio: 1/1;
+      css={css`
         text-align: center;
-        border-radius: 100%;
-        border: 1px solid ${colors.text};
+        border: 1px solid ${colors.accent};
         position: relative;
         margin: unset;
+        padding: .5px;
         svg {
           all: unset;
           vertical-align:text-top;
@@ -24,16 +21,16 @@ export default ({ checked, onChange = null, src }) => {
           fill: ${colors.text};
         }
         &[data-state="checked"] {
-          background-color: ${colors.text};
-          svg path {
+          background-color: ${colors.text_accent};
+          path {
             fill: ${colors.background};
-          }
+          }          
         }
         &:hover&[data-state="checked"] {
           background-color: ${colors.accent};
         }
       `}>
-      <witch.Thumb asChild>{src}</witch.Thumb>
+      <witch.Thumb>{src}</witch.Thumb>
     </witch.Root>
   );
 };

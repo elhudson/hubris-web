@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "red": "#edc6bb",
+    "pink": "#c0bde3",
+    "blue": "#7ebac5",
+    "purple": "#b7b5d9",
+    "yellow": "#d0d391",
+    "cyan": "#7bedb6",
+    "green": "#a8aa5f"
+  },
+  "accents": {
+    "00": "#0e1713",
+    "01": "#15211b",
+    "02": "#23332b",
+    "03": "#364c40",
+    "04": "#4e6c5c",
+    "05": "#6a927d",
+    "06": "#8bbea3",
+    "07": "#b7efd1"
+  },
+  "foreground": "#a2dbbd",
+  "background": "#070e0a"
+}

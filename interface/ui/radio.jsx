@@ -1,11 +1,10 @@
 import * as radio from "@radix-ui/react-radio-group";
 import _ from "lodash";
-import { css } from "@emotion/css";
+import { css, useTheme } from "@emotion/react";
 import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
 import SVG from "react-inlinesvg";
-import { useTheme } from "@emotion/react";
 import Tooltip from "./tooltip";
-import Switch from "./switch"
+import Switch from "./switch";
 
 export default (props) => {
   const {
@@ -16,36 +15,29 @@ export default (props) => {
     getIcon = null,
     onChange,
     children,
-    inline
+    inline = true
   } = props;
   return (
     <radio.Root
-      className={css`
-        display: ${inline ? "flex" : "block"};
+      css={css`
+        display: ${inline ? "inline-flex" : "block"};
+        gap: 2px;
         button {
           &:hover {
             background-color: unset;
           }
         }
-        [role="radio"] {
-          margin:2px;
-        }
       `}
       value={_.get(current, valuePath)}
-      onValueChange={onChange}>
-      {data.map((d) =>
-        getIcon == null ? (
-          <RadioItem asChild
-            {...props}
-            item={d}
-          />
-        ) : (
-          <RadioItem asChild
-            {...props}
-            item={d}
-          />
-        )
-      )}
+      onValueChange={onChange}
+      {...props}>
+      {data.map((d) => (
+        <RadioItem
+          asChild
+          {...props}
+          item={d}
+        />
+      ))}
     </radio.Root>
   );
 };
@@ -62,38 +54,44 @@ export const RadioItem = ({
   const { colors } = useTheme();
   return (
     <div
-      className={css`
+      css={css`
         display: flex;
         button[role="radio"] {
-          height:fit-content;
-        }
-        >button {
-          padding:unset;
-        }
-        svg.toggle {
-          height: 14px;
-          width: 14px;
-          padding: 2px;
-          text-align: center;
-          border-radius: 100%;
-          border: 1px solid ${colors.text};
-          &.active {
-            background: ${colors.text};
-            path {
-              fill: ${colors.background};
+          height: fit-content;
+          svg {
+            text-align: center;
+          }
+          &[aria-checked="true"] {
+            button {
+              background-color: ${colors.text_accent};
+              svg {
+                color: ${colors.background};
+                path {
+                  fill: ${colors.background};
+                }
+              }
             }
           }
+        }
+        > button {
+          padding: unset;
         }
       `}>
       <radio.Item
         value={_.get(item, valuePath)}
-        className={css`
+        css={css`
           background-color: rgba(0, 0, 0, 0);
           border: unset;
         `}>
         {_.get(item, valuePath) != _.get(current, valuePath) &&
           (getIcon ? (
-            <Tooltip preview={<Switch checked={false} src={getIcon(item)} />}>
+            <Tooltip
+              preview={
+                <Switch
+                  checked={false}
+                  src={getIcon(item)}
+                />
+              }>
               {_.get(item, labelPath)}
             </Tooltip>
           ) : (
@@ -101,7 +99,13 @@ export const RadioItem = ({
           ))}
         <radio.Indicator>
           {getIcon ? (
-            <Tooltip preview={<Switch checked={true} src={getIcon(item)} />}>
+            <Tooltip
+              preview={
+                <Switch
+                  checked={true}
+                  src={getIcon(item)}
+                />
+              }>
               {_.get(item, labelPath)}
             </Tooltip>
           ) : (

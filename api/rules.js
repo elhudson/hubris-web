@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { db, notion } from "../database/connections.js";
-import schema from "../database/schema.js";
+import { db } from "~db/prisma.js";
+import schema, { tables } from "~database/schema.js";
 import { prisma_safe, sql_safe, sql_danger } from "utilities";
 import _ from "lodash";
 
@@ -29,64 +29,35 @@ app.get("/data/rules", async (req, res) => {
   res.json(query);
 });
 
-app.get("/data/icons", async (req, res) => {
-  const page = await notion.pages.retrieve({ page_id: req.query.id });
-  const parent = await notion.databases.retrieve({
-    database_id: page.parent.database_id
-  });
-  const parent_title = sql_safe(parent.title[0].plain_text);
-  const icon_map = {
-    effects: "trees",
-    durations: "trees",
-    ranges: "trees"
-  };
-  if (!_.isUndefined(icon_map[parent_title])) {
-    const target = sql_danger(icon_map[parent_title]);
-    const relations = page.properties[target].relation.map((r) => r.id);
-    const icon_src = await notion.pages.retrieve({ page_id: relations[0] });
-    if (icon_src.icon) {
-      const svg = await fetch(icon_src.icon.file.url).then((r) => r.text());
-      res.setHeader("content-type", "image/svg+xml");
-      res.send(svg);
-    } else {
-      res.send(null);
-    }
-  } else {
-    if (page.icon) {
-      const svg = await fetch(page.icon.file.url).then((r) => r.text());
-      res.setHeader("content-type", "image/svg+xml");
-      res.send(svg);
-    } else {
-      res.send(null);
-    }
-  }
-});
-
 app.get("/data/tables", async (req, res) => {
-  const tabls = await notion.databases
-    .query({
-      database_id: process.env.NOTION_DB,
-      filter: {
-        property: "Wiki",
-        checkbox: {
-          equals: true
-        }
-      }
-    })
-    .then((t) =>
-      t.results
-        .filter((f) => f.title != undefined)
-        .map((d) => d.title[0].plain_text)
-    );
-  res.json(tabls);
+  const tables = await db.rules.findMany({
+    where: {
+      config: false
+    }
+  });
+  res.send(tables.map((t) => t.title));
 });
 
 app.post("/data/query", async (req, res) => {
   const query = req.body;
   const method = req.query.method;
   const table = req.query.table;
-  const q = await db[prisma_safe(table)][method](query);
+  const q = query
+    ? await db[prisma_safe(table)][method](query)
+    : await db[prisma_safe(table)][method]();
   res.json(q);
+});
+
+app.get("/data/table", async (req, res) => {
+  const table = await db.index.findFirst({
+    where: {
+      id: req.query.id
+    },
+    select: {
+      table: true
+    }
+  });
+  res.send(table?.table);
 });
 
 export default app;

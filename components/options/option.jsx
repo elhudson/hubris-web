@@ -2,135 +2,36 @@ import Checkbox from "@ui/checkbox";
 import { useHandler } from "@contexts/options";
 import { useCharacter } from "@contexts/character";
 import { affordable, owned, satisfies_prereqs } from "utilities";
-import Tooltip from "@ui/tooltip";
-import { css } from "@emotion/css";
-import Link from "@components/link";
-import Dropdown from "@ui/dropdown";
-import Tag from "@components/tag";
-import _ from "lodash";
-import { IoPricetagsSharp } from "react-icons/io5";
-import { useParams } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { useRule } from "@contexts/rule";
+import { forwardRef } from "react";
 
-export const OptionHeader = ({
-  data,
-  table = null,
-  showTags = false,
-  showTree = false
-}) => {
+export default forwardRef(({ data }, ref) => {
+  const { classes } = useTheme();
   const handling = useHandler();
-  const character = useCharacter();
-  var tags;
-  if (!_.isNull(character)) {
-    if (_.has(data, "tags")) {
-      const chartags = _.flatMap(character.character.classes, (c) => c.tags);
-      tags = _.intersectionBy(chartags, data.tags, "id");
-    }
-  }
-  if (handling == null) {
-    table = handling.table;
-  } else {
-    table = table == null ? useParams().table : table;
-  }
-  if (tags == null) {
-    tags = data.tags;
-  }
-  return (
-    <div
-      className={
-        "inline " +css`
-          margin: 5px;
-          position: relative;
-        `
-      }>
-      {!_.isNull(character) && (
-        <Checkbox
-          checked={owned(data, handling.table, character.character)}
-          value={data.id}
-          onChange={(e) => handling.handler(e, data.id)}
-        />
-      )}
-      <h4>
-        <Link
-          feature={data}
-          table={table}>
-          {data.title}
-        </Link>
-      </h4>
-      <div>
-        <Tooltip preview={data.xp}>XP</Tooltip>
-        {_.has(data, "power") && (
-          <>
-            {" "}
-            / <Tooltip preview={data.power}>Power</Tooltip>
-          </>
-        )}
-      </div>
-      <div
-        className={css`
-          position: absolute;
-          right: 0;
-        `}>
-        {showTree &&
-          data.trees.map((t) => (
-            <Tag
-              id={t.id}
-              name={t.title}
-            />
-          ))}
-        {_.has(data, "tags") &&
-          (showTags ? (
-            tags.map((t) => (
-              <Tag
-                id={t.id}
-                name={t.title}
-              />
-            ))
-          ) : (
-            <Dropdown
-              trigger={<IoPricetagsSharp />}
-              dir={"left"}>
-              {tags.map((t) => (
-                <Tag
-                  id={t.id}
-                  name={t.title}
-                />
-              ))}
-            </Dropdown>
-          ))}
-      </div>
-    </div>
-  );
-};
-
-export default ({ data, table = null, withHeader = true }) => {
-  const handling = useHandler();
-  const character = useCharacter();
-  var cl;
-  if (!_.isNull(character)) {
-    if (
-      !(
-        affordable(data, character.character) &&
-        satisfies_prereqs(data, handling.table, character.character)
-      )
-    ) {
-      cl = "disabled";
-      if (owned(data, handling.table, character.character)) {
-        cl="owned"
+  const { character } = useCharacter();
+  const { table, location } = useRule();
+  const cls = [];
+  switch (location) {
+    case "levelup": {
+      if (
+        !(
+          affordable(data, character) &&
+          satisfies_prereqs(data, table, character)
+        )
+      ) {
+        cls.push(classes.decorations.disabled);
+      }
+      if (owned(data, table, character)) {
+        cls.push(classes.decorations.owned);
       }
     }
-  } else {
-    cl = "";
   }
-
   return (
-    <div className={cl}>
-      {withHeader && (
-        <OptionHeader
-          data={data}
-          table={table}
-        />
-      )}
-      <div className="description dashed">{data.description}</div>
-    </div>
+    <Checkbox
+      checked={owned(data, table, character)}
+      value={data.id}
+      onChange={(e) => handling.handler(e, data.id)}
+    />
   );
-};
+});

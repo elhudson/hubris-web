@@ -1,11 +1,13 @@
 import {Characters} from "./character"
 import {Powers} from "./powers"
+import {Campaigns} from "./campaign"
+
 model Users {
-  id         String       @id @unique
+  id         String       @id @unique @default(uuid())
   username   String       @unique
   password   String
   Characters Characters[]
   Powers     Powers[]
+  PlayingIn  Campaigns[]  @relation(name: "players")
+  DMing      Campaigns[]  @relation(name: "dm")
 }
-
-

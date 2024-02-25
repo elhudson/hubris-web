@@ -1,6 +1,5 @@
 import _ from "lodash";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 import Toggles from "./toggles";
 
 export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
@@ -11,12 +10,13 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
   }
   return (
     <div
-      className={css`
+      css={css`
         display: flex;
         > div:first-child {
           width: 100%;
+          margin-left: 30px;
         }
-        border: 1px solid ${colors.text};
+        border: 1px solid ${colors.accent};
         font-size: 20px;
         text-align: center;
         position: relative;
@@ -27,9 +27,9 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
         {max != null && <> / {max}</>}
       </div>
       <div
-        className={css`
+        css={css`
           position: relative;
-          border-left: 1px solid ${colors.text};
+          border-left: 1px solid ${colors.accent};
           width: 30px;
           float:right;
           > div {
@@ -40,9 +40,9 @@ export default ({ item, valuePath, inc, dec, max = null, prefill = null }) => {
           > * > button {
             display:block;
             border: unset !important;
-            border-left: 1px solid ${colors.text};
+            border-left: 1px solid ${colors.accent};
             &:first-child {
-              border-bottom: 1px solid ${colors.text} !important;
+              border-bottom: 1px solid ${colors.accent} !important;
             }
             position: relative !important;
             height: 15px;

@@ -1,13 +1,14 @@
 import * as dialog from "@radix-ui/react-dialog";
-
+import { useTheme } from "@emotion/react";
 export default ({ trigger, children }) => {
+  const { classes } = useTheme();
   return (
     <dialog.Root>
-      <dialog.Trigger>{trigger}</dialog.Trigger>
+      <dialog.Trigger asChild>{trigger}</dialog.Trigger>
       <dialog.Portal>
-        <dialog.Overlay className="overlay"/>
+        <dialog.Overlay css={classes.layout.overlay} />
         <dialog.Content
-          className={"shadow popup"}>
+          css={[classes.decorations.shadowed, classes.elements.popup]}>
           {children}
         </dialog.Content>
       </dialog.Portal>

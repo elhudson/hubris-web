@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
-const Notification = ({ func, btn, msg = null }) => {
+const Notification = ({ func, btn, msg = null, ...props }) => {
   const { colors } = useTheme();
   const [message, setMessage] = useState(null);
   const [open, setOpen] = useState(false);
@@ -20,7 +20,7 @@ const Notification = ({ func, btn, msg = null }) => {
     }, 1000);
   };
   return (
-    <notif.Provider>
+    <notif.Provider {...props}>
       <button onClick={handleClick}>{btn}</button>
       <notif.Root
         className={css`

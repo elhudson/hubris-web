@@ -1,16 +1,18 @@
 import { useCharacter } from "@contexts/character";
 import Ability, { Effect } from "./ability";
-import { OptionHeader } from "@components/options/option";
-import Favs from "./favorites";
+import Numberbox from "@ui/numberBox";
 import Counter from "@ui/counter";
-import { css } from "@emotion/css";
 import { get_proficiency } from "utilities";
 import Collapsible from "@ui/collapsible";
 import _ from "lodash";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
+import Tabs from "@ui/tabs";
+import { Row, Sections } from "@ui/layouts";
+import Create from "@components/catalog/powers/create";
+import Power from "@components/catalog/powers/power";
 
 const Powers = () => {
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
   const { character, update } = useCharacter();
   const inc = () => {
     update((draft) => {
@@ -24,128 +26,81 @@ const Powers = () => {
   };
   const abilities = [
     ...new Set(
-      _.flatten(character.classes.map((c) => c.abilities)).map((a) => a.code)
-    )
+      _.flatten(character.classes.map((c) => c.attributes)).map((a) => a.code)
+    ),
   ];
   return (
-    <div
-      className={css`
-        margin: 5px;
-        > div {
-          margin: 5px;
-        }
-      `}>
-      <div
-        className={css`
-          display: grid;
-          grid-template-columns: repeat(3, 33%);
-          > div {
-            margin: 10px;
-          }
-        `}>
-        <div>
-          <h4>Powers Used</h4>
-          <Counter
-            item={character}
-            valuePath="burn"
-            inc={inc}
-            dec={dec}
-          />
-        </div>
-        <div>
-          <h4>Bonus</h4>
-          {abilities.map((d) => (
-            <div className="number">
-              +{character[d] + get_proficiency(character)}
-            </div>
-          ))}
-        </div>
-        <div>
-          <h4>Base DC</h4>
-          <div className="number">{10 + character.burn}</div>
-        </div>
-      </div>
+    <Sections>
+      <section>
+        <Row>
+          <Numberbox label="Powers Used">
+            <Counter
+              item={character}
+              valuePath="burn"
+              inc={inc}
+              dec={dec}
+            />
+          </Numberbox>
+          <Numberbox label="Bonus">
+            {abilities.map((d) => (
+              <div css={classes.elements.number}>
+                +{character[d] + get_proficiency(character)}
+              </div>
+            ))}
+          </Numberbox>
+          <Numberbox label="Base DC">
+            <div css={classes.elements.number}>{10 + character.burn}</div>
+          </Numberbox>
+        </Row>
+      </section>
 
-      <div>
-        <Favs />
-      </div>
-      <div
-        className={css`
-          border: 1px solid ${colors.accent};
-          padding: 5px;
-          display: grid;
-          grid-template-columns: repeat(3, 33%);
-          > div > div > div {
-            margin-bottom: 10px;
-          }
-          button>div>button[role="checkbox"] {
-            display: none;
+      <section
+        css={css`
+          position: relative;
+          > button {
+            position: absolute;
+            top: 0;
+            right: 0;
           }
         `}>
-        <div>
-          <h3>Effects</h3>
+        <h3>Favorite Powers</h3>
+        <Create />
+        {character.powers.map((p) => (
+          <Power pwr={p} />
+        ))}
+      </section>
+      <section>
+        <h3>Power Components</h3>
+        <Tabs
+          names={["Effects", "Ranges", "Durations"]}
+          def="Effects">
           <div>
             {character.effects.map((c) => (
-              <Collapsible
-                preview={
-                  <OptionHeader
-                    data={c}
-                    table="effects"
-                    showTags={true}
-                  />
-                }>
-                <Effect
-                  data={c}
-                  withHeader={false}
-                />
-              </Collapsible>
+              <Effect
+                data={c}
+                withHeader={false}
+              />
             ))}
           </div>
-        </div>
-        <div>
-          <h3>Ranges</h3>
           <div>
-          {character.ranges.map((c) => (
-              <Collapsible
-                preview={
-                  <OptionHeader
-                    data={c}
-                    table="ranges"
-                    showTree={true}
-                  />
-                }>
-                <Ability
-                  data={c}
-                  table="ranges"
-                  withHeader={false}
-                />
-              </Collapsible>
+            {character.ranges.map((c) => (
+              <Ability
+                data={c}
+                table="ranges"
+              />
             ))}
-            </div>
-        </div>
-        <div>
-          <h3>Durations</h3>
+          </div>
           <div>
-          {character.durations.map((c) => (
-              <Collapsible
-                preview={
-                  <OptionHeader
-                    data={c}
-                    showTree={true}
-                    table="durations"
-                  />
-                }>
-                <Ability
-                  data={c}
-                  table="durations"
-                  withHeader={false}
-                />
-              </Collapsible>
+            {character.durations.map((c) => (
+              <Ability
+                data={c}
+                table="durations"
+              />
             ))}
-            </div>
-        </div>
-      </div>
-    </div>
+          </div>
+        </Tabs>
+      </section>
+    </Sections>
   );
 };
 

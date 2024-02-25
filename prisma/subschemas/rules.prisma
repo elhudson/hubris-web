@@ -1,44 +1,49 @@
 import {Weapons} from "./inventory"
 import {HD, Health, Characters} from "./character"
 import {Powers} from "./powers"
+import {Campaigns} from "./campaign"
+import { Durations, Injuries, Ranges, Ranges, Weapons } from "../schema"
 
 model Tags {
-  id             String         @id @unique
-  title          String         @db.MediumText
-  description    String         @db.MediumText
-  effects        Effects[]
-  classes        Classes[]
-  tag_features   Tag_Features[]
-  damage_types   Damage_Types?
-  damage_typesId String?
+  id           String         @id @unique
+  title        String         @db.MediumText
+  description  String?        @db.MediumText
+  effects      Effects[]
+  classes      Classes[]
+  tag_features Tag_Features[]
+  alias        String?
+  weapons      Weapons[]
 }
 
 model Hit_Dice {
-  id      String    @id @unique
-  title   String
-  cost    Int       @default(1)
-  classes Classes[]
-  HD      HD[]
+  id          String    @id @unique
+  title       String
+  description String?
+  cost        Int       @default(1)
+  classes     Classes[]
+  HD          HD[]
 }
 
+model Timespans {
+  id          String      @id @unique
+  title       String
+  description String?
+  injuries    Injuries[]
+  durations   Durations[]
+}
 
-model Damage_Types {
-  id          String @id @unique
-  title       String @db.MediumText
-  description String @db.MediumText
-
-  tags           Tags?            @relation(fields: [tagsId], references: [id])
-  effects        Effects[]
-  class_features Class_Features[]
-  tag_features   Tag_Features[]
-  tagsId         String?          @unique
-  weapons        Weapons[]
+model Distances {
+  id          String   @id @unique
+  title       String
+  description String?
+  range       Ranges[] @relation("distances_ranges")
+  areas       Ranges[] @relation("distances_areas")
 }
 
 model Tag_Features {
   id           String         @id @unique
   title        String
-  description  String         @db.MediumText
+  description  String?        @db.MediumText
   ticks        Int?
   tier         Int
   xp           Int
@@ -46,30 +51,30 @@ model Tag_Features {
   tagsId       String?
   requires     Tag_Features[] @relation("tag_features_prq")
   required_for Tag_Features[] @relation("tag_features_prq")
-  damage_types Damage_Types[]
   Characters   Characters[]
   charactersId String?
 }
 
 model Effects {
-  id           String         @id @unique
+  id           String       @id @unique
   title        String?
-  description  String         @db.MediumText
+  description  String       @db.MediumText
   power        Float
   xp           Int
   tier         Int
-  requires     Effects[]      @relation("effects_prq")
-  required_for Effects[]      @relation("effects_prq")
+  requires     Effects[]    @relation("effects_prq")
+  required_for Effects[]    @relation("effects_prq")
+  range        Ranges?      @relation(fields: [rangeId], references: [id])
+  duration     Durations?   @relation(fields: [durationId], references: [id])
   tags         Tags[]
-  damage_types Damage_Types[]
-  trees        Trees?         @relation(fields: [treesId], references: [id])
+  trees        Trees?       @relation(fields: [treesId], references: [id])
   treesId      String?
   Characters   Characters[]
   charactersId String?
   Powers       Powers[]
+  rangeId      String?
+  durationId   String?
 }
-
-
 
 model Trees {
   id          String      @id @unique
@@ -94,9 +99,10 @@ model Durations {
   Characters   Characters[]
   charactersId String?
   Powers       Powers[]
+  Timespans    Timespans?   @relation(fields: [timespansId], references: [id])
+  timespansId  String?
+  Effects      Effects[]
 }
-
-
 
 model Ranges {
   id           String       @id @unique
@@ -107,13 +113,16 @@ model Ranges {
   tier         Int
   requires     Ranges[]     @relation("ranges_prq")
   required_for Ranges[]     @relation("ranges_prq")
+  area         Distances?   @relation("distances_areas", fields: [areaId], references: [id])
+  range        Distances?   @relation("distances_ranges", fields: [rangeId], references: [id])
   trees        Trees[]
   Characters   Characters[]
   charactersId String?
   Powers       Powers[]
+  areaId       String?
+  rangeId      String?
+  Effects      Effects[]
 }
-
-
 
 model Classes {
   id             String           @id @unique
@@ -121,8 +130,7 @@ model Classes {
   description    String           @db.MediumText
   weaponry       String
   armory         String           @default("None")
-  abilities      Abilities[]
-  skills         Skills[]
+  attributes     Attributes[]
   class_features Class_Features[]
   class_paths    Class_Paths[]
   tags           Tags[]
@@ -138,7 +146,6 @@ model Class_Features {
   xp            Int
   ticks         Int?
   tier          Int
-  damage_types  Damage_Types[]
   class_paths   Class_Paths?     @relation(fields: [class_PathsId], references: [id])
   classes       Classes?         @relation(fields: [classesId], references: [id])
   class_PathsId String?
@@ -157,7 +164,7 @@ model Class_Paths {
   classesId      String?
 }
 
-model Abilities {
+model Attributes {
   id          String        @id @unique
   title       String?
   description String        @db.MediumText
@@ -172,11 +179,11 @@ model Skills {
   id            String       @id @unique
   title         String?
   description   String       @db.MediumText
-  abilities     Abilities?   @relation(fields: [abilitiesId], references: [id])
+  examples      String?      @db.MediumText
+  attributes    Attributes?  @relation(fields: [attributesId], references: [id])
   backgrounds   Backgrounds?
-  classes       Classes[]
   characters    Characters[]
-  abilitiesId   String?
+  attributesId  String?
   backgroundsId String?
 }
 
@@ -184,12 +191,13 @@ model Backgrounds {
   id                  String               @id @unique
   title               String?
   description         String               @db.MediumText
+  questions           String?              @db.MediumText
   settings            Settings?            @relation(fields: [settingsId], references: [id])
-  abilities           Abilities?           @relation(fields: [abilitiesId], references: [id])
+  attributes          Attributes?          @relation(fields: [attributesId], references: [id])
   skills              Skills?              @relation(fields: [skillsId], references: [id])
   background_features Background_Features?
   skillsId            String?              @unique
-  abilitiesId         String?
+  attributesId        String?
   settingsId          String?
   Characters          Characters[]
 }
@@ -199,6 +207,7 @@ model Settings {
   title       String
   backgrounds Backgrounds[]
   description String        @db.MediumText
+  campaigns   Campaigns[]
 }
 
 model Background_Features {
@@ -211,17 +220,19 @@ model Background_Features {
 }
 
 model Injuries {
-  id         String       @id @unique
-  title      String
-  duration   String
-  health     Health[]
-  conditions Conditions[]
+  id          String       @id @unique
+  title       String
+  health      Health[]
+  description String?
+  conditions  Conditions[]
+  Timespans   Timespans?   @relation(fields: [timespansId], references: [id])
+  timespansId String?
 }
 
 model Conditions {
-  id          String      @id @unique
+  id          String       @id @unique
   title       String
-  description String      @db.MediumText
-  abilities   Abilities[]
+  description String       @db.MediumText
+  attributes  Attributes[]
   injuries    Injuries[]
 }
