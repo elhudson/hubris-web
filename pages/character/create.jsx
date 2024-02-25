@@ -17,6 +17,13 @@ export default () => {
     user: {
       id: user_id
     },
+    str: -2,
+    dex: -2,
+    con: -2,
+    int: -2,
+    wis: -2,
+    cha: -2,
+
     biography: {
       name: `${username}'s Character`,
       gender: "",

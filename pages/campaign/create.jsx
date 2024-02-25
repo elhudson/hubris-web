@@ -9,7 +9,7 @@ export default () => {
     name: "Untitled Campaign",
     description: "A long time ago, in a galaxy far, far away...",
     settings: [],
-    creator: user,
+    characters: [],
     dm: user
   });
   return (
