@@ -18,7 +18,7 @@
     "postinstall": "link-module-alias",
     "dev": "nodemon hubris.js -w hubris.js ./api/*.js",
     "start": "NODE_ENV=production node hubris.js",
-    "build": "prisma generate && cd ./utilities && npm link && cd .. && npm link utilities && vite build",
+    "build": "prisma generate && vite build",
     "database": "prisma-multischema && prisma db push",
     "sync": "node database/notion.js"
   },

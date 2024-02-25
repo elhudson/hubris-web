@@ -10,7 +10,7 @@ var splitPath = function (path) {
   };
 };
 
-export default await Object.fromEntries(
+export default Object.fromEntries(
   Object.entries(
     import.meta.glob("./themes/*.json", {
       import: "default",
