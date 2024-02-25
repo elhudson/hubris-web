@@ -7,6 +7,7 @@ async function retrieve({ id = null, where = null }) {
     },
     include: {
       profile: false,
+      Campaign: true,
       backgrounds: {
         include: {
           background_features: true,
@@ -79,7 +80,7 @@ async function retrieve({ id = null, where = null }) {
       }
     }
   });
-  character.HD = _.uniqBy(character.HD, (f) => f.die.title);
+  character && (character.HD = _.uniqBy(character?.HD, (f) => f.die.title))
   return character;
 }
 

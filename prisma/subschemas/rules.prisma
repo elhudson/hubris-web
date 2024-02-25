@@ -131,7 +131,6 @@ model Classes {
   weaponry       String
   armory         String           @default("None")
   attributes     Attributes[]
-  skills         Skills[]
   class_features Class_Features[]
   class_paths    Class_Paths[]
   tags           Tags[]
@@ -183,7 +182,6 @@ model Skills {
   examples      String?      @db.MediumText
   attributes    Attributes?  @relation(fields: [attributesId], references: [id])
   backgrounds   Backgrounds?
-  classes       Classes[]
   characters    Characters[]
   attributesId  String?
   backgroundsId String?

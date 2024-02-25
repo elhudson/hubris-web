@@ -33,6 +33,13 @@ export default () => {
           padding: 5px;
           background-color: ${Color(colors.background).toString()};
           border: 1px solid ${colors.accent};
+          &:nth-child(2):is(section) {
+            display: flex;
+            gap: 10px;
+            >* {
+              flex-grow: 1;
+            }
+          }
         }
         .profile > div {
           background-color: ${palette.accent1};
@@ -73,6 +80,7 @@ export default () => {
                 </section>
                 <section>
                   <Campaign.xp />
+                  <Campaign.sessions />
                 </section>
               </div>
               <section>
@@ -103,7 +111,6 @@ export default () => {
                 `}>
                 <section>
                   <h3>Our Intrepid Heroes</h3>
-                  <Campaign.recruiter />
                   <Campaign.characters />
                 </section>
                 <section>

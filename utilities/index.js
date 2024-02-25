@@ -182,9 +182,9 @@ export const get_power_cost = ({ ranges, durations, effects }) => {
 export function get_skill_xp({ backgrounds, int, skills }) {
   var xp = 0;
   const s = skills?.filter(
-    (s) => !backgrounds?.map((s) => s?.skills?.id).includes(s.id)
+    (s) => !backgrounds?.map((s) => s?.skills?.id).includes(s?.id)
   );
-  const num_skills = s.length;
+  const num_skills = s?.length ?? 0
   const costly_skills = num_skills - (int + 2);
   if (costly_skills > 0) {
     for (var i = 0; i < costly_skills; i++) {
@@ -193,7 +193,7 @@ export function get_skill_xp({ backgrounds, int, skills }) {
   }
   return {
     total: xp,
-    next: costly_skills > 0 ? 1 + costly_skills : 0,
+    next: costly_skills > 0 ? 1 + costly_skills : 0
   };
 }
 

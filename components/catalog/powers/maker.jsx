@@ -94,7 +94,7 @@ export default () => {
       <section>
         <ui.Notif
           func={async () => {
-            await fetch(`/data/powers/save?character=${character.id}`, {
+            await fetch(`/data/powers/save`, {
               method: "POST",
               body: JSON.stringify(power),
               headers: {

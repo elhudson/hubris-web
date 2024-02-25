@@ -9,7 +9,7 @@ export default ({ button, confirm, children, open = null, setOpen = null }) => {
     <alert.Root
       open={open}
       onOpenChange={setOpen}>
-      <alert.Trigger>{button}</alert.Trigger>
+      <alert.Trigger asChild>{button}</alert.Trigger>
       <alert.Portal>
         <alert.Overlay css={classes.layout.overlay} />
         <alert.Content css={classes.elements.popup}>

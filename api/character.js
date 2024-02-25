@@ -27,7 +27,7 @@ app.post("/data/character", async (req, res) => {
 app.post("/data/character/avatar", upload.single("profile"), (req, res) => {
   const id = req.query.id;
   const file = req.file;
-  const path = `${root}/public/portraits/${id}.png`;
+  const path = `./public/portraits/${id}.png`;
   fs.writeFileSync(path, file.buffer);
   res.send("Portrait updated.");
 });

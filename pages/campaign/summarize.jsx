@@ -9,55 +9,56 @@ import Notif from "@ui/notif";
 import Metadata from "@ui/metadata";
 import Doc from "@ui/doc";
 
-export default ({}) => {
+export default () => {
   const { id, session } = useParams();
   const { colors } = useTheme();
   const user = useUser();
   const characters = useAsync(
     async () =>
       await fetch(`/data/characters?user=${user.username}`)
-        .then((res) => res.json())
+        .then(async (res) => [await res.json()])
         .then((f) => f.filter((char) => char.campaignId == id))
   ).result;
+  console.log(characters);
   const [summary, update] = useImmer({
     author: characters ? characters[0] : null,
     text: "",
-    session: session,
+    session: session
   });
   useAsync(
     async () =>
       await fetch(`/data/logbook?campaign=${id}&session=${session}`)
         .then((res) => res.json())
-        .then((j) => update(j))
+        .then((j) => j != null && update(j))
   );
   return (
-    <>
-      {characters && (
-        <div
-          css={css`
-            position: relative;
-            background-color: ${colors.background};
-            border: 1px solid ${colors.accent};
-            padding: 10px;
-            >* {
-              margin-bottom: 5px;
-            }
-            .quill {
-              height: 70vh;
-              .ql-container {
-                height: 65vh
-              }
-            }
-            > button {
-              position: absolute;
-              top: 10px;
-              right: 10px;
-            }
-          `}>
-          <Metadata
-            pairs={[
-              [
-                "Author",
+    <div
+      css={css`
+        position: relative;
+        background-color: ${colors.background};
+        border: 1px solid ${colors.accent};
+        padding: 10px;
+        > * {
+          margin-bottom: 5px;
+        }
+        .quill {
+          height: 70vh;
+          .ql-container {
+            height: 65vh;
+          }
+        }
+        > button {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+        }
+      `}>
+      <Metadata
+        pairs={[
+          [
+            "Author",
+            <>
+              {characters && (
                 <Select
                   current={summary.author}
                   options={characters}
@@ -68,44 +69,44 @@ export default ({}) => {
                       draft.author = _.find(characters, (c) => c.id == e);
                     });
                   }}
-                />,
-              ],
-              [
-                "Session",
-                <input
-                  type="number"
-                  value={summary.session}
-                  onChange={(e) => {
-                    update((draft) => {
-                      draft.session = e.target.valueAsNumber;
-                    });
-                  }}
-                />,
-              ],
-            ]}
-          />
-          <Doc
-            text={summary.text}
-            onChange={(e) => {
-              update((draft) => {
-                draft.text = e;
-              });
-            }}
-          />
-          <Notif
-            func={async () => {
-              return await fetch(`/data/campaigns/logbook?id=${id}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify([summary]),
-              }).then((f) => f.text());
-            }}
-            btn="Save Summary"
-          />
-        </div>
-      )}
-    </>
+                />
+              )}
+            </>
+          ],
+          [
+            "Session",
+            <input
+              type="number"
+              value={summary.session}
+              onChange={(e) => {
+                update((draft) => {
+                  draft.session = e.target.valueAsNumber;
+                });
+              }}
+            />
+          ]
+        ]}
+      />
+      <Doc
+        text={summary.text}
+        onChange={(e) => {
+          update((draft) => {
+            draft.text = e;
+          });
+        }}
+      />
+      <Notif
+        func={async () => {
+          return await fetch(`/data/campaigns/logbook?id=${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify([summary])
+          }).then((f) => f.text());
+        }}
+        btn="Save Summary"
+      />
+    </div>
   );
 };

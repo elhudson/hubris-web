@@ -2,6 +2,7 @@ import { useAsync } from "react-async-hook";
 import { characterContext } from "@contexts/character";
 import Profile from "@components/character/profile";
 import { useTheme, css } from "@emotion/react";
+import _ from "lodash";
 
 const Characters = () => {
   const { classes } = useTheme();
@@ -9,7 +10,7 @@ const Characters = () => {
     async () =>
       await fetch(`/data/characters`)
         .then((j) => j.json())
-        .then((a) => [a].flat())
+        .then((a) => (!_.isNull(a) ? [a].flat() : a))
   );
   return (
     <>

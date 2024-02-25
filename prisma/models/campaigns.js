@@ -1,8 +1,9 @@
 import { db } from "~db/prisma.js";
+import _ from "lodash";
 
-async function retrieve({ id }) {
+async function retrieve({ where = null, id = null }) {
   return await db.campaigns.findFirst({
-    where: {
+    where: where ?? {
       id: id
     },
     include: {
@@ -29,7 +30,6 @@ async function retrieve({ id }) {
         }
       },
       dm: true,
-      creator: true,
       settings: true,
       logbook: {
         include: {
@@ -41,7 +41,7 @@ async function retrieve({ id }) {
 }
 
 async function make({ data }) {
-  await db.campaigns.create({
+  return await db.campaigns.create({
     data: {
       name: data.name,
       description: data.description,
@@ -63,6 +63,11 @@ async function make({ data }) {
 }
 
 async function save({ data }) {
+  const characters = await db.characters.findMany({
+    select: {
+      id: true
+    }
+  });
   await db.campaigns.update({
     where: {
       id: data.id
@@ -71,11 +76,17 @@ async function save({ data }) {
       id: data.id,
       description: data.description,
       xp: data.xp,
+      sessionCount: Number(data.sessionCount),
       settings: {
         connect: data.settings.map((s) => ({ id: s.id }))
       },
       characters: {
-        connect: data.characters.map((c) => ({ id: c.id }))
+        connect: data.characters.map((c) => ({
+          id: c.id
+        })),
+        disconnect: _.xorBy(data.characters, characters, "id").map((char) => ({
+          id: char.id
+        }))
       },
       dm: {
         connect: {
@@ -84,6 +95,25 @@ async function save({ data }) {
       }
     }
   });
+}
+
+async function summarize({ id, session }) {
+  var data;
+  const exists = await db.summaries.retrieve({
+    where: {
+      campaign:{
+        id: id
+      },
+      session: session
+    }
+  });
+  if (!exists) {
+    data=await db.summaries.create({
+      data: {
+
+      }
+    })
+  }
 }
 
 export default { retrieve, make, save };

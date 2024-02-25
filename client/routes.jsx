@@ -2,7 +2,7 @@ import {
   createBrowserRouter,
   Route,
   createRoutesFromElements,
-  Outlet,
+  Outlet
 } from "react-router-dom";
 
 import Menu from "./menu";
@@ -13,8 +13,6 @@ import { css, useTheme } from "@emotion/react";
 
 import { useParams } from "react-router-dom";
 import { sql_danger } from "utilities";
-
-console.log(tools)
 
 const Rules = () => {
   const { colors } = useTheme();
@@ -67,6 +65,11 @@ export default createBrowserRouter(
       <Route
         path="/"
         element={<rules.wiki />}
+      />
+
+      <Route
+        path="/register"
+        element={<user.register />}
       />
 
       <Route element={<Outlet />}>

@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sat Feb 24 2024 15:16:40 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Sun Feb 25 2024 15:28:30 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -15,12 +15,10 @@ model Campaigns {
   name         String       @default("Untitled Campaign")
   description  String?      @db.MediumText
   settings     Settings[]
-  creator      Users?       @relation(fields: [creatorId], references: [id], name: "creator")
   dm           Users?       @relation(fields: [dmId], references: [id], name: "dm")
   players      Users[]      @relation(name: "players")
   xp           Int          @default(0)
   dmId         String?
-  creatorId    String?
   characters   Characters[]
   sessionCount Int          @default(0)
   logbook      Summaries[]
@@ -280,7 +278,6 @@ model Classes {
   weaponry       String
   armory         String           @default("None")
   attributes     Attributes[]
-  skills         Skills[]
   class_features Class_Features[]
   class_paths    Class_Paths[]
   tags           Tags[]
@@ -332,7 +329,6 @@ model Skills {
   examples      String?      @db.MediumText
   attributes    Attributes?  @relation(fields: [attributesId], references: [id])
   backgrounds   Backgrounds?
-  classes       Classes[]
   characters    Characters[]
   attributesId  String?
   backgroundsId String?
@@ -389,12 +385,11 @@ model Conditions {
 }
 
 model Users {
-  id         String       @id @unique
+  id         String       @id @unique @default(uuid())
   username   String       @unique
   password   String
   Characters Characters[]
   Powers     Powers[]
   PlayingIn  Campaigns[]  @relation(name: "players")
   DMing      Campaigns[]  @relation(name: "dm")
-  Campaigns  Campaigns[]  @relation(name: "creator")
 }

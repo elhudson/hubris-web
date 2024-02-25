@@ -24,6 +24,18 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/register", async (req, res) => {
+  const r = await db.users.create({
+    data: {
+      username: req.body.user,
+      password: req.body.pwd
+    }
+  });
+  req.session.user = r.username;
+  req.session.user_id = r.id;
+  res.redirect("/")
+});
+
 app.get("/login", (req, res) => {
   if (process.env.NODE_ENV != "production") {
     req.session.user = "ehudson19";
@@ -37,7 +49,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/data/characters", async (req, res) => {
-  const query=await db.users.characters({ id: req.session.user_id });
+  const query = await db.users.characters({ id: req.session.user_id });
   res.json(query);
 });
 
@@ -45,12 +57,12 @@ app.get("/data/campaigns", async (req, res) => {
   const username = req.query.user;
   const query = await db.campaigns.retrieve({
     where: {
-      creator: {
+      dm: {
         username: username
       }
     }
   });
-  res.json([query].flat());
+  res.json(query);
 });
 
 app.get("/logout", (req, res) => {

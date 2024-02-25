@@ -7,6 +7,7 @@ import Options from "@options";
 import { cost } from "@components/options/stats";
 import Bio from "@components/character/bio";
 import _ from "lodash";
+
 import { redirect } from "react-router-dom";
 
 export default () => {

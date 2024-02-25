@@ -10,10 +10,15 @@ import Upload from "@ui/upload";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
+import Edit from "@components/campaigns/edit";
+
 export default () => {
+  const { campaign } = useCampaign();
+  const user = useUser();
   const ownershipRef = useRef(null);
   const editorRef = useRef(null);
-  return [
+  const deleterRef = useRef(null);
+  const menu = [
     {
       label: "Change DM",
       action: () => ownershipRef.current.click(),
@@ -25,6 +30,14 @@ export default () => {
       action: () => editorRef.current.click()
     }
   ];
+  if (user.username == campaign.dm.username) {
+    menu.push({
+      label: "Delete Campaign",
+      render: <Delete ref={deleterRef} />,
+      action: () => deleterRef.current.click()
+    });
+  }
+  return menu
 };
 
 const ChangeDM = forwardRef(function Func(props, ref) {
@@ -81,10 +94,7 @@ const ChangeDM = forwardRef(function Func(props, ref) {
 const EditCampaign = forwardRef(function Func(props, ref) {
   const { campaign, update } = useCampaign();
   const { colors, palette } = useTheme();
-  const settings = useAsync(
-    async () =>
-      await fetch(`/data/rules?table=settings`).then((res) => res.json())
-  ).result;
+
   return (
     <Alert
       confirm={async () =>
@@ -102,73 +112,38 @@ const EditCampaign = forwardRef(function Func(props, ref) {
           ref={ref}
         />
       }>
-      <span
-        className={css`
-          .quill {
-            border: 1px solid ${colors.accent};
-            background-color: ${palette.accent1};
-          }
-          label {
-            font-weight: bold;
-          }
-          .pic {
-            display: unset;
-          }
-        `}>
-        <EditCover />
-        <div>
-          <label>Title</label>
-          <input
-            type="text"
-            value={campaign.name}
-            onChange={(e) =>
-              update((draft) => {
-                draft.name = e.currentTarget.value;
-              })
-            }
-          />
-        </div>
-        <div>
-          <label>Description</label>
-          <Notepad
-            text={campaign.description}
-            onChange={(e) =>
-              update((draft) => {
-                draft.description = e;
-              })
-            }
-          />
-        </div>
-        <div>
-          <label>Settings</label>
-          <Multi
-            items={settings}
-            currents={campaign.settings}
-            valuePath="id"
-            labelPath="title"
-            onChange={(e) => {
-              update((draft) => {
-                draft.settings = e.map((v) =>
-                  _.find(settings, (c) => c.id == v.value)
-                );
-              });
-            }}
-          />
-        </div>
-      </span>
+      <Edit />
     </Alert>
   );
 });
 
-const EditCover = () => {
+export const Delete = forwardRef(function Func(props = null, ref) {
   const { campaign } = useCampaign();
-  const url = `/campaigns/${campaign.id}.png`;
-  const endpoint = `/data/campaign/cover?id=${campaign.id}`;
+  const { username } = useUser();
+  const handleDelete = async () => {
+    await fetch(`/data/campaign/delete?id=${campaign.id}`);
+    window.location.assign(`/${username}/creations`);
+  };
   return (
-    <Upload
-      path={url}
-      endpoint={endpoint}
-      sz={300}
-    />
+    <div
+      className={css`
+        > button:first-child {
+          display: none;
+        }
+      `}>
+      <Alert
+        confirm={handleDelete}
+        button={
+          <button
+            ref={ref}
+            style={{ display: "none" }}
+          />
+        }>
+        <div>
+          <h4>Are you sure?</h4>
+          <p>Once you delete a campaign, you can't recover it.</p>
+        </div>
+      </Alert>
+    </div>
   );
-};
+});

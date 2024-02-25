@@ -26,8 +26,8 @@ app.post("/data/campaign", async (req, res) => {
 });
 
 app.post("/data/campaigns/create", async (req, res) => {
-  await db.campaigns.create({ data: req.body });
-  res.send("Campaign created.");
+  const r = await db.campaigns.make({ data: req.body });
+  res.redirect(`/campaign/${r.id}`);
 });
 
 app.post("/data/campaigns/logbook", async (req, res) => {
@@ -41,7 +41,7 @@ app.post("/data/campaigns/logbook", async (req, res) => {
         }
       },
       text: summary.text,
-      session: summary.session,
+      session: Number(summary.session),
       campaign: {
         connect: {
           id: id
@@ -52,7 +52,7 @@ app.post("/data/campaigns/logbook", async (req, res) => {
       where: {
         campaignId_session: {
           campaignId: id,
-          session: summary.session
+          session: Number(summary.session)
         }
       },
       update: query,
@@ -89,6 +89,15 @@ app.get("/data/logbook", async (req, res) => {
     }
   });
   res.json(data);
+});
+
+app.get("/data/campaign/delete", async (req, res) => {
+  await db.campaigns.deleteMany({
+    where: {
+      id: req.query.id
+    }
+  });
+  res.send("Campaign deleted.");
 });
 
 export default app;

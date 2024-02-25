@@ -16,7 +16,7 @@ export default () => {
   const { character, update } = useCharacter();
   const deleteRef = useRef(null);
   const shortRestRef = useRef(null);
-  return [
+  const menu = [
     {
       label: "Delete",
       action: () => deleteRef.current.click(),
@@ -36,14 +36,6 @@ export default () => {
       icon: <GiNightSleep />
     },
     {
-      label: "Write Summary",
-      action: () =>
-        window.location.assign(
-          `/campaign/${character.campaign.id}/summaries/create`
-        ),
-      icon: <GiQuill />
-    },
-    {
       label: "Long Rest",
       icon: <BiSolidCastle />,
       action: () =>
@@ -56,9 +48,19 @@ export default () => {
         })
     }
   ];
+  character.Campaign &&
+    menu.push({
+      label: "Write Summary",
+      action: () =>
+        window.location.assign(
+          `/campaign/${character.Campaign.id}/summaries/create`
+        ),
+      icon: <GiQuill />
+    });
+    return menu
 };
 
-export const ShortRest = forwardRef(function Func(props=null, ref) {
+export const ShortRest = forwardRef(function Func(props = null, ref) {
   const { character, update } = useCharacter();
   const [isRolling, setIsRolling] = useState(false);
   const [hp, setHp] = useState(0);
@@ -163,7 +165,7 @@ export const ShortRest = forwardRef(function Func(props=null, ref) {
   );
 });
 
-export const Delete = forwardRef(function Func(props=null, ref) {
+export const Delete = forwardRef(function Func(props = null, ref) {
   const { character } = useCharacter();
   const { username } = useUser();
   const handleDelete = async () => {

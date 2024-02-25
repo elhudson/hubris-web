@@ -7,7 +7,7 @@ async function make({
   effects,
   ranges,
   durations,
-  characters,
+  characters=null,
   creator
 }) {
   await db.powers.create({
@@ -21,7 +21,7 @@ async function make({
         }
       },
       characters: {
-        connect: characters.map((c) => ({
+        connect: characters?.map((c) => ({
           id: c.id
         }))
       },
