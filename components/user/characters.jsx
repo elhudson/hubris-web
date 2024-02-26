@@ -15,7 +15,7 @@ const Characters = () => {
   return (
     <>
       {characters.result && (
-        <div css={classes.layout.container}>
+        <div css={[classes.layout.container, classes.layout.gallery]}>
           {characters.result.map((c) => (
             <characterContext.Provider value={{ character: c, update: null }}>
               <Profile />

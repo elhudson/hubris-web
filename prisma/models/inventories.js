@@ -11,22 +11,27 @@ async function save({ inventory }) {
               .map((k) => [k, item[k]])
           ),
           tags: {
-            connect: item.tags,
-          },
+            connect: item.tags
+          }
         };
       }
       await db[table].upsert({
         where: {
-          id: item.id,
+          id: item.id
         },
         update: item,
-        create: item,
+        create: item
       });
     }
   }
 }
 
 async function add({ item, table, character }) {
+  const query = { ...item };
+  table == "weapons" &&
+    (query.tags = {
+      connect: item.tags
+    });
   await db.inventories.update({
     where: {
       charactersId: character
@@ -35,23 +40,13 @@ async function add({ item, table, character }) {
       [table]: {
         upsert: {
           where: {
-            id: item.id,
+            id: item.id
           },
-          create: {
-            ...item,
-            tags: {
-              connect: item.tags,
-            },
-          },
-          update: {
-            ...item,
-            tags: {
-              connect: item.tags,
-            },
-          },
-        },
-      },
-    },
+          create: query,
+          update: query
+        }
+      }
+    }
   });
 }
 
