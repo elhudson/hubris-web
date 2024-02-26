@@ -1,7 +1,7 @@
 import { db } from "~db/prisma.js";
-import _ from "lodash"
+import _ from "lodash";
 async function retrieve({ id = null, where = null }) {
-  const character = await db.characters.findFirst({
+  const character = await db.characters[id ? "findFirst" : "findMany"]({
     where: where ?? {
       id: id
     },
@@ -80,7 +80,7 @@ async function retrieve({ id = null, where = null }) {
       }
     }
   });
-  character && (character.HD = _.uniqBy(character?.HD, (f) => f.die.title))
+  character && (character.HD = _.uniqBy(character?.HD, (f) => f.die.title));
   return character;
 }
 

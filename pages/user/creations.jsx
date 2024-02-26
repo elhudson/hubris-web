@@ -1,5 +1,5 @@
-import Characters from "./characters";
-import Campaigns from "./campaigns";
+import Characters from "@components/user/characters";
+import Campaigns from "@components/user/campaigns";
 import { css } from "@emotion/react";
 import { useParams } from "react-router-dom";
 import { useUser } from "@contexts/user";
@@ -9,9 +9,7 @@ export default () => {
   return (
     <div>
       {!current.logged_in || current?.username != user ? (
-        <div>
-          You're not logged in.
-        </div>
+        <div>You're not logged in.</div>
       ) : (
         <>
           <section>

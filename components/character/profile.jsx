@@ -9,6 +9,7 @@ import { calc_xp } from "utilities";
 
 export default () => {
   const { character } = useCharacter();
+  console.log(character)
   const { colors, classes } = useTheme();
   const inner = (
     <div
