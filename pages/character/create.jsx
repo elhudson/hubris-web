@@ -7,11 +7,13 @@ import Options from "@options";
 import { cost } from "@components/options/stats";
 import Bio from "@components/character/bio";
 import _ from "lodash";
-
+import Notif from "@ui/notif";
 import { redirect } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 export default () => {
   const { user_id, username } = useUser();
+  const { classes } = useTheme();
   const [character, update] = useImmer({
     id: v4(),
     user: {
@@ -23,7 +25,8 @@ export default () => {
     int: -2,
     wis: -2,
     cha: -2,
-
+    classes: [],
+    backgrounds: [],
     biography: {
       name: `${username}'s Character`,
       gender: "",
@@ -59,7 +62,8 @@ export default () => {
       },
       body: JSON.stringify(character)
     });
-    redirect(`/character/${character.id}`);
+
+    window.location.assign(`/character/${character.id}`);
   };
   return (
     <characterContext.Provider
@@ -69,13 +73,18 @@ export default () => {
       }}>
       <Tabs
         names={["Classes", "Backgrounds", "Stats", "Biography"]}
-        def={"Classes"}>
+        def={"Classes"}
+        disabled={character.backgrounds.length < 2 ? ["Stats"] : []}>
         <Options.classes />
         <Options.backgrounds />
         <Options.stats />
         <Bio />
       </Tabs>
-      <button onClick={handleSubmit}>Submit</button>
+      <Notif
+        func={handleSubmit}
+        btn="Submit"
+        css={classes.elements.post}
+      />
     </characterContext.Provider>
   );
 };

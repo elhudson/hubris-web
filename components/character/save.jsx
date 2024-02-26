@@ -1,7 +1,9 @@
 import Notification from "@ui/notif";
 import { useCharacter } from "@contexts/character";
-import { css } from "@emotion/react";
+import { useTheme } from "@emotion/react";
+
 export default () => {
+  const { classes } = useTheme();
   const { character } = useCharacter();
   const save = async () =>
     await fetch(`/data/character/?method=update&id=${character.id}`, {
@@ -14,7 +16,8 @@ export default () => {
   return (
     <Notification
       func={save}
-      btn={"Save"}
+      btn="Save"
+      css={classes.elements.post}
     />
   );
 };

@@ -7,7 +7,7 @@ import Color from "color";
 export default ({ current, options, displayPath, valuePath, onChange }) => {
   const chosen = _.get(current, valuePath);
   const disp = _.get(current, displayPath);
-  const { colors, palette } = useTheme();
+  const { colors, palette, classes } = useTheme();
   return (
     <select.Root
       onValueChange={onChange}
@@ -16,20 +16,26 @@ export default ({ current, options, displayPath, valuePath, onChange }) => {
       <select.Content
         position="popper"
         className={css`
+          ${classes.decorations.shadowed}
           position: relative;
-          max-height:50ch;
-          font-size: 14px;
+          max-height: 50ch;
+          font-size: 12px;
           background-color: ${colors.background};
           z-index: 2;
           border: 1px solid ${colors.accent};
           color: ${colors.text};
           div[role="option"] {
             padding: 2px;
-            margin:3px;
-            background-color: ${Color(colors.accent).fade(0.6).toString()};
+            margin: 3px;
+            background-color: ${palette.accent1};
             border: 1px solid ${colors.accent};
+            &[data-state="checked"] {
+              background-color: ${palette.accent2};
+            }
             &:hover {
+              cursor: pointer;
               font-style: italic;
+              background-color: ${palette.accent2};
               text-decoration: underline;
               text-underline-offset: 2px;
             }

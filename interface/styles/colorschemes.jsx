@@ -20,7 +20,8 @@ export default ({ children }) => {
     ...themes[scheme]
   };
   const palette={
-    accent1: Color(themes[scheme].foreground).fade(0.95).toString()
+    accent1: Color(themes[scheme].foreground).fade(0.95).toString(),
+    accent2: Color(colors.accent).fade(0.6).toString()
   }
   return (
     <ThemeProvider

@@ -20,6 +20,11 @@ export default ({ colors, palette }) => {
       `,
       disabled: css`
         opacity: 50%;
+        &:hover {
+          cursor: unset;
+          font-style: unset;
+          text-decoration: unset;
+        }
       `,
       interactable: css`
         color: ${colors.text_accent};
@@ -33,15 +38,26 @@ export default ({ colors, palette }) => {
     },
     qualities: {
       danger: css`
-        background-color: ${Color(colors.colors.red).fade(0.6).hsl().toString()};
+        background-color: ${Color(colors.colors.red)
+          .fade(0.6)
+          .hsl()
+          .toString()};
         color: ${Color(colors.red).darken(0.5).hsl().toString()};
-        border: 1px solid ${Color(colors.colors.red).darken(0.5).hsl().toString()};
+        border: 1px solid
+          ${Color(colors.colors.red).darken(0.5).hsl().toString()};
         &:hover {
-          background-color: ${Color(colors.colors.red).fade(0.4).hsl().toString()};
+          background-color: ${Color(colors.colors.red)
+            .fade(0.4)
+            .hsl()
+            .toString()};
         }
       `
     },
     elements: {
+      post: css`
+        width: 100%;
+        margin-top: 5px;
+      `,
       subhead: css`
         text-decoration: unset;
         margin-bottom: 5px;

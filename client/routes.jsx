@@ -11,31 +11,6 @@ const { rules, user, campaign, catalog, character, tools } = pages;
 import Background from "@ui/background";
 import { css, useTheme } from "@emotion/react";
 
-import { useParams } from "react-router-dom";
-import { sql_danger } from "utilities";
-
-const Rules = () => {
-  const { colors } = useTheme();
-  const { table } = useParams();
-  return (
-    <>
-      <h2>{sql_danger(table)}</h2>
-      <div
-        css={css`
-          border: 1px solid ${colors.accent};
-          padding: 10px;
-          max-height: 80vh;
-          overflow: scroll;
-          &::scrollbar-track-color {
-            color: ${colors.accent};
-          }
-        `}>
-        {rules[table]()}
-      </div>
-    </>
-  );
-};
-
 const App = ({ children }) => {
   const { colors } = useTheme();
   return (
@@ -90,7 +65,7 @@ export default createBrowserRouter(
       <Route element={<Outlet />}>
         <Route
           path="srd/:table"
-          element={<Rules />}
+          element={<rules.table />}
         />
         <Route
           path="srd/:table/:feature"
@@ -108,7 +83,6 @@ export default createBrowserRouter(
           element={<character.advance />}
         />
       </Route>
-
       <Route
         element={
           <>
@@ -125,15 +99,13 @@ export default createBrowserRouter(
           element={<campaign.summarize />}
         />
       </Route>
-
       <Route
         path="db/powers"
         element={<catalog.powers />}
       />
-
       <Route
         path="tools/calculator"
-        element={<tools.calculator />}
+        element={<rules.calculator />}
       />
     </Route>
   )

@@ -57,7 +57,7 @@ export default () => {
         ),
       icon: <GiQuill />
     });
-    return menu
+  return menu;
 };
 
 export const ShortRest = forwardRef(function Func(props = null, ref) {
@@ -172,7 +172,7 @@ export const Delete = forwardRef(function Func(props = null, ref) {
     await fetch(`/data/character/delete?id=${character.id}`, {
       method: "POST"
     });
-    redirect(`/characters/${username}`);
+    window.location.assign(`/${username}/creations`);
   };
   return (
     <div

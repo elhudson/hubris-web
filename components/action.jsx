@@ -11,6 +11,7 @@ export default (props) => {
         summary {
           display: inline-flex;
           width: 100%;
+          border: 1px solid ${colors.accent};
           svg {
             padding-right: 5px;
           }

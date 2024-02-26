@@ -6,7 +6,7 @@ import Tabs from "@ui/tabs";
 import Character from "@character";
 import { Row } from "@ui/layouts";
 import { useTheme, css } from "@emotion/react";
-
+import Loading from "@ui/loading";
 const components = () => {
   const { classes } = useTheme();
   return [
@@ -49,47 +49,41 @@ const components = () => {
   ];
 };
 
-const Sheet = () => {
-  const { id } = useParams();
-  const { colors } = useTheme();
-  const [character, update] = useImmer(null);
-  useAsync(
-    async () =>
-      await fetch(`/data/character?id=${id}`)
-        .then((j) => j.json())
-        .then((ch) => update(ch))
-  );
+const Sheet = ({ ch }) => {
+  const [character, update] = useImmer(ch);
   const comps = components();
   return (
-    <main css={css`
-      
-      > button {
-        width: 100%;
-        margin: 5px 0px;
-      }
-    `}>
-      {character != null && (
-        <characterContext.Provider
-          value={{
-            character: character,
-            update: update
-          }}>
-          <Character.profile />
-          <Tabs
-            css={css`
-              > [role="tabpanel"] {
-                max-height: 65vh;
-              }
-            `}
-            names={comps.map((c) => c.title)}
-            def={comps[0].title}>
-            {comps.map((c) => c.content)}
-          </Tabs>
-          <Character.save />
-        </characterContext.Provider>
-      )}
+    <main>
+      <characterContext.Provider
+        value={{
+          character: character,
+          update: update
+        }}>
+        <Character.profile />
+        <Tabs
+          css={css`
+            > [role="tabpanel"] {
+              max-height: 65vh;
+            }
+          `}
+          names={comps.map((c) => c.title)}
+          def={comps[0].title}>
+          {comps.map((c) => c.content)}
+        </Tabs>
+        <Character.save />
+      </characterContext.Provider>
     </main>
   );
 };
 
-export default Sheet;
+export default () => {
+  const { id } = useParams();
+  const getter = async () =>
+    await fetch(`/data/character?id=${id}`).then((j) => j.json());
+  return (
+    <Loading
+      getter={getter}
+      render={(character) => <Sheet ch={character} />}
+    />
+  );
+};

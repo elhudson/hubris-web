@@ -1,38 +1,36 @@
-import { useAsync } from "react-async-hook";
 import Organizer from "@components/organizer";
 import Tree from "@components/tree";
 import { useOptions } from "@contexts/options";
+import Loading from "@ui/loading";
 
 export default () => {
   const context = useOptions();
-  const features =
+  const features = async () =>
     context?.options ??
-    useAsync(
-      async () =>
-        await fetch(
-          `/data/rules?table=trees&query=${JSON.stringify({
-            select: {
-              title: true,
-              id: true,
-              ranges: {
-                include: {
-                  requires: true,
-                  required_for: true,
-                  trees: true
-                },
-              },
-            },
-          })}`
-        ).then((t) => t.json())
-    ).result;
+    (await fetch(
+      `/data/rules?table=trees&query=${JSON.stringify({
+        select: {
+          title: true,
+          id: true,
+          ranges: {
+            include: {
+              requires: true,
+              required_for: true,
+              trees: true
+            }
+          }
+        }
+      })}`
+    ).then((t) => t.json()));
   return (
-    <>
-      {features && (
+    <Loading
+      getter={features}
+      render={(features) => (
         <Organizer
           options={features}
           render={(path) => <Tree items={path["ranges"]} />}
         />
       )}
-    </>
+    />
   );
 };

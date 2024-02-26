@@ -1,8 +1,8 @@
 import Characters from "@components/user/characters";
 import Campaigns from "@components/user/campaigns";
-import { css } from "@emotion/react";
 import { useParams } from "react-router-dom";
 import { useUser } from "@contexts/user";
+import Tabs from "@ui/tabs";
 export default () => {
   const { user } = useParams();
   const current = useUser();
@@ -11,16 +11,12 @@ export default () => {
       {!current.logged_in || current?.username != user ? (
         <div>You're not logged in.</div>
       ) : (
-        <>
-          <section>
-            <h2>Characters</h2>
+        <Tabs
+          names={["Characters", "Campaigns"]}
+          def="Characters">
             <Characters />
-          </section>
-          <section>
-            <h2>Campaigns</h2>
             <Campaigns />
-          </section>
-        </>
+        </Tabs>
       )}
     </div>
   );

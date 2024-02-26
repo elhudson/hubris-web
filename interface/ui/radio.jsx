@@ -17,6 +17,7 @@ export default (props) => {
     children,
     inline = true
   } = props;
+  const { colors, palette } = useTheme();
   return (
     <radio.Root
       css={css`
@@ -24,7 +25,7 @@ export default (props) => {
         gap: 2px;
         button {
           &:hover {
-            background-color: unset;
+            background-color: ${palette.accent2};
           }
         }
       `}

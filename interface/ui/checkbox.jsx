@@ -22,6 +22,9 @@ export default ({
         padding: unset;
         margin:unset;
         height: 100%;
+        &:hover {
+          background-color: unset;
+        }
         svg {
           height: 100%;
           width: 100%;

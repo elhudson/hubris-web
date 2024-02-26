@@ -73,20 +73,17 @@ const makeHandler = ({ update, searchable, table, limiter = null }) => {
         if (affordable(feat, draft, table)) {
           if (satisfies_prereqs(feat, table, draft)) {
             draft[table].push(feat);
-            table == "effects" &&
-              effectHandler({ feat: feat, draft: draft, e: e });
-            table == "classes" &&
-              classHandler({ feat: feat, draft: draft, e: e });
+            table == "effects" && effectHandler({ feat, draft, e });
+            table == "classes" && classHandler({ feat, draft, e });
             table == "backgrounds" && backgroundHandler({ feat, draft, e });
           }
         }
       } else {
         if (!required({ feat: feat, draft: draft })) {
           _.remove(draft[table], (f) => f.id == id);
-          table == "effects" &&
-            effectHandler({ feat: feat, draft: draft, e: e });
-          table == "classes" &&
-            classHandler({ feat: feat, draft: draft, e: e });
+          table == "effects" && effectHandler({ feat, draft, e });
+          table == "classes" && classHandler({ feat, draft, e });
+          table == "backgrounds" && backgroundHandler({ feat, draft, e });
         }
       }
     });

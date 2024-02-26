@@ -3,7 +3,6 @@ import Icon from "@ui/icon";
 import { useTheme, css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { useAsync } from "react-async-hook";
-
 export default ({
   items,
   render = null,
@@ -41,7 +40,15 @@ export default ({
         render ? (
           render(i)
         ) : (
-          <li>
+          <li css={css`
+          position: relative;
+            button[role="checkbox"] {
+              position: absolute;
+              right: 0;
+              top: 0;
+              height: fit-content;
+            }
+          `}>
             <Icon
               id={_.get(i, icon)}
               sz={18}

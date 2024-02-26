@@ -1,22 +1,20 @@
-import { useAsync } from "react-async-hook";
 import _ from "lodash";
 import List from "@components/list";
 import Metadata from "@components/metadata";
 import { useOptions } from "@contexts/options";
+import Loading from "@ui/loading";
 
 export default ({ checkbox = null }) => {
   const context = useOptions();
-  const features =
+  const features = async () =>
     context?.options ??
-    useAsync(
-      async () =>
-        await fetch(`/data/rules?table=skills&relations=true`)
-          .then((result) => result.json())
-          .then((f) => _.sortBy(f, "title"))
-    ).result;
+    (await fetch(`/data/rules?table=skills&relations=true`)
+      .then((result) => result.json())
+      .then((f) => _.sortBy(f, "title")));
   return (
-    <>
-      {features && (
+    <Loading
+      getter={features}
+      render={(features) => (
         <List
           checkbox={checkbox}
           items={features}
@@ -28,6 +26,6 @@ export default ({ checkbox = null }) => {
           )}
         />
       )}
-    </>
+    />
   );
 };
