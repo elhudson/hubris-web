@@ -1,14 +1,42 @@
 import { db } from "~db/prisma.js";
 
-async function characters({ id }) {
+async function characters({ username }) {
   const chars = await db.characters.retrieve({
     where: {
       user: {
-        id: id
-      }
-    }
+        username: username,
+      },
+    },
   });
   return chars;
 }
 
-export default { characters };
+async function campaigns({ username }) {
+  const include = {
+    settings: true,
+    dm: true
+  };
+  const dm = await db.campaigns.findMany({
+    where: {
+      dm: {
+        username: username,
+      },
+    },
+    include,
+  });
+  const player = await db.campaigns.findMany({
+    where: {
+      characters: {
+        some: {
+          user: {
+            username: username,
+          },
+        },
+      },
+    },
+    include,
+  });
+  return { dm, player };
+}
+
+export default { characters, campaigns };

@@ -1,15 +1,25 @@
-import campaign from "@actions/campaign.jsx";
+import actions from "@actions/campaign.jsx";
 import Context from "@ui/context";
+import { useUser } from "@contexts/user";
+import { useCampaign } from "@contexts/campaign";
 
 export default ({ children }) => {
-  const acts = campaign();
+  const user = useUser();
+  const { campaign } = useCampaign();
+  const acts = actions();
   return (
     <>
-      <Context
-        trigger={children}
-        items={acts}
-      />
-      {acts.map((i) => i.render)}
+      {campaign.dm.id == user.user_id ? (
+        <>
+          <Context
+            trigger={children}
+            items={acts}
+          />
+          {acts.map((i) => i.render)}
+        </>
+      ) : (
+        <>{children}</>
+      )}
     </>
   );
 };

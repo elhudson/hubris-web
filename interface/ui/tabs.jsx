@@ -13,7 +13,6 @@ export default ({ names, children, def, disabled = [], ...props }) => {
           width: 100%;
           button {
             flex-grow: 1;
-            margin-top: 10px;
             &:not(button:last-child) {
               border-right: unset;
             }

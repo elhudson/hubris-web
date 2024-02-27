@@ -1,4 +1,3 @@
-
 import express from "express";
 import "dotenv/config";
 import session from "express-session";
@@ -16,14 +15,13 @@ import campaigns from "~api/campaigns.js";
 
 const app = express();
 
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   session({
     secret: "ajradcliffe",
-    cookie: {}
+    cookie: {},
   })
 );
 

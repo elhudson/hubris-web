@@ -1,31 +1,26 @@
-import Notepad from "@ui/notepad";
 import { useTheme, css } from "@emotion/react";
-import { DateTime } from "luxon";
 import { GiQuill } from "react-icons/gi";
-import Metadata from "@ui/metadata";
 import Description from "@components/description";
 
 export default ({ author, timestamp, campaign, text, session }) => {
   const { colors, palette, classes } = useTheme();
   return (
-    <article
+    <section
       css={css`
         position: relative;
         > button {
+          all: unset;
           position: absolute;
-          top: 5px;
-          right: 5px;
+          top: 0;
+          right: 0;
         }
       `}>
-      <h3>Session {session}</h3>
-      <button>
-        <a href={`/campaign/${campaign.id}/summaries/${session}`}>
-          <GiQuill />
-        </a>
-      </button>
+      <a href={`/campaign/${campaign.id}/summaries/${session}`}>
+        <h3>Session {session}</h3>
+      </a>
       <div css={[classes.elements.description, classes.decorations.dashed]}>
         <Description text={text} />
       </div>
-    </article>
+    </section>
   );
 };

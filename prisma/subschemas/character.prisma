@@ -34,7 +34,9 @@ model Characters {
   Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
   campaignId     String?
   summaries      Summaries[]
+  font           String?
 }
+
 
 model HD {
   id           Int        @id @default(autoincrement())

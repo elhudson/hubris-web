@@ -3,18 +3,13 @@ import { useUser } from "@contexts/user";
 import { forwardRef, useRef } from "react";
 import { useAsync } from "react-async-hook";
 import Alert from "@ui/alert";
-import Notepad from "@ui/notepad";
 import Select from "@ui/select";
-import Multi from "@ui/multi";
-import Upload from "@ui/upload";
 import _ from "lodash";
 import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Edit from "@components/campaigns/edit";
 
 export default () => {
-  const { campaign } = useCampaign();
-  const user = useUser();
   const ownershipRef = useRef(null);
   const editorRef = useRef(null);
   const deleterRef = useRef(null);
@@ -22,22 +17,20 @@ export default () => {
     {
       label: "Change DM",
       action: () => ownershipRef.current.click(),
-      render: <ChangeDM ref={ownershipRef} />
+      render: <ChangeDM ref={ownershipRef} />,
     },
     {
       label: "Edit Campaign",
       render: <EditCampaign ref={editorRef} />,
-      action: () => editorRef.current.click()
-    }
-  ];
-  if (user.username == campaign.dm.username) {
-    menu.push({
+      action: () => editorRef.current.click(),
+    },
+    {
       label: "Delete Campaign",
       render: <Delete ref={deleterRef} />,
-      action: () => deleterRef.current.click()
-    });
-  }
-  return menu
+      action: () => deleterRef.current.click(),
+    },
+  ];
+  return menu;
 };
 
 const ChangeDM = forwardRef(function Func(props, ref) {
@@ -45,7 +38,7 @@ const ChangeDM = forwardRef(function Func(props, ref) {
   const possibleUsers = useAsync(
     async () =>
       await fetch(`/data/query?table=users&method=findMany`, {
-        method: "POST"
+        method: "POST",
       }).then((r) => r.json())
   ).result;
   return (
@@ -57,19 +50,9 @@ const ChangeDM = forwardRef(function Func(props, ref) {
         />
       }
       confirm={async () => {
-        await fetch(`/data/campaign?id=${campaign.id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            dm: {
-              connect: {
-                id: campaign.dm.id
-              }
-            }
-          })
-        });
+        await fetch(
+          `/data/campaign/transfer?id=${campaign.id}&dm=${campaign.dm.id}`
+        );
       }}>
       {possibleUsers && (
         <div>
@@ -101,9 +84,9 @@ const EditCampaign = forwardRef(function Func(props, ref) {
         await fetch(`/data/campaign?id=${campaign.id}`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(query(campaign))
+          body: JSON.stringify(query(campaign)),
         })
       }
       button={

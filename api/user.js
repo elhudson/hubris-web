@@ -12,8 +12,8 @@ app.post("/login", async (req, res) => {
   const auth = await db.users.findFirst({
     where: {
       username: req.body.user,
-      password: req.body.pwd
-    }
+      password: req.body.pwd,
+    },
   });
   if (auth) {
     req.session.user = req.body.user;
@@ -28,12 +28,12 @@ app.post("/register", async (req, res) => {
   const r = await db.users.create({
     data: {
       username: req.body.user,
-      password: req.body.pwd
-    }
+      password: req.body.pwd,
+    },
   });
   req.session.user = r.username;
   req.session.user_id = r.id;
-  res.redirect("/")
+  res.redirect("/");
 });
 
 app.get("/login", (req, res) => {
@@ -44,25 +44,20 @@ app.get("/login", (req, res) => {
   res.json({
     username: req.session.user,
     user_id: req.session.user_id,
-    logged_in: !(_.isNull(req.session.user) || _.isUndefined(req.session.user))
+    logged_in: !(_.isNull(req.session.user) || _.isUndefined(req.session.user)),
   });
 });
 
 app.get("/data/characters", async (req, res) => {
-  const query = await db.users.characters({ id: req.session.user_id });
+  const query = await db.users.characters({ username: req.session.user });
   res.json(query);
 });
 
 app.get("/data/campaigns", async (req, res) => {
-  const username = req.query.user;
-  const query = await db.campaigns.retrieve({
-    where: {
-      dm: {
-        username: username
-      }
-    }
+  const campaigns = await db.users.campaigns({
+    username: req.session.user,
   });
-  res.json(query);
+  res.json(campaigns);
 });
 
 app.get("/logout", (req, res) => {

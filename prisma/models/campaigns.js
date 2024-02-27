@@ -4,18 +4,19 @@ import _ from "lodash";
 async function retrieve({ where = null, id = null }) {
   return await db.campaigns.findFirst({
     where: where ?? {
-      id: id
+      id: id,
     },
     include: {
       characters: {
         include: {
+          user: true,
           classes: true,
           backgrounds: true,
           effects: {
             include: {
               range: true,
-              duration: true
-            }
+              duration: true,
+            },
           },
           class_features: true,
           tag_features: true,
@@ -23,20 +24,20 @@ async function retrieve({ where = null, id = null }) {
           durations: true,
           HD: {
             include: {
-              die: true
-            }
+              die: true,
+            },
           },
-          skills: true
-        }
+          skills: true,
+        },
       },
       dm: true,
       settings: true,
       logbook: {
         include: {
-          author: true
-        }
-      }
-    }
+          author: true,
+        },
+      },
+    },
   });
 }
 
@@ -46,31 +47,31 @@ async function make({ data }) {
       name: data.name,
       description: data.description,
       settings: {
-        connect: data.settings.map((s) => ({ id: s.id }))
+        connect: data.settings.map((s) => ({ id: s.id })),
       },
       creator: {
         connect: {
-          id: data.creator.user_id
-        }
+          id: data.creator.user_id,
+        },
       },
       dm: {
         connect: {
-          id: data.dm.user_id
-        }
-      }
-    }
+          id: data.dm.user_id,
+        },
+      },
+    },
   });
 }
 
 async function save({ data }) {
   const characters = await db.characters.findMany({
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
   await db.campaigns.update({
     where: {
-      id: data.id
+      id: data.id,
     },
     data: {
       id: data.id,
@@ -78,22 +79,43 @@ async function save({ data }) {
       xp: data.xp,
       sessionCount: Number(data.sessionCount),
       settings: {
-        connect: data.settings.map((s) => ({ id: s.id }))
+        connect: data.settings.map((s) => ({ id: s.id })),
       },
       characters: {
         connect: data.characters.map((c) => ({
-          id: c.id
+          id: c.id,
         })),
         disconnect: _.xorBy(data.characters, characters, "id").map((char) => ({
-          id: char.id
-        }))
+          id: char.id,
+        })),
       },
       dm: {
         connect: {
-          id: data.dm.id
-        }
-      }
-    }
+          id: data.dm.id,
+        },
+      },
+    },
+  });
+}
+
+async function players({ id = null, where = null }) {
+  const { characters } = await db.campaigns.retrieve({ id, where });
+  const users = characters.map((c) => c.user);
+  return users;
+}
+
+async function transfer({ id, dm }) {
+  await db.campaigns.update({
+    where: {
+      id: id,
+    },
+    data: {
+      dm: {
+        connect: {
+          id: dm,
+        },
+      },
+    },
   });
 }
 
@@ -101,19 +123,17 @@ async function summarize({ id, session }) {
   var data;
   const exists = await db.summaries.retrieve({
     where: {
-      campaign:{
-        id: id
+      campaign: {
+        id: id,
       },
-      session: session
-    }
+      session: session,
+    },
   });
   if (!exists) {
-    data=await db.summaries.create({
-      data: {
-
-      }
-    })
+    data = await db.summaries.create({
+      data: {},
+    });
   }
 }
 
-export default { retrieve, make, save };
+export default { retrieve, make, save, transfer, players };

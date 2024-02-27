@@ -6,9 +6,9 @@ export const Row = ({children, ...props}) => {
       css={css`
         display: flex;
         width: 100%;
-        gap: 5px;
+        gap: 10px;
         > * {
-          width: 100%;
+          flex-grow: 1;
         }
       `}
       {...props}>

@@ -56,7 +56,7 @@ export default ({ colors, palette }) => {
     elements: {
       post: css`
         width: 100%;
-        margin-top: 5px;
+        margin-top: 10px;
       `,
       subhead: css`
         text-decoration: unset;

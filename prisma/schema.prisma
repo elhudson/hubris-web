@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sun Feb 25 2024 15:28:30 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Tue Feb 27 2024 12:53:52 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -65,6 +65,7 @@ model Characters {
   Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
   campaignId     String?
   summaries      Summaries[]
+  font           String?
 }
 
 model HD {

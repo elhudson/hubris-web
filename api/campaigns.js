@@ -20,6 +20,12 @@ app.get("/data/campaign", async (req, res) => {
   res.json(campaign);
 });
 
+app.get("/data/campaign/transfer", async (req, res) => {
+  const { id, dm } = req.query;
+  await db.campaigns.transfer({ id, dm });
+  res.send("Ownership transferred.");
+});
+
 app.post("/data/campaign", async (req, res) => {
   await db.campaigns.save({ data: req.body });
   res.send("Campaign updated.");
@@ -37,26 +43,26 @@ app.post("/data/campaigns/logbook", async (req, res) => {
     const query = {
       author: {
         connect: {
-          id: summary.author.id
-        }
+          id: summary.author.id,
+        },
       },
       text: summary.text,
       session: Number(summary.session),
       campaign: {
         connect: {
-          id: id
-        }
-      }
+          id: id,
+        },
+      },
     };
     await db.summaries.upsert({
       where: {
         campaignId_session: {
           campaignId: id,
-          session: Number(summary.session)
-        }
+          session: Number(summary.session),
+        },
       },
       update: query,
-      create: query
+      create: query,
     });
   });
   res.send("Logbook updated");
@@ -66,12 +72,12 @@ app.get("/data/campaigns/logbook", async (req, res) => {
   const summaries = await db.summaries.findMany({
     where: {
       campaign: {
-        id: req.query.id
-      }
+        id: req.query.id,
+      },
     },
     include: {
-      author: true
-    }
+      author: true,
+    },
   });
   res.json(summaries);
 });
@@ -82,11 +88,11 @@ app.get("/data/logbook", async (req, res) => {
   const data = await db.summaries.findFirst({
     where: {
       campaignId: campaign,
-      session: session
+      session: session,
     },
     include: {
-      author: true
-    }
+      author: true,
+    },
   });
   res.json(data);
 });
@@ -94,8 +100,8 @@ app.get("/data/logbook", async (req, res) => {
 app.get("/data/campaign/delete", async (req, res) => {
   await db.campaigns.deleteMany({
     where: {
-      id: req.query.id
-    }
+      id: req.query.id,
+    },
   });
   res.send("Campaign deleted.");
 });
