@@ -7,6 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+node_modules
+dist
 dist-ssr
 *.local
 
@@ -21,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-.env/*
+.env
+
+.vercel

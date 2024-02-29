@@ -1,8 +1,0 @@
-{
-  "plugins": ["@babel/syntax-dynamic-import","babel-plugin-react-scoped-css"],
-  "presets": [
-    [
-      "@babel/preset-react"
-    ]
-  ]
-}

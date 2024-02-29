@@ -1,0 +1,25 @@
+import { Users } from "./user"
+import {Characters} from "./character"
+import {Effects, Ranges, Durations} from "./rules"
+import { Characters } from "./character"
+
+model Powers {
+  id         String       @id @unique
+  name       String
+  flavortext String       @db.LongText
+  creator    Users        @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  effects    Effects[]
+  ranges     Ranges[]
+  durations  Durations[]
+  characters Characters[]
+}
+
+
+
+
+
+
+
+
+

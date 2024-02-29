@@ -1,0 +1,36 @@
+import {Tags } from "./rules"
+import {Inventories} from "./character"
+import { Tags } from "rules"
+
+model Weapons {
+  id          String        @id @unique
+  name        String        @default("")
+  description String?
+  uses        String?       @default("str")
+  tags        Tags[]
+  bonus       Int?
+  martial     Boolean
+  heavy       Boolean
+  equipped    Boolean       @default(false)
+  Inventories Inventories[]
+}
+
+
+
+model Armor {
+  id          String  @id @unique
+  class       String
+  name        String  @default("")
+  description String?
+  equipped    Boolean @default(false)
+
+  Inventories Inventories[]
+}
+
+model Items {
+  id          String        @id @unique
+  name        String        @default("")
+  description String?
+  equipped    Boolean       @default(false)
+  Inventories Inventories[]
+}
