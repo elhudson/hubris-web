@@ -7,7 +7,7 @@ async function retrieve({ id = null, where = null }) {
     },
     include: {
       profile: false,
-      Campaign: true,
+      campaign: true,
       backgrounds: {
         include: {
           background_features: true,
@@ -24,12 +24,15 @@ async function retrieve({ id = null, where = null }) {
       },
       ranges: {
         include: {
-          trees: true
+          trees: true,
+          area: true,
+          range: true
         }
       },
       durations: {
         include: {
-          trees: true
+          trees: true,
+          duration: true
         }
       },
       health: {

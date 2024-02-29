@@ -63,7 +63,7 @@ export default ({
   );
 };
 
-const Item = ({ title, id }) => {
+export const Item = ({ title, id }) => {
   const table = useAsync(
     async () => await fetch(`/data/table?id=${id}`).then((r) => r.text())
   ).result;

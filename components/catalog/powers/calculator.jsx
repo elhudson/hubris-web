@@ -1,9 +1,11 @@
 import { useImmer } from "use-immer";
 import _ from "lodash";
 import { Effects, Ranges, Durations } from "./selections";
-import { useAsync } from "react-async-hook";
+import Filters from "./filters";
 import { get_power_cost } from "utilities";
 import { css, useTheme } from "@emotion/react";
+import Loading from "@ui/loading";
+import { FaTimes, FaEquals } from "react-icons/fa";
 
 export default () => {
   const { colors, classes } = useTheme();
@@ -12,7 +14,7 @@ export default () => {
     ranges: [],
     durations: [],
   });
-  const options = useAsync(async () => {
+  const options = async () => {
     const effects = await fetch(
       `/data/rules?table=effects&relations=true`
     ).then((e) => e.json());
@@ -23,89 +25,106 @@ export default () => {
       `/data/rules?table=durations&relations=true`
     ).then((e) => e.json());
     return { effects, durations, ranges };
-  }).result;
-  const treeable = (meta) => {
-    return (
-      _.intersectionBy(
-        meta.trees.map((t) => t.id),
-        power.effects.map((e) => e.trees.id)
-      ).length > 0
-    );
   };
-  const addOption = (table) => {
+  const addOption = (options) => (table) => {
     return (e) => {
       update((draft) => {
-        if (table == "effects") {
-          draft[table] = e.map((f) =>
-            _.find(options[table], (a) => a.id == f.value)
-          );
-        } else {
-          draft[table] = e
-            .filter((f) =>
-              treeable(_.find(options[table], (a) => a.id == f.value))
-            )
-            .map((f) => _.find(options[table], (a) => a.id == f.value));
-        }
+        draft[table] = e.map((f) =>
+          _.find(options[table], (a) => a.id == f.value)
+        );
       });
     };
   };
   return (
-    <>
-      {options && (
+    <Loading
+      getter={options}
+      render={(options) => (
         <main
           css={css`
             ${classes.layout.center};
-            border: 1px solid ${colors.accent};
-            padding: 5px;
-            display: flex;
-            width: fit-content;
-            gap: 10px;
+            > * {
+              border: 1px solid ${colors.accent};
+              padding: 5px;
+              margin-bottom: 10px;
+            }
           `}>
-          <section
-            css={css`
-              width: fit-content;
-            `}>
-            <div
-              css={css`
-                label {
-                  display: none;
-                }
-                display: flex;
-                gap: 10px;
-              `}>
+          <Filters>
+            <Equation>
               <Effects
                 power={power}
                 options={options}
-                add={addOption}
+                add={addOption(options)}
               />
-              x
               <Ranges
                 power={power}
                 options={options}
-                add={addOption}
+                add={addOption(options)}
               />
-              x
               <Durations
                 power={power}
                 options={options}
-                add={addOption}
+                add={addOption(options)}
               />
-            </div>
-            <div
-              css={css`
-                margin-top: 5px;
-                border-top: 1px solid ${colors.accent};
-                text-align: center;
-              `}>
-              5
-            </div>
-          </section>
-          <section>=</section>
-          <section>
-            <div>{get_power_cost(power)}</div>
-          </section>
+              {get_power_cost(power)}
+            </Equation>
+          </Filters>
         </main>
       )}
-    </>
+    />
+  );
+};
+
+const Equation = ({ children }) => {
+  const { colors, classes } = useTheme();
+  const [effects, ranges, durations, total] = children;
+  return (
+    <main
+      css={css`
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .operator {
+          color: ${colors.accent};
+        }
+        .denominator,
+        .result {
+          ${classes.elements.number};
+          border: unset;
+        }
+        [direction="left"] {
+          flex-grow: 1;
+          .numerator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-bottom: 1px solid ${colors.accent};
+            padding-bottom: 5px;
+          }
+        }
+      `}>
+      <div direction="left">
+        <div className="numerator">
+          {effects}
+          <span className="operator">
+            <FaTimes />
+          </span>
+          {ranges}
+          <span className="operator">
+            <FaTimes />
+          </span>
+          {durations}
+        </div>
+        <div className="denominator">5</div>
+      </div>
+      <span className="operator">
+        <FaEquals />
+      </span>
+      <div
+        direction="right"
+        className="result">
+        {total}
+      </div>
+    </main>
   );
 };

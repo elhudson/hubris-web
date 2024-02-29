@@ -1,8 +1,14 @@
 import Color from "color";
 import _ from "lodash";
-import { MultiSelect } from "react-multi-select-component";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
+import Select, { components } from "react-select";
+
+const makeOptions = ({ items, labelPath, valuePath }) => {
+  return items.map((item) => ({
+    label: _.get(item, labelPath),
+    value: _.get(item, valuePath),
+  }));
+};
 
 export default ({
   items,
@@ -10,59 +16,81 @@ export default ({
   valuePath,
   currents,
   onChange,
-  render = null
+  grouper = null,
+  ...props
 }) => {
-  const { colors } = useTheme();
-  const options = items.map((item) => ({
-    label: _.get(item, labelPath),
-    value: _.get(item, valuePath)
-  }));
+  const { colors, classes } = useTheme();
+  var options;
+  if (!grouper) {
+    options = makeOptions({ items, labelPath, valuePath });
+  } else {
+    options = Object.entries(grouper(items)).map(([group, opts]) => ({
+      label: group,
+      options: makeOptions({ items: opts, labelPath, valuePath }),
+    }));
+  }
   const selections = currents.map((current) => ({
     label: _.get(current, labelPath),
-    value: _.get(current, valuePath)
+    value: _.get(current, valuePath),
   }));
   const msProps = {
     options: options,
     value: selections,
     onChange: onChange,
-    hasSelectAll: false
+    isMulti: true,
   };
-  render != null && (msProps.ItemRenderer = render);
+
   return (
-    <div
-      className={css`
-        div.dropdown-heading-value {
-          font-size: 16px;
+    <Select
+      {...msProps}
+      {...props}
+      unstyled
+      classNamePrefix={"react-select"}
+      css={css`
+        .react-select__placeholder {
+          color: ${colors.accent};
         }
-        li label.select-item {
-          font-size: 14px;
+        .react-select__value-container {
+          gap: 5px;
+        }
+        .react-select__multi-value {
+          ${classes.elements.button};
           padding: 2px;
-          font-weight: normal;
-          input {
-            appearance: none;
-            outline: 1px solid ${colors.text};
-            height: 14px;
-            width: 14px;
-            &:checked {
-              background-color: ${colors.text};
-            }
+          padding-left: 4px;
+          .react-select__multi-value__remove {
+            color: ${colors.accent};
           }
         }
-        .rmsc {
-          --rmsc-main: ${colors.accent};
-          --rmsc-hover: ${Color(colors.accent).fade(0.8).hsl().toString()};
-          --rmsc-selected: ${Color(colors.accent).fade(0.7).hsl().toString()};
-          --rmsc-border: ${colors.accent};
-          --rmsc-gray: ${colors.accent};
-          --rmsc-bg: ${colors.background};
-          --rmsc-radius: 0px; /* Radius */
-          --rmsc-h: 16px; /* Height */
+        .react-select__control {
+          background-color: ${colors.background};
+          border: 1px solid ${colors.accent};
+          padding: 5px;
         }
-      `}>
-      <MultiSelect
-        disableSearch
-        {...msProps}
-      />
-    </div>
+        .react-select__indicators {
+          color: ${colors.accent};
+        }
+        .react-select__menu {
+          background-color: ${colors.background};
+          margin-top: 5px;
+          white-space: nowrap;
+          ${classes.decorations.shadowed};
+          ${classes.decorations.bordered};
+          min-width: fit-content;
+        }
+
+        .react-select__group {
+          .react-select__group-heading {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 16px;
+          }
+          > div:nth-child(2) {
+            margin-left: 5px;
+            padding-left: 5px;
+            border-left:  1px solid ${colors.accent};
+          }
+        }
+      `}
+    />
   );
 };

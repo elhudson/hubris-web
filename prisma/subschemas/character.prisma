@@ -31,7 +31,7 @@ model Characters {
   health         Health?
   usersId        String
   powers         Powers[]
-  Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
+  campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
   campaignId     String?
   summaries      Summaries[]
   font           String?

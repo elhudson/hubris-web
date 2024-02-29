@@ -15,7 +15,7 @@ export default ({ pairs, ...props }) => {
           white-space: nowrap;
         }
         span {
-          > *:not(*:last-child)::after {
+          > *:not(*:last-child):not(button):after {
             content: ", ";
           }
         }

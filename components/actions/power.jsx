@@ -1,17 +1,16 @@
 import { useCharacter } from "@contexts/character";
 import { useUser } from "@contexts/user";
-import { useTheme } from "@emotion/react";
 import { usePower } from "@contexts/power";
 import Make from "@components/catalog/powers/maker";
 import Dialog from "@ui/dialog";
-import { useRef, createRef, forwardRef } from "react";
+import { useRef, forwardRef } from "react";
+import _ from "lodash";
 
 export default () => {
   const { character } = useCharacter() ?? { character: null };
+  const edit=useCharacter()?.update
   const user = useUser();
   const { power, update } = usePower();
-  const { colors } = useTheme();
-  const { classes } = useTheme();
   const editRef = useRef(null);
   const menu = [];
   if (character) {
@@ -35,7 +34,11 @@ export default () => {
               },
             },
           }),
-        });
+        }).then((c) =>
+          edit && edit((draft) => {
+            _.remove(draft.powers, (p) => p.id == power.id);
+          })
+        );
       },
     });
   }
@@ -53,7 +56,11 @@ export default () => {
               id: power.id,
             },
           }),
-        });
+        }).then((c) =>
+          edit && edit((draft) => {
+            _.remove(draft.powers, (p) => p.id == power.id);
+          })
+        );
       },
     });
     menu.push({
