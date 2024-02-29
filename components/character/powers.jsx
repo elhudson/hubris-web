@@ -1,15 +1,13 @@
 import { useCharacter } from "@contexts/character";
-import Ability, { Effect } from "./ability";
 import Numberbox from "@ui/numberBox";
 import Counter from "@ui/counter";
 import { get_proficiency } from "utilities";
-import Collapsible from "@ui/collapsible";
 import _ from "lodash";
 import { useTheme, css } from "@emotion/react";
-import Tabs from "@ui/tabs";
 import { Row, Sections } from "@ui/layouts";
 import Create from "@components/catalog/powers/create";
 import Power from "@components/catalog/powers/power";
+import Parts from "@components/character/parts";
 
 const Powers = () => {
   const { colors, classes } = useTheme();
@@ -71,34 +69,7 @@ const Powers = () => {
       </section>
       <section>
         <h3>Power Components</h3>
-        <Tabs
-          names={["Effects", "Ranges", "Durations"]}
-          def="Effects">
-          <div>
-            {character.effects.map((c) => (
-              <Effect
-                data={c}
-                withHeader={false}
-              />
-            ))}
-          </div>
-          <div>
-            {character.ranges.map((c) => (
-              <Ability
-                data={c}
-                table="ranges"
-              />
-            ))}
-          </div>
-          <div>
-            {character.durations.map((c) => (
-              <Ability
-                data={c}
-                table="durations"
-              />
-            ))}
-          </div>
-        </Tabs>
+        <Parts />
       </section>
     </Sections>
   );

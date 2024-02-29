@@ -1,10 +1,10 @@
 import * as alert from "@radix-ui/react-alert-dialog";
 import { useState } from "react";
-
 import { css, useTheme } from "@emotion/react";
-export default ({ button, confirm, children, open = null, setOpen = null }) => {
-  const {classes}=useTheme()
-  open == null && ([open, setOpen] = useState(false));
+
+export default ({ button, confirm, children }) => {
+  const { classes } = useTheme();
+  const [open, setOpen] = useState(false);
   return (
     <alert.Root
       open={open}
@@ -17,8 +17,8 @@ export default ({ button, confirm, children, open = null, setOpen = null }) => {
           <alert.Cancel>Never mind</alert.Cancel>
           <alert.Action
             css={classes.qualities.danger}
-            onClick={() => {
-              confirm();
+            onClick={async () => {
+              await confirm();
               setOpen(false);
             }}>
             Confirm

@@ -18,10 +18,10 @@ const Menu = () => {
         background-color: ${colors.background};
         border: 1px solid ${colors.accent};
         z-index: 1;
+        margin: 10px;
         h1 {
           padding-left: 5px;
         }
-        margin-bottom: 10px;
       `}>
       <h1>HUBRIS</h1>
       <nav.Root

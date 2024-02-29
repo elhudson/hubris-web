@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Tue Feb 27 2024 12:53:52 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Wed Feb 28 2024 09:41:44 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -62,7 +62,7 @@ model Characters {
   health         Health?
   usersId        String
   powers         Powers[]
-  Campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
+  campaign       Campaigns?       @relation(fields: [campaignId], references: [id])
   campaignId     String?
   summaries      Summaries[]
   font           String?
@@ -244,12 +244,12 @@ model Durations {
   requires     Durations[]  @relation("durations_prq")
   required_for Durations[]  @relation("durations_prq")
   trees        Trees[]
-  Characters   Characters[]
+  characters   Characters[]
   charactersId String?
-  Powers       Powers[]
-  Timespans    Timespans?   @relation(fields: [timespansId], references: [id])
+  powers       Powers[]
+  duration     Timespans?   @relation(fields: [timespansId], references: [id])
   timespansId  String?
-  Effects      Effects[]
+  effects      Effects[]
 }
 
 model Ranges {
@@ -264,12 +264,12 @@ model Ranges {
   area         Distances?   @relation("distances_areas", fields: [areaId], references: [id])
   range        Distances?   @relation("distances_ranges", fields: [rangeId], references: [id])
   trees        Trees[]
-  Characters   Characters[]
+  characters   Characters[]
   charactersId String?
-  Powers       Powers[]
+  powers       Powers[]
   areaId       String?
   rangeId      String?
-  Effects      Effects[]
+  effects      Effects[]
 }
 
 model Classes {

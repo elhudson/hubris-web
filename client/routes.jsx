@@ -16,7 +16,7 @@ const App = ({ children }) => {
   return (
     <main
       css={css`
-        height: 90vh;
+        height: 95vh;
         width: 80%;
         margin: auto;
         overflow: scroll;

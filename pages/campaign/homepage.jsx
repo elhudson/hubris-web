@@ -32,55 +32,57 @@ const Cpg = ({ cpg }) => {
   const [campaign, update] = useImmer(cpg);
   return (
     <campaignContext.Provider value={{ campaign: campaign, update: update }}>
-      <div
-        css={css`
-          section,
-          h2 {
-            background-color: ${colors.background};
-            border: 1px solid ${colors.accent};
-            padding: 10px;
-            margin-bottom: 10px;
-          }
-        `}>
-        <h2>{campaign.name}</h2>
-        <Row>
-          <section>
-            <Metadata
-              pairs={[
-                [
-                  "Settings",
-                  <span css={classes.layout.inline}>
-                    {campaign.settings.map((s) => (
-                      <Link
-                        feature={s}
-                        table="settings"
-                      />
-                    ))}
-                  </span>,
-                ],
-                ["DM", <span>{campaign.dm.username}</span>],
-              ]}
-            />
-          </section>
-          <section>
-            <Row>
-              <Campaign.xp />
-              <Campaign.sessions />
-            </Row>
-          </section>
-        </Row>
-      </div>
+      <Actions>
+        <div
+          css={css`
+            section,
+            h2 {
+              background-color: ${colors.background};
+              border: 1px solid ${colors.accent};
+              padding: 10px;
+              margin-bottom: 10px;
+            }
+          `}>
+          <h2>{campaign.name}</h2>
+          <Row>
+            <section>
+              <Metadata
+                pairs={[
+                  [
+                    "Settings",
+                    <span css={classes.layout.inline}>
+                      {campaign.settings.map((s) => (
+                        <Link
+                          feature={s}
+                          table="settings"
+                        />
+                      ))}
+                    </span>
+                  ],
+                  ["DM", <span>{campaign.dm.username}</span>]
+                ]}
+              />
+            </section>
+            <section>
+              <Row>
+                <Campaign.xp />
+                <Campaign.sessions />
+              </Row>
+            </section>
+          </Row>
+        </div>
 
-      <Tabs
-        css={css`
-          background-color: ${colors.background};
-        `}
-        names={["Characters", "Log"]}
-        def="Characters">
-        <Campaign.characters />
-        <Campaign.summaries />
-      </Tabs>
-      <Campaign.save />
+        <Tabs
+          css={css`
+            background-color: ${colors.background};
+          `}
+          names={["Characters", "Log"]}
+          def="Characters">
+          <Campaign.characters />
+          <Campaign.summaries />
+        </Tabs>
+        <Campaign.save />
+      </Actions>
     </campaignContext.Provider>
   );
   // return (

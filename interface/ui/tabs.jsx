@@ -8,6 +8,8 @@ export default ({ names, children, def, disabled = [], ...props }) => {
     <tabs.Root
       defaultValue={toVal(def)}
       css={css`
+        margin-top: 10px;
+
         [role="tablist"] {
           display: flex;
           width: 100%;

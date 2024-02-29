@@ -2,21 +2,11 @@ import * as radio from "@radix-ui/react-radio-group";
 import _ from "lodash";
 import { css, useTheme } from "@emotion/react";
 import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
-import SVG from "react-inlinesvg";
-import Tooltip from "./tooltip";
+
 import Switch from "./switch";
 
 export default (props) => {
-  const {
-    data,
-    current,
-    valuePath,
-    labelPath,
-    getIcon = null,
-    onChange,
-    children,
-    inline = true
-  } = props;
+  const { data, current, valuePath, onChange, inline = true } = props;
   const { colors, palette } = useTheme();
   return (
     <radio.Root
@@ -50,7 +40,7 @@ export const RadioItem = ({
   valuePath,
   labelPath,
   children,
-  getIcon = null
+  getIcon = null,
 }) => {
   const { colors } = useTheme();
   return (
@@ -86,33 +76,23 @@ export const RadioItem = ({
         `}>
         {_.get(item, valuePath) != _.get(current, valuePath) &&
           (getIcon ? (
-            <Tooltip
-              preview={
-                <Switch
-                  checked={false}
-                  src={getIcon(item)}
-                />
-              }>
-              {_.get(item, labelPath)}
-            </Tooltip>
+            <Switch
+              checked={false}
+              src={getIcon(item)}
+            />
           ) : (
             <IoIosRadioButtonOff />
           ))}
-        <radio.Indicator>
+        {/* <radio.Indicator>
           {getIcon ? (
-            <Tooltip
-              preview={
-                <Switch
-                  checked={true}
-                  src={getIcon(item)}
-                />
-              }>
-              {_.get(item, labelPath)}
-            </Tooltip>
+            <Switch
+              checked={true}
+              src={getIcon(item)}
+            />
           ) : (
             <IoIosRadioButtonOn />
           )}
-        </radio.Indicator>
+        </radio.Indicator> */}
       </radio.Item>
       {children ? (
         <div>

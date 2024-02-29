@@ -5,7 +5,12 @@ import { db } from "~db/prisma.js";
 const app = Router();
 
 app.post("/data/powers/save", async (req, res) => {
-  await db.powers.save(req.body);
+  await db.powers.save({
+    ...req.body,
+    creator: {
+      id: req.session.user_id,
+    },
+  });
   res.send("Power added to suite.");
 });
 
@@ -15,8 +20,8 @@ app.get("/data/powers", async (req, res) => {
       effects: true,
       ranges: true,
       durations: true,
-      creator: true
-    }
+      creator: true,
+    },
   };
   req.query.query && (query.where = JSON.parse(req.query.query));
   const j = await db.powers.findMany(query);

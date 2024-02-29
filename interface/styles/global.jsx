@@ -6,6 +6,13 @@ const Style = () => {
   return (
     <Global
       styles={css`
+        body {
+          margin: unset;
+        }
+        html {
+          max-height: 100vh;
+          overflow: hidden;
+        }
         :root,
         #root {
           background-color: ${colors.background};

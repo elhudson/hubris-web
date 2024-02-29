@@ -1,32 +1,33 @@
 import { useCharacter } from "@contexts/character";
-import { useUser } from "@contexts/user";
 import ui from "interface";
-import { useImmer } from "use-immer";
 import _ from "lodash";
 import { get_power_cost } from "utilities";
-import { FaPlus } from "react-icons/fa6";
 import { css, useTheme } from "@emotion/react";
 import { usePower } from "@contexts/power";
-import { forwardRef, useEffect } from "react";
-import { useAsync } from "react-async-hook";
 import { Effects, Ranges, Durations } from "./selections";
 
 export default () => {
   const { classes } = useTheme();
   const { character } = useCharacter() ?? { character: null };
   const { power, update } = usePower();
-  const options = useAsync(async () => {
+  const options = async () => {
     const effects =
       character?.effects ??
-      (await fetch(`/data/rules?table=effects&relations=true`).then((e) => e.json()));
+      (await fetch(`/data/rules?table=effects&relations=true`).then((e) =>
+        e.json()
+      ));
     const ranges =
       character?.ranges ??
-      (await fetch(`/data/rules?table=ranges&relations=true`).then((e) => e.json()));
+      (await fetch(`/data/rules?table=ranges&relations=true`).then((e) =>
+        e.json()
+      ));
     const durations =
       character?.durations ??
-      (await fetch(`/data/rules?table=durations&relations=true`).then((e) => e.json()));
+      (await fetch(`/data/rules?table=durations&relations=true`).then((e) =>
+        e.json()
+      ));
     return { effects, durations, ranges };
-  }).result;
+  };
   const addOption = (table) => {
     return (e) => {
       update((draft) => {
@@ -83,26 +84,27 @@ export default () => {
             <div css={classes.elements.number}>{get_power_cost(power)}</div>
           </ui.Numberbox>
         </div>
-        {options && (
-          <section>
-            <Effects power={power} options={options} add={addOption}/>
-            <Ranges power={power} options={options} add={addOption} />
-            <Durations power={power} options={options} add={addOption} />
-          </section>
-        )}
-      </section>
-      <section>
-        <ui.Notif
-          func={async () => {
-            await fetch(`/data/powers/save`, {
-              method: "POST",
-              body: JSON.stringify(power),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-          }}
-          btn={"Create"}
+        <ui.Loading
+          getter={options}
+          render={(options) => (
+            <section>
+              <Effects
+                power={power}
+                options={options}
+                add={addOption}
+              />
+              <Ranges
+                power={power}
+                options={options}
+                add={addOption}
+              />
+              <Durations
+                power={power}
+                options={options}
+                add={addOption}
+              />
+            </section>
+          )}
         />
       </section>
     </main>
