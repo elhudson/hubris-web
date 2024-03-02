@@ -44,7 +44,13 @@ export default () => {
                   "Name",
                   <Route to={`/character/${character.id}`}>
                     {character.biography.name}
-                  </Route>
+                  </Route>,
+                ],
+                character.campaign && [
+                  "Campaign",
+                  <Route to={`/campaign/${character.campaign.id}`}>
+                    {character.campaign.name}
+                  </Route>,
                 ],
                 [
                   "Class",
@@ -53,7 +59,7 @@ export default () => {
                       feature={c}
                       table="classes"
                     />
-                  ))
+                  )),
                 ],
                 [
                   "Backgrounds",
@@ -62,7 +68,7 @@ export default () => {
                       feature={c}
                       table="backgrounds"
                     />
-                  ))
+                  )),
                 ],
                 ["Alignment", <Alignment />],
                 ["Tier", <Tier />],
@@ -70,8 +76,8 @@ export default () => {
                   "XP",
                   <span>
                     {calc_xp(character)} / {character.xp_earned}
-                  </span>
-                ]
+                  </span>,
+                ],
               ]}
             />
           </section>

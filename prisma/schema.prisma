@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Wed Feb 28 2024 09:41:44 GMT-0500 (Eastern Standard Time)✨
+//🧩Don't Edit this file.✨Generated in Thu Feb 29 2024 19:09:13 GMT-0500 (Eastern Standard Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -30,6 +30,8 @@ model Summaries {
   campaign   Campaigns  @relation(fields: [campaignId], references: [id])
   campaignId String
   text       String     @db.LongText
+  font       String     @default("iosevka")
+  size       Int        @default(14)
   author     Characters @relation(fields: [authorId], references: [id])
   authorId   String
 

@@ -17,7 +17,7 @@ export default ({ children }) => {
     text: themes[scheme].foreground,
     accent: themes[scheme].accents["04"],
     text_accent: themes[scheme].accents["05"],
-    ...themes[scheme]
+    ...themes[scheme].colors
   };
   const palette={
     accent1: Color(themes[scheme].foreground).fade(0.95).toString(),

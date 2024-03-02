@@ -1,16 +1,16 @@
 import * as popover from "@radix-ui/react-popover";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { useTheme, css } from "@emotion/react";
 
 export default ({ trigger, children }) => {
-  const { colors } = useTheme();
+  const { colors, classes } = useTheme();
   return (
     <popover.Root>
       <popover.Trigger asChild>
         <button>{trigger}</button>
       </popover.Trigger>
       <popover.Content
-        className={"shadow "+css`
+        css={css`
+          ${classes.decorations.shadowed};
           z-index: 3;
           background-color: ${colors.background};
           padding: 5px;

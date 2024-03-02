@@ -19,73 +19,47 @@ const Bio = () => {
     });
   };
   return (
-    <div
+    <Metadata
       css={css`
         .quill {
-          ${(classes.elements.description, classes.decorations.dashed)};
+          ${classes.decorations.dashed};
+          ${classes.elements.description}
         }
-
-        input[type="text"] {
-          width: 100%;
-        }
-        section {
-          display: flex;
-          gap: 10px;
-          >div {
-            width: 100%;
-            >label {
-              margin-bottom: 5px;
-            }
-          }
-        }
-        grid-template-areas:
-          "name appearance backstory backstory"
-          "gender appearance backstory backstory"
-          "alignment appearance backstory backstory";
-        label {
-          display: block;
-          text-decoration: underline;
-          text-underline-offset: 2px;
-        }
-      `}>
-      <Metadata
-        pairs={[
-          [
-            "Name",
-            <input
-              type="text"
-              value={character.biography.name}
-              onChange={(e) => handleChange(e, "biography.name")}
-            />
-          ],
-          [
-            "Gender",
-            <input
-              type="text"
-              value={character.biography.gender}
-              onChange={(e) => handleChange(e, "biography.gender")}
-            />
-          ],
-          ["Alignment", <Alignment />]
-        ]}
-      />
-      <section>
-        <div>
-          <label>Backstory</label>
+      `}
+      pairs={[
+        [
+          "Name",
+          <input
+            type="text"
+            value={character.biography.name}
+            onChange={(e) => handleChange(e, "biography.name")}
+          />
+        ],
+        [
+          "Gender",
+          <input
+            type="text"
+            value={character.biography.gender}
+            onChange={(e) => handleChange(e, "biography.gender")}
+          />
+        ],
+        ["Alignment", <Alignment />],
+        [
+          "Backstory",
           <Notepad
             text={character.biography.backstory}
             onChange={(e) => handleEdit(e, "biography.backstory")}
           />
-        </div>
-        <div>
-          <label>Appearance</label>
+        ],
+        [
+          "Appearance",
           <Notepad
             text={character.biography.appearance}
             onChange={(e) => handleEdit(e, "biography.appearance")}
           />
-        </div>
-      </section>
-    </div>
+        ]
+      ]}
+    />
   );
 };
 

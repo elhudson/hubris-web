@@ -81,98 +81,13 @@ const Cpg = ({ cpg }) => {
           <Campaign.characters />
           <Campaign.summaries />
         </Tabs>
-        <Campaign.save />
+        <span
+          css={css`
+            background-color: ${colors.background};
+          `}>
+          <Campaign.save />
+        </span>
       </Actions>
     </campaignContext.Provider>
   );
-  // return (
-  //   <div
-  //     css={css`
-  //       max-height: 100vh;
-  //       overflow: scroll;
-  //       section:not(.profile section),
-  //       > * > button {
-  //         margin: 5px 0px;
-  //         padding: 5px;
-  //         background-color: ${Color(colors.background).toString()};
-  //         border: 1px solid ${colors.accent};
-  //       }
-  //       .profile > div {
-  //         background-color: ${palette.accent1};
-  //       }
-  //     `}>
-  //     {campaign != null && (
-  //       <>
-
-  //             <h2>{campaign.name}</h2>
-  //             <div
-  //               css={css`
-  //                 width: 100%;
-  //                 display: flex;
-  //                 gap: 10px;
-  //                 > * {
-  //                   flex-grow: 1;
-  //                 }
-  //               `}>
-  //               <section>
-  //
-  //               </section>
-  //               <section>
-  //                 <Campaign.xp />
-  //                 <Campaign.sessions />
-  //               </section>
-  //             </div>
-  //             <section>
-  //               <Notepad text={campaign.description} />
-  //             </section>
-  //             <div
-  //               css={css`
-  //                 display: flex;
-  //                 gap: 10px;
-  //                 > section {
-  //                   &:first-child {
-  //                     max-width: fit-content;
-  //                   }
-  //                   &:nth-child(2) {
-  //                     flex-grow: 1;
-  //                   }
-  //                   position: relative;
-  //                   > h3 {
-  //                     text-align: center;
-  //                     text-transform: uppercase;
-  //                     max-height: fit-content;
-  //                   }
-  //                   > button {
-  //                     position: absolute;
-  //                     top: 5px;
-  //                     right: 10px;
-  //                   }
-  //                 }
-  //               `}>
-  //               <Sections>
-  //                 <section>
-  //                   <h3>Our Intrepid Heroes</h3>
-  //                   <Campaign.characters />
-  //                 </section>
-  //                 <section>
-  //                   <h3>The Journey So Far</h3>
-  //                   <button>
-  //                     <a
-  //                       href={`/campaign/${campaign.id}/summaries/${
-  //                         campaign.logbook.length + 1
-  //                       }`}>
-  //                       <FaPlusCircle />
-  //                     </a>
-  //                   </button>
-  //                   <Campaign.summaries />
-  //                 </section>
-  //               </Sections>
-  //             </div>
-  //
-  //           </Actions>
-  //         </campaignContext.Provider>
-  //       </>
-  //     )}
-  //   </div>
-  // );
 };

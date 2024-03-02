@@ -53,7 +53,8 @@ async function retrieve({ id = null, where = null }) {
       },
       class_features: {
         include: {
-          classes: true
+          classes: true,
+          class_paths: true
         }
       },
       tag_features: true,

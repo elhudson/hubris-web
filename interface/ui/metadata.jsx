@@ -22,7 +22,7 @@ export default ({ pairs, ...props }) => {
         
       `}
       {...props}>
-      {pairs.map((pair) => (
+      {_.without(pairs, null, undefined).map((pair) => (
         <>
           <label>{pair[0]}</label>
           <span>{pair[1]}</span>

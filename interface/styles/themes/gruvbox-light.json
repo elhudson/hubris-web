@@ -2,7 +2,13 @@
   "background": "#FBF1C7",
   "foreground": "#282828",
   "colors": {
-    "red": "#CC241D"
+    "red": "#CC241D",
+    "orange": "#D65D0E",
+    "yellow": "#D79921",
+    "green": "#98971A",
+    "cyan": "#689D6A",
+    "blue": "#458588",
+    "purple": "#B16286"
   },
   "accents": {
     "04": "#A89984",

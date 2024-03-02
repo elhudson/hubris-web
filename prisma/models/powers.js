@@ -7,8 +7,8 @@ async function make({
   effects,
   ranges,
   durations,
-  characters=null,
-  creator
+  characters = null,
+  creator,
 }) {
   await db.powers.create({
     data: {
@@ -17,30 +17,30 @@ async function make({
       flavortext: flavortext,
       creator: {
         connect: {
-          id: creator.id
-        }
+          id: creator.id,
+        },
       },
       characters: {
         connect: characters?.map((c) => ({
-          id: c.id
-        }))
+          id: c.id,
+        })),
       },
       ranges: {
         connect: ranges.map((r) => ({
-          id: r.id
-        }))
+          id: r.id,
+        })),
       },
       durations: {
         connect: durations.map((r) => ({
-          id: r.id
-        }))
+          id: r.id,
+        })),
       },
       effects: {
         connect: effects.map((r) => ({
-          id: r.id
-        }))
-      }
-    }
+          id: r.id,
+        })),
+      },
+    },
   });
 }
 
@@ -51,43 +51,45 @@ async function edit({
   effects,
   ranges,
   durations,
-  characters,
-  creator
+  characters = null,
+  creator,
 }) {
-  await db.powers.update({
+  const q = {
     where: {
-      id: id
+      id: id,
     },
     data: {
       name: name,
       flavortext: flavortext,
       creator: {
         connect: {
-          id: creator.id
-        }
-      },
-      characters: {
-        set: characters.map((c) => ({
-          id: c.id
-        }))
+          id: creator.id,
+        },
       },
       ranges: {
         set: ranges.map((r) => ({
-          id: r.id
-        }))
+          id: r.id,
+        })),
       },
       durations: {
         set: durations.map((r) => ({
-          id: r.id
-        }))
+          id: r.id,
+        })),
       },
       effects: {
         set: effects.map((r) => ({
-          id: r.id
-        }))
-      }
-    }
-  });
+          id: r.id,
+        })),
+      },
+    },
+  };
+  characters &&
+    (q.characters = {
+      set: characters.map((c) => ({
+        id: c.id,
+      })),
+    });
+  await db.powers.update(q);
 }
 
 async function save(data) {

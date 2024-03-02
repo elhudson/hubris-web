@@ -3,28 +3,64 @@ import { useImmer } from "use-immer";
 import ui from "interface";
 import _ from "lodash";
 import { PiNumberOne, PiNumberTwo, PiNumberThree } from "react-icons/pi";
+import { FaFilter } from "react-icons/fa";
+import { css } from "@emotion/react";
+const defaults = {
+  trees: [],
+  tags: [],
+  tiers: [],
+};
 
-const filterContext = createContext(null);
+const filterContext = createContext({
+  update: null,
+  filters: defaults,
+});
 
 export const useFilters = () => useContext(filterContext);
 
-export default ({ children }) => {
-  const [filters, update] = useImmer({
-    trees: [],
-    tags: [],
-    tiers: [],
-  });
+export default ({ collapsible = false, children }) => {
+  return <Filters collapsible={collapsible}>{children}</Filters>;
+};
+
+const Filters = ({ children, collapsible = false }) => {
+  const [filters, update] = useImmer(defaults);
   return (
-    <filterContext.Provider value={{ filters, update }}>
-      <ui.Metadata
-        pairs={[
-          ["Tiers", <Tiers />],
-          ["Tags", <Tags />],
-          ["Trees", <Trees />],
-        ]}
-      />
-      {children}
-    </filterContext.Provider>
+    <div
+      css={css`
+        position: relative;
+        > button[aria-haspopup="dialog"] {
+          position: absolute;
+          z-index: 2;
+          top: 0;
+          right: 0;
+        }
+      `}>
+      <filterContext.Provider value={{ filters, update }}>
+        {collapsible ? (
+          <ui.Pop trigger={<FaFilter />}>
+            <Controls />
+          </ui.Pop>
+        ) : (
+          <Controls />
+        )}
+        {children}
+      </filterContext.Provider>
+    </div>
+  );
+};
+
+const Controls = () => {
+  return (
+    <ui.Metadata
+      css={css`
+        margin: 5px;
+      `}
+      pairs={[
+        ["Tiers", <Tiers />],
+        ["Tags", <Tags />],
+        ["Trees", <Trees />],
+      ]}
+    />
   );
 };
 
@@ -112,7 +148,9 @@ const MultiRadio = ({ options, currents, onChange }) => {
 
 export const Tags = () => {
   const opts = async () =>
-    await fetch(`/data/rules?table=tags`).then((res) => res.json()).then(s=> _.sortBy(s, 'title'));
+    await fetch(`/data/rules?table=tags`)
+      .then((res) => res.json())
+      .then((s) => _.sortBy(s, "title"));
   const {
     filters,
     filters: { tags },

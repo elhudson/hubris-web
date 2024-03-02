@@ -83,7 +83,7 @@ export const RadioItem = ({
           ) : (
             <IoIosRadioButtonOff />
           ))}
-        {/* <radio.Indicator>
+        <radio.Indicator>
           {getIcon ? (
             <Switch
               checked={true}
@@ -92,7 +92,7 @@ export const RadioItem = ({
           ) : (
             <IoIosRadioButtonOn />
           )}
-        </radio.Indicator> */}
+        </radio.Indicator>
       </radio.Item>
       {children ? (
         <div>

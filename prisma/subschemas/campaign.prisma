@@ -22,6 +22,8 @@ model Summaries {
   campaign   Campaigns  @relation(fields: [campaignId], references: [id])
   campaignId String
   text       String     @db.LongText
+  font       String     @default("iosevka")
+  size       Int        @default(14)
   author     Characters @relation(fields: [authorId], references: [id])
   authorId   String
 

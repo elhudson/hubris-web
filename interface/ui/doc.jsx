@@ -2,14 +2,35 @@ import ReactQuill, { Quill } from "react-quill";
 import { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import { useTheme, css } from "@emotion/react";
+import _ from "lodash";
+const fonts = {
+  iosevka: "Iosevka Web",
+  tangerine: "Tangerine",
+  "aref-ruqaa": "Aref Ruqaa",
+  roboto: "Roboto",
+  "kode-mono": "Kode Mono"
+};
+
+const sizes = _.range(10, 31, 2).map((s) => `${s}px`);
 
 var Font = Quill.import("attributors/class/font");
-Font.whitelist = ["roboto", "aref ruqaa", "mirza"];
+var Size = Quill.import("attributors/style/size");
+Font.whitelist = Object.keys(fonts);
+Size.whitelist = sizes;
 Quill.register(Font, true);
+Quill.register(Size, true);
 
-export default ({ text, onChange }) => {
+export default ({
+  text,
+  onChange,
+  options = {
+    font: "iosevka",
+    size: 14,
+    update: null
+  }
+}) => {
   const ref = useRef(null);
-  const { colors, palette } = useTheme();
+  const { colors } = useTheme();
   useEffect(() => {
     ref.current?.editor.root.setAttribute("spellcheck", false);
   }, []);
@@ -17,26 +38,28 @@ export default ({ text, onChange }) => {
     <main
       css={css`
         #toolbar {
-          display: ${onChange == null ? "none" : "block"};
+          display: ${onChange == null ? "none" : "flex"};
+          gap: 5px;
         }
         .ql-toolbar,
         .ql-container {
           border: 1px solid ${colors.accent};
         }
       `}>
-      <Toolbar />
+      <Toolbar {...options} />
       <ReactQuill
         theme={"snow"}
         css={css`
-          .ql-font-mirza {
-            font-family: "Mirza";
-          }
-          .ql-font-roboto {
-            font-family: "Roboto";
-          }
+          ${Object.entries(fonts).map(
+            ([key, f]) => css`
+              .ql-font-${key} {
+                font-family: "${f}";
+              }
+            `
+          )}
           .ql-editor {
-            font-family: "Aref Ruqaa";
-            font-size: 16px;
+            font-size: ${options.size}px;
+            font-family: ${fonts[options.font]};
           }
           max-height: 80vh;
           p {
@@ -49,16 +72,55 @@ export default ({ text, onChange }) => {
         readOnly={onChange == null}
         modules={{
           toolbar: {
-            container: "#toolbar",
-          },
+            container: "#toolbar"
+          }
         }}
       />
     </main>
   );
 };
 
-const Toolbar = () => {
+const Fonts = ({ font, size, update = null }) => {
+  return (
+    <>
+      <select
+        onChange={update("font", font)}
+        className="ql-font"
+        css={css`
+          ${Object.entries(fonts).map(
+            ([key, f]) => css`
+              span[data-label="${f}"]::before {
+                font-family: "${f}";
+              }
+            `
+          )}
+        `}>
+        {Object.entries(fonts).map(([key, f]) => (
+          <option
+            selected={key == font}
+            value={key}>
+            {f}
+          </option>
+        ))}
+      </select>
+      <select
+        className="ql-size"
+        onChange={update("size", size)}>
+        {sizes.map((s) => (
+          <option
+            value={s}
+            selected={s == `${size}px`}>
+            {s}
+          </option>
+        ))}
+      </select>
+    </>
+  );
+};
+
+const Toolbar = ({ font, size, update = null }) => {
   const { colors, palette, classes } = useTheme();
+  const { red, orange, yellow, green, cyan, blue, purple } = colors;
   return (
     <div
       id="toolbar"
@@ -69,6 +131,14 @@ const Toolbar = () => {
         }
         .ql-fill {
           fill: ${colors.text_accent};
+        }
+        > button,
+        > span.ql-picker {
+          border: 1px solid ${colors.accent} !important;
+        }
+        .ql-picker {
+          color: unset;
+          color: ${colors.accent};
         }
         button,
         .ql-picker,
@@ -114,34 +184,24 @@ const Toolbar = () => {
             }
           }
         }
-        .ql-font {
-          span[data-label="Aref Ruqaa"]::before {
-            font-family: "Aref Ruqaa";
-          }
-          span[data-label="Mirza"]::before {
-            font-family: "Mirza";
-          }
-          span[data-label="Roboto"]::before {
-            font-family: "Roboto";
-          }
-        }
       `}>
       <button className="ql-bold"></button>
       <button className="ql-italic"></button>
       <select className="ql-color">
-        <option value="red"></option>
-        <option value="green"></option>
-        <option value="blue"></option>
-        <option value="orange"></option>
-        <option value="violet"></option>
-        <option value="#d0d1d2"></option>
+        <option value={red}></option>
+        <option value={orange}></option>
+        <option value={yellow}></option>
+        <option value={green}></option>
+        <option value={cyan}></option>
+        <option value={blue}></option>
+        <option value={purple}></option>
         <option selected></option>
       </select>
-      <select class="ql-font">
-        <option selected>Aref Ruqaa</option>
-        <option value="mirza">Mirza</option>
-        <option value="roboto">Roboto</option>
-      </select>
+      <Fonts
+        font={font}
+        size={size}
+        update={update}
+      />
     </div>
   );
 };

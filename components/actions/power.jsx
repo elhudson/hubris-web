@@ -2,13 +2,13 @@ import { useCharacter } from "@contexts/character";
 import { useUser } from "@contexts/user";
 import { usePower } from "@contexts/power";
 import Make from "@components/catalog/powers/maker";
-import Dialog from "@ui/dialog";
+import Alert from "@ui/alert";
 import { useRef, forwardRef } from "react";
 import _ from "lodash";
 
 export default () => {
   const { character } = useCharacter() ?? { character: null };
-  const edit=useCharacter()?.update
+  const edit = useCharacter()?.update;
   const user = useUser();
   const { power, update } = usePower();
   const editRef = useRef(null);
@@ -34,10 +34,12 @@ export default () => {
               },
             },
           }),
-        }).then((c) =>
-          edit && edit((draft) => {
-            _.remove(draft.powers, (p) => p.id == power.id);
-          })
+        }).then(
+          (c) =>
+            edit &&
+            edit((draft) => {
+              _.remove(draft.powers, (p) => p.id == power.id);
+            })
         );
       },
     });
@@ -56,10 +58,12 @@ export default () => {
               id: power.id,
             },
           }),
-        }).then((c) =>
-          edit && edit((draft) => {
-            _.remove(draft.powers, (p) => p.id == power.id);
-          })
+        }).then(
+          (c) =>
+            edit &&
+            edit((draft) => {
+              _.remove(draft.powers, (p) => p.id == power.id);
+            })
         );
       },
     });
@@ -73,15 +77,25 @@ export default () => {
 };
 
 const Edit = forwardRef(function Func(props = {}, ref) {
+  const { power } = usePower();
   return (
-    <Dialog
-      trigger={
+    <Alert
+      button={
         <button
           ref={ref}
           style={{ display: "none" }}
         />
+      }
+      confirm={async () =>
+        await fetch("/data/powers/save", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(power),
+        })
       }>
       <Make />
-    </Dialog>
+    </Alert>
   );
 });

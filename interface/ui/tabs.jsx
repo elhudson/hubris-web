@@ -1,5 +1,6 @@
 import { useTheme, css } from "@emotion/react";
 import * as tabs from "@radix-ui/react-tabs";
+import Scrollable from "@ui/scrollable";
 
 export default ({ names, children, def, disabled = [], ...props }) => {
   const { classes, colors } = useTheme();
@@ -9,7 +10,7 @@ export default ({ names, children, def, disabled = [], ...props }) => {
       defaultValue={toVal(def)}
       css={css`
         margin-top: 10px;
-
+        max-height: 80vh;
         [role="tablist"] {
           display: flex;
           width: 100%;
@@ -31,8 +32,8 @@ export default ({ names, children, def, disabled = [], ...props }) => {
           border: 1px solid ${colors.accent};
           border-top: unset;
           padding: 10px;
-          max-height: 80vh;
-          overflow: scroll;
+          height: 100%;
+          max-height: 75vh;
         }
       `}
       {...props}>
@@ -47,7 +48,7 @@ export default ({ names, children, def, disabled = [], ...props }) => {
       </tabs.List>
       {children.map((c) => (
         <tabs.Content value={toVal(names[children.indexOf(c)])}>
-          {c}
+          <Scrollable>{c}</Scrollable>
         </tabs.Content>
       ))}
     </tabs.Root>

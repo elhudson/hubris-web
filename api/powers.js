@@ -17,9 +17,21 @@ app.post("/data/powers/save", async (req, res) => {
 app.get("/data/powers", async (req, res) => {
   const query = {
     include: {
-      effects: true,
-      ranges: true,
-      durations: true,
+      effects: {
+        include: {
+          trees: true
+        }
+      },
+      ranges: {
+        include: {
+          trees: true
+        }
+      },
+      durations: {
+        include: {
+          trees: true
+        }
+      },
       creator: true,
     },
   };

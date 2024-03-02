@@ -39,15 +39,23 @@ export default () => {
 };
 
 const Summary = ({ s, characters }) => {
+  const { id, session } = useParams();
   const [editable, setEditable] = useState(false);
   const { colors, classes } = useTheme();
   const [summary, update] = useImmer(
     s ?? {
       author: characters ? characters[0] : null,
       text: "",
-      session: session,
+      session: useParams()?.session,
+      font: null,
+      size: 14
     }
   );
+  const setFormat = (prop, val) => {
+    update((draft) => {
+      _.set(draft, prop, val);
+    });
+  };
   return (
     <main
       css={css`
@@ -60,11 +68,11 @@ const Summary = ({ s, characters }) => {
         }
         background-color: ${colors.background};
         border: 1px solid ${colors.accent};
+        padding: 10px;
         span {
           width: fit-content;
         }
         section {
-          padding: 10px;
           > button {
             position: absolute;
             top: 10px;
@@ -94,7 +102,7 @@ const Summary = ({ s, characters }) => {
                       }
                     : null
                 }
-              />,
+              />
             ],
             [
               "Session",
@@ -119,12 +127,17 @@ const Summary = ({ s, characters }) => {
                       }
                     : null
                 }
-              />,
-            ],
+              />
+            ]
           ]}
         />
         <Doc
           text={summary.text}
+          options={{
+            font: summary.font,
+            size: summary.size,
+            update: setFormat
+          }}
           onChange={
             editable
               ? (e) => {
@@ -145,9 +158,9 @@ const Summary = ({ s, characters }) => {
           return await fetch(`/data/campaigns/logbook?id=${id}`, {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify([summary]),
+            body: JSON.stringify([summary])
           }).then((f) => f.text());
         }}
         btn="Save Summary"

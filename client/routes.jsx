@@ -10,6 +10,7 @@ import pages from "@pages/pages";
 const { rules, user, campaign, catalog, character, tools } = pages;
 import Background from "@ui/background";
 import { css, useTheme } from "@emotion/react";
+import Scrollable from "@ui/scrollable";
 
 const App = ({ children }) => {
   const { colors } = useTheme();
@@ -19,9 +20,8 @@ const App = ({ children }) => {
         height: 95vh;
         width: 80%;
         margin: auto;
-        overflow: scroll;
       `}>
-      {children}
+      <Scrollable>{children}</Scrollable>
     </main>
   );
 };

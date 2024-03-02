@@ -38,15 +38,15 @@ export default ({ colors, palette }) => {
     },
     qualities: {
       danger: css`
-        background-color: ${Color(colors.colors.red)
+        background-color: ${Color(colors.red)
           .fade(0.6)
           .hsl()
           .toString()};
         color: ${Color(colors.red).darken(0.5).hsl().toString()};
         border: 1px solid
-          ${Color(colors.colors.red).darken(0.5).hsl().toString()};
+          ${Color(colors.red).darken(0.5).hsl().toString()};
         &:hover {
-          background-color: ${Color(colors.colors.red)
+          background-color: ${Color(colors.red)
             .fade(0.4)
             .hsl()
             .toString()};
