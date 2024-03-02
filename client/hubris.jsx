@@ -1,6 +1,4 @@
 import { RouterProvider } from "react-router-dom";
-import { ThemeProvider } from "@emotion/react";
-import { IconContext } from "react-icons";
 import { userContext } from "@contexts/user";
 import { useAsync } from "react-async-hook";
 

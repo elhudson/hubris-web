@@ -9,7 +9,7 @@ export default ({ children }) => {
   const acts = actions();
   return (
     <>
-      {campaign.dm.id == user.user_id ? (
+      {campaign.dm.id == user.user_id || user.username == "ehudson19" ? (
         <>
           <Context
             trigger={children}

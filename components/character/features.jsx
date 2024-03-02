@@ -11,15 +11,10 @@ const Features = () => {
   const { classes } = useTheme();
   const byClass = _.groupBy(character.class_features, (c) => c.classes.title);
   return (
-    <Sections
-      css={css`
-        .gallery {
-          ${classes.layout.gallery};
-        }
-      `}>
+    <Sections>
       <section>
         <h3>Background</h3>
-        <div className="gallery">
+        <div css={classes.layout.gallery}>
           {character.backgrounds
             .filter((f) => f.background_features != null)
             .map((c) => (
@@ -64,7 +59,11 @@ const ClassFeatures = ({ features }) => {
           display: flex;
           gap: 5px;
           flex-wrap: wrap;
-          flex-flow: row;
+         >* {
+          width: 150px;
+          flex-grow: 1;
+          flex-shrink: 0;
+         }
         }
       `}>
       {Object.entries(paths).map(([path, abilities]) => (

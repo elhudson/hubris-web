@@ -1,41 +1,44 @@
-import { useAsync } from "react-async-hook";
 import { useCampaign } from "@contexts/campaign";
 import Multi from "@ui/multi";
-import Notif from "@ui/notif";
+import Loading from "@ui/loading";
 import _ from "lodash";
 
 export default () => {
   const { campaign, update } = useCampaign();
-  const characters = useAsync(
-    async () =>
-      await fetch(`/data/query?method=findMany&table=characters`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          include: {
-            classes: true,
-            backgrounds: true,
-            effects: true,
-            tag_features: true,
-            class_features: true,
-            ranges: true,
-            durations: true,
-            skills: true,
-            HD: {
-              include: {
-                die: true
-              }
+  const characters = async () =>
+    await fetch(`/data/query?method=findMany&table=characters`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        include: {
+          classes: true,
+          backgrounds: true,
+          effects: {
+            include: {
+              range: true,
+              duration: true
             }
-          }
-        })
-      }).then((ch) => ch.json())
-  ).result;
+          },
+          tag_features: true,
+          class_features: true,
+          ranges: true,
+          durations: true,
+          skills: true,
+          HD: {
+            include: {
+              die: true,
+            },
+          },
+        },
+      }),
+    }).then((ch) => ch.json());
 
   return (
-    <>
-      {characters && (
+    <Loading
+      getter={characters}
+      render={(characters) => (
         <Multi
           items={characters}
           labelPath="biography.name"
@@ -50,6 +53,6 @@ export default () => {
           }}
         />
       )}
-    </>
+    />
   );
 };
