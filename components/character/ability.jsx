@@ -31,7 +31,7 @@ const Ability = ({ data, table, children = null }) => {
             table == "background_features"
               ? data.backgroundsId
               : table == "class_features"
-              ? data.class_PathsId
+              ? data.class_paths.id
               : null
         }}>
         <Rule data={data} />

@@ -3,10 +3,10 @@ import { sql_danger, sql_safe } from "utilities";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { css } from "@emotion/react";
-import { FaD, FaDiceD20 } from "react-icons/fa6";
+import { FaDiceD20 } from "react-icons/fa6";
 
 const Wiki = () => {
-  const { colors, classes } = useTheme();
+  const { colors } = useTheme();
   const tables = async () => await fetch("/data/tables").then((j) => j.json());
   const getTables = useAsync(tables);
   return (
@@ -14,6 +14,10 @@ const Wiki = () => {
       css={css`
         display: flex;
         gap: 10px;
+        flex-wrap: wrap;
+        section {
+          flex-grow: 1;
+        }
         ul {
           margin-left: unset;
           padding-left: 5px;

@@ -1,122 +1,127 @@
 import * as nav from "@radix-ui/react-navigation-menu";
-import { userContext } from "@contexts/user";
-import { useContext } from "react";
+import { useUser } from "@contexts/user";
 import Login from "@pages/user/login";
 import { useTheme, css } from "@emotion/react";
-import { Link } from "react-router-dom";
-import Tables from "@components/tables";
+import { IoPersonCircle } from "react-icons/io5";
+import { GiBookCover } from "react-icons/gi";
+import { FaSwatchbook } from "react-icons/fa";
 import usr from "@actions/user";
-import Switcher from "@styles/switcher";
+import switcher from "@styles/switcher";
+import { sql_danger, sql_safe } from "../utilities";
+import _ from "lodash";
+const tables = await fetch("/data/tables").then((j) => j.json());
 
-const Menu = () => {
-  const { colors, classes } = useTheme();
-  const user = useContext(userContext);
+export default () => {
+  const { logged_in, username } = useUser();
+  const { colors } = useTheme();
   return (
     <div
       css={css`
-        position: sticky;
+        display: flex;
+        align-items: center;
+        padding: 0px 10px;
+        margin-bottom: 20px;
         background-color: ${colors.background};
-        border: 1px solid ${colors.accent};
-        z-index: 1;
-        margin: 10px;
-        h1 {
-          padding-left: 5px;
+        h1 a {
+          color: ${colors.text};
         }
+        nav {
+          flex-grow: 1;
+        }
+        border-bottom: 1px solid ${colors.accent};
       `}>
-      <h1>HUBRIS</h1>
-      <nav.Root
-        css={css`
-          position: absolute;
-          right: 0;
-          top: 0;
-          li {
-            list-style: none;
-            padding: 5px;
-            position: relative;
+      <h1>
+        <a href="/">HUBRIS</a>
+      </h1>
+      <Menu
+        items={[
+          {
+            label: "Wiki",
+            icon: <GiBookCover />,
+            children: tables.map((t) => ({
+              label: sql_danger(t),
+              action: () => window.location.assign(`/srd/${sql_safe(t)}`)
+            }))
+          },
+          {
+            label: logged_in ? username : "Log in",
+            icon: <IoPersonCircle />,
+            action: logged_in ? null : <Login />,
+            children: logged_in ? [...usr()] : null
+          },
+          {
+            label: "Appearance",
+            icon: <FaSwatchbook />,
+            children: switcher()
           }
-          .nav {
-            display: flex;
-            justify-content: center;
-            margin: 5px;
-          }
-          .content {
-            position: absolute;
-            top: 35px;
-            right: 100%;
-            width: 0%;
-            li {
-              ${classes.decorations.shadowed};
-              width: fit-content;
-              white-space: nowrap;
-              background-color: ${colors.background};
-              margin: 5px;
-              margin-left: 0px;
-              margin-top: 0px;
-              border: 1px solid ${colors.accent};
-            }
-          }
-          ul > li:last-child .content {
-            right: -25%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: right;
-          }
-          a,
-          button {
-            all: unset;
-            &:hover {
-              background-color: unset;
-              font-style: italic;
-              text-decoration: underline;
-              font-weight: 400;
-              text-underline-offset: 2px;
-              cursor: pointer;
-            }
-          }
-        `}>
-        <nav.List className="nav">
-          <nav.Item>
-            <nav.Trigger>Appearance</nav.Trigger>
-            <nav.Content className="content">
-              <li>
-                <Switcher />
-              </li>
-            </nav.Content>
-          </nav.Item>
-          <nav.Item>
-            {user.logged_in ? <a href="/logout">Log Out</a> : <Login />}
-          </nav.Item>
-          {user.logged_in && (
-            <>
-              <nav.Item>
-                <nav.Link>
-                  <Link to={`${user.username}/creations`}>My Stuff</Link>
-                </nav.Link>
-              </nav.Item>
-              <nav.Item>
-                <nav.Trigger>Create</nav.Trigger>
-                <nav.Content className="content">
-                  {usr().map((u) => (
-                    <li>
-                      <a onClick={u.action}>{u.label}</a>
-                    </li>
-                  ))}
-                </nav.Content>
-              </nav.Item>
-            </>
-          )}
-          <nav.Item>
-            <nav.Trigger>
-              <a href="/">Wiki</a>
-            </nav.Trigger>
-            <nav.Content className="content">
-              <Tables />
-            </nav.Content>
-          </nav.Item>
-        </nav.List>
-      </nav.Root>
+        ]}
+      />
     </div>
   );
 };
 
-export default Menu;
+const Item = ({ d, offset = 0 }) => {
+  const { classes, colors } = useTheme();
+  return (
+    <>
+      {d.children ? (
+        <nav.Item>
+          <nav.Trigger>{d.icon ?? d.label}</nav.Trigger>
+          <nav.Content
+            css={css`
+              position: absolute;
+              margin-top: 5px;
+              right: ${offset}px;
+              ul {
+                ${classes.elements.listbox};
+                li {
+                  ${classes.elements.list_item};
+                  white-space: nowrap;
+                }
+              }
+            `}>
+            <nav.Sub
+              css={css`
+                position: relative !important;
+              `}>
+              <nav.List>
+                {d.children.map((c) => (
+                  <Item d={c} />
+                ))}
+              </nav.List>
+            </nav.Sub>
+          </nav.Content>
+        </nav.Item>
+      ) : (
+        <nav.Item onClick={d.action}>{d?.icon ?? d.label}</nav.Item>
+      )}
+    </>
+  );
+};
+
+const Menu = ({ items }) => {
+  return (
+    <nav.Root
+      css={css`
+        ul {
+          list-style: none;
+          padding: unset;
+          margin: unset;
+        }
+      `}>
+      <nav.List
+        css={css`
+          gap: 5px;
+          display: flex;
+          flex-direction: row-reverse;
+        `}>
+        {items.map((d) => (
+          <Item
+            d={d}
+            offset={28 * _.findIndex(items, d)}
+          />
+        ))}
+      </nav.List>
+    </nav.Root>
+  );
+};

@@ -15,6 +15,9 @@ export default () => {
     const cps = await fetch(
       `/data/rules?table=tags&query=${JSON.stringify({
         where: {
+          tag_features: {
+            some: {}
+          },
           classes: {
             some: {
               OR: character.classes.map((c) => ({

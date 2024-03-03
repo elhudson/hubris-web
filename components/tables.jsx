@@ -1,18 +1,20 @@
-import { useAsync } from "react-async-hook";
 import { sql_danger, sql_safe } from "utilities";
+import Loading from "@ui/loading";
 
 export default () => {
-  const tables = useAsync(
-    async () => await fetch("/data/tables").then((j) => j.json())
-  ).result;
+  const tables = async () => await fetch("/data/tables").then((j) => j.json());
   return (
-    <>
-      {tables &&
-        tables.map((t) => (
-          <li>
-            <a href={`/srd/${sql_safe(t)}`}>{sql_danger(t)}</a>
-          </li>
-        ))}
-    </>
+    <Loading
+      getter={tables}
+      render={(tables) => (
+        <ul>
+          {tables.map((t) => (
+            <li>
+              <a href={`/srd/${sql_safe(t)}`}>{sql_danger(t)}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    />
   );
 };

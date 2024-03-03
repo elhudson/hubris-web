@@ -5,6 +5,7 @@ export const Row = ({children, ...props}) => {
     <div
       css={css`
         display: flex;
+        flex-wrap: wrap;
         width: 100%;
         gap: 10px;
         > * {

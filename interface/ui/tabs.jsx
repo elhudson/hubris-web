@@ -16,7 +16,7 @@ export default ({ names, children, def, disabled = [], ...props }) => {
           width: 100%;
           button {
             flex-grow: 1;
-            &:not(button:last-child) {
+            &:not(button:last-of-type(button)) {
               border-right: unset;
             }
             &[aria-selected="true"] {
@@ -31,6 +31,9 @@ export default ({ names, children, def, disabled = [], ...props }) => {
         [role="tabpanel"] {
           border: 1px solid ${colors.accent};
           border-top: unset;
+          @media (max-width: 600px) {
+            border-top: 1px solid ${colors.accent};
+          }
           padding: 10px;
           height: 100%;
           max-height: 75vh;
@@ -38,13 +41,42 @@ export default ({ names, children, def, disabled = [], ...props }) => {
       `}
       {...props}>
       <tabs.List>
-        {names.map((n) => (
-          <tabs.Trigger
-            value={toVal(n)}
-            disabled={disabled.includes(n)}>
-            {n}
-          </tabs.Trigger>
-        ))}
+        <span
+          css={css`
+            @media (max-width: 600px) {
+              display: none;
+            }
+          `}>
+          {names.map((n) => (
+            <tabs.Trigger
+              value={toVal(n)}
+              disabled={disabled.includes(n)}>
+              {n}
+            </tabs.Trigger>
+          ))}
+        </span>
+
+        <select
+          css={css`
+            display: none;
+            @media (max-width: 600px) {
+              font-family: 'Iosevka Web';
+              margin: 5px 0px;
+              border-radius: 0px;
+              appearance: unset;
+              border: 1px solid ${colors.accent};
+              display: block;
+              width: 100%;
+            }
+          `}>
+          {names.map((n) => (
+            <tabs.Trigger
+              asChild
+              value={toVal(n)}>
+              <option value={toVal(n)}>{n}</option>
+            </tabs.Trigger>
+          ))}
+        </select>
       </tabs.List>
       {children.map((c) => (
         <tabs.Content value={toVal(names[children.indexOf(c)])}>

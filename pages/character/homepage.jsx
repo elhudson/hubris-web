@@ -7,6 +7,7 @@ import Character from "@character";
 import { Row } from "@ui/layouts";
 import { useTheme, css } from "@emotion/react";
 import Loading from "@ui/loading";
+import {Buttons} from "@components/character/actions"
 const components = () => {
   const { classes } = useTheme();
   return [
@@ -59,7 +60,7 @@ const Sheet = ({ ch }) => {
           character: character,
           update: update
         }}>
-        <Character.profile />
+        <Character.profile buttons />
         <Tabs
           css={css`
             > [role="tabpanel"] {

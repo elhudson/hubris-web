@@ -8,7 +8,8 @@ import { calc_xp } from "utilities";
 import Metadata from "@ui/metadata";
 import Link from "@components/link";
 import { Link as Route } from "react-router-dom";
-export default () => {
+
+export default ({ buttons = false }) => {
   const { character } = useCharacter();
   const { colors, classes } = useTheme();
   return (
@@ -18,10 +19,17 @@ export default () => {
           css={css`
             display: flex;
             gap: 5px;
+            position: relative;
             padding: 5px;
             border: 1px solid ${colors.accent};
             background-color: ${colors.background};
             min-width: fit-content;
+            [class*="Buttons"] {
+              position: absolute;
+              top: 5px;
+              right: 5px;
+
+            }
           `}>
           <Avatar
             id={character.id}
@@ -44,13 +52,13 @@ export default () => {
                   "Name",
                   <Route to={`/character/${character.id}`}>
                     {character.biography.name}
-                  </Route>,
+                  </Route>
                 ],
                 character.campaign && [
                   "Campaign",
                   <Route to={`/campaign/${character.campaign.id}`}>
                     {character.campaign.name}
-                  </Route>,
+                  </Route>
                 ],
                 [
                   "Class",
@@ -59,7 +67,7 @@ export default () => {
                       feature={c}
                       table="classes"
                     />
-                  )),
+                  ))
                 ],
                 [
                   "Backgrounds",
@@ -68,7 +76,7 @@ export default () => {
                       feature={c}
                       table="backgrounds"
                     />
-                  )),
+                  ))
                 ],
                 ["Alignment", <Alignment />],
                 ["Tier", <Tier />],
@@ -76,11 +84,12 @@ export default () => {
                   "XP",
                   <span>
                     {calc_xp(character)} / {character.xp_earned}
-                  </span>,
-                ],
+                  </span>
+                ]
               ]}
             />
           </section>
+          {buttons && <Buttons />}
         </div>
       </Actions>
     </div>

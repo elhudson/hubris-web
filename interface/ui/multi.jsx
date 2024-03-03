@@ -77,7 +77,10 @@ export default ({
           ${classes.decorations.bordered};
           min-width: fit-content;
         }
-
+        .react-select__option {
+          ${classes.elements.list_item};
+          width: auto;
+        }
         .react-select__group {
           .react-select__group-heading {
             font-weight: bold;

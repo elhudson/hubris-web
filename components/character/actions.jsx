@@ -1,6 +1,6 @@
 import character from "@actions/character";
 import Context from "@ui/context";
-import { css } from "@emotion/css";
+import { css } from "@emotion/react";
 import Tooltip from "@ui/tooltip";
 
 export default ({ children }) => {
@@ -21,17 +21,18 @@ export const Buttons = () => {
   return (
     <div
       css={css`
-        > button {
-          border-radius: 100%;
-          margin: 3px;
+        display: flex;
+        gap: 5px;
+        > span {
+          display: none;
         }
       `}>
-      {character().map((i) => (
+      {acts.map((i) => (
         <Tooltip preview={<button onClick={i.action}>{i.icon}</button>}>
           {i.label}
         </Tooltip>
       ))}
-      {acts.map((i) => i.render)}
+      <span>{acts.map((i) => i.render)}</span>
     </div>
   );
 };

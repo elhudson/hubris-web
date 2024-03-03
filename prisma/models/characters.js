@@ -57,7 +57,11 @@ async function retrieve({ id = null, where = null }) {
           class_paths: true
         }
       },
-      tag_features: true,
+      tag_features: {
+        include: {
+          tags: true
+        }
+      },
       HD: {
         include: {
           die: true
