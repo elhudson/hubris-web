@@ -3,6 +3,7 @@ import Campaigns from "@components/user/campaigns";
 import { useParams } from "react-router-dom";
 import { useUser } from "@contexts/user";
 import Tabs from "@ui/tabs";
+
 export default () => {
   const { user } = useParams();
   const current = useUser();

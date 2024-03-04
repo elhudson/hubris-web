@@ -1,7 +1,32 @@
-import {toProperCase} from "utilities"
-String.prototype.toProperCase=toProperCase
-
-const parts = import.meta.glob(`./ui/*.jsx`, { import: 'default', eager: true })
-export default Object.fromEntries(Object.entries(parts).map(e=> [e[0].replace(/^.*[\\/]/, '').replace(".jsx", "").toProperCase(), e[1]]))
-
-
+// @index('./ui/*.jsx', (f, _) => `export { default as ${_.pascalCase(f.name)} } from '${f.path}'`)
+export { default as Alert } from './ui/alert'
+export { default as Array } from './ui/array'
+export { default as Background } from './ui/background'
+export { default as Checkbox } from './ui/checkbox'
+export { default as Collapsible } from './ui/collapsible'
+export { default as Context } from './ui/context'
+export { default as Counter } from './ui/counter'
+export { default as Dialog } from './ui/dialog'
+export { default as Doc } from './ui/doc'
+export { default as Dropdown } from './ui/dropdown'
+export { default as Field } from './ui/field'
+export { default as Grid } from './ui/grid'
+export { default as Icon } from './ui/icon'
+export { default as Indicator } from './ui/indicator'
+export { default as Layouts } from './ui/layouts'
+export { default as Loading } from './ui/loading'
+export { default as Metadata } from './ui/metadata'
+export { default as Multi } from './ui/multi'
+export { default as Notepad } from './ui/notepad'
+export { default as Notif } from './ui/notif'
+export { default as NumberBox } from './ui/numberBox'
+export { default as Pop } from './ui/pop'
+export { default as Radio } from './ui/radio'
+export { default as Scrollable } from './ui/scrollable'
+export { default as Select } from './ui/select'
+export { default as Switch } from './ui/switch'
+export { default as Tabs } from './ui/tabs'
+export { default as Title } from './ui/title'
+export { default as Toggles } from './ui/toggles'
+export { default as Tooltip } from './ui/tooltip'
+export { default as Upload } from './ui/upload'
