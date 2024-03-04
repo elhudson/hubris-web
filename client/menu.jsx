@@ -7,16 +7,23 @@ import { GiBookCover } from "react-icons/gi";
 import { FaSwatchbook } from "react-icons/fa";
 import usr from "@actions/user";
 import switcher from "@styles/switcher";
+import { useRef } from "react";
 import { sql_danger, sql_safe } from "../utilities";
 import _ from "lodash";
+
 const tables = await fetch("/data/tables").then((j) => j.json());
 
 export default () => {
   const { logged_in, username } = useUser();
   const { colors } = useTheme();
+  const loginRef = useRef(null);
   return (
     <div
       css={css`
+        svg {
+          width: 100%;
+          height: 100%;
+        }
         display: flex;
         align-items: center;
         padding: 0px 10px;
@@ -40,20 +47,21 @@ export default () => {
             icon: <GiBookCover />,
             children: tables.map((t) => ({
               label: sql_danger(t),
-              action: () => window.location.assign(`/srd/${sql_safe(t)}`)
-            }))
+              action: () => window.location.assign(`/srd/${sql_safe(t)}`),
+            })),
           },
           {
             label: logged_in ? username : "Log in",
             icon: <IoPersonCircle />,
-            action: logged_in ? null : <Login />,
-            children: logged_in ? [...usr()] : null
+            action: logged_in ? null : () => loginRef.current.click(),
+            render: logged_in ? null : <Login ref={loginRef} />,
+            children: logged_in ? [...usr()] : null,
           },
           {
             label: "Appearance",
             icon: <FaSwatchbook />,
-            children: switcher()
-          }
+            children: switcher(),
+          },
         ]}
       />
     </div>
@@ -80,10 +88,7 @@ const Item = ({ d, offset = 0 }) => {
                 }
               }
             `}>
-            <nav.Sub
-              css={css`
-                position: relative !important;
-              `}>
+            <nav.Sub>
               <nav.List>
                 {d.children.map((c) => (
                   <Item d={c} />
@@ -93,8 +98,11 @@ const Item = ({ d, offset = 0 }) => {
           </nav.Content>
         </nav.Item>
       ) : (
-        <nav.Item onClick={d.action}>{d?.icon ?? d.label}</nav.Item>
+        <nav.Item onClick={d.action} css={classes.elements.button}>
+          {d?.icon ?? d.label}
+        </nav.Item>
       )}
+      {d?.render}
     </>
   );
 };

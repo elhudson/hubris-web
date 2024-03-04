@@ -4,7 +4,6 @@ import "dotenv/config";
 import _ from "lodash";
 import { db } from "~db/prisma.js";
 
-import schema from "~database/schema.js";
 
 const app = Router();
 
@@ -37,10 +36,10 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  if (process.env.NODE_ENV != "production") {
-    req.session.user = "ehudson19";
-    req.session.user_id = "ddd0c0ad-13c4-47d4-bdfb-a343985187d8";
-  }
+  // if (process.env.NODE_ENV != "production") {
+  //   req.session.user = "ehudson19";
+  //   req.session.user_id = "ddd0c0ad-13c4-47d4-bdfb-a343985187d8";
+  // }
   res.json({
     username: req.session.user,
     user_id: req.session.user_id,
