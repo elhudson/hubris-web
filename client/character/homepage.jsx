@@ -1,42 +1,35 @@
+import {
+  Ac,
+  Attacks,
+  Bio,
+  Features,
+  Health,
+  Initiative,
+  Inventory,
+  Powers,
+  Proficiency,
+  Profile,
+  Save,
+  Skills,
+  Tier,
+  Xp,
+} from "@client/character";
 import { Layouts, Loading, Tabs } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
 
-import Initiative from "./initiative";
-import {
-  Skills,
-  Ac,
-  Initiative,
-  Proficiency,
-  Tier,
-  Xp,
-  Health,
-  Attacks,
-  Inventory,
-  Bio,
-  Features,
-  Powers,
-  Save,
-} from "@client/character";
 import { characterContext } from "contexts";
 import { useImmer } from "use-immer";
 import { useParams } from "react-router-dom";
-import Profile from "./profile";
 
-const components = () => {
-  const { classes } = useTheme();
-  return [
+const Sheet = ({ ch }) => {
+  const [character, update] = useImmer(ch);
+  const {classes}=useTheme()
+  const tabs=[
     { title: "Skills & Abilities", content: <Skills /> },
     { title: "Health", content: <Health /> },
     {
       title: "Progression",
-      content: (
-        <div
-          css={css`
-            > * {
-              margin-bottom: 5px;
-            }
-          `}
-        >
+      content: <div>
           <Proficiency />
           <Xp />
           <div css={classes.elements.selectbox}>
@@ -44,30 +37,25 @@ const components = () => {
             <Tier />
           </div>
         </div>
-      ),
+      
     },
     {
       title: "Combat",
-      content: (
-        <>
+      content: 
+        <div>
           <Layouts.Row>
             <Ac />
             <Initiative />
           </Layouts.Row>
           <Attacks />
-        </>
-      ),
+        </div>
+      
     },
     { title: "Inventory", content: <Inventory /> },
     { title: "Bio", content: <Bio /> },
     { title: "Features", content: <Features /> },
     { title: "Powers", content: <Powers /> },
   ];
-};
-
-const Sheet = ({ ch }) => {
-  const [character, update] = useImmer(ch);
-  const comps = components();
   return (
     <main>
       <characterContext.Provider
@@ -83,10 +71,10 @@ const Sheet = ({ ch }) => {
               max-height: 65vh;
             }
           `}
-          names={comps.map((c) => c.title)}
-          def={comps[0].title}
+          names={tabs.map((c) => c.title)}
+          def={tabs[0].title}
         >
-          {comps.map((c) => c.content)}
+          {tabs.map((c) => c.content)}
         </Tabs>
         <Save />
       </characterContext.Provider>

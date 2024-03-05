@@ -1,4 +1,4 @@
-import { optionsContext, ruleContext, useCharacter } from "@contexts/character";
+import { optionsContext, ruleContext, useCharacter } from "contexts";
 
 import { ClassFeatures } from "@client/rules";
 import { Loading } from "@interface/ui";

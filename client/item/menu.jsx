@@ -1,4 +1,4 @@
-import { Actions } from "@client/items";
+import { Actions } from "@client/item";
 import { Context } from "@interface/ui";
 export default ({ children }) => {
   const acts = Actions();

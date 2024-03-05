@@ -5,6 +5,24 @@ import _ from "lodash";
 import { css } from "@emotion/react";
 import { useCharacter } from "contexts";
 
+const Bin = (props) => {
+  const title = props.type.charAt(0).toUpperCase() + props.type.slice(1);
+  return (
+    <section
+      css={css`
+        > button {
+          float: right;
+        }
+      `}
+    >
+      <h3>{title}</h3>
+      <Create table={props.type} />
+      <List {...props} />
+    </section>
+  );
+};
+
+
 export default () => {
   const { character, update } = useCharacter();
   const { items, armor, weapons } = character.inventory;
@@ -26,22 +44,5 @@ export default () => {
         update={update}
       />
     </Layouts.Sections>
-  );
-};
-
-const Bin = (props) => {
-  const title = props.type.charAt(0).toUpperCase() + props.type.slice(1);
-  return (
-    <section
-      css={css`
-        > button {
-          float: right;
-        }
-      `}
-    >
-      <h3>{title}</h3>
-      <Create table={props.type} />
-      <List {...props} />
-    </section>
   );
 };

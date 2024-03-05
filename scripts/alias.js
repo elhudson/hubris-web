@@ -1,16 +1,38 @@
-import { aliases } from "../aliases.js";
 import fs from "fs";
+import { join } from "path";
 
-const paths = Object.fromEntries(
-  Object.entries(aliases).map(([name, path]) => [name, [path]])
-);
+const client = "./lib/client/";
+const ui = "./lib/interface/";
 
-fs.writeFileSync(
-  "./jsconfig.json",
-  JSON.stringify({
-    compilerOptions: {
-      baseUrl: ".",
-      paths: paths,
-    },
-  })
-);
+const makeAliases = (prefix, base) => {
+  const aliases = {};
+  fs.readdirSync(base).forEach((cli) => {
+    aliases[`@${prefix}/${cli.replace(/\.js/, "")}`] = join(base, cli);
+  });
+  return aliases;
+};
+
+export const aliases = {
+  "@src": ".",
+  utilities: "./utilities/index.js",
+  contexts: "./client/contexts.jsx",
+  context: "./client/contexts.jsx",
+
+  ...makeAliases("client", client),
+  ...makeAliases("interface", ui),
+};
+
+export const jsConfig = (aliases) => {
+  const paths = Object.fromEntries(
+    Object.entries(aliases).map(([name, path]) => [name, [path]])
+  );
+  fs.writeFileSync(
+    "./jsconfig.json",
+    JSON.stringify({
+      compilerOptions: {
+        baseUrl: ".",
+        paths: paths,
+      },
+    })
+  );
+};

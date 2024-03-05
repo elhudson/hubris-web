@@ -1,6 +1,5 @@
 import { Colorschemes } from "@interface/styles";
-import { RouterProvider } from "react-router-dom";
-import router from "@src/routes";
+import Directory from "@src/client/routes";
 import { useAsync } from "react-async-hook";
 import { userContext } from "contexts";
 
@@ -12,7 +11,7 @@ export default () => {
     <Colorschemes>
       {user && (
         <userContext.Provider value={user}>
-          <RouterProvider router={router} />
+          <Directory />
         </userContext.Provider>
       )}
     </Colorschemes>

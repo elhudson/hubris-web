@@ -1,6 +1,7 @@
 import { Multi } from "@interface/ui";
 import _ from "lodash";
-import { useFilters } from "@components/catalog/powers/filters";
+import { useFilters } from "contexts";
+
 const treeable = (power, meta) => {
   if (power.effects.length == 0) {
     return true;
@@ -44,7 +45,7 @@ const makeGroups = (items) =>
       : item.trees.title
   );
 
-export const Effects = ({ power, options, add }) => {
+const Effects = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
     <Multi
@@ -60,7 +61,7 @@ export const Effects = ({ power, options, add }) => {
   );
 };
 
-export const Durations = ({ power, options, add }) => {
+const Durations = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
     <Multi
@@ -79,7 +80,7 @@ export const Durations = ({ power, options, add }) => {
   );
 };
 
-export const Ranges = ({ power, options, add }) => {
+const Ranges = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
     <Multi

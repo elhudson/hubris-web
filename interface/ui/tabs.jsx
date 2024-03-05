@@ -3,6 +3,7 @@ import * as tabs from "@radix-ui/react-tabs";
 import { css, useTheme } from "@emotion/react";
 
 import { Scrollable } from "@interface/ui";
+
 export default ({ names, children, def, disabled = [], ...props }) => {
   const { classes, colors } = useTheme();
   const toVal = (name) => name.toLowerCase().replace(" ", "_");
@@ -44,6 +45,8 @@ export default ({ names, children, def, disabled = [], ...props }) => {
       <tabs.List>
         <span
           css={css`
+            display: flex;
+            width: 100%;
             @media (max-width: 600px) {
               display: none;
             }

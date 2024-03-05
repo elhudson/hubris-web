@@ -12,6 +12,40 @@ export const prisma_safe = (title) => {
   }
 };
 
+export const cost = (score) => {
+  return score == -2
+    ? 0
+    : score == -1
+    ? 1
+    : score == 0
+    ? 2
+    : score == 1
+    ? 3
+    : score == 2
+    ? 5
+    : score == 3
+    ? 8
+    : 12;
+};
+
+export const getCost = ({ code, character }) => {
+  const bonus = boost(character, code);
+  const current = bonus ? character[code] - 1 : character[code];
+  const refund = cost(current);
+  const next = cost(current + 1);
+  const diff = next - refund;
+  return diff;
+};
+
+export const getPointsSpent = ({ char }) => {
+  var spent = 0;
+  ["str", "dex", "con", "int", "wis", "cha"].forEach((item) => {
+    const bonus = boost(char, item);
+    const current = bonus ? char[item] - 1 : char[item];
+    spent += cost(current);
+  });
+  return spent;
+};
 export function toProperCase() {
   if (this.length == 2) {
     return this.toUpperCase();

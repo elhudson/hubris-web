@@ -1,4 +1,4 @@
-import { powerContext, useCharacter, useUser } from "@contexts/power";
+import { powerContext, useCharacter, useUser } from "contexts";
 
 import { Alert } from "@interface/ui";
 import { FaPlus } from "react-icons/fa6";

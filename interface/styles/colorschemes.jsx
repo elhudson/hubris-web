@@ -6,8 +6,10 @@ import { ThemeProvider } from "@emotion/react";
 import { useState } from "react";
 
 export default ({ children }) => {
+  const names = Object.keys(Themes);
+  const prev = localStorage.getItem("colorscheme");
   const [scheme, setScheme] = useState(
-    localStorage.getItem("colorscheme") ?? "default"
+    prev && names.includes(prev) ? prev : "default"
   );
   const colors = {
     background: Themes[scheme].background,
@@ -18,7 +20,7 @@ export default ({ children }) => {
   };
   const palette = {
     accent1: Color(Themes[scheme].foreground).fade(0.95).toString(),
-    accent2: Color(Themes.accent).fade(0.6).toString(),
+    accent2: Color(Themes[scheme].accent).fade(0.6).toString(),
   };
   return (
     <ThemeProvider
@@ -37,11 +39,11 @@ export default ({ children }) => {
     >
       <IconContext.Provider
         value={{
-          color: scheme.text_accent,
+          color: colors.text_accent,
           size: 14,
         }}
       >
-        <Style />
+        <Global />
         {children}
       </IconContext.Provider>
     </ThemeProvider>

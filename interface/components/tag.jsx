@@ -1,4 +1,4 @@
-import {Icon, Tooltip} from '@interface/ui'
+import { Icon, Tooltip } from "@interface/ui";
 
 export default ({ id, title }) => {
   return (
@@ -8,9 +8,9 @@ export default ({ id, title }) => {
           id={id}
           sz={17}
         />
-      }>
+      }
+    >
       {title}
     </Tooltip>
   );
 };
-

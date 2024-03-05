@@ -1,6 +1,7 @@
+import * as Rules from "@client/rules";
+
 import { List, Metadata } from "@interface/components";
 
-import Categories from "@client/rules";
 import { Loading } from "@interface/ui";
 import _ from "lodash";
 import { ruleContext } from "contexts";
@@ -11,23 +12,54 @@ const Category = ({ component, table }) => {
     <ruleContext.Provider
       value={{
         location: "wiki",
-        table: table
-      }}>
+        table: table,
+      }}
+    >
       {component}
     </ruleContext.Provider>
   );
 };
+
+const ClassFeatures = () => (
+  <Category
+    component={<Rules.ClassFeatures />}
+    table={"class_features"}
+  />
+);
+const TagFeatures = () => (
+  <Category
+    component={<Rules.TagFeatures />}
+    table={"tag_features"}
+  />
+);
+const Effects = () => (
+  <Category
+    component={<Rules.Effects />}
+    table={"effects"}
+  />
+);
+const Ranges = () => (
+  <Category
+    component={<Rules.Ranges />}
+    table={"ranges"}
+  />
+);
+const Durations = () => (
+  <Category
+    component={<Rules.Durations />}
+    table={"durations"}
+  />
+);
 
 const Injuries = () => {
   const features = async () =>
     await fetch(
       `/data/rules?table=injuries&query=${JSON.stringify({
         include: {
-          conditions: true
-        }
+          conditions: true,
+        },
       })}`
     ).then((t) => t.json());
-
   return (
     <Loading
       render={(features) => (
@@ -46,8 +78,8 @@ const Settings = () => {
     await fetch(
       `/data/rules?table=settings&query=${JSON.stringify({
         include: {
-          backgrounds: true
-        }
+          backgrounds: true,
+        },
       })}`
     ).then((t) => t.json());
   return (
@@ -129,51 +161,14 @@ const Attributes = () => {
 };
 
 export default {
-  class_features: (
-    <Category
-      table={"class_features"}
-      component={<Categories.Class_Features />}
-    />
-  ),
-  tag_features: (
-    <Category
-      table={"tag_features"}
-      component={<Categories.Tag_Features />}
-    />
-  ),
-  classes: (
-    <Category
-      table={"classes"}
-      component={<Categories.Classes />}
-    />
-  ),
-  effects: (
-    <Category
-      table={"effects"}
-      component={<Categories.Effects />}
-    />
-  ),
-  ranges: (
-    <Category
-      table={"ranges"}
-      component={<Categories.Ranges />}
-    />
-  ),
-  durations: (
-    <Category
-      table={"durations"}
-      component={<Categories.Durations />}
-    />
-  ),
-  backgrounds: (
-    <Category
-      table={"backgrounds"}
-      component={<Categories.Backgrounds />}
-    />
-  ),
-  attributes: <Attributes/>,
-  skills: <Skills/>,
-  tags: <Tags/>,
-  injuries: <Injuries/>,
-  settings: <Settings/>
+  ClassFeatures,
+  TagFeatures,
+  Skills,
+  Ranges,
+  Durations,
+  Effects,
+  Injuries,
+  Attributes,
+  Tags,
+  Settings,
 };

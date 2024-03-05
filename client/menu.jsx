@@ -9,7 +9,7 @@ import { GiBookCover } from "react-icons/gi";
 import { IoPersonCircle } from "react-icons/io5";
 import { Switcher } from "@interface/styles";
 import _ from "lodash";
-import { useUser } from "context";
+import { useUser } from "contexts";
 
 const tables = await fetch("/data/tables").then((j) => j.json());
 

@@ -4,7 +4,6 @@ import { limitsContext, optionsContext, ruleContext } from "contexts";
 import { Backgrounds } from "@client/rules";
 import { Loading } from "@interface/ui";
 import _ from "lodash";
-import { useState } from "react";
 
 export default () => {
   const bgs = async () =>

@@ -1,6 +1,6 @@
 import { css, useTheme } from "@emotion/react";
 
-import { Rules } from "@client/srd";
+import { Tables } from "@client/srd";
 import { sql_danger } from "utilities";
 import { useParams } from "react-router-dom";
 
@@ -14,13 +14,21 @@ export default () => {
         css={css`
           border: 1px solid ${colors.accent};
           padding: 10px;
-
           &::scrollbar-track-color {
             color: ${colors.accent};
           }
         `}
       >
-        {Rules[table]}
+        {table == "injuries" && <Tables.Injuries />}
+        {table == "settings" && <Tables.Settings />}
+        {table == "skills" && <Tables.Skills />}
+        {table == "tags" && <Tables.Tags />}
+        {table == "attributes" && <Tables.Attributes />}
+        {table == "class_features" && <Tables.ClassFeatures />}
+        {table == "tag_features" && <Tables.TagFeatures />}
+        {table == "effects" && <Tables.Effects />}
+        {table == "ranges" && <Tables.Ranges />}
+        {table == "durations" && <Tables.Durations />}
       </main>
     </>
   );

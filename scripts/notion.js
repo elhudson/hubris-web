@@ -1,9 +1,8 @@
 import { db } from "~db/prisma.js";
-import {notion} from "notion";
+import { notion } from "notion";
 
 await db.ranges.sync({ client: notion });
 await db.durations.sync({ client: notion });
-
 
 await db.rules.sync({ client: notion });
 

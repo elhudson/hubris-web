@@ -1,6 +1,6 @@
 import { css, useTheme } from "@emotion/react";
 
-export const Row = ({children, ...props}) => {
+const Row = ({ children, ...props }) => {
   return (
     <div
       css={css`
@@ -12,13 +12,14 @@ export const Row = ({children, ...props}) => {
           flex-grow: 1;
         }
       `}
-      {...props}>
+      {...props}
+    >
       {children}
     </div>
   );
 };
 
-export const Sections = ({children, ...props}) => {
+const Sections = ({ children, ...props }) => {
   const { classes } = useTheme();
   return (
     <main
@@ -33,10 +34,11 @@ export const Sections = ({children, ...props}) => {
           margin-bottom: unset;
         }
       `}
-      {...props}>
+      {...props}
+    >
       {children}
     </main>
   );
 };
 
-export default {};
+export default { Row, Sections };

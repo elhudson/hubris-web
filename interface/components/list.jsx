@@ -4,6 +4,7 @@ import { Icon } from "@interface/ui";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
+
 export default ({
   items,
   render = null,
@@ -64,7 +65,7 @@ export default ({
   );
 };
 
-export const Item = ({ title, id }) => {
+const Item = ({ title, id }) => {
   const table = useAsync(
     async () => await fetch(`/data/table?id=${id}`).then((r) => r.text())
   ).result;

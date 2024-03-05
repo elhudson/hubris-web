@@ -5,6 +5,17 @@ export const useUser = () => {
   return useContext(userContext);
 };
 
+export const filterContext = createContext({
+  update: null,
+  filters: {
+    trees: [],
+    tags: [],
+    tiers: [],
+  },
+});
+
+export const useFilters = () => useContext(filterContext);
+
 export const campaignContext = createContext(null);
 export const useCampaign = () => {
   return useContext(campaignContext);

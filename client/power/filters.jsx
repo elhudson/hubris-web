@@ -1,31 +1,18 @@
 import { Icon, Loading, Metadata, Multi, Pop, Switch } from "@interface/ui";
 import { PiNumberOne, PiNumberThree, PiNumberTwo } from "react-icons/pi";
-import { createContext, useContext } from "react";
+import { filterContext, useFilters } from "contexts";
 
 import { FaFilter } from "react-icons/fa";
 import _ from "lodash";
 import { css } from "@emotion/react";
 import { useImmer } from "use-immer";
 
-const defaults = {
-  trees: [],
-  tags: [],
-  tiers: [],
-};
-
-const filterContext = createContext({
-  update: null,
-  filters: defaults,
-});
-
-export const useFilters = () => useContext(filterContext);
-
 export default ({ collapsible = false, children }) => {
   return <Filters collapsible={collapsible}>{children}</Filters>;
 };
 
 const Filters = ({ children, collapsible = false }) => {
-  const [filters, update] = useImmer(defaults);
+  const [filters, update] = useImmer(useFilters().filters);
   return (
     <div
       css={css`

@@ -1,7 +1,8 @@
-import { useCampaign } from "contexts";
-import Summary from "@campaigns/summary";
-import { useTheme, css } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
+
 import { Layouts } from "@interface/ui";
+import { Summary } from "@client/campaign";
+import { useCampaign } from "contexts";
 
 export default () => {
   const { campaign } = useCampaign();

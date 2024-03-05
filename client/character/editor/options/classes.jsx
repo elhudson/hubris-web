@@ -1,9 +1,8 @@
 import { Option, Optionset } from "@client/options";
-import { limitsContext, optionsContext, ruleContext } from "@contexts";
+import { limitsContext, optionsContext, ruleContext } from "contexts";
 
 import { Classes } from "@client/rules";
 import { Loading } from "@interface/ui";
-import { useAsync } from "react-async-hook";
 
 export default () => {
   const classes = async () => {
@@ -47,7 +46,7 @@ export default () => {
           >
             <ruleContext.Provider
               value={{
-                location: "create",
+                location: window.location.href.includes("create") ? "create" : "levelup",
                 table: "classes",
               }}
             >

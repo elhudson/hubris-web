@@ -4,7 +4,7 @@ import { characterContext, useUser } from "contexts";
 
 import { Bio } from "@client/character";
 import _ from "lodash";
-import { cost } from "@components/options/stats";
+import { cost } from "utilities";
 import { useImmer } from "use-immer";
 import { useTheme } from "@emotion/react";
 import { v4 } from "uuid";

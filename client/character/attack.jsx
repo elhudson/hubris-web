@@ -7,7 +7,7 @@ import _ from "lodash";
 import { get_proficiency } from "utilities";
 import { useCharacter } from "contexts";
 
-export const Attack = ({
+const Attack = ({
   name,
   speed,
   dmg,
@@ -71,7 +71,7 @@ export const Attack = ({
   );
 };
 
-export const WeaponAttack = ({ using }) => {
+const WeaponAttack = ({ using }) => {
   const { character } = useCharacter();
   const speed = {
     fast: using.heavy ? 10 : 7,
@@ -94,7 +94,7 @@ export const WeaponAttack = ({ using }) => {
   );
 };
 
-export const FeatureAttack = ({ using }) => {
+const FeatureAttack = ({ using }) => {
   const { character } = useCharacter();
   const attr = _.find(character.classes, (i) => i.id == using.classes.id)
     .abilities[0].code;
