@@ -1,6 +1,8 @@
-import { useCharacter } from "@contexts/character";
-import { WeaponAttack, FeatureAttack } from "./attack";
+import { FeatureAttack, WeaponAttack } from "./attack";
 import { css, useTheme } from "@emotion/react";
+
+import { useCharacter } from "contexts";
+
 export default () => {
   const { character } = useCharacter();
   const {classes}=useTheme()

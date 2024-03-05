@@ -1,8 +1,8 @@
-import { useCharacter } from "@contexts/character";
-import Tag from "@components/tag";
+import { useCharacter, usePower } from "contexts";
+
+import { Tag } from "@interface/components";
 import _ from "lodash";
 import { css } from "@emotion/react";
-import { usePower } from "@contexts/power";
 
 export default () => {
   const { power } = usePower();

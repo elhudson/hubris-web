@@ -1,8 +1,9 @@
-import { useCharacter } from "@contexts/character";
-import { get_ac } from "utilities";
+import { css, useTheme } from "@emotion/react";
+
+import { NumberBox } from "@interface/ui";
 import _ from "lodash";
-import NumberBox from "@ui/numberBox";
-import { useTheme, css } from "@emotion/react";
+import { get_ac } from "utilities";
+import { useCharacter } from "contexts";
 
 export default () => {
   const { character } = useCharacter();

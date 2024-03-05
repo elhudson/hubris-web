@@ -1,19 +1,13 @@
-import Radio from "@ui/radio";
-import Icon from "@ui/icon";
-import { useItem } from "@contexts/item";
+import { Icon, Loading, Metadata, Radio, Switch } from "@interface/ui";
+
 import _ from "lodash";
-import { useAsync } from "react-async-hook";
-import Metadata from "@ui/metadata";
-import Switch from "@ui/switch";
-import { useState } from "react";
+import { useItem } from "contexts";
 
 export default () => {
   const { item, edit } = useItem();
   const { enabled } = edit;
-  const dmgs = useAsync(
-    async () =>
-      await fetch("/data/rules?table=tags&relations").then((d) => d.json())
-  ).result;
+  const dmgs = async () =>
+    await fetch("/data/rules?table=tags&relations").then((d) => d.json());
   return (
     <Metadata
       pairs={[
@@ -44,19 +38,22 @@ export default () => {
         ],
         [
           "Damage",
-          dmgs && (
-            <Damage
-              item={item}
-              opts={dmgs}
-              handler={
-                enabled
-                  ? edit.generator("tags", (e) => {
-                      return e;
-                    })
-                  : null
-              }
-            />
-          ),
+          <Loading
+            getter={dmgs}
+            render={(dmgs) => (
+              <Damage
+                item={item}
+                opts={dmgs}
+                handler={
+                  enabled
+                    ? edit.generator("tags", (e) => {
+                        return e;
+                      })
+                    : null
+                }
+              />
+            )}
+          />,
         ],
       ]}
     />
@@ -70,10 +67,7 @@ const Damage = ({ opts, handler, item }) => {
         <Switch
           onChange={(e) => {
             if (e) {
-              handler(
-                [...item.tags,
-                _.find(opts, (opt) => opt.id == o.id)]
-              );
+              handler([...item.tags, _.find(opts, (opt) => opt.id == o.id)]);
             } else {
               handler(item.tags.filter((f) => f.id != o.id));
             }

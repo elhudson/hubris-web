@@ -1,20 +1,19 @@
-import Alignment from "./alignment";
-import Tier from "./tier";
-import Actions, { Buttons } from "./actions";
-import { useCharacter } from "@contexts/character";
-import Avatar from "@components/character/avatar";
-import { useTheme, css } from "@emotion/react";
-import { calc_xp } from "utilities";
-import Metadata from "@ui/metadata";
-import Link from "@components/link";
+import { Alignment, Avatar, Menu, Tier } from "@client/character";
+import { css, useTheme } from "@emotion/react";
+
+import { Buttons } from "./menu";
+import { Link } from "@interface/components";
+import { Metadata } from "@interface/ui";
 import { Link as Route } from "react-router-dom";
+import { calc_xp } from "utilities";
+import { useCharacter } from "contexts";
 
 export default ({ buttons = false }) => {
   const { character } = useCharacter();
   const { colors, classes } = useTheme();
   return (
     <div className="profile">
-      <Actions>
+      <Menu>
         <div
           css={css`
             display: flex;
@@ -91,7 +90,7 @@ export default ({ buttons = false }) => {
           </section>
           {buttons && <Buttons />}
         </div>
-      </Actions>
+      </Menu>
     </div>
   );
 };

@@ -1,20 +1,12 @@
-import Link from "@components/link";
-import Tooltip from "@ui/tooltip";
-import Description from "@components/description";
-import { useCharacter } from "@contexts/character";
-import { useUser } from "@contexts/user";
-import { get_power_cost, generate_power_description } from "utilities";
-import { BiTargetLock } from "react-icons/bi";
-import { GiStarSwirl } from "react-icons/gi";
-import { IoHourglassOutline } from "react-icons/io5";
-import _ from "lodash";
-import { useTheme, css } from "@emotion/react";
-import { powerContext } from "@contexts/power";
-import { useImmer } from "use-immer";
-import Tags from "./tags";
-import Components from "./components";
+import { Components, Menu, Tags } from "@client/power";
+import { css, useTheme } from "@emotion/react";
+import { generate_power_description, get_power_cost } from "utilities";
+import { powerContext, useCharacter } from "contexts";
 
-import Actions from "@components/catalog/powers/actions";
+import { Description } from "@interface/components";
+import { Tooltip } from "@interface/ui";
+import _ from "lodash";
+import { useImmer } from "use-immer";
 
 export default ({ pwr }) => {
   const { character } = useCharacter();
@@ -23,7 +15,7 @@ export default ({ pwr }) => {
   const { classes } = useTheme();
   return (
     <powerContext.Provider value={{ power: power, update: update }}>
-      <Actions>
+      <Menu>
         <div
           css={css`
             border: 1px solid ${colors.accent};
@@ -33,14 +25,16 @@ export default ({ pwr }) => {
               "header header header header header"
               "desc desc desc desc props"
               "desc desc desc desc props";
-          `}>
+          `}
+        >
           <div
             css={css`
               grid-area: header;
               position: relative;
               border-bottom: 1px solid ${colors.accent};
               padding: 2px 5px;
-            `}>
+            `}
+          >
             <h6 style={{ display: "flex" }}>
               {power.name}
               <Tags />
@@ -50,7 +44,8 @@ export default ({ pwr }) => {
                 position: absolute;
                 top: 2px;
                 right: 5px;
-              `}>
+              `}
+            >
               <Tooltip preview={get_power_cost(power)}>Power</Tooltip>
               <span> / </span>
               <Tooltip preview={10 + character.burn + get_power_cost(power)}>
@@ -60,11 +55,12 @@ export default ({ pwr }) => {
           </div>
           <Components />
           <section
-            css={[classes.decorations.dashed, classes.elements.description]}>
+            css={[classes.decorations.dashed, classes.elements.description]}
+          >
             <Description text={generate_power_description(power)} />
           </section>
         </div>
-      </Actions>
+      </Menu>
     </powerContext.Provider>
   );
 };

@@ -1,7 +1,8 @@
 import { get_bonus, is_proficient } from "utilities";
-import { useCharacter } from "@contexts/character";
-import Checkbox from "@ui/checkbox";
+
+import { Checkbox } from "@interface/ui";
 import { css } from "@emotion/css";
+import { useCharacter } from "contexts";
 import { useTheme } from "@emotion/react";
 
 export default ({ skill, onCheck = null, editable = false }) => {

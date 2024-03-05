@@ -1,7 +1,7 @@
-import Radio from "@ui/radio";
+import { Metadata, Radio } from "@interface/ui";
+
 import _ from "lodash";
-import Metadata from "@ui/metadata";
-import { useItem } from "@contexts/item";
+import { useItem } from "contexts";
 
 export default () => {
   const { edit, item } = useItem();

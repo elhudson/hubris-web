@@ -1,6 +1,6 @@
-import { useCampaign } from "@contexts/campaign";
-import Counter from "@ui/counter";
-import NumberBox from "@ui/numberBox";
+import { Counter, NumberBox } from "@interface/ui";
+
+import { useCampaign } from "contexts";
 
 export default () => {
   const { campaign, update } = useCampaign();

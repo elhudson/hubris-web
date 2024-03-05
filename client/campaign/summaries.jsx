@@ -1,18 +1,19 @@
-import { useCampaign } from "@contexts/campaign";
+import { useCampaign } from "contexts";
 import Summary from "@campaigns/summary";
 import { useTheme, css } from "@emotion/react";
-import { Sections } from "@ui/layouts";
+import { Layouts } from "@interface/ui";
+
 export default () => {
   const { campaign } = useCampaign();
   const { colors } = useTheme();
   return (
-    <Sections>
+    <Layouts.Sections>
       {campaign.logbook.map((summary) => (
         <Summary
           {...summary}
           campaign={campaign}
         />
       ))}
-    </Sections>
+    </Layouts.Sections>
   );
 };

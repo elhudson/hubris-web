@@ -1,13 +1,13 @@
-import { useTheme, css } from "@emotion/react";
-import { GiQuill } from "react-icons/gi";
-import Description from "@components/description";
+import { css, useTheme } from "@emotion/react";
+
+import { Description } from "@interface/components";
 import { compile } from "html-to-text";
 
 const options = {
   limits: {
     maxBaseElements: 1,
-    maxChildNodes: 1
-  }
+    maxChildNodes: 1,
+  },
 };
 
 export default ({ author, timestamp, campaign, text, session }) => {
@@ -15,8 +15,8 @@ export default ({ author, timestamp, campaign, text, session }) => {
   const converter = compile({
     limits: {
       ...options.limits,
-      ellipsis: `<a href="/campaign/${campaign.id}/summaries/${session}">[read more...]</a>`
-    }
+      ellipsis: `<a href="/campaign/${campaign.id}/summaries/${session}">[read more...]</a>`,
+    },
   });
   const plain = converter(text);
   return (
@@ -29,7 +29,8 @@ export default ({ author, timestamp, campaign, text, session }) => {
           top: 0;
           right: 0;
         }
-      `}>
+      `}
+    >
       <a href={`/campaign/${campaign.id}/summaries/${session}`}>
         <h3>Session {session}</h3>
       </a>
@@ -40,8 +41,9 @@ export default ({ author, timestamp, campaign, text, session }) => {
           css`
             font-family: "Iosevka Web" !important;
             font-size: 12px !important;
-          `
-        ]}>
+          `,
+        ]}
+      >
         <Description text={plain} />
       </div>
     </section>

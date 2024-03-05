@@ -1,7 +1,7 @@
-import Color from "color";
-import _ from "lodash";
 import { css, useTheme } from "@emotion/react";
-import Select, { components } from "react-select";
+
+import Select from "react-select";
+import _ from "lodash";
 
 const makeOptions = ({ items, labelPath, valuePath }) => {
   return items.map((item) => ({

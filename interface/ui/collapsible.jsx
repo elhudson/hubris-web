@@ -1,12 +1,12 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+
+import { css, useTheme } from "@emotion/react";
 
 export default ({ preview, children }) => {
   const { colors } = useTheme();
   return (
     <Collapsible.Root
-      className={css`
+      css={css`
         border: 1px solid ${colors.accent};
         margin: 5px;
         > button {

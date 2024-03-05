@@ -1,6 +1,6 @@
-import { useCampaign } from "@contexts/campaign";
 import { useTheme, css } from "@emotion/react";
-import Notif from "@ui/notif";
+import { Notif } from "@interface/ui";
+import { useCampaign } from "context";
 
 export default () => {
   const { classes } = useTheme();

@@ -1,5 +1,5 @@
-import { usePower } from "@contexts/power";
-import Calculator from "./calculator";
+import { Calculator } from "@client/power";
+import { usePower } from "contexts";
 
 export default () => {
   const { power, update } = usePower();

@@ -1,7 +1,8 @@
-import ui from "interface";
 import { css, useTheme } from "@emotion/react";
-import { useCampaign } from "@contexts/campaign";
-import Actions from "@components/campaigns/actions"
+import { useCampaign } from "context";
+
+import { Actions } from "@client/character";
+import { Notepad, Array } from "@interface/ui";
 
 export default () => {
   const { campaign } = useCampaign();
@@ -40,8 +41,8 @@ export default () => {
         <div className="campaign-cover">
           <img src={`/public/campaigns/${campaign.id}.png`} />
         </div>
-        <ui.Notepad text={campaign.description} />
-        <ui.Array data={campaign.settings.map(c=> ({name: c.title, id: c.id}))} />
+        <Notepad text={campaign.description} />
+        <Array data={campaign.settings.map(c=> ({name: c.title, id: c.id}))} />
       </div>
     </Actions>
   );

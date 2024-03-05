@@ -1,4 +1,4 @@
-import Hubris from "@src/hubris";
+import Hubris from "./hubris";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 

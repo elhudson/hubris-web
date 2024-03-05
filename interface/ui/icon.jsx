@@ -1,5 +1,5 @@
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
+
 import SVG from "react-inlinesvg";
 
 export default ({ id, sz, style=null }) => {
@@ -12,7 +12,7 @@ export default ({ id, sz, style=null }) => {
       height={sz}
       style={style}
       preProcessor={(code) => code.replace(/fill=".*?"/g, 'fill="currentColor"')}
-      className={css`
+      css={css`
         padding-right: 10px;
         path, g {
           fill: ${colors.text_accent};

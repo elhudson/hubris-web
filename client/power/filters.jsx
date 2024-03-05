@@ -1,10 +1,12 @@
-import { useContext, createContext, useState } from "react";
-import { useImmer } from "use-immer";
-import ui from "interface";
-import _ from "lodash";
-import { PiNumberOne, PiNumberTwo, PiNumberThree } from "react-icons/pi";
+import { Icon, Loading, Metadata, Multi, Pop, Switch } from "@interface/ui";
+import { PiNumberOne, PiNumberThree, PiNumberTwo } from "react-icons/pi";
+import { createContext, useContext } from "react";
+
 import { FaFilter } from "react-icons/fa";
+import _ from "lodash";
 import { css } from "@emotion/react";
+import { useImmer } from "use-immer";
+
 const defaults = {
   trees: [],
   tags: [],
@@ -37,9 +39,9 @@ const Filters = ({ children, collapsible = false }) => {
       `}>
       <filterContext.Provider value={{ filters, update }}>
         {collapsible ? (
-          <ui.Pop trigger={<FaFilter />}>
+          <Pop trigger={<FaFilter />}>
             <Controls />
-          </ui.Pop>
+          </Pop>
         ) : (
           <Controls />
         )}
@@ -51,7 +53,7 @@ const Filters = ({ children, collapsible = false }) => {
 
 const Controls = () => {
   return (
-    <ui.Metadata
+    <Metadata
       css={css`
         margin: 5px;
       `}
@@ -77,7 +79,7 @@ export const Trees = () => {
         a.forEach((f) => {
           f.value = f.id;
           f.icon = (
-            <ui.Icon
+            <Icon
               id={f.id}
               sz={20}
             />
@@ -87,7 +89,7 @@ export const Trees = () => {
       });
 
   return (
-    <ui.Loading
+    <Loading
       getter={opts}
       render={(opts) => (
         <MultiRadio
@@ -136,7 +138,7 @@ const MultiRadio = ({ options, currents, onChange }) => {
   return (
     <span role="radiogroup">
       {options.map((o) => (
-        <ui.Switch
+        <Switch
           checked={currents.includes(o.value)}
           src={o.icon}
           onChange={(e) => onChange(o, e)}
@@ -157,10 +159,10 @@ export const Tags = () => {
     update,
   } = useFilters();
   return (
-    <ui.Loading
+    <Loading
       getter={opts}
       render={(opts) => (
-        <ui.Multi
+        <Multi
           items={opts}
           currents={opts.filter((f) => tags.map((t) => t.id).includes(f.id))}
           labelPath="title"

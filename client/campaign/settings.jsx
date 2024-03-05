@@ -1,11 +1,7 @@
-import { useCampaign } from "@contexts/campaign";
-import Notepad from "@ui/notepad";
-import Multi from "@ui/multi";
-import Upload from "@ui/upload";
+import { useCampaign } from "context";
 import _ from "lodash";
 import { css, useTheme } from "@emotion/react";
 import { useAsync } from "react-async-hook";
-import Recruiter from "./recruiter";
 
 export default () => {
   const { campaign, update } = useCampaign();

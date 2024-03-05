@@ -1,12 +1,13 @@
-import { useCharacter } from "@contexts/character";
-import Radio from "@ui/radio";
-import { get_tier } from "utilities";
 import {
+  PiNumberFour,
   PiNumberOne,
-  PiNumberTwo,
   PiNumberThree,
-  PiNumberFour
+  PiNumberTwo
 } from "react-icons/pi";
+
+import { Radio } from "@interface/ui";
+import { get_tier } from "utilities";
+import { useCharacter } from "contexts";
 
 export default () => {
   const { character } = useCharacter();

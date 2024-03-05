@@ -1,6 +1,6 @@
-import Dialog from "@ui/dialog";
+import { Dialog } from "@interface/ui";
+import { Item } from "@client/item";
 import _ from "lodash";
-import Item from "@items/item";
 
 export default ({ table }) => {
   var add;
@@ -9,13 +9,13 @@ export default ({ table }) => {
       name: "",
       martial: false,
       heavy: false,
-      tags: []
+      tags: [],
     };
   }
   if (table == "armor") {
     add = {
       name: "",
-      class: "None"
+      class: "None",
     };
   }
   if (table == "items") {

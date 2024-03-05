@@ -1,7 +1,8 @@
-import { useTheme, css } from "@emotion/react";
 import * as tabs from "@radix-ui/react-tabs";
-import Scrollable from "@ui/scrollable";
 
+import { css, useTheme } from "@emotion/react";
+
+import { Scrollable } from "@interface/ui";
 export default ({ names, children, def, disabled = [], ...props }) => {
   const { classes, colors } = useTheme();
   const toVal = (name) => name.toLowerCase().replace(" ", "_");

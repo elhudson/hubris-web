@@ -1,7 +1,10 @@
-import ReactQuill from "react-quill";
-import { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
-import { css } from "@emotion/css";
+
+import { useEffect, useRef } from "react";
+
+import ReactQuill from "react-quill";
+import { css } from "@emotion/react";
+
 export default ({ text, onChange = null }) => {
   const ref = useRef(null);
   useEffect(() => {
@@ -10,9 +13,8 @@ export default ({ text, onChange = null }) => {
   return (
     <ReactQuill
       theme={null}
-      className={css`
+      css={css`
         p {
-          max-width: 99%;
           font-family: "Iosevka";
         }
       `}

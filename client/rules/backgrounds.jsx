@@ -1,8 +1,7 @@
-import Organizer from "@components/organizer";
-import Gallery from "@components/gallery";
-import Card from "@components/card";
-import { useOptions } from "@contexts/options";
-import Loading from "@ui/loading";
+import { Card, Gallery, Organizer } from "@interface/components";
+
+import { Loading } from "@interface/ui";
+import { useOptions } from "contexts";
 
 export default () => {
   const context = useOptions();

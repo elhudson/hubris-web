@@ -1,8 +1,8 @@
-import { useCharacter } from "@contexts/character";
-import Die from "./die";
-import Counter from "@ui/counter";
-import NumberBox from "@ui/numberBox";
+import { Counter, NumberBox } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
+
+import { Die } from "@client/character";
+import { useCharacter } from "contexts";
 
 export default ({ index }) => {
   const { colors } = useTheme();
@@ -34,7 +34,8 @@ export default ({ index }) => {
             justify-content: space-around;
           }
         }
-      `}>
+      `}
+    >
       <NumberBox label="HD">
         <Counter
           item={character.HD[index]}

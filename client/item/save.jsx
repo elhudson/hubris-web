@@ -1,6 +1,6 @@
-import { useCharacter } from "@contexts/character";
-import { useItem } from "@contexts/item";
-import Notif from "@ui/notif";
+import { useCharacter, useItem } from "contexts";
+
+import { Notif } from "@interface/ui";
 import { v4 } from "uuid";
 
 export default () => {

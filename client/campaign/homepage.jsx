@@ -1,19 +1,11 @@
-import { campaignContext } from "@contexts/campaign";
+import { campaignContext } from "contexts";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
-import { useAsync } from "react-async-hook";
-import Actions from "@campaigns/actions";
-import Campaign from "@packages/campaigns";
+import * as Campaign from "@client/campaign";
 import { useTheme, css } from "@emotion/react";
-import Notepad from "@ui/notepad";
-import Color from "color";
-import { FaPlusCircle } from "react-icons/fa";
-import Notif from "@ui/notif";
-import Link from "@components/link";
-import Metadata from "@ui/metadata";
-import Tabs from "@ui/tabs";
-import { Sections, Row } from "@ui/layouts";
-import Loading from "@ui/loading";
+
+import { Link } from "@interface/components";
+import { Metadata, Tabs, Loading, Layouts } from "@interface/ui";
 
 export default () => {
   const { id } = useParams();
@@ -22,17 +14,17 @@ export default () => {
   return (
     <Loading
       getter={campaign}
-      render={(campaign) => <Cpg cpg={campaign} />}
+      render={(campaign) => <Homepage cpg={campaign} />}
     />
   );
 };
 
-const Cpg = ({ cpg }) => {
+const Homepage = ({ cpg }) => {
   const { colors, palette, classes } = useTheme();
   const [campaign, update] = useImmer(cpg);
   return (
     <campaignContext.Provider value={{ campaign: campaign, update: update }}>
-      <Actions>
+      <Campaign.Actions>
         <div
           css={css`
             section,
@@ -44,7 +36,7 @@ const Cpg = ({ cpg }) => {
             }
           `}>
           <h2>{campaign.name}</h2>
-          <Row>
+          <Layouts.Row>
             <section>
               <Metadata
                 pairs={[
@@ -57,19 +49,19 @@ const Cpg = ({ cpg }) => {
                           table="settings"
                         />
                       ))}
-                    </span>
+                    </span>,
                   ],
-                  ["DM", <span>{campaign.dm.username}</span>]
+                  ["DM", <span>{campaign.dm.username}</span>],
                 ]}
               />
             </section>
             <section>
-              <Row>
-                <Campaign.xp />
-                <Campaign.sessions />
-              </Row>
+              <Layouts.Row>
+                <Campaign.Xp />
+                <Campaign.Sessions />
+              </Layouts.Row>
             </section>
-          </Row>
+          </Layouts.Row>
         </div>
 
         <Tabs
@@ -78,16 +70,16 @@ const Cpg = ({ cpg }) => {
           `}
           names={["Characters", "Log"]}
           def="Characters">
-          <Campaign.characters />
-          <Campaign.summaries />
+          <Campaign.Characters />
+          <Campaign.Summaries />
         </Tabs>
         <span
           css={css`
             background-color: ${colors.background};
           `}>
-          <Campaign.save />
+          <Campaign.Save />
         </span>
-      </Actions>
+      </Campaign.Actions>
     </campaignContext.Provider>
   );
 };

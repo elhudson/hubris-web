@@ -1,10 +1,10 @@
+import { Select } from "@interface/ui";
 import _ from "lodash";
-import { useCharacter } from "@contexts/character";
-import Select from "@ui/select";
+import { useCharacter } from "contexts";
 
 export default () => {
   const { character, update } = useCharacter();
-  const handleAlign = (e) => {
+  const handleAlign = (e) => {  
     update((draft) => {
       draft.biography.alignment = e;
     });

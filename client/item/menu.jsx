@@ -1,8 +1,7 @@
-import actions from "@actions/item";
-import Context from "@ui/context";
-
+import { Actions } from "@client/items";
+import { Context } from "@interface/ui";
 export default ({ children }) => {
-  const acts = actions();
+  const acts = Actions();
   return (
     <>
       <Context

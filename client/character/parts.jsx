@@ -1,10 +1,9 @@
-import { useCharacter } from "@contexts/character";
+import { Layouts, Tabs } from "@interface/ui";
+import { List, Metadata } from "@interface/components";
 import { css, useTheme } from "@emotion/react";
-import Tabs from "@ui/tabs";
+
 import _ from "lodash";
-import Metadata from "@components/metadata";
-import List from "@components/list";
-import { Row } from "@ui/layouts";
+import { useCharacter } from "contexts";
 
 const sorter = (data) => {
   return _.groupBy(
@@ -16,7 +15,7 @@ const sorter = (data) => {
 const Tab = ({ items, props, icon = "trees[0].id" }) => {
   const { colors } = useTheme();
   return (
-    <Row>
+    <Layouts.Row>
       {Object.entries(items).map((c) => (
         <div
           css={css`
@@ -28,9 +27,10 @@ const Tab = ({ items, props, icon = "trees[0].id" }) => {
               border-bottom: 1px solid ${colors.accent};
             }
             ul {
-                padding: 10px;
+              padding: 10px;
             }
-          `}>
+          `}
+        >
           <h4>{c[0]}</h4>
           <List
             items={c[1]}
@@ -44,7 +44,7 @@ const Tab = ({ items, props, icon = "trees[0].id" }) => {
           />
         </div>
       ))}
-    </Row>
+    </Layouts.Row>
   );
 };
 
@@ -57,7 +57,8 @@ export default () => {
     <Tabs
       css={css``}
       names={["Effects", "Ranges", "Durations"]}
-      def="Effects">
+      def="Effects"
+    >
       <Tab
         items={effects}
         props={["tags", "power", "tier"]}

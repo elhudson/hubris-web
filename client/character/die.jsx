@@ -1,13 +1,12 @@
-import { useAsync } from "react-async-hook";
-import Radio from "@ui/radio";
+import { Loading, Radio } from "@interface/ui";
 
 export default ({ die }) => {
-  const hd = useAsync(
-    async () => await fetch("/data/rules?table=hit_dice").then((j) => j.json())
-  ).result;
+  const hd = async () =>
+    await fetch("/data/rules?table=hit_dice").then((j) => j.json());
   return (
-    <>
-      {hd &&
+    <Loading
+      getter={hd}
+      render={(hd) => (
         <Radio
           current={die}
           data={hd}
@@ -15,7 +14,7 @@ export default ({ die }) => {
           labelPath={"title"}
           inline
         />
-      }
-    </>
+      )}
+    />
   );
 };

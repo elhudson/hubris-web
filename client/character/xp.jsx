@@ -1,8 +1,9 @@
-import { useCharacter } from "@contexts/character";
-import Toggles from "@ui/toggles";
-import { useTheme, css } from "@emotion/react";
-import NumberBox from "@ui/numberBox";
+import { NumberBox, Toggles } from "@interface/ui";
+import { css, useTheme } from "@emotion/react";
+
 import { calc_xp } from "utilities";
+import { useCharacter } from "contexts";
+
 export default () => {
   const { character, update } = useCharacter();
   const { colors, classes } = useTheme();
@@ -25,7 +26,8 @@ export default () => {
       <div
         css={css`
           position: relative;
-        `}>
+        `}
+      >
         <div css={classes.elements.number}>
           {calc_xp(character)} / {character.xp_earned}
         </div>
@@ -52,7 +54,8 @@ export default () => {
               height: 15px;
               width: 100% !important;
             }
-          `}>
+          `}
+        >
           <Toggles
             inc={inc}
             dec={dec}

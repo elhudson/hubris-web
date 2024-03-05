@@ -1,9 +1,4 @@
-import { useItem } from "@contexts/item";
-import { useCharacter } from "@contexts/character";
-
-import { IoTrash } from "react-icons/io5";
-import { FaRegEdit } from "react-icons/fa";
-import { IoIosSave } from "react-icons/io";
+import { useCharacter, useItem } from "contexts";
 
 import _ from "lodash";
 

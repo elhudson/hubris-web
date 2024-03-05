@@ -1,9 +1,7 @@
 import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
 import { useParams } from "react-router-dom";
 
 export default ({ type }) => {
-  const { colors } = useTheme();
   const { id } = useParams();
   return (
     <div

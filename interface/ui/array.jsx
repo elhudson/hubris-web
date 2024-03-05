@@ -1,5 +1,5 @@
-import Tooltip from "@ui/tooltip";
-import Icon from "@ui/icon";
+import { Icon, Tooltip } from "@interface/ui";
+
 import { css } from "@emotion/react";
 
 export default ({ data }) => {

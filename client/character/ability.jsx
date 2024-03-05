@@ -1,13 +1,12 @@
-import Icon from "@ui/icon";
-import _ from "lodash";
-import Metadata from "./metadata";
-import Color from "color";
-import { useTheme, css } from "@emotion/react";
-import Rule from "@components/rule";
-import { ruleContext } from "@contexts/rule";
+import { css, useTheme } from "@emotion/react";
 
-const Ability = ({ data, table, children = null }) => {
-  const { colors, classes } = useTheme();
+import { Metadata } from "@client/character";
+import { Rule } from "@interface/components";
+import _ from "lodash";
+import { ruleContext } from "contexts";
+
+const Ability = ({ data, table }) => {
+  const { colors } = useTheme();
   return (
     <div
       css={css`

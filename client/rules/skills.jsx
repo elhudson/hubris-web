@@ -1,8 +1,8 @@
+import { List, Metadata } from "@interface/components";
+
+import { Loading } from "@interface/ui";
 import _ from "lodash";
-import List from "@components/list";
-import Metadata from "@components/metadata";
-import { useOptions } from "@contexts/options";
-import Loading from "@ui/loading";
+import { useOptions } from "contexts";
 
 export default ({ checkbox = null }) => {
   const context = useOptions();

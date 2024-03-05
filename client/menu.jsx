@@ -1,14 +1,16 @@
 import * as nav from "@radix-ui/react-navigation-menu";
-import { useUser } from "@contexts/user";
-import Login from "@pages/user/login";
-import { useTheme, css } from "@emotion/react";
-import { IoPersonCircle } from "react-icons/io5";
-import { GiBookCover } from "react-icons/gi";
+
+import { Actions, Login } from "@client/user";
+import { css, useTheme } from "@emotion/react";
+import { sql_danger, sql_safe } from "utilities";
+
 import { FaSwatchbook } from "react-icons/fa";
-import usr from "@actions/user";
-import switcher from "@styles/switcher";
-import { sql_danger, sql_safe } from "../utilities";
+import { GiBookCover } from "react-icons/gi";
+import { IoPersonCircle } from "react-icons/io5";
+import { Switcher } from "@interface/styles";
 import _ from "lodash";
+import { useUser } from "context";
+
 const tables = await fetch("/data/tables").then((j) => j.json());
 
 export default () => {
@@ -29,7 +31,8 @@ export default () => {
           flex-grow: 1;
         }
         border-bottom: 1px solid ${colors.accent};
-      `}>
+      `}
+    >
       <h1>
         <a href="/">HUBRIS</a>
       </h1>
@@ -40,20 +43,20 @@ export default () => {
             icon: <GiBookCover />,
             children: tables.map((t) => ({
               label: sql_danger(t),
-              action: () => window.location.assign(`/srd/${sql_safe(t)}`)
-            }))
+              action: () => window.location.assign(`/srd/${sql_safe(t)}`),
+            })),
           },
           {
             label: logged_in ? username : "Log in",
             icon: <IoPersonCircle />,
             action: logged_in ? null : <Login />,
-            children: logged_in ? [...usr()] : null
+            children: logged_in ? [...Actions()] : null,
           },
           {
             label: "Appearance",
             icon: <FaSwatchbook />,
-            children: switcher()
-          }
+            children: Switcher(),
+          },
         ]}
       />
     </div>
@@ -79,11 +82,13 @@ const Item = ({ d, offset = 0 }) => {
                   white-space: nowrap;
                 }
               }
-            `}>
+            `}
+          >
             <nav.Sub
               css={css`
                 position: relative !important;
-              `}>
+              `}
+            >
               <nav.List>
                 {d.children.map((c) => (
                   <Item d={c} />
@@ -108,13 +113,15 @@ const Menu = ({ items }) => {
           padding: unset;
           margin: unset;
         }
-      `}>
+      `}
+    >
       <nav.List
         css={css`
           gap: 5px;
           display: flex;
           flex-direction: row-reverse;
-        `}>
+        `}
+      >
         {items.map((d) => (
           <Item
             d={d}

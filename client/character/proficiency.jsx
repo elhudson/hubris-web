@@ -1,7 +1,8 @@
-import { useCharacter } from "@contexts/character";
-import { useTheme, css } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
+
+import { NumberBox } from "@interface/ui";
 import { get_proficiency } from "utilities";
-import NumberBox from "@ui/numberBox"
+import { useCharacter } from "contexts";
 
 export default () => {
   const { character } = useCharacter();

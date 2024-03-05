@@ -1,16 +1,15 @@
-import { get_max_hp } from "utilities";
-import { useCharacter } from "@contexts/character";
-import { useUser } from "@contexts/user";
-import { forwardRef, useState, useRef } from "react";
-import { css } from "@emotion/css";
-import Alert from "@ui/alert";
-import Counter from "@ui/counter";
-import _ from "lodash";
-import { BiSolidCoin, BiSolidCastle } from "react-icons/bi";
-import { FaTrashAlt } from "react-icons/fa";
+import { Alert, Counter } from "@interface/ui";
 import { GiFamilyTree, GiNightSleep, GiQuill } from "react-icons/gi";
-import { useImmer } from "use-immer";
+import { forwardRef, useRef, useState } from "react";
+import { useCharacter, useUser } from "contexts";
+
+import { BiSolidCastle } from "react-icons/bi";
+import { FaTrashAlt } from "react-icons/fa";
 import Roll from "roll";
+import _ from "lodash";
+import { css } from "@emotion/react";
+import { get_max_hp } from "utilities";
+import { useImmer } from "use-immer";
 
 export default () => {
   const { character, update } = useCharacter();
@@ -48,7 +47,7 @@ export default () => {
         })
     }
   ];
-  character.Campaign &&
+  character.campaign &&
     menu.push({
       label: "Write Summary",
       action: () =>
@@ -97,7 +96,7 @@ export const ShortRest = forwardRef(function Func(props = null, ref) {
   };
   return (
     <div
-      className={css`
+      css={css`
         > button:first-child {
           display: none;
         }
@@ -114,7 +113,7 @@ export const ShortRest = forwardRef(function Func(props = null, ref) {
         }>
         <div
           style={{ display: isRolling ? "none" : "block" }}
-          className={css`
+          css={css`
             position: relative;
             > button:last-child {
               position: absolute;
@@ -131,7 +130,7 @@ export const ShortRest = forwardRef(function Func(props = null, ref) {
             }
           `}>
           <h4>Choose your hit dice</h4>
-          <div className="griddable">
+          <div css="griddable">
             {dice.map((d) => {
               const inc = () =>
                 setDice((draft) => {
@@ -176,7 +175,7 @@ export const Delete = forwardRef(function Func(props = null, ref) {
   };
   return (
     <div
-      className={css`
+      css={css`
         > button:first-child {
           display: none;
         }

@@ -1,16 +1,14 @@
-import { useCharacter } from "@contexts/character";
-import Numberbox from "@ui/numberBox";
-import Counter from "@ui/counter";
-import { get_proficiency } from "utilities";
+import { Counter, Layouts, NumberBox } from "@interface/ui";
+import { Create, Power } from "@client/power";
+import { css, useTheme } from "@emotion/react";
+
+import { Parts } from "@client/character";
 import _ from "lodash";
-import { useTheme, css } from "@emotion/react";
-import { Row, Sections } from "@ui/layouts";
-import Create from "@components/catalog/powers/create";
-import Power from "@components/catalog/powers/power";
-import Parts from "@components/character/parts";
+import { get_proficiency } from "utilities";
+import { useCharacter } from "contexts";
 
 const Powers = () => {
-  const { colors, classes } = useTheme();
+  const { classes } = useTheme();
   const { character, update } = useCharacter();
   const inc = () => {
     update((draft) => {
@@ -28,30 +26,29 @@ const Powers = () => {
     ),
   ];
   return (
-    <Sections>
+    <Layouts.Sections>
       <section>
-        <Row>
-          <Numberbox label="Powers Used">
+        <Layouts.Row>
+          <NumberBox label="Powers Used">
             <Counter
               item={character}
               valuePath="burn"
               inc={inc}
               dec={dec}
             />
-          </Numberbox>
-          <Numberbox label="Bonus">
+          </NumberBox>
+          <NumberBox label="Bonus">
             {abilities.map((d) => (
               <div css={classes.elements.number}>
                 +{character[d] + get_proficiency(character)}
               </div>
             ))}
-          </Numberbox>
-          <Numberbox label="Base DC">
+          </NumberBox>
+          <NumberBox label="Base DC">
             <div css={classes.elements.number}>{10 + character.burn}</div>
-          </Numberbox>
-        </Row>
+          </NumberBox>
+        </Layouts.Row>
       </section>
-
       <section
         css={css`
           position: relative;
@@ -60,7 +57,8 @@ const Powers = () => {
             top: 0;
             right: 0;
           }
-        `}>
+        `}
+      >
         <h3>Favorite Powers</h3>
         <Create />
         {character.powers.map((p) => (
@@ -71,7 +69,7 @@ const Powers = () => {
         <h3>Power Components</h3>
         <Parts />
       </section>
-    </Sections>
+    </Layouts.Sections>
   );
 };
 

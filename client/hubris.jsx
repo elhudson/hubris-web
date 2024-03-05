@@ -1,21 +1,20 @@
+import { Colorschemes } from "@interface/styles";
 import { RouterProvider } from "react-router-dom";
-import { userContext } from "@contexts/user";
-import { useAsync } from "react-async-hook";
-
-import Colors from "@styles/colorschemes";
 import router from "@src/routes";
+import { useAsync } from "react-async-hook";
+import { userContext } from "contexts";
 
 export default () => {
   const user = useAsync(
     async () => await fetch("/login").then((res) => res.json())
-  );
+  ).result;
   return (
-    <Colors>
-        {user.result && (
-          <userContext.Provider value={user.result}>
-            <RouterProvider router={router} />
-          </userContext.Provider>
-        )}
-    </Colors>
+    <Colorschemes>
+      {user && (
+        <userContext.Provider value={user}>
+          <RouterProvider router={router} />
+        </userContext.Provider>
+      )}
+    </Colorschemes>
   );
 };

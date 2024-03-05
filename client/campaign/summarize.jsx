@@ -1,17 +1,11 @@
-import { useParams } from "react-router-dom";
-import _ from "lodash";
-import { useUser } from "@contexts/user";
-import Select from "@ui/select";
-import { useAsync } from "react-async-hook";
+import { Counter, Doc, Loading, Metadata, Notif, Select } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
+
+import _ from "lodash";
 import { useImmer } from "use-immer";
-import Notif from "@ui/notif";
-import Metadata from "@ui/metadata";
-import Doc from "@ui/doc";
-import Loading from "@ui/loading";
-import Counter from "@ui/counter";
-import NumberBox from "@ui/numberBox";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useUser } from "contexts";
 
 export default () => {
   const { id, session } = useParams();

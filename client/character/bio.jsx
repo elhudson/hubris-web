@@ -1,9 +1,12 @@
+import { Alignment } from "@client/character";
+
+import { css, useTheme } from "@emotion/react";
+
+import { Metadata, Notepad } from "@interface/ui";
+
 import _ from "lodash";
-import { useCharacter } from "@contexts/character";
-import { useTheme, css } from "@emotion/react";
-import Notepad from "@ui/notepad";
-import Alignment from "./alignment";
-import Metadata from "@ui/metadata";
+
+import { useCharacter } from "contexts";
 
 const Bio = () => {
   const { colors, classes } = useTheme();

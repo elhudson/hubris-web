@@ -1,7 +1,8 @@
-import Organizer from "@components/organizer";
-import Tree from "@components/tree";
-import { useOptions } from "@contexts/options";
-import Loading from "@ui/loading";
+import { Organizer, Tree } from "@interface/components";
+
+import { Loading } from "@interface/ui";
+import { useOptions } from "contexts";
+
 export default () => {
   const context = useOptions();
   const features = async () =>
@@ -10,8 +11,8 @@ export default () => {
       `/data/rules?table=tags&query=${JSON.stringify({
         where: {
           tag_features: {
-            some: {}
-          }
+            some: {},
+          },
         },
         select: {
           title: true,
@@ -20,10 +21,10 @@ export default () => {
             include: {
               tags: true,
               requires: true,
-              required_for: true
-            }
-          }
-        }
+              required_for: true,
+            },
+          },
+        },
       })}`
     ).then((t) => t.json()));
   return (

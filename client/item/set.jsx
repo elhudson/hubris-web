@@ -1,11 +1,12 @@
-import Radio from "@ui/radio";
-import _ from "lodash";
 import { css, useTheme } from "@emotion/react";
-import Item from "@items/item";
-import { useState } from "react";
+
 import { GiBroadDagger } from "react-icons/gi";
-import { GiHeartArmor } from "react-icons/gi";
 import { GiFlatPlatform } from "react-icons/gi";
+import { GiHeartArmor } from "react-icons/gi";
+import { Item } from "@client/item";
+import { Radio } from "@interface/ui";
+import _ from "lodash";
+import { useState } from "react";
 
 export default ({ items, type, update }) => {
   const [editable, setEditable] = useState(false);
@@ -36,7 +37,8 @@ export default ({ items, type, update }) => {
       <div
         css={css`
           min-height: 1em;
-        `}>
+        `}
+      >
         {items.length > 0 && (
           <Radio
             css={css``}
@@ -46,7 +48,8 @@ export default ({ items, type, update }) => {
             labelPath={"component"}
             getIcon={() => getIcon(type)}
             data={items}
-            onChange={equip}>
+            onChange={equip}
+          >
             {items.map((c) => (
               <Item
                 data={c}

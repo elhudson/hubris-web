@@ -1,16 +1,16 @@
-import { useCharacter } from "@contexts/character";
-import Ability from "./ability";
+import { Layouts, Tabs } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
-import { Sections } from "@ui/layouts";
-import Tabs from "@ui/tabs";
+
+import Ability from "./ability";
+import { Table } from "@interface/components";
 import _ from "lodash";
-import Table from "@components/table";
+import { useCharacter } from "contexts";
 
 const Features = () => {
   const { character } = useCharacter();
   const { classes } = useTheme();
   return (
-    <Sections>
+    <Layouts.Sections>
       <section>
         <h3>Background</h3>
         <div css={classes.layout.gallery}>
@@ -41,7 +41,7 @@ const Features = () => {
           table={"tag_features"}
         />
       </section>
-    </Sections>
+    </Layouts.Sections>
   );
 };
 

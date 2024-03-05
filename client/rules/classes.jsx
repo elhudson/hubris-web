@@ -1,7 +1,7 @@
-import Loading from "@ui/loading";
-import List from "@components/list";
-import Metadata from "@components/metadata";
-import { useOptions } from "@contexts/options";
+import { List, Metadata } from "@interface/components";
+
+import { Loading } from "@interface/ui";
+import { useOptions } from "contexts";
 
 export default ({ checkbox = null }) => {
   const context = useOptions();
@@ -13,8 +13,8 @@ export default ({ checkbox = null }) => {
           class_paths: true,
           tags: true,
           attributes: true,
-          hit_dice: true
-        }
+          hit_dice: true,
+        },
       })}`
     ).then((t) => t.json()));
   return (
@@ -33,7 +33,7 @@ export default ({ checkbox = null }) => {
                 "class_paths",
                 "weaponry",
                 "armory",
-                "hit_dice"
+                "hit_dice",
               ]}
             />
           )}

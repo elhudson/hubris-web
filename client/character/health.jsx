@@ -1,12 +1,10 @@
-import { useCharacter } from "@contexts/character";
-import HD from "./hd";
-import Injuries from "./injury";
-import { get_max_hp } from "utilities";
-import _ from "lodash";
-import Counter from "@ui/counter";
-import NumberBox from "@ui/numberBox";
+import { Counter, Layouts, NumberBox } from "@interface/ui";
+import { Hd, Injury } from "@client/character";
 import { css, useTheme } from "@emotion/react";
-import { Row } from "@ui/layouts";
+
+import _ from "lodash";
+import { get_max_hp } from "utilities";
+import { useCharacter } from "contexts";
 
 const Health = () => {
   const { character, update } = useCharacter();
@@ -26,7 +24,7 @@ const Health = () => {
     });
   };
   return (
-    <Row>
+    <Layouts.Row>
       <div>
         <NumberBox label="hp">
           <Counter
@@ -46,13 +44,13 @@ const Health = () => {
             }
           `}>
           <label>Injuries</label>
-          <Injuries injury={character.health.injuries} />
+          <Injury injury={character.health.injuries} />
         </div>
       </div>
       {character.HD.map((h) => (
-        <HD index={_.indexOf(character.HD, h)} />
+        <Hd index={_.indexOf(character.HD, h)} />
       ))}
-    </Row>
+    </Layouts.Row>
   );
 };
 

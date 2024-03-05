@@ -1,7 +1,8 @@
 import * as dropdown from "@radix-ui/react-dropdown-menu";
+
+import { css, useTheme } from "@emotion/react";
+
 import { BsThreeDots } from "react-icons/bs";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
 
 export default ({ children, trigger = <BsThreeDots />, dir="right"}) => {
   const { colors } = useTheme();
@@ -11,7 +12,7 @@ export default ({ children, trigger = <BsThreeDots />, dir="right"}) => {
       <dropdown.Portal>
         <dropdown.Content
           side={dir}
-          className={css`
+          css={css`
             &[data-side="left"],
             &[data-side="right"] {
               display: flex;

@@ -1,16 +1,15 @@
-import { useCharacter } from "@contexts/character";
-import { useUser } from "@contexts/user";
-import { usePower } from "@contexts/power";
-import Make from "@components/catalog/powers/maker";
-import Alert from "@ui/alert";
-import { useRef, forwardRef } from "react";
+import { forwardRef, useRef } from "react";
+import { useCharacter, usePower, useUser } from "contexts";
+
+import { Alert } from "@interface/ui";
+import { Maker } from "@client/power";
 import _ from "lodash";
 
 export default () => {
   const { character } = useCharacter() ?? { character: null };
   const edit = useCharacter()?.update;
   const user = useUser();
-  const { power, update } = usePower();
+  const { power } = usePower();
   const editRef = useRef(null);
   const menu = [];
   if (character) {
@@ -94,8 +93,9 @@ const Edit = forwardRef(function Func(props = {}, ref) {
           method: "POST",
           body: JSON.stringify(power),
         })
-      }>
-      <Make />
+      }
+    >
+      <Maker />
     </Alert>
   );
 });

@@ -1,29 +1,27 @@
-import { useCharacter } from "@contexts/character";
-import { useAsync } from "react-async-hook";
-import { useTheme } from "@emotion/react";
-import Skill from "./skill";
-import { css } from "@emotion/css";
+import { css, useTheme } from "@emotion/react";
+
+import { Loading } from "@interface/ui";
+import { Skill } from "@client/character";
+import { useCharacter } from "contexts";
 
 const Skills = () => {
   const { colors } = useTheme();
   const { character } = useCharacter();
-  const attrs = useAsync(
-    async () =>
-      await fetch("/data/rules?table=attributes&relations=true").then((j) =>
-        j.json()
-      )
-  );
-  const skills = useAsync(
-    async () =>
-      await fetch("/data/rules?table=skills&relations=true").then((j) =>
-        j.json()
-      )
-  );
+  const data = async () => {
+    const attrs = await fetch(
+      "/data/rules?table=attributes&relations=true"
+    ).then((j) => j.json());
+    const skills = await fetch("/data/rules?table=skills&relations=true").then(
+      (j) => j.json()
+    );
+    return { attrs, skills };
+  };
   return (
-    <>
-      {attrs.result && (
+    <Loading
+      getter={data}
+      render={({ attrs, skills }) => (
         <div
-          className={css`
+          css={css`
             display: grid;
             grid-template-columns: repeat(3, auto);
             grid-gap: 10px;
@@ -32,11 +30,12 @@ const Skills = () => {
               padding-left: 5px;
               border-left: 1px solid ${colors.accent};
             }
-          `}>
-          {attrs.result.map((a) => (
+          `}
+        >
+          {attrs.map((a) => (
             <section>
               <div
-                className={css`
+                css={css`
                   text-align: center;
                   border: 1px solid ${colors.accent};
                   h4 {
@@ -47,21 +46,23 @@ const Skills = () => {
                     height: 100%;
                     vertical-align: middle;
                   }
-                `}>
+                `}
+              >
                 <h4>{a.title}</h4>
                 <div>{character[a.code]}</div>
               </div>
               <div className="skills">
-                {skills.result &&
-                  skills.result
-                    .filter((f) => f.attributes.code == a.code)
-                    .map((s) => <Skill skill={s} />)}
+                {skills
+                  .filter((f) => f.attributes.code == a.code)
+                  .map((s) => (
+                    <Skill skill={s} />
+                  ))}
               </div>
             </section>
           ))}
         </div>
       )}
-    </>
+    />
   );
 };
 

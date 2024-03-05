@@ -1,8 +1,8 @@
-import Loading from "@ui/loading";
-import { campaignContext } from "@contexts/campaign";
-import Profile from "@campaigns/profile";
-import { Sections } from "@ui/layouts";
+import { Layouts, Loading } from "@interface/ui";
+
+import { Profile } from "@client/campaign";
 import _ from "lodash";
+import { campaignContext } from "contexts";
 
 export default () => {
   const campaigns = async () =>
@@ -11,7 +11,7 @@ export default () => {
     <Loading
       getter={campaigns}
       render={({ dm, player }) => (
-        <Sections>
+        <Layouts.Sections>
           <section>
             <h3>DM</h3>
             {dm.map((c) => (
@@ -28,7 +28,7 @@ export default () => {
               </campaignContext.Provider>
             ))}
           </section>
-        </Sections>
+        </Layouts.Sections>
       )}
     />
   );

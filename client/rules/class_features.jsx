@@ -1,7 +1,6 @@
-import Loading from "@ui/loading";
-import { useOptions } from "@contexts/options";
-import Organizer from "@components/organizer";
-import Tree from "@components/tree";
+import { Organizer, Tree } from "@interface/components";
+import { Loading } from "@interface/ui";
+import { useOptions } from "contexts";
 
 export default () => {
   const context = useOptions();

@@ -1,16 +1,19 @@
+import { Background, Scrollable } from "@interface/ui";
 import {
-  createBrowserRouter,
+  Outlet,
   Route,
+  createBrowserRouter,
   createRoutesFromElements,
-  Outlet
 } from "react-router-dom";
-
-import Menu from "./menu";
-import pages from "@pages/pages";
-const { rules, user, campaign, catalog, character, tools } = pages;
-import Background from "@ui/background";
 import { css, useTheme } from "@emotion/react";
-import Scrollable from "@ui/scrollable";
+
+import Campaign from "@client/campaign"
+import Character from "@client/character"
+import Menu from "@src/client/menu";
+import Power from "@client/power"
+import Rules from "@client/rules"
+import Srd from "@client/srd"
+import User from "@client/user"
 
 const App = ({ children }) => {
   const { colors } = useTheme();
@@ -20,7 +23,8 @@ const App = ({ children }) => {
         height: 95vh;
         width: 80%;
         margin: auto;
-      `}>
+      `}
+    >
       <Scrollable>{children}</Scrollable>
     </main>
   );
@@ -36,51 +40,52 @@ export default createBrowserRouter(
             <Outlet />
           </App>
         </>
-      }>
+      }
+    >
       <Route
         path="/"
-        element={<rules.wiki />}
+        element={<Srd.Wiki />}
       />
 
       <Route
         path="/register"
-        element={<user.register />}
+        element={<User.Register />}
       />
 
       <Route element={<Outlet />}>
         <Route
           path=":user/creations"
-          element={<user.creations />}
+          element={<User.Creations />}
         />
         <Route
           path=":user/create/character"
-          element={<character.create />}
+          element={<Character.Create />}
         />
         <Route
           path=":user/create/campaign"
-          element={<campaign.create />}
+          element={<Campaign.Create />}
         />
       </Route>
 
       <Route element={<Outlet />}>
         <Route
           path="srd/:table"
-          element={<rules.table />}
+          element={<Srd.Table />}
         />
         <Route
           path="srd/:table/:feature"
-          element={<rules.entry />}
+          element={<Srd.Entry />}
         />
       </Route>
 
       <Route element={<Outlet />}>
         <Route
           path="character/:id"
-          element={<character.homepage />}
+          element={<Character.Homepage />}
         />
         <Route
           path="character/:id/advance"
-          element={<character.advance />}
+          element={<Character.Advance />}
         />
       </Route>
       <Route
@@ -89,23 +94,24 @@ export default createBrowserRouter(
             <Outlet />
             <Background type="campaigns" />
           </>
-        }>
+        }
+      >
         <Route
           path="campaign/:id"
-          element={<campaign.homepage />}
+          element={<Campaign.Homepage />}
         />
         <Route
           path="campaign/:id/summaries/:session"
-          element={<campaign.summarize />}
+          element={<Campaign.Summarize />}
         />
       </Route>
       <Route
         path="db/powers"
-        element={<catalog.powers />}
+        element={<Power.Powers />}
       />
       <Route
         path="tools/calculator"
-        element={<rules.calculator />}
+        element={<Srd.Calculator />}
       />
     </Route>
   )

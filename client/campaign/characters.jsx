@@ -1,8 +1,6 @@
-import Profile from "@components/character/profile";
-import { characterContext } from "@contexts/character";
-import { useCampaign } from "@contexts/campaign";
-import { css } from "@emotion/css";
-
+import { css } from "@emotion/react";
+import { characterContext, useCampaign } from "context";
+import { Profile } from "@client/character";
 export default () => {
   const { campaign } = useCampaign();
   return (

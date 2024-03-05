@@ -1,13 +1,14 @@
 import * as radio from "@radix-ui/react-radio-group";
-import _ from "lodash";
-import { css, useTheme } from "@emotion/react";
-import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
 
-import Switch from "./switch";
+import { IoIosRadioButtonOff, IoIosRadioButtonOn } from "react-icons/io";
+import { css, useTheme } from "@emotion/react";
+
+import { Switch } from "@interface/ui";
+import _ from "lodash";
 
 export default (props) => {
   const { data, current, valuePath, onChange, inline = true } = props;
-  const { colors, palette } = useTheme();
+  const { palette } = useTheme();
   return (
     <radio.Root
       css={css`
@@ -21,7 +22,8 @@ export default (props) => {
       `}
       value={_.get(current, valuePath)}
       onValueChange={onChange}
-      {...props}>
+      {...props}
+    >
       {data.map((d) => (
         <RadioItem
           asChild
@@ -67,13 +69,15 @@ export const RadioItem = ({
         > button {
           padding: unset;
         }
-      `}>
+      `}
+    >
       <radio.Item
         value={_.get(item, valuePath)}
         css={css`
           background-color: rgba(0, 0, 0, 0);
           border: unset;
-        `}>
+        `}
+      >
         {_.get(item, valuePath) != _.get(current, valuePath) &&
           (getIcon ? (
             <Switch

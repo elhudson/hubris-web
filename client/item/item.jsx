@@ -1,14 +1,10 @@
-import { useState } from "react";
-import { useImmer } from "use-immer";
-import _ from "lodash";
-import { useCharacter } from "@contexts/character";
-import Armor from "@items/armor";
-import Weapon from "@items/weapon";
-import Actions from "@items/actions";
-import { itemContext } from "@contexts/item";
+import { Armor, Menu, Save, Weapon } from "@client/item";
 import { css, useTheme } from "@emotion/react";
-import Save from "@items/save";
-import Action from "@components/action";
+import { itemContext, useCharacter } from "contexts";
+
+import { Action } from "@interface/components";
+import _ from "lodash";
+import { useImmer } from "use-immer";
 
 export default ({ data, type, editable }) => {
   const { classes } = useTheme();
@@ -31,18 +27,20 @@ export default ({ data, type, editable }) => {
       value={{
         edit: {
           enabled: editable || isDraft,
-          generator: makeUpdater
+          generator: makeUpdater,
         },
         type: type,
-        item: item
-      }}>
-      <Actions>
+        item: item,
+      }}
+    >
+      <Menu>
         <div
           css={css`
             button[data-active="true"] {
               background-color: rgba(0, 0, 0, 0);
             }
-          `}>
+          `}
+        >
           <Action
             css={css`
               section {
@@ -58,20 +56,22 @@ export default ({ data, type, editable }) => {
                   onChange={editable || isDraft ? makeUpdater("name") : null}
                 />
               </h4>
-            }>
+            }
+          >
             <section
               className={css`
                 [role="radiogroup"] {
                   display: flex;
                 }
-              `}>
+              `}
+            >
               {type == "weapons" && <Weapon />}
               {type == "armor" && <Armor />}
             </section>
             <section>{item.description}</section>
           </Action>
         </div>
-      </Actions>
+      </Menu>
       {isDraft && <Save />}
     </itemContext.Provider>
   );

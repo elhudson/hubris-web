@@ -1,7 +1,7 @@
-import { useCampaign } from "@contexts/campaign";
-import Multi from "@ui/multi";
-import Loading from "@ui/loading";
+
 import _ from "lodash";
+import { useCampaign } from "context";
+import { Multi, Loading } from "@interface/ui";
 
 export default () => {
   const { campaign, update } = useCampaign();

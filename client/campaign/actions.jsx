@@ -1,13 +1,10 @@
-import { useCampaign } from "@contexts/campaign";
-import { useUser } from "@contexts/user";
 import { forwardRef, useRef } from "react";
 import { useAsync } from "react-async-hook";
-import Alert from "@ui/alert";
-import Select from "@ui/select";
 import _ from "lodash";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
-import Edit from "@components/campaigns/edit";
+import { useTheme, css} from "@emotion/react";
+import { Edit } from "@client/campaign";
+import { useCampaign, useUser } from "context";
+import { Alert, Select } from "@interface/ui";
 
 export default () => {
   const ownershipRef = useRef(null);
@@ -109,7 +106,7 @@ export const Delete = forwardRef(function Func(props = null, ref) {
   };
   return (
     <div
-      className={css`
+      css={css`
         > button:first-child {
           display: none;
         }

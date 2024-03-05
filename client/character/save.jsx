@@ -1,5 +1,5 @@
-import Notification from "@ui/notif";
-import { useCharacter } from "@contexts/character";
+import { Notif } from "@interface/ui";
+import { useCharacter } from "contexts";
 import { useTheme } from "@emotion/react";
 
 export default () => {
@@ -14,7 +14,7 @@ export default () => {
       }
     }).then((s) => s.text());
   return (
-    <Notification
+    <Notif
       func={save}
       btn="Save"
       css={classes.elements.post}

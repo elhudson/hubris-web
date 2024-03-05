@@ -1,7 +1,6 @@
 import * as dialog from "@radix-ui/react-dialog";
-import { useTheme } from "@emotion/react";
-import { forwardRef, useState } from "react";
 
+import { useTheme } from "@emotion/react";
 
 export default ({ trigger, children }) => {
   const { classes } = useTheme();

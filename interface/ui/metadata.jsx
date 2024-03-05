@@ -1,8 +1,7 @@
-import { useTheme, css } from "@emotion/react";
 import _ from "lodash";
+import { css } from "@emotion/react";
 
 export default ({ pairs, ...props }) => {
-  const { colors, classes } = useTheme();
   return (
     <div
       css={css`

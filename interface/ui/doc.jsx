@@ -1,8 +1,11 @@
-import ReactQuill, { Quill } from "react-quill";
-import { useEffect, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
-import { useTheme, css } from "@emotion/react";
+
+import ReactQuill, { Quill } from "react-quill";
+import { css, useTheme } from "@emotion/react";
+import { useEffect, useRef } from "react";
+
 import _ from "lodash";
+
 const fonts = {
   iosevka: "Iosevka Web",
   tangerine: "Tangerine",

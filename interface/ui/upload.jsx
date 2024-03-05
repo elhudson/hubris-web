@@ -1,9 +1,10 @@
 import * as av from "@radix-ui/react-avatar";
-import { css } from "@emotion/css";
+
 import { forwardRef, useRef, useState } from "react";
-import { useCharacter } from "@contexts/character";
+
+import { Context } from "@interface/ui";
+import { css } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-import Context from "@ui/context";
 
 const Upload = forwardRef(({ accept, name, setImage }, ref) => {
   const { colors } = useTheme();

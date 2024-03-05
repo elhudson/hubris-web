@@ -1,18 +1,17 @@
-import { useTheme } from "@emotion/react";
-import { css } from "@emotion/css";
+import { css, useTheme } from "@emotion/react";
 
 export default ({ children }) => {
   const { colors, classes } = useTheme();
   return (
     <div
-      className={css`
+      css={css`
         display: grid;
         grid-template-columns: repeat(4, 20%);
         grid-gap: 10px;
       `}>
       {children.map((c) => (
         <div
-          className={css`
+          css={css`
             ${classes.elements.button};
             position: relative;
             height: 100px;

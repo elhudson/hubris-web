@@ -1,13 +1,12 @@
-import { useImmer } from "use-immer";
-import _ from "lodash";
-import { Effects, Ranges, Durations } from "./selections";
-import Filters from "./filters";
-import { get_power_cost } from "utilities";
+import { FaEquals, FaTimes } from "react-icons/fa";
+import { Filters, Selections } from "@client/power";
 import { css, useTheme } from "@emotion/react";
-import Loading from "@ui/loading";
-import { FaTimes, FaEquals } from "react-icons/fa";
-import { usePower } from "@contexts/power";
-import { useCharacter } from "@contexts/character";
+import { useCharacter, usePower } from "contexts";
+
+import { Loading } from "@interface/ui";
+import _ from "lodash";
+import { get_power_cost } from "utilities";
+import { useImmer } from "use-immer";
 
 export default ({ filters = true }) => {
   const { character } = useCharacter();
@@ -51,17 +50,17 @@ export default ({ filters = true }) => {
       render={(options) => (
         <Filters collapsible={filters}>
           <Equation>
-            <Effects
+            <Selections.Effects
               power={power}
               options={options}
               add={addOption(options)}
             />
-            <Ranges
+            <Selections.Ranges
               power={power}
               options={options}
               add={addOption(options)}
             />
-            <Durations
+            <Selections.Durations
               power={power}
               options={options}
               add={addOption(options)}
@@ -104,7 +103,8 @@ const Equation = ({ children }) => {
             justify-content: center;
           }
         }
-      `}>
+      `}
+    >
       <div direction="left">
         <div className="numerator">
           {effects}
@@ -124,7 +124,8 @@ const Equation = ({ children }) => {
       </span>
       <div
         direction="right"
-        className="result">
+        className="result"
+      >
         {total}
       </div>
     </main>

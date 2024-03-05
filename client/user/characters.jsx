@@ -1,9 +1,9 @@
-import { useAsync } from "react-async-hook";
-import { characterContext } from "@contexts/character";
-import Loading from "@ui/loading";
-import Profile from "@components/character/profile";
-import { useTheme, css } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
+
+import { Loading } from "@interface/ui";
+import { Profile } from "@client/character";
 import _ from "lodash";
+import { characterContext } from "contexts";
 
 const Characters = () => {
   const { classes } = useTheme();

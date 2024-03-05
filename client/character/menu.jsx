@@ -1,10 +1,10 @@
-import character from "@actions/character";
-import Context from "@ui/context";
+import { Context, Tooltip } from "@interface/ui";
+
+import { Actions } from "@client/character";
 import { css } from "@emotion/react";
-import Tooltip from "@ui/tooltip";
 
 export default ({ children }) => {
-  const acts = character();
+  const acts = Actions();
   return (
     <>
       <Context
@@ -17,7 +17,7 @@ export default ({ children }) => {
 };
 
 export const Buttons = () => {
-  const acts = character();
+  const acts = Actions()
   return (
     <div
       css={css`

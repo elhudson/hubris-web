@@ -1,8 +1,6 @@
-import ui from "interface";
+import { Multi } from "@interface/ui";
 import _ from "lodash";
-import { css } from "@emotion/react";
 import { useFilters } from "@components/catalog/powers/filters";
-
 const treeable = (power, meta) => {
   if (power.effects.length == 0) {
     return true;
@@ -49,7 +47,7 @@ const makeGroups = (items) =>
 export const Effects = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
-    <ui.Multi
+    <Multi
       placeholder="Effects"
       items={filterItems(filters, options.effects)}
       labelPath={"title"}
@@ -65,7 +63,7 @@ export const Effects = ({ power, options, add }) => {
 export const Durations = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
-    <ui.Multi
+    <Multi
       placeholder="Durations"
       items={filterItems(
         filters,
@@ -84,7 +82,7 @@ export const Durations = ({ power, options, add }) => {
 export const Ranges = ({ power, options, add }) => {
   const { filters } = useFilters();
   return (
-    <ui.Multi
+    <Multi
       placeholder="Ranges"
       grouper={makeGroups}
       items={filterItems(
@@ -98,4 +96,10 @@ export const Ranges = ({ power, options, add }) => {
       onChange={add("ranges")}
     />
   );
+};
+
+export default {
+  Effects,
+  Ranges,
+  Durations,
 };

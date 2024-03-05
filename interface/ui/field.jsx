@@ -1,5 +1,5 @@
-import { useCharacter } from "@contexts/character";
 import _ from "lodash";
+import { useCharacter } from "contexts"
 
 const Field = ({ label, path }) => {
   const { character, update } = useCharacter();

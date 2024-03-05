@@ -1,10 +1,10 @@
-import Link from "@components/link";
+import { css, useTheme } from "@emotion/react";
+
 import { BiTargetLock } from "react-icons/bi";
 import { GiStarSwirl } from "react-icons/gi";
 import { IoHourglassOutline } from "react-icons/io5";
-import { usePower } from "@contexts/power";
-import { css } from "@emotion/react";
-import { useTheme } from "@emotion/react";
+import { Link } from "@interface/components";
+import { usePower } from "contexts";
 
 export default () => {
   const { power } = usePower();

@@ -1,4 +1,4 @@
-import { useUser } from "@contexts/user";
+import { useUser } from "contexts";
 
 export default () => {
   const user = useUser();

@@ -1,19 +1,13 @@
-import { useCampaign } from "@contexts/campaign";
-import Notepad from "@ui/notepad";
-import Multi from "@ui/multi";
-import Upload from "@ui/upload";
+import { useCampaign } from "contexts";
+import { Notepad, Upload, Metadata } from "@interface/ui";
+import { Recruiter, Settings } from "@client/campaign";
+
 import _ from "lodash";
 import { css, useTheme } from "@emotion/react";
-import { useAsync } from "react-async-hook";
-import Recruiter from "./recruiter";
-import Settings from "./settings";
-import Metadata from "@ui/metadata";
+
 export default () => {
   const { campaign, update } = useCampaign();
-  const settings = useAsync(
-    async () =>
-      await fetch(`/data/rules?table=settings`).then((res) => res.json())
-  ).result;
+
   const { colors, palette } = useTheme();
   return (
     <span
@@ -42,10 +36,10 @@ export default () => {
                   draft.name = e.currentTarget.value;
                 })
               }
-            />
+            />,
           ],
           ["Characters", <Recruiter />],
-          ["Settings", <Settings />]
+          ["Settings", <Settings />],
         ]}
       />
 

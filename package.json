@@ -11,12 +11,9 @@
     "~db": "prisma",
     "~models": "prisma/models/index.js"
   },
-  "_moduleDirectories": [
-    "modules"
-  ],
   "scripts": {
     "postinstall": "link-module-alias",
-    "dev": "nodemon hubris.js -w hubris.js api/*.js",
+    "dev": "node scripts/importer.js & nodemon hubris.js -w hubris.js api/*.js",
     "start": "NODE_ENV=production node hubris.js",
     "build": "prisma generate && node scripts/imports.js && vite build",
     "database": "prisma-multischema && prisma db push",

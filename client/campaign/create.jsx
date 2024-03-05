@@ -1,7 +1,6 @@
-import { useUser } from "@contexts/user";
 import { useImmer } from "use-immer";
-import { campaignContext } from "@contexts/campaign";
-import Edit from "@components/campaigns/edit";
+import { useUser, campaignContext } from "context";
+import { Edit } from "@client/campaign";
 
 export default () => {
   const user = useUser();
@@ -10,7 +9,7 @@ export default () => {
     description: "A long time ago, in a galaxy far, far away...",
     settings: [],
     characters: [],
-    dm: user
+    dm: user,
   });
   return (
     <>
@@ -20,13 +19,13 @@ export default () => {
       <button
         onClick={async () => {
           const r = await fetch(`/data/campaigns/create`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(campaign)
-          })
-          window.location.assign(r.url)
+            body: JSON.stringify(campaign),
+          });
+          window.location.assign(r.url);
         }}>
         Create
       </button>

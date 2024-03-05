@@ -1,13 +1,10 @@
-import Dialog from "@ui/dialog";
-import Maker from "./maker";
-import { v4 } from "uuid";
-import { useUser } from "@contexts/user";
-import { useCharacter } from "@contexts/character";
-import { useImmer } from "use-immer";
-import { powerContext } from "@contexts/power";
-import { useRef } from "react";
+import { powerContext, useCharacter, useUser } from "@contexts/power";
+
+import { Alert } from "@interface/ui";
 import { FaPlus } from "react-icons/fa6";
-import Alert from "@ui/alert";
+import { Maker } from "@client/power";
+import { useImmer } from "use-immer";
+import { v4 } from "uuid";
 
 export default () => {
   const user = useUser();
@@ -46,7 +43,8 @@ export default () => {
               draft.powers.push(power);
             })
         );
-      }}>
+      }}
+    >
       <powerContext.Provider value={{ power: power, update: update }}>
         <Maker />
       </powerContext.Provider>

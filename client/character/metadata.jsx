@@ -1,17 +1,15 @@
-import { useCharacter } from "@contexts/character";
-import _ from "lodash";
-import { css } from "@emotion/css";
-import { useTheme } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
 
 import { BiTargetLock } from "react-icons/bi";
 import { IoHourglassOutline } from "react-icons/io5";
-
-import Tooltip from "@ui/tooltip";
+import { Tooltip } from "@interface/ui";
+import _ from "lodash";
+import { useCharacter } from "contexts";
 
 export default ({ effect }) => {
   return (
     <div
-      className={css`
+      css={css`
         display: flex;
         flex-wrap:wrap;
         .metadata {
