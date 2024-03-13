@@ -1,10 +1,8 @@
-import { Router } from "express";
 import "dotenv/config";
 
+import { Router } from "express";
 import _ from "lodash";
 import { db } from "~db/prisma.js";
-
-import schema from "~database/schema.js";
 
 const app = Router();
 
@@ -58,6 +56,16 @@ app.get("/data/campaigns", async (req, res) => {
     username: req.session.user,
   });
   res.json(campaigns);
+});
+
+app.get("/data/user", async (req, res) => {
+  const campaigns = await db.users.campaigns({
+    username: req.session.user,
+  });
+  const characters = await db.users.characters({
+    username: req.session.user,
+  });
+  res.json({ campaigns, characters });
 });
 
 app.get("/logout", (req, res) => {

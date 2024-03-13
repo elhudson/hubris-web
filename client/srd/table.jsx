@@ -25,6 +25,7 @@ export default () => {
         {table == "tags" && <Tables.Tags />}
         {table == "attributes" && <Tables.Attributes />}
         {table == "class_features" && <Tables.ClassFeatures />}
+        {table=="backgrounds" && <Tables.Backgrounds/>}
         {table == "tag_features" && <Tables.TagFeatures />}
         {table == "effects" && <Tables.Effects />}
         {table == "ranges" && <Tables.Ranges />}

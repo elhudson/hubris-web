@@ -14,22 +14,23 @@ import {
   Tier,
   Xp,
 } from "@client/character";
-import { Layouts, Loading, Tabs } from "@interface/ui";
+import { Layouts, Tabs } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
 
 import { characterContext } from "contexts";
 import { useImmer } from "use-immer";
-import { useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
-const Sheet = ({ ch }) => {
-  const [character, update] = useImmer(ch);
-  const {classes}=useTheme()
-  const tabs=[
+export default () => {
+  const [character, update] = useImmer(useLoaderData());
+  const { classes } = useTheme();
+  const tabs = [
     { title: "Skills & Abilities", content: <Skills /> },
     { title: "Health", content: <Health /> },
     {
       title: "Progression",
-      content: <div>
+      content: (
+        <div>
           <Proficiency />
           <Xp />
           <div css={classes.elements.selectbox}>
@@ -37,11 +38,11 @@ const Sheet = ({ ch }) => {
             <Tier />
           </div>
         </div>
-      
+      ),
     },
     {
       title: "Combat",
-      content: 
+      content: (
         <div>
           <Layouts.Row>
             <Ac />
@@ -49,7 +50,7 @@ const Sheet = ({ ch }) => {
           </Layouts.Row>
           <Attacks />
         </div>
-      
+      ),
     },
     { title: "Inventory", content: <Inventory /> },
     { title: "Bio", content: <Bio /> },
@@ -79,17 +80,5 @@ const Sheet = ({ ch }) => {
         <Save />
       </characterContext.Provider>
     </main>
-  );
-};
-
-export default () => {
-  const { id } = useParams();
-  const getter = async () =>
-    await fetch(`/data/character?id=${id}`).then((j) => j.json());
-  return (
-    <Loading
-      getter={getter}
-      render={(character) => <Sheet ch={character} />}
-    />
   );
 };

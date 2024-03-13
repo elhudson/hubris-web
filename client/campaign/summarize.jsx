@@ -7,31 +7,6 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useUser } from "contexts";
 
-export default () => {
-  const { id, session } = useParams();
-  const { username } = useUser();
-  const data = async () => {
-    const characters = await fetch(`/data/characters?user=${username}`)
-      .then((res) => res.json())
-      .then((f) => f.filter((char) => char.Campaign?.id == id));
-    const summary = await fetch(
-      `/data/logbook?campaign=${id}&session=${session}`
-    ).then((j) => j.json());
-    return { characters: characters, summary: summary };
-  };
-  return (
-    <Loading
-      getter={data}
-      render={({ characters, summary }) => (
-        <Summary
-          s={summary}
-          characters={characters}
-        />
-      )}
-    />
-  );
-};
-
 const Summary = ({ s, characters }) => {
   const { id, session } = useParams();
   const [editable, setEditable] = useState(false);
@@ -162,3 +137,30 @@ const Summary = ({ s, characters }) => {
     </main>
   );
 };
+
+
+export default () => {
+  const { id, session } = useParams();
+  const { username } = useUser();
+  const data = async () => {
+    const characters = await fetch(`/data/characters?user=${username}`)
+      .then((res) => res.json())
+      .then((f) => f.filter((char) => char.Campaign?.id == id));
+    const summary = await fetch(
+      `/data/logbook?campaign=${id}&session=${session}`
+    ).then((j) => j.json());
+    return { characters: characters, summary: summary };
+  };
+  return (
+    <Loading
+      getter={data}
+      render={({ characters, summary }) => (
+        <Summary
+          s={summary}
+          characters={characters}
+        />
+      )}
+    />
+  );
+};
+

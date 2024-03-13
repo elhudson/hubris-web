@@ -23,7 +23,7 @@ export default () => {
         >
           <optionsContext.Provider
             value={{
-              searchable: searchable,
+              searchable: skills,
               options: skills,
             }}
           >

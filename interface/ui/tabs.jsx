@@ -5,7 +5,7 @@ import { css, useTheme } from "@emotion/react";
 import { Scrollable } from "@interface/ui";
 
 export default ({ names, children, def, disabled = [], ...props }) => {
-  const { classes, colors } = useTheme();
+  const { classes, colors, palette } = useTheme();
   const toVal = (name) => name.toLowerCase().replace(" ", "_");
   return (
     <tabs.Root
@@ -59,7 +59,6 @@ export default ({ names, children, def, disabled = [], ...props }) => {
             </tabs.Trigger>
           ))}
         </span>
-
         <select
           css={css`
             display: none;
@@ -68,6 +67,8 @@ export default ({ names, children, def, disabled = [], ...props }) => {
               margin: 5px 0px;
               border-radius: 0px;
               appearance: unset;
+              background-color: ${palette.accent1};
+              color: ${colors.text};
               border: 1px solid ${colors.accent};
               display: block;
               width: 100%;

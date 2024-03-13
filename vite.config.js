@@ -7,7 +7,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import { resolve } from "path";
 
 jsConfig(aliases);
-makeImports(process.env.NODE_ENV != "production");
+makeImports(process.env?.NODE_ENV != "production");
 
 // https://vitejs.dev/config/
 export default defineConfig({

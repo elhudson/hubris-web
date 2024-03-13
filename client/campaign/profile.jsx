@@ -1,14 +1,14 @@
+import { Array, Notepad } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
-import { useCampaign } from "context";
 
-import { Actions } from "@client/character";
-import { Notepad, Array } from "@interface/ui";
+import { Menu } from "@client/character";
+import { useCampaign } from "context";
 
 export default () => {
   const { campaign } = useCampaign();
   const { colors, classes } = useTheme();
   return (
-    <Actions>
+    <Menu>
       <div
         css={css`
           position: relative;
@@ -44,6 +44,6 @@ export default () => {
         <Notepad text={campaign.description} />
         <Array data={campaign.settings.map(c=> ({name: c.title, id: c.id}))} />
       </div>
-    </Actions>
+    </Menu>
   );
 };

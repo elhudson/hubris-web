@@ -6,6 +6,9 @@ import hD from "./hD.js";
 import powers from "./powers.js";
 import users from "./users.js";
 import campaigns from "./campaigns.js";
+import description from "./description.js"
+import entry from "./entry.js"
+import content from "./content.js"
 
 export default {
   $allModels,
@@ -15,5 +18,8 @@ export default {
   inventories,
   powers,
   users,
-  campaigns
+  campaigns,
+  content,
+  entry,
+  description,
 };

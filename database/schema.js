@@ -1,7 +1,8 @@
-import { db } from "~db/prisma.js";
-import { sql_safe, prisma_safe } from "utilities";
+import { prisma_safe, sql_safe } from "utilities";
+
 import { Prisma } from "@prisma/client";
 import _ from "lodash"
+import { db } from "~db/prisma.js";
 
 export const tables = async () =>
   await db.$queryRaw`

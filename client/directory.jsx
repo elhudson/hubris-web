@@ -1,13 +1,12 @@
+import { Link, useLoaderData } from "react-router-dom";
 import { css, useTheme } from "@emotion/react";
 import { sql_danger, sql_safe } from "utilities";
 
 import { FaDiceD20 } from "react-icons/fa6";
-import { Link } from "react-router-dom";
-import { Loading } from "@interface/ui";
 
 const Wiki = () => {
   const { colors } = useTheme();
-  const tables = async () => await fetch("/data/tables").then((j) => j.json());
+  const tables = useLoaderData();
   return (
     <div
       css={css`
@@ -35,32 +34,25 @@ const Wiki = () => {
     >
       <section>
         <h2>Rules</h2>
-        <Loading
-          getter={tables}
-          render={(tables) => (
-            <ul>
-              {tables.map((title) => (
-                <li>
-                  <FaDiceD20 />
-                  <Link to={`/srd/${sql_safe(title)}`}>
-                    {sql_danger(title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        />
+        <ul>
+          {tables.map((title) => (
+            <li>
+              <FaDiceD20 />
+              <Link to={`/srd/${sql_safe(title)}`}>{sql_danger(title)}</Link>
+            </li>
+          ))}
+        </ul>
       </section>
       <section>
         <h2>Resources</h2>
         <ul>
           <li>
             <FaDiceD20 />
-            <Link to={"/db/powers"}>Powers</Link>
+            <Link to={"/srd/powers"}>Powers</Link>
           </li>
           <li>
             <FaDiceD20 />
-            <Link to={"/db/settings"}>Settings</Link>
+            <Link to={"/srd/settings"}>Settings</Link>
           </li>
         </ul>
       </section>
@@ -69,7 +61,7 @@ const Wiki = () => {
         <ul>
           <li>
             <FaDiceD20 />
-            <Link to="/tools/calculator">Power Calculator</Link>
+            <Link to="/srd/calculator">Power Calculator</Link>
           </li>
         </ul>
       </section>

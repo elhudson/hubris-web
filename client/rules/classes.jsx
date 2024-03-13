@@ -1,42 +1,24 @@
 import { List, Metadata } from "@interface/components";
 
-import { Loading } from "@interface/ui";
-import { useOptions } from "contexts";
+import { useLoaderData } from "react-router-dom";
 
 export default ({ checkbox = null }) => {
-  const context = useOptions();
-  const features = async () =>
-    context?.options ??
-    (await fetch(
-      `/data/rules?table=classes&query=${JSON.stringify({
-        include: {
-          class_paths: true,
-          tags: true,
-          attributes: true,
-          hit_dice: true,
-        },
-      })}`
-    ).then((t) => t.json()));
+  const features = useLoaderData();
   return (
-    <Loading
-      getter={features}
-      render={(features) => (
-        <List
-          items={features}
-          checkbox={checkbox}
-          props={(f) => (
-            <Metadata
-              feature={f}
-              props={[
-                "attributes",
-                "tags",
-                "class_paths",
-                "weaponry",
-                "armory",
-                "hit_dice",
-              ]}
-            />
-          )}
+    <List
+      items={features}
+      checkbox={checkbox}
+      props={(f) => (
+        <Metadata
+          feature={f}
+          props={[
+            "attributes",
+            "tags",
+            "class_paths",
+            "weaponry",
+            "armory",
+            "hit_dice",
+          ]}
         />
       )}
     />

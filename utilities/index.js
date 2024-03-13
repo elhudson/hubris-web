@@ -28,6 +28,17 @@ export const cost = (score) => {
     : 12;
 };
 
+export const groupBy = (list, get, subprop) => {
+  const cats = _.uniqBy(
+    list.map((f) => get(f)),
+    "id"
+  );
+  cats.forEach((cat) => {
+    cat[subprop] = list.filter((f) => get(f).id == cat.id);
+  });
+  return cats;
+};
+
 export const getCost = ({ code, character }) => {
   const bonus = boost(character, code);
   const current = bonus ? character[code] - 1 : character[code];
@@ -218,7 +229,7 @@ export function get_skill_xp({ backgrounds, int, skills }) {
   const s = skills?.filter(
     (s) => !backgrounds?.map((s) => s?.skills?.id).includes(s?.id)
   );
-  const num_skills = s?.length ?? 0
+  const num_skills = s?.length ?? 0;
   const costly_skills = num_skills - (int + 2);
   if (costly_skills > 0) {
     for (var i = 0; i < costly_skills; i++) {
@@ -227,7 +238,7 @@ export function get_skill_xp({ backgrounds, int, skills }) {
   }
   return {
     total: xp,
-    next: costly_skills > 0 ? 1 + costly_skills : 0
+    next: costly_skills > 0 ? 1 + costly_skills : 0,
   };
 }
 

@@ -1,9 +1,10 @@
-import {Classes, Backgrounds, Injuries, Attributes, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
+import {Classes, Backgrounds, Entry, Injuries, Attributes, Effects, Ranges, Durations, Class_Features, Tag_Features, Skills, Hit_Dice} from "./rules"
 import {Users} from "./user"
 import {Weapons, Armor, Items} from "./inventory"
 import { Characters } from "./character"
 import {Campaigns, Summaries} from "./campaign"
 import {Powers} from "./powers"
+import { Hit_Dice } from "../schema"
 
 model Characters {
   id             String           @id @unique
@@ -37,16 +38,17 @@ model Characters {
   font           String?
 }
 
-
 model HD {
   id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
   src          String     @default("default")
-  die          Hit_Dice?  @relation(fields: [hit_diceId], references: [id])
+  die          Hit_Dice?  @relation(fields: [hit_diceId], references: [entryId])
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
   hit_diceId   String?
+
+
 }
 
 model Health {

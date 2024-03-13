@@ -1,30 +1,19 @@
-import { campaignContext } from "contexts";
-import { useParams } from "react-router-dom";
-import { useImmer } from "use-immer";
 import * as Campaign from "@client/campaign";
-import { useTheme, css } from "@emotion/react";
+
+import { Layouts, Metadata, Tabs } from "@interface/ui";
+import { css, useTheme } from "@emotion/react";
 
 import { Link } from "@interface/components";
-import { Metadata, Tabs, Loading, Layouts } from "@interface/ui";
+import { campaignContext } from "contexts";
+import { useImmer } from "use-immer";
+import { useLoaderData } from "react-router-dom";
 
-export default () => {
-  const { id } = useParams();
-  const campaign = async () =>
-    await fetch(`/data/campaign?id=${id}`).then((j) => j.json());
-  return (
-    <Loading
-      getter={campaign}
-      render={(campaign) => <Homepage cpg={campaign} />}
-    />
-  );
-};
-
-const Homepage = ({ cpg }) => {
-  const { colors, palette, classes } = useTheme();
-  const [campaign, update] = useImmer(cpg);
+export default ()=> {
+  const { colors, classes } = useTheme();
+  const [campaign, update] = useImmer(useLoaderData());
   return (
     <campaignContext.Provider value={{ campaign: campaign, update: update }}>
-      <Campaign.Actions>
+      <Campaign.Menu>
         <div
           css={css`
             section,
@@ -79,7 +68,7 @@ const Homepage = ({ cpg }) => {
           `}>
           <Campaign.Save />
         </span>
-      </Campaign.Actions>
+      </Campaign.Menu>
     </campaignContext.Provider>
   );
 };

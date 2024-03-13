@@ -15,7 +15,8 @@ export default () => {
   const { character, update } = useCharacter();
   const deleteRef = useRef(null);
   const shortRestRef = useRef(null);
-  const menu = [
+  const menu=[]
+  character && menu.push(
     {
       label: "Delete",
       action: () => deleteRef.current.click(),
@@ -46,8 +47,8 @@ export default () => {
           });
         })
     }
-  ];
-  character.campaign &&
+  )
+  character?.campaign &&
     menu.push({
       label: "Write Summary",
       action: () =>

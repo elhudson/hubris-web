@@ -1,13 +1,43 @@
-import { Rules } from "../schema"
+import { Entry } from "rules"
 
 model Rules {
-    id     String  @unique
-    title  String
-    config Boolean @default(true)
-    src    String  @default("core-rules")
+  id     String  @unique
+  title  String
+  config Boolean @default(true)
+  src    String  @default("core-rules")
 }
 
 model Index {
-    id    String @unique
-    table String
+  id    String @unique
+  table String
+}
+
+model Description {
+  entryId String @id @unique
+
+  content Content[] @relation("source")
+  entry   Entry     @relation(fields: [entryId], references: [id])
+}
+
+model Content {
+  index     Int
+  src       Description @relation("source", fields: [srcId], references: [entryId])
+  srcId     String
+  plaintext String      @db.MediumText
+  link      Link?
+
+  @@id(name: "id", [index, srcId])
+  @@unique([index, srcId])
+}
+
+model Link {
+  content  Content @relation(fields: [contentIndex, contentSrc], references: [index, srcId])
+  target   Entry   @relation("target", fields: [targetId], references: [id])
+  targetId String
+
+  contentIndex Int
+  contentSrc   String
+
+  @@id(name: "id", [contentIndex, contentSrc])
+  @@unique([contentIndex, contentSrc])
 }

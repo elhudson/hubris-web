@@ -7,10 +7,11 @@ import { powerContext, useUser } from "contexts";
 import _ from "lodash";
 import { css } from "@emotion/react";
 import { useImmer } from "use-immer";
+import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 
 export default () => {
-  const powers = async () => await fetch("/data/powers").then((j) => j.json());
+  const powers = useLoaderData();
   return (
     <main
       css={css`
@@ -27,27 +28,24 @@ export default () => {
       `}
     >
       <h2>Powers</h2>
-      <Loading
-        getter={powers}
-        render={(powers) => (
-          <table>
-            <thead>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Creator</th>
-              <th>Effects</th>
-              <th>Ranges</th>
-              <th>Durations</th>
-              <th>Cost</th>
-            </thead>
-            <tbody>
-              {powers.map((p) => (
-                <Entry pwr={p} />
-              ))}
-            </tbody>
-          </table>
-        )}
-      />
+
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Creator</th>
+          <th>Effects</th>
+          <th>Ranges</th>
+          <th>Durations</th>
+          <th>Cost</th>
+        </thead>
+        <tbody>
+          {powers.map((p) => (
+            <Entry pwr={p} />
+          ))}
+        </tbody>
+      </table>
+
       <Create />
     </main>
   );

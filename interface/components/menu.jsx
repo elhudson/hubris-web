@@ -1,6 +1,7 @@
 import * as nav from "@radix-ui/react-navigation-menu";
 
 import { Actions, Login } from "@client/user";
+import { Link, NavLink, redirect, useNavigate } from "react-router-dom";
 import { css, useTheme } from "@emotion/react";
 import { sql_danger, sql_safe } from "utilities";
 
@@ -14,6 +15,7 @@ import { useUser } from "contexts";
 const tables = await fetch("/data/tables").then((j) => j.json());
 
 export default () => {
+  const navigate=useNavigate()
   const { logged_in, username } = useUser();
   const { colors } = useTheme();
   return (
@@ -34,7 +36,7 @@ export default () => {
       `}
     >
       <h1>
-        <a href="/">HUBRIS</a>
+        <Link to={"/"}>HUBRIS</Link>
       </h1>
       <Menu
         items={[
@@ -43,7 +45,7 @@ export default () => {
             icon: <GiBookCover />,
             children: tables.map((t) => ({
               label: sql_danger(t),
-              action: () => window.location.assign(`/srd/${sql_safe(t)}`),
+              action: () => navigate(`/srd/${sql_safe(t)}`),
             })),
           },
           {

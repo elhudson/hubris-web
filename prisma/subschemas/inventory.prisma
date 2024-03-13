@@ -1,5 +1,4 @@
-import {Tags } from "./rules"
-import {Inventories} from "./character"
+import {Inventories} from "character"
 import { Tags } from "rules"
 
 model Weapons {
@@ -14,8 +13,6 @@ model Weapons {
   equipped    Boolean       @default(false)
   Inventories Inventories[]
 }
-
-
 
 model Armor {
   id          String  @id @unique

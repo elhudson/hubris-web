@@ -1,8 +1,8 @@
-import { get_schema } from "../database/schema.js";
-import { Client } from "@notionhq/client";
-import { NotionRenderer, createBlockRenderer } from "@notion-render/client";
 import "dotenv/config";
+
+import { Client } from "@notionhq/client";
 import _ from "lodash";
+import { get_schema } from "~database/schema.js";
 import { sql_safe } from "utilities";
 
 export const notion = new Client({
@@ -24,7 +24,7 @@ export async function get_tables(client) {
     .then((r) => Promise.all(r));
 }
 
-function sleep(ms) {
+export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -116,34 +116,59 @@ export const get_page = async (cl, id) => {
     })
     .catch(async (err) => {
       console.log(err);
-      await sleep(3000);
-      return await get_page(cl, id);
+      if (err?.status == 429) {
+        await sleep(1000 * err.headers["retry-after"]);
+        return await get_page(cl, id);
+      }
     });
 };
 
-const mentionRenderer = createBlockRenderer("mention", (data) => {
-  const id = data.mention.page?.id;
-  const text = data.plain_text;
-  return `[[${text}|${id}]]`;
-});
-
-const renderer = new NotionRenderer({
-  renderers: [mentionRenderer],
-  client: new Client({
-    auth: process.env.NOTION_TOKEN
-  })
-});
+const parse_block = (block) => {
+  const self = [];
+  if (block?.type == "paragraph") {
+    block.paragraph.rich_text.forEach((node) => {
+      const item = {
+        plaintext: node.plain_text
+      };
+      if (node.type == "mention" && node?.mention.page?.id) {
+        item.link = {
+          target: {
+            title: node.plain_text,
+            id: node.mention.page.id
+          }
+        };
+      }
+      self.push(item);
+    });
+  }
+  if (block?.has_children) {
+    self.push(...parse_block(block.children));
+  }
+  return self.map((s) => ({
+    ...s,
+    index: self.indexOf(s)
+  }));
+};
 
 export async function get_description(id, client) {
-  const { results } = await client.blocks.children.list({
-    block_id: id
-  });
-  const html = await renderer.render(...results).then((r) => r.trim());
-  return html;
+  const { results } = await client.blocks.children
+    .list({
+      block_id: id
+    })
+    .catch(async (err) => {
+      console.log(err);
+      if (err?.status == 429) {
+        await sleep(1000 * err.headers["retry-after"]);
+        return await get_description(id, client);
+      }
+    });
+  const res = _.flatMap(results, (p) => parse_block(p));
+  return res;
 }
 
-export async function parse_page(page, client) {
-  const props = Object.entries(page.properties);
+export async function parse_page(page, client, filter = []) {
+  var props = Object.entries(page.properties);
+  filter.length > 0 && (props = props.filter((f) => filter.includes(f)));
   const obj = {
     id: page.id
   };
