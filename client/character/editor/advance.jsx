@@ -17,7 +17,7 @@ import { useImmer } from "use-immer";
 import { useLoaderData } from "react-router-dom";
 
 export default () => {
-  const [character, update] = useImmer(useLoaderData());
+  const [character, update] = useImmer(useLoaderData().character);
   const tabs = [
     {
       title: "Class Features",

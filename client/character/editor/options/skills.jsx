@@ -1,38 +1,26 @@
 import { Option, Optionset } from "@client/options";
-import { optionsContext, ruleContext, useCharacter } from "contexts";
+import { optionsContext, ruleContext } from "contexts";
 
-import { Loading } from "@interface/ui";
 import { Skills } from "@client/rules";
 import _ from "lodash";
+import { useLoaderData } from "react-router-dom";
 
 export default () => {
-  const skills = async () =>
-    await fetch("/data/rules?table=skills&relations=true").then((k) =>
-      k.json()
-    );
-
+  const { skills } = useLoaderData().options;
   return (
-    <Loading
-      getter={skills}
-      render={(skills) => (
-        <ruleContext.Provider
-          value={{
-            location: "levelup",
-            table: "skills",
-          }}
-        >
-          <optionsContext.Provider
-            value={{
-              searchable: skills,
-              options: skills,
-            }}
-          >
-            <Optionset
-              component={<Skills checkbox={(item) => <Option data={item} />} />}
-            />
-          </optionsContext.Provider>
-        </ruleContext.Provider>
-      )}
-    />
+    <ruleContext.Provider
+      value={{
+        location: "levelup",
+        table: "skills"
+      }}>
+      <optionsContext.Provider
+        value={{
+          data: skills,
+        }}>
+        <Optionset
+          component={<Skills checkbox={(item) => <Option data={item} />} />}
+        />
+      </optionsContext.Provider>
+    </ruleContext.Provider>
   );
 };

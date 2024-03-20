@@ -3,10 +3,17 @@ import * as tabs from "@radix-ui/react-tabs";
 import { css, useTheme } from "@emotion/react";
 
 import { Scrollable } from "@interface/ui";
+import _ from "lodash"
 
 export default ({ names, children, def, disabled = [], ...props }) => {
   const { classes, colors, palette } = useTheme();
-  const toVal = (name) => name.toLowerCase().replace(" ", "_");
+  const toVal = (name) => {
+    return name.toLowerCase().replace(" ", "_");
+  };
+  function getValue({ c }) {
+    const index = _.findIndex(children, c);
+    return toVal(names.at(index));
+  }
   return (
     <tabs.Root
       defaultValue={toVal(def)}
@@ -41,7 +48,8 @@ export default ({ names, children, def, disabled = [], ...props }) => {
           max-height: 75vh;
         }
       `}
-      {...props}>
+      {...props}
+    >
       <tabs.List>
         <span
           css={css`
@@ -50,11 +58,13 @@ export default ({ names, children, def, disabled = [], ...props }) => {
             @media (max-width: 600px) {
               display: none;
             }
-          `}>
+          `}
+        >
           {names.map((n) => (
             <tabs.Trigger
               value={toVal(n)}
-              disabled={disabled.includes(n)}>
+              disabled={disabled.includes(n)}
+            >
               {n}
             </tabs.Trigger>
           ))}
@@ -63,7 +73,7 @@ export default ({ names, children, def, disabled = [], ...props }) => {
           css={css`
             display: none;
             @media (max-width: 600px) {
-              font-family: 'Iosevka Web';
+              font-family: "Iosevka Web";
               margin: 5px 0px;
               border-radius: 0px;
               appearance: unset;
@@ -73,18 +83,22 @@ export default ({ names, children, def, disabled = [], ...props }) => {
               display: block;
               width: 100%;
             }
-          `}>
+          `}
+        >
           {names.map((n) => (
             <tabs.Trigger
               asChild
-              value={toVal(n)}>
+              value={toVal(n)}
+              disabled={disabled.includes(n)}
+
+            >
               <option value={toVal(n)}>{n}</option>
             </tabs.Trigger>
           ))}
         </select>
       </tabs.List>
       {children.map((c) => (
-        <tabs.Content value={toVal(names[children.indexOf(c)])}>
+        <tabs.Content value={getValue({ c })}>
           <Scrollable>{c}</Scrollable>
         </tabs.Content>
       ))}

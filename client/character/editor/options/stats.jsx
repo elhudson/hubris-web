@@ -4,14 +4,12 @@ import { css, useTheme } from "@emotion/react";
 
 import _ from "lodash";
 import { useCharacter } from "contexts";
+import { useLoaderData } from "react-router-dom";
 
 export default () => {
   const { colors, classes } = useTheme();
   const { character, update } = useCharacter();
-  const abilities = async () =>
-    await fetch("/data/rules?table=attributes&relations=true").then((j) =>
-      j.json()
-    );
+  const { attributes } = useLoaderData().options;
   const inc = (code) => {
     update((draft) => {
       if (_.isUndefined(draft[code])) {
@@ -45,52 +43,49 @@ export default () => {
     });
   };
   return (
-    <>
+    <main css={css`
+      >div {
+        margin-bottom: 10px;
+      }
+    `}>
       <div css={classes.elements.number}>
         {getPointsSpent({ char: character })} / 28
       </div>
-      <Loading
-        getter={abilities}
-        render={(abilities) => (
+      <div
+        css={css`
+          display: grid;
+          grid-gap: 10px;
+          grid-template-areas:
+            "str dex con"
+            "int wis cha";
+        `}>
+        {attributes.map((a) => (
           <div
             css={css`
-              display: grid;
-              grid-gap: 10px;
-              grid-template-areas:
-                "str dex con"
-                "int wis cha";
-            `}
-          >
-            {abilities.map((a) => (
-              <div
-                css={css`
-                  h4 {
-                    border: 1px solid ${colors.accent};
-                    border-bottom: none;
-                    text-align: center;
-                  }
-                `}
-              >
-                <h4>{a.title}</h4>
-                <Counter
-                  item={character}
-                  valuePath={a.code}
-                  prefill={
-                    !_.isUndefined(character.backgrounds) &&
-                    character.backgrounds
-                      .map((c) => c.attributes.code)
-                      .includes(a.code)
-                      ? -1
-                      : -2
-                  }
-                  inc={() => inc(a.code)}
-                  dec={() => dec(a.code)}
-                />
-              </div>
-            ))}
+              h4 {
+                border: 1px solid ${colors.accent};
+                border-bottom: none;
+                text-align: center;
+              }
+            `}>
+            <h4>{a.title}</h4>
+            <Counter
+              item={character}
+              valuePath={a.code}
+              prefill={
+                !_.isUndefined(character.backgrounds) &&
+                character.backgrounds
+                  .map((c) => c.attributes.code)
+                  .includes(a.code)
+                  ? -1
+                  : -2
+              }
+              inc={() => inc(a.code)}
+              dec={() => dec(a.code)}
+            />
           </div>
-        )}
-      />
-    </>
+        ))}
+      </div>
+    </main>
   );
 };

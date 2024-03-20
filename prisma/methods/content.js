@@ -7,8 +7,13 @@ async function save({ src, block }) {
       plaintext: block.plaintext,
       index: block.index,
       src: {
-        connect: {
-          entryId: src
+        connectOrCreate: {
+          where: {
+            entryId: src
+          },
+          create: {
+            entryId: src
+          }
         }
       }
     };

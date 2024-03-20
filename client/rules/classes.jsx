@@ -1,9 +1,10 @@
 import { List, Metadata } from "@interface/components";
-
+import { useRule, useOptions } from "contexts";
 import { useLoaderData } from "react-router-dom";
 
 export default ({ checkbox = null }) => {
-  const features = useLoaderData();
+  const features =
+    useRule().location != "wiki" ? useOptions().data : useLoaderData();
   return (
     <List
       items={features}
@@ -17,7 +18,7 @@ export default ({ checkbox = null }) => {
             "class_paths",
             "weaponry",
             "armory",
-            "hit_dice",
+            "hit_dice"
           ]}
         />
       )}

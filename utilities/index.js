@@ -29,10 +29,11 @@ export const cost = (score) => {
 };
 
 export const groupBy = (list, get, subprop) => {
-  const cats = _.uniqBy(
+  console.log(list, subprop)
+  const cats = _.cloneDeep(_.uniqBy(
     list.map((f) => get(f)),
     "id"
-  );
+  ))
   cats.forEach((cat) => {
     cat[subprop] = list.filter((f) => get(f).id == cat.id);
   });
@@ -196,10 +197,9 @@ export const affordable = (feature, char, tbl = null) => {
   const budget = char.xp_earned - calc_xp(char);
   if (tbl == "skills") {
     const { next } = get_skill_xp(char);
-    console.log(next);
     return next <= budget;
   }
-  return _.isUndefined(feature.xp) || feature.xp <= budget;
+  return _.isUndefined(feature?.xp) || feature.xp <= budget;
 };
 
 export const satisfies_prereqs = (feature, table, char) => {

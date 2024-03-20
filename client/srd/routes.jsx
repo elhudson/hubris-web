@@ -8,24 +8,24 @@ const queries = {
       classes: true,
       class_paths: true,
       requires: true,
-      required_for: true,
-    },
+      required_for: true
+    }
   },
   backgrounds: {
     include: {
       settings: true,
       background_features: true,
       skills: true,
-      attributes: true,
-    },
+      attributes: true
+    }
   },
   classes: {
     include: {
       class_paths: true,
       tags: true,
       attributes: true,
-      hit_dice: true,
-    },
+      hit_dice: true
+    }
   },
   ranges: {
     include: {
@@ -33,56 +33,55 @@ const queries = {
       range: true,
       requires: true,
       required_for: true,
-      trees: true,
-    },
+      trees: true
+    }
   },
   durations: {
     include: {
       requires: true,
       required_for: true,
-      trees: true,
-    },
+      trees: true
+    }
   },
   effects: {
     include: {
       trees: true,
       tags: true,
       requires: true,
-      required_for: true,
-    },
+      required_for: true
+    }
   },
   skills: {
     include: {
       attributes: true,
-      backgrounds: true,
-    },
+      backgrounds: true
+    }
   },
   tag_features: {
     include: {
       tags: true,
       requires: true,
-      required_for: true,
-    },
+      required_for: true
+    }
   },
   settings: {
     include: {
-      backgrounds: true,
-    },
+      backgrounds: true
+    }
   },
   injuries: {
     include: {
-      conditions: true,
-    },
-  },
+      conditions: true
+    }
+  }
 };
 
 const table = async ({ params }) => {
   const query = queries[params.table];
-  return fetch(
-    `/data/rules?table=${params.table}${
-      query ? `&query=${JSON.stringify(query)}` : `&relations=true`
-    }`
-  ).then((r) => r.json());
+  const res=await fetch(`/data/rules?table=${params.table}&relations=true`).then((r) =>
+    r.json()
+  );
+  return res
 };
 
 const entry = async ({ params }) => {
@@ -94,12 +93,12 @@ export default () => ({
   children: [
     {
       path: "calculator",
-      element: <Calculator />,
+      element: <Calculator />
     },
     {
       path: "powers",
       loader: () => fetch("/data/powers").then((j) => j.json()),
-      element: <Powers />,
+      element: <Powers />
     },
     {
       path: "mention/:id",
@@ -107,8 +106,8 @@ export default () => ({
         const table = await fetch(`/data/table?id=${params.id}`).then(
           (r) => r.text
         );
-        return redirect(`/srd/${table}/${params.id}`)
-      },
+        return redirect(`/srd/${table}/${params.id}`);
+      }
     },
     {
       path: ":table",
@@ -116,14 +115,14 @@ export default () => ({
         {
           index: true,
           element: <Table />,
-          loader: table,
+          loader: table
         },
         {
           path: ":feature",
           element: <Entry />,
-          loader: entry,
-        },
-      ],
-    },
-  ],
+          loader: entry
+        }
+      ]
+    }
+  ]
 });

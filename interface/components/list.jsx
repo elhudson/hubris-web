@@ -1,10 +1,9 @@
 import { css, useTheme } from "@emotion/react";
-
+import { Link } from "@interface/components";
 import { Icon } from "@interface/ui";
-import { Link } from "react-router-dom";
 import _ from "lodash";
 import { useAsync } from "react-async-hook";
-
+import { ruleContext, useRule } from "contexts";
 export default ({
   items,
   render = null,
@@ -42,15 +41,16 @@ export default ({
         render ? (
           render(i)
         ) : (
-          <li css={css`
-          position: relative;
-            button[role="checkbox"] {
-              position: absolute;
-              right: 0;
-              top: 0;
-              height: fit-content;
-            }
-          `}>
+          <li
+            css={css`
+              position: relative;
+              button[role="checkbox"] {
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: fit-content;
+              }
+            `}>
             <Icon
               id={_.get(i, icon)}
               sz={18}
@@ -66,16 +66,11 @@ export default ({
 };
 
 const Item = ({ title, id }) => {
-  const table = useAsync(
-    async () => await fetch(`/data/table?id=${id}`).then((r) => r.text())
-  ).result;
+  const { table } = useRule();
   return (
-    <>
-      {table && (
-        <h3>
-          <Link to={`/srd/${table}/${id}`}>{title}</Link>
-        </h3>
-      )}
-    </>
+    <Link
+      feature={{ id, title }}
+      table={table}
+    />
   );
 };

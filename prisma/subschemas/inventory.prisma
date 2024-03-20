@@ -1,33 +1,38 @@
-import {Inventories} from "character"
-import { Tags } from "rules"
+import { Tags, Entry, Attributes } from "rules"
+import { Inventories } from "character"
 
 model Weapons {
-  id          String        @id @unique
-  name        String        @default("")
-  description String?
-  uses        String?       @default("str")
-  tags        Tags[]
-  bonus       Int?
-  martial     Boolean
-  heavy       Boolean
-  equipped    Boolean       @default(false)
-  Inventories Inventories[]
+  entry   Entry      @relation(fields: [entryId], references: [id])
+  uses    Attributes @relation(fields: [attrCode], references: [code])
+  tags    Tags[]
+  bonus   Int?
+  martial Boolean
+  heavy   Boolean
+
+  owned_by   Inventories[]
+  wielded_by Inventories[] @relation("wielding")
+
+  attrCode String
+  entryId  String @id @unique
 }
+
 
 model Armor {
-  id          String  @id @unique
-  class       String
-  name        String  @default("")
-  description String?
-  equipped    Boolean @default(false)
+  entry Entry @relation(fields: [entryId], references: [id])
 
-  Inventories Inventories[]
+  class String
+
+  entryId String @id @unique
+
+  owned_by Inventories[]
+  worn_by  Inventories[] @relation("wearing")
 }
 
+
 model Items {
-  id          String        @id @unique
-  name        String        @default("")
-  description String?
-  equipped    Boolean       @default(false)
-  Inventories Inventories[]
+  entry Entry @relation(fields: [entryId], references: [id])
+
+  owned_by Inventories[]
+  used_by  Inventories[] @relation("using")
+  entryId  String        @id @unique
 }

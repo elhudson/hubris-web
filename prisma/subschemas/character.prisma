@@ -5,6 +5,7 @@ import { Characters } from "./character"
 import {Campaigns, Summaries} from "./campaign"
 import {Powers} from "./powers"
 import { Hit_Dice } from "../schema"
+import { Armor } from "inventory"
 
 model Characters {
   id             String           @id @unique
@@ -39,21 +40,20 @@ model Characters {
 }
 
 model HD {
-  id           Int        @id @default(autoincrement())
-  owner        Characters @relation(fields: [charactersId], references: [id])
+  owner        Characters @relation(fields: [charactersId], references: [id], onDelete: Cascade)
   src          String     @default("default")
-  die          Hit_Dice?  @relation(fields: [hit_diceId], references: [entryId])
+  die          Hit_Dice   @relation(fields: [hit_diceId], references: [entryId])
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
-  hit_diceId   String?
+  hit_diceId   String
 
-
+  @@unique(name: "id", [charactersId, hit_diceId, src])
 }
 
 model Health {
-  character    Characters @relation(fields: [charactersId], references: [id])
-  injuries     Injuries?  @relation(fields: [injuriesId], references: [id])
+  character    Characters @relation(fields: [charactersId], references: [id], onDelete: Cascade)
+  injuries     Injuries?  @relation(fields: [injuriesId], references: [entryId])
   hp           Int
   notes        String?    @db.MediumText
   injuriesId   String?
@@ -61,10 +61,17 @@ model Health {
 }
 
 model Inventories {
-  character Characters? @relation(fields: [charactersId], references: [id])
-  weapons   Weapons[]
-  armor     Armor[]
-  items     Items[]
+  character Characters? @relation(fields: [charactersId], references: [id], onDelete: Cascade)
 
-  charactersId String @id @unique
+  wielding Weapons? @relation(name: "wielding", fields: [weaponsId], references: [entryId])
+  wearing  Armor?   @relation(name: "wearing", fields: [armorId], references: [entryId])
+  using    Items[]  @relation(name: "using")
+
+  weapons Weapons[]
+  armor   Armor[]
+  items   Items[]
+
+  charactersId String  @id @unique
+  weaponsId    String?
+  armorId      String?
 }

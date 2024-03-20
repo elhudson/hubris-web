@@ -25,7 +25,6 @@ export default () => {
           feature={data}
           props={Object.keys(data).filter((p) =>
             [
-              "title",
               "xp",
               "power",
               "trees",

@@ -1,7 +1,7 @@
 import { prisma_safe, sql_safe } from "utilities";
 
 import { Prisma } from "@prisma/client";
-import _ from "lodash"
+import _ from "lodash";
 import { db } from "~db/prisma.js";
 
 export const tables = async () =>
@@ -26,12 +26,16 @@ export default async () => {
       m.fields
         .filter((f) => tabls.includes(f.name))
         .map((n) => n.name)
-        .filter((f) => !f.includes("Id") || (f=="rangeId" || f=="durationId"))
+        .filter((f) => !f.includes("Id") || f == "rangeId" || f == "durationId")
     ])
   );
   return schema;
 };
 
-export const get_schema=(table_name)=> {
-  return _.find(Prisma.dmmf.datamodel.models, f=> f.name==prisma_safe(table_name))
-}
+export const get_schema = (table_name) => {
+  const r=_.find(
+    Prisma.dmmf.datamodel.models,
+    (f) => f.name.toLowerCase() == sql_safe(table_name)
+  );
+  return r
+};

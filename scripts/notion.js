@@ -1,32 +1,28 @@
+import { Prisma } from "@prisma/client";
 import { db } from "~db/prisma.js";
-import { notion } from "notion";
 
-const ranges=await db.ranges.query({})
-console.log(ranges)
-// await db.entry.sync({client: notion})
+// const res = await db.characters.findFirst({
+//   where: {
+//     classes: {
+//       title: "Bolster",
+//     },
+//   },
+//   include: {
+//     classes: {
+//       include: {
+//         class_features: true,
+//       },
+//     },
+//   },
+// });
 
+// const r = await fetch("http://localhost:3000/data/character/options", {
+//   method: "POST",
+//   body: JSON.stringify(res),
+//   headers: {
+//     "Content-Type": "application/json",
+//     location: "create",
+//   },
+// }).then(res=> res.json())
 
-// const r=await db.ranges.sync({ client: notion });
-// // await db.durations.sync({ client: notion });
-
-// // await db.rules.sync({ client: notion });
-
-// // await db.attributes.sync({ client: notion });
-
-// // await db.classes.sync({ client: notion });
-// // await db.skills.sync({ client: notion });
-// // await db.conditions.sync({ client: notion });
-// // await db.backgrounds.sync({ client: notion });
-
-// // await db.tag_Features.sync({ client: notion });
-
-// // await db.timespans.sync({ client: notion });
-// // await db.distances.sync({ client: notion });
-// // await db.tags.sync({ client: notion });
-// // await db.hit_Dice.sync({ client: notion });
-// // await db.injuries.sync({ client: notion });
-// // await db.trees.sync({ client: notion });
-// // await db.settings.sync({ client: notion });
-// // await db.effects.sync({ client: notion });
-// // await db.class_Features.sync({ client: notion });
-// // await db.background_Features.sync({ client: notion });
+// console.log(r)

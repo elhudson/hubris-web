@@ -1,64 +1,45 @@
 import { optionsContext, ruleContext, useCharacter } from "context";
 
 import { Effects } from "@client/rules";
-import { Loading } from "@interface/ui";
 import { Optionset } from "@client/options";
 import _ from "lodash";
-import { get_tier } from "utilities";
+import { useLoaderData } from "react-router-dom";
 
 export default () => {
-  const { character } = useCharacter();
-  const tags = _.flatten(character.classes.map((c) => c.tags));
-  const options = async () =>
-    await fetch(
-      `/data/rules?table=trees&query=${JSON.stringify({
-        include: {
-          effects: {
-            where: {
-              tags: {
-                some: {
-                  OR: tags.map((c) => ({
-                    id: c.id,
-                  })),
-                },
-              },
-              tier: {
-                lte: get_tier(character),
-              },
-            },
-            include: {
-              tags: true,
-              requires: true,
-              required_for: true,
-              trees: true,
-              range: true,
-              duration: true,
-            },
-          },
-        },
-      })}`
-    ).then((t) => t.json());
-
   return (
-    <Loading
-      getter={options}
-      render={(options) => (
-        <ruleContext.Provider
-          value={{
-            location: "levelup",
-            table: "effects",
-          }}
-        >
-          <optionsContext.Provider
-            value={{
-              searchable: _.flatten(options.map((c) => c.effects)),
-              options: options,
-            }}
-          >
-            <Optionset component={<Effects />} />
-          </optionsContext.Provider>
-        </ruleContext.Provider>
-      )}
-    />
+    <ruleContext.Provider
+      value={{
+        location: "levelup",
+        table: "effects"
+      }}>
+      <optionsContext.Provider
+        value={{
+          data: useLoaderData().options.effects,
+          adder: ({ feat, draft, e }) => {
+            if (e) {
+              _.isUndefined(draft.ranges) && (draft.ranges = []);
+              _.isUndefined(draft.durations) && (draft.durations = []);
+              if (
+                draft.ranges.map((f) => f.id).includes(feat.range.id) == false
+              ) {
+                draft.ranges.push(feat.range);
+              }
+              if (
+                draft.durations.map((f) => f.id).includes(feat.duration.id) ==
+                false
+              ) {
+                draft.durations.push(feat.duration);
+              }
+            } else {
+              if (!has_tree(feat.trees, current(draft))) {
+                _.remove(draft.ranges, feat.range);
+                _.remove(draft.durations, feat.duration);
+              }
+            }
+          }
+        }}>
+        <Optionset component={<Effects />} />
+      </optionsContext.Provider>
+    </ruleContext.Provider>
   );
 };

@@ -4,7 +4,7 @@ import { Loading } from "@interface/ui";
 import { Skill } from "@client/character";
 import { useCharacter } from "contexts";
 
-const Skills = () => {
+const Skills = ({ onChange = null }) => {
   const { colors } = useTheme();
   const { character } = useCharacter();
   const data = async () => {
@@ -30,8 +30,7 @@ const Skills = () => {
               padding-left: 5px;
               border-left: 1px solid ${colors.accent};
             }
-          `}
-        >
+          `}>
           {attrs.map((a) => (
             <section>
               <div
@@ -46,8 +45,7 @@ const Skills = () => {
                     height: 100%;
                     vertical-align: middle;
                   }
-                `}
-              >
+                `}>
                 <h4>{a.title}</h4>
                 <div>{character[a.code]}</div>
               </div>
@@ -55,7 +53,10 @@ const Skills = () => {
                 {skills
                   .filter((f) => f.attributes.code == a.code)
                   .map((s) => (
-                    <Skill skill={s} />
+                    <Skill
+                      skill={s}
+                      onCheck={onChange}
+                    />
                   ))}
               </div>
             </section>

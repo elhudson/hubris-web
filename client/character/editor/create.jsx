@@ -1,38 +1,18 @@
 import { Backgrounds, Classes, Stats } from "@client/options";
 import { Notif, Tabs } from "@interface/ui";
 import { characterContext, useUser } from "contexts";
+import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 
 import { Bio } from "@client/character";
 import _ from "lodash";
 import { cost } from "utilities";
 import { useImmer } from "use-immer";
 import { useTheme } from "@emotion/react";
-import { v4 } from "uuid";
 
 export default () => {
-  const { user_id, username } = useUser();
   const { classes } = useTheme();
-  const [character, update] = useImmer({
-    id: v4(),
-    user: {
-      id: user_id,
-    },
-    str: -2,
-    dex: -2,
-    con: -2,
-    int: -2,
-    wis: -2,
-    cha: -2,
-    classes: [],
-    backgrounds: [],
-    biography: {
-      name: `${username}'s Character`,
-      gender: "",
-      alignment: "lg",
-      backstory: "",
-      appearance: "",
-    },
-  });
+  const [character, update] = useImmer(useLoaderData().character);
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     if (_.isUndefined(character.classes) || character.classes.length < 1) {
       return "Please select a class.";
@@ -59,8 +39,7 @@ export default () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(character),
-    });
-    window.location.assign(`/character/${character.id}`);
+    }).then(() => navigate(`/character/${character.id}`));
   };
   return (
     <characterContext.Provider

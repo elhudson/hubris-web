@@ -1,6 +1,9 @@
 import "dotenv/config";
-import { notion } from "notion";
-import { db } from "~db/prisma.js";
+import { get_fields, notion } from "notion";
+import { prisma_safe, sql_safe } from "utilities";
+import { get_schema } from "~database/schema.js";
+
+import rules from "~db/rules.json" with { type: "json" };
 
 async function sync({ client = notion }) {
   const rules = await client.databases
@@ -52,4 +55,17 @@ async function sync({ client = notion }) {
   });
 }
 
-export default { sync };
+function fields({ name }) {
+  const fields= get_schema(name)?.fields
+  const scalars = fields.filter((f) => f.kind == "scalar");
+  const rule_fields = fields.filter(
+    (f) => f.kind == "object" && rules.includes(f.type)
+  );
+  return {
+    scalars,
+    ones: rule_fields.filter((r) => !r.isList),
+    manys: rule_fields.filter((r) => r.isList)
+  };
+}
+
+export default { sync, fields };

@@ -1,13 +1,14 @@
-import { aliases, jsConfig } from "./scripts/alias";
+import { aliases, jsConfig } from "./scripts/alias.js";
+import { makeBackendImports, makeFrontendImports } from "./scripts/imports.js";
 
 import { defineConfig } from "vite";
-import { makeImports } from "./scripts/imports";
 import react from "@vitejs/plugin-react";
 import reactRefresh from "eslint-plugin-react-refresh";
 import { resolve } from "path";
 
 jsConfig(aliases);
-makeImports(process.env?.NODE_ENV != "production");
+await makeFrontendImports(process.env?.NODE_ENV != "production");
+await makeBackendImports(process.env?.NODE_ENV != "production");
 
 // https://vitejs.dev/config/
 export default defineConfig({

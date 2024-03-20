@@ -10,8 +10,8 @@ export const filterContext = createContext({
   filters: {
     trees: [],
     tags: [],
-    tiers: [],
-  },
+    tiers: []
+  }
 });
 
 export const useFilters = () => useContext(filterContext);
@@ -29,18 +29,14 @@ export const useCharacter = () => {
   return useContext(characterContext);
 };
 
-export const optionsContext = createContext(null);
-export const limitsContext = createContext({
-  limiter: null,
+export const optionsContext = createContext({
+  data: []
 });
+
 export const handlerContext = createContext({ handler: null, table: null });
 
 export const useOptions = () => {
   return useContext(optionsContext);
-};
-
-export const useLimiter = () => {
-  return useContext(limitsContext);
 };
 
 export const useHandler = () => {
@@ -50,7 +46,7 @@ export const useHandler = () => {
 export const ruleContext = createContext({
   location: "wiki",
   table: null,
-  icon: null,
+  icon: null
 });
 export const useRule = () => useContext(ruleContext);
 

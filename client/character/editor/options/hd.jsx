@@ -2,6 +2,7 @@ import { Counter } from "@interface/ui";
 import { Die } from "@client/character";
 import _ from "lodash";
 import { useCharacter } from "contexts";
+
 export default () => {
   const { character, update } = useCharacter();
   const incrementDie = (id) => {

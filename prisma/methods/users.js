@@ -1,7 +1,7 @@
 import { db } from "~db/prisma.js";
 
 async function characters({ username }) {
-  const chars = await db.characters.retrieve({
+  const chars = await db.characters.get({
     where: {
       user: {
         username: username,

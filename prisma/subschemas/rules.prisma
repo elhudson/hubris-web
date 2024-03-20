@@ -1,4 +1,4 @@
-import {Weapons} from "./inventory"
+import {Weapons, Items, Armor} from "./inventory"
 import {HD, Health, Characters} from "./character"
 import {Powers} from "./powers"
 import {Campaigns} from "./campaign"
@@ -28,9 +28,11 @@ model Entry {
   Settings            Settings?
   Background_Features Background_Features?
   Conditions          Conditions?
+  Injuries            Injuries?
+  Weapons             Weapons?
+  Armor               Armor?
+  Items               Items?
 }
-
-
 
 model Tags {
   entry        Entry          @relation(fields: [entryId], references: [id])
@@ -65,7 +67,7 @@ model Distances {
 }
 
 model Tag_Features {
-  entry        Entry          @relation(fields: [entryId], references: [id])
+  entry        Entry?         @relation(fields: [entryId], references: [id])
   entryId      String         @id @unique
   ticks        Int?
   tier         Int
@@ -134,7 +136,6 @@ model Ranges {
   range        Distances?   @relation("distances_ranges", fields: [rangeId], references: [entryId])
   trees        Trees[]
   characters   Characters[]
-  charactersId String?
   powers       Powers[]
   areaId       String?
   rangeId      String?
@@ -181,11 +182,12 @@ model Class_Paths {
 model Attributes {
   entry       Entry         @relation(fields: [entryId], references: [id])
   entryId     String        @id @unique
-  code        String
+  code        String        @unique
   backgrounds Backgrounds[]
   skills      Skills[]
   classes     Classes[]
   conditions  Conditions[]
+  weapons     Weapons[]
 }
 
 model Skills {
@@ -215,7 +217,6 @@ model Settings {
   entry       Entry         @relation(fields: [entryId], references: [id])
   entryId     String        @id @unique
   backgrounds Backgrounds[]
-  description String        @db.MediumText
   campaigns   Campaigns[]
 }
 
@@ -223,23 +224,21 @@ model Background_Features {
   entry       Entry        @relation(fields: [entryId], references: [id])
   entryId     String       @id @unique
   ticks       Int?
-  Backgrounds Backgrounds?
+  backgrounds Backgrounds?
 }
 
 model Injuries {
-  id          String       @id @unique
-  title       String
+  entry       Entry        @relation(fields: [entryId], references: [id])
+  entryId     String       @id @unique
   health      Health[]
-  description String?
   conditions  Conditions[]
   duration    Timespans?   @relation(fields: [timespansId], references: [entryId])
   timespansId String?
 }
 
 model Conditions {
-  entry       Entry        @relation(fields: [entryId], references: [id])
-  entryId     String       @id @unique
-  description String       @db.MediumText
-  attributes  Attributes[]
-  injuries    Injuries[]
+  entry      Entry        @relation(fields: [entryId], references: [id])
+  entryId    String       @id @unique
+  attributes Attributes[]
+  injuries   Injuries[]
 }

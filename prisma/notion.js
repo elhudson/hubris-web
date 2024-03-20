@@ -40,8 +40,13 @@ export const property_parser = async ([label, data], client = null) => {
   switch (data.type) {
     case "formula": {
       extracted = label.includes("Id")
-        ? await get_linked_page(dash(data.formula.string), client)
-        : handler(data, (d) => d.formula.string);
+        ? await get_linked_page(data.formula.string, client)
+        : handler(data, (d) => [
+            {
+              index: 0,
+              plaintext: d.formula.string
+            }
+          ]);
       break;
     }
     case "title": {
@@ -54,16 +59,7 @@ export const property_parser = async ([label, data], client = null) => {
     }
     case "rich_text": {
       extracted = handler(data, (d) => {
-        var str = "";
-        for (var part of d.rich_text) {
-          if (part.type == "text") {
-            str += part.plain_text;
-          }
-          if (part.type == "mention") {
-            str += `[[${part.plain_text}|${part.mention.page.id}]]`;
-          }
-        }
-        return str;
+        return parse_block(d);
       });
       break;
     }
@@ -187,7 +183,9 @@ export function get_fields(table_name) {
       .map((f) => f.name)
       .filter((f) => !f.includes("Id")),
     ones: schema.fields
-      .filter((f) => f.kind == "object" && f.isList == false)
+      .filter(
+        (f) => f.kind == "object" && f.name != "entry" && f.isList == false
+      )
       .map((f) => f.name),
     manys: schema.fields
       .filter((f) => f.kind == "object" && f.isList)

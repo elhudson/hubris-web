@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Tue Mar 12 2024 09:10:46 GMT-0400 (Eastern Daylight Time)✨
+//🧩Don't Edit this file.✨Generated in Sun Mar 17 2024 19:46:34 GMT-0400 (Eastern Daylight Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -71,19 +71,20 @@ model Characters {
 }
 
 model HD {
-  id           Int        @id @default(autoincrement())
   owner        Characters @relation(fields: [charactersId], references: [id])
   src          String     @default("default")
-  die          Hit_Dice?  @relation(fields: [hit_diceId], references: [entryId])
+  die          Hit_Dice   @relation(fields: [hit_diceId], references: [entryId])
   max          Int        @default(1)
   used         Int        @default(0)
   charactersId String
-  hit_diceId   String?
+  hit_diceId   String
+
+  @@unique(name: "id", [charactersId, hit_diceId, src])
 }
 
 model Health {
   character    Characters @relation(fields: [charactersId], references: [id])
-  injuries     Injuries?  @relation(fields: [injuriesId], references: [id])
+  injuries     Injuries?  @relation(fields: [injuriesId], references: [entryId])
   hp           Int
   notes        String?    @db.MediumText
   injuriesId   String?
@@ -92,11 +93,18 @@ model Health {
 
 model Inventories {
   character Characters? @relation(fields: [charactersId], references: [id])
-  weapons   Weapons[]
-  armor     Armor[]
-  items     Items[]
 
-  charactersId String @id @unique
+  wielding Weapons? @relation(name: "wielding", fields: [weaponsId], references: [entryId])
+  wearing  Armor?   @relation(name: "wearing", fields: [armorId], references: [entryId])
+  using    Items[]  @relation(name: "using")
+
+  weapons Weapons[]
+  armor   Armor[]
+  items   Items[]
+
+  charactersId String  @id @unique
+  weaponsId    String?
+  armorId      String?
 }
 
 model Rules {
@@ -142,34 +150,37 @@ model Link {
 }
 
 model Weapons {
-  id          String        @id @unique
-  name        String        @default("")
-  description String?
-  uses        String?       @default("str")
-  tags        Tags[]
-  bonus       Int?
-  martial     Boolean
-  heavy       Boolean
-  equipped    Boolean       @default(false)
-  Inventories Inventories[]
+  entry   Entry      @relation(fields: [entryId], references: [id])
+  uses    Attributes @relation(fields: [attrCode], references: [code])
+  tags    Tags[]
+  bonus   Int?
+  martial Boolean
+  heavy   Boolean
+
+  owned_by   Inventories[]
+  wielded_by Inventories[] @relation("wielding")
+
+  attrCode String
+  entryId  String @id @unique
 }
 
 model Armor {
-  id          String  @id @unique
-  class       String
-  name        String  @default("")
-  description String?
-  equipped    Boolean @default(false)
+  entry Entry @relation(fields: [entryId], references: [id])
 
-  Inventories Inventories[]
+  class String
+
+  entryId String @id @unique
+
+  owned_by Inventories[]
+  worn_by  Inventories[] @relation("wearing")
 }
 
 model Items {
-  id          String        @id @unique
-  name        String        @default("")
-  description String?
-  equipped    Boolean       @default(false)
-  Inventories Inventories[]
+  entry Entry @relation(fields: [entryId], references: [id])
+
+  owned_by Inventories[]
+  used_by  Inventories[] @relation("using")
+  entryId  String        @id @unique
 }
 
 model Powers {
@@ -208,6 +219,10 @@ model Entry {
   Settings            Settings?
   Background_Features Background_Features?
   Conditions          Conditions?
+  Injuries            Injuries?
+  Weapons             Weapons?
+  Armor               Armor?
+  Items               Items?
 }
 
 model Tags {
@@ -243,7 +258,7 @@ model Distances {
 }
 
 model Tag_Features {
-  entry        Entry          @relation(fields: [entryId], references: [id])
+  entry        Entry?         @relation(fields: [entryId], references: [id])
   entryId      String         @id @unique
   ticks        Int?
   tier         Int
@@ -312,7 +327,6 @@ model Ranges {
   range        Distances?   @relation("distances_ranges", fields: [rangeId], references: [entryId])
   trees        Trees[]
   characters   Characters[]
-  charactersId String?
   powers       Powers[]
   areaId       String?
   rangeId      String?
@@ -359,11 +373,12 @@ model Class_Paths {
 model Attributes {
   entry       Entry         @relation(fields: [entryId], references: [id])
   entryId     String        @id @unique
-  code        String
+  code        String        @unique
   backgrounds Backgrounds[]
   skills      Skills[]
   classes     Classes[]
   conditions  Conditions[]
+  weapons     Weapons[]
 }
 
 model Skills {
@@ -393,7 +408,6 @@ model Settings {
   entry       Entry         @relation(fields: [entryId], references: [id])
   entryId     String        @id @unique
   backgrounds Backgrounds[]
-  description String        @db.MediumText
   campaigns   Campaigns[]
 }
 
@@ -401,25 +415,23 @@ model Background_Features {
   entry       Entry        @relation(fields: [entryId], references: [id])
   entryId     String       @id @unique
   ticks       Int?
-  Backgrounds Backgrounds?
+  backgrounds Backgrounds?
 }
 
 model Injuries {
-  id          String       @id @unique
-  title       String
+  entry       Entry        @relation(fields: [entryId], references: [id])
+  entryId     String       @id @unique
   health      Health[]
-  description String?
   conditions  Conditions[]
   duration    Timespans?   @relation(fields: [timespansId], references: [entryId])
   timespansId String?
 }
 
 model Conditions {
-  entry       Entry        @relation(fields: [entryId], references: [id])
-  entryId     String       @id @unique
-  description String       @db.MediumText
-  attributes  Attributes[]
-  injuries    Injuries[]
+  entry      Entry        @relation(fields: [entryId], references: [id])
+  entryId    String       @id @unique
+  attributes Attributes[]
+  injuries   Injuries[]
 }
 
 model Users {
