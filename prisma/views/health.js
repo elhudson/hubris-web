@@ -1,7 +1,5 @@
 import { db, prisma } from "~db/prisma.js";
 
-import { character } from "~db.models";
-
 async function create({ model, operation, args, query }) {
   const character = args;
   const uninjured = await db.injuries.queryOne({

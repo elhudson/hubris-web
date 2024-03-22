@@ -1,7 +1,9 @@
-import { prisma_safe, sql_safe } from "utilities";
-
 import { Prisma } from "@prisma/client";
+
+import { prisma_safe, sql_safe } from "~db/utils.js";
+
 import _ from "lodash";
+
 import { db } from "~db/prisma.js";
 
 export const tables = async () =>

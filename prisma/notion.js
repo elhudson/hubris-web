@@ -4,8 +4,8 @@ import "dotenv/config";
 
 import _ from "lodash";
 
-import { get_schema } from "~database/schema.js";
-import { sql_safe } from "~database/utils.js";
+import { get_schema } from "~db/schema.js";
+import { sql_safe } from "~db/utils.js";
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN

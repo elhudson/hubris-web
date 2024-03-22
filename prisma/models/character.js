@@ -1,8 +1,6 @@
-import { get_proficiency, get_tier } from "~db/utils.js";
+import { get_max_hp, get_proficiency, get_tier } from "~db/utils.js";
 
 import _ from "lodash";
-
-import { get_max_hp } from "utilities";
 
 import { v4 } from "uuid";
 
