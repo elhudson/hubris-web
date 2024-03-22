@@ -11,6 +11,7 @@
     "~db.methods": "./exports/methods.js"
   },
   "scripts": {
+    "postinstall": "link-module-alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

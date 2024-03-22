@@ -4,8 +4,7 @@ import "dotenv/config";
 
 import { notion } from "notion";
 
-import { get_schema } from "~database/schema.js";
-
+import { get_schema } from "~db/schema.js";
 import rules from "~db/rules.json" with { type: "json" };
 
 async function sync({ client = notion }) {
