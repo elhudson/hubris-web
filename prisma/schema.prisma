@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sun Mar 17 2024 19:46:34 GMT-0400 (Eastern Daylight Time)✨
+//🧩Don't Edit this file.✨Generated in Thu Mar 21 2024 20:37:57 GMT-0400 (Eastern Daylight Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -71,7 +71,7 @@ model Characters {
 }
 
 model HD {
-  owner        Characters @relation(fields: [charactersId], references: [id])
+  owner        Characters @relation(fields: [charactersId], references: [id], onDelete: Cascade)
   src          String     @default("default")
   die          Hit_Dice   @relation(fields: [hit_diceId], references: [entryId])
   max          Int        @default(1)
@@ -83,7 +83,7 @@ model HD {
 }
 
 model Health {
-  character    Characters @relation(fields: [charactersId], references: [id])
+  character    Characters @relation(fields: [charactersId], references: [id], onDelete: Cascade)
   injuries     Injuries?  @relation(fields: [injuriesId], references: [entryId])
   hp           Int
   notes        String?    @db.MediumText
@@ -92,7 +92,7 @@ model Health {
 }
 
 model Inventories {
-  character Characters? @relation(fields: [charactersId], references: [id])
+  character Characters? @relation(fields: [charactersId], references: [id], onDelete: Cascade)
 
   wielding Weapons? @relation(name: "wielding", fields: [weaponsId], references: [entryId])
   wearing  Armor?   @relation(name: "wearing", fields: [armorId], references: [entryId])
@@ -108,10 +108,10 @@ model Inventories {
 }
 
 model Rules {
-  id     String  @unique
-  title  String
-  config Boolean @default(true)
-  src    String  @default("core-rules")
+  title        String   @id @unique
+  config       Boolean  @default(true)
+  src          String   @default("core-rules")
+  last_updated DateTime @default("1980-01-01T01:00:00-05:00")
 }
 
 model Index {
@@ -120,10 +120,9 @@ model Index {
 }
 
 model Description {
-  entryId String @id @unique
-
+  entryId String    @id @unique
   content Content[] @relation("source")
-  entry   Entry     @relation(fields: [entryId], references: [id])
+  entry   Entry?    @relation(fields: [entryId], references: [id])
 }
 
 model Content {
@@ -278,8 +277,8 @@ model Effects {
   tier         Int
   requires     Effects[]    @relation("effects_prq")
   required_for Effects[]    @relation("effects_prq")
-  range        Ranges?      @relation(fields: [rangeId], references: [entryId])
-  duration     Durations?   @relation(fields: [durationId], references: [entryId])
+  range        Ranges?      @relation(fields: [rangeId], references: [entryId], onDelete: Cascade)
+  duration     Durations?   @relation(fields: [durationId], references: [entryId], onDelete: Cascade)
   tags         Tags[]
   trees        Trees?       @relation(fields: [treesId], references: [entryId])
   treesId      String?

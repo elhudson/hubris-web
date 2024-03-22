@@ -1,10 +1,10 @@
 import { Entry } from "rules"
 
 model Rules {
-  id     String  @unique
-  title  String
-  config Boolean @default(true)
-  src    String  @default("core-rules")
+  title        String @id @unique
+  config       Boolean  @default(true)
+  src          String   @default("core-rules")
+  last_updated DateTime @default("1980-01-01T01:00:00-05:00")
 }
 
 model Index {
@@ -13,10 +13,9 @@ model Index {
 }
 
 model Description {
-  entryId String @id @unique
-
+  entryId String    @id @unique
   content Content[] @relation("source")
-  entry   Entry     @relation(fields: [entryId], references: [id])
+  entry   Entry?    @relation(fields: [entryId], references: [id])
 }
 
 model Content {

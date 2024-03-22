@@ -1,7 +1,8 @@
 import { prisma, db } from "~db/prisma.js";
-import _ from "lodash";
-import { boost } from "utilities";
 
+import _ from "lodash";
+
+import { boost } from "~db/utils.js";
 import rules from "~db/rules.json" with { type: "json" };
 
 async function create({ model, operation, args, query }) {
@@ -59,7 +60,8 @@ function destructure({ fields, query = {} }) {
     include: {
       weapons: {
         include: {
-          entry: true
+          entry: true,
+          tags: true
         }
       },
       armor: {

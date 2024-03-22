@@ -1,5 +1,6 @@
-import { get_max_hp } from "utilities";
 import { db, prisma } from "~db/prisma.js";
+
+import { character } from "~db.models";
 
 async function create({ model, operation, args, query }) {
   const character = args;
@@ -12,7 +13,7 @@ async function create({ model, operation, args, query }) {
   });
   await query({
     data: {
-      hp: get_max_hp(character),
+      hp: character.max_hp(character),
       injuries: {
         connect: {
           entryId: uninjured.id

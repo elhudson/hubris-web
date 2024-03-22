@@ -1,5 +1,6 @@
-import { Prisma } from "@prisma/client";
 import { db } from "~db/prisma.js";
+
+await db.sync()
 
 // const res = await db.characters.findFirst({
 //   where: {

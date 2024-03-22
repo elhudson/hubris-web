@@ -1,11 +1,15 @@
+import { Prisma } from "@prisma/client";
+
 import "dotenv/config";
-import { get_fields, notion } from "notion";
-import { prisma_safe, sql_safe } from "utilities";
+
+import { notion } from "notion";
+
 import { get_schema } from "~database/schema.js";
 
 import rules from "~db/rules.json" with { type: "json" };
 
 async function sync({ client = notion }) {
+  const self=Prisma.getExtensionContext(this)
   const rules = await client.databases
     .query({
       database_id: process.env.NOTION_CORE_RULES,
@@ -18,7 +22,6 @@ async function sync({ client = notion }) {
     })
     .then((c) =>
       c.results.map((c) => ({
-        id: c.id,
         title: c.title[0].plain_text,
         config: true
       }))
@@ -37,7 +40,6 @@ async function sync({ client = notion }) {
           })
           .then((a) =>
             a.results.map((c) => ({
-              id: c.id,
               title: c.title[0].plain_text,
               config: false
             }))
@@ -45,9 +47,9 @@ async function sync({ client = notion }) {
       )
     );
   rules.forEach(async (rule) => {
-    await db.rules.upsert({
+    await self.upsert({
       where: {
-        id: rule.id
+        title: rule.title
       },
       update: rule,
       create: rule

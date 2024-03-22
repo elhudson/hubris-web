@@ -1,9 +1,11 @@
+import { Client } from "@notionhq/client";
+
 import "dotenv/config";
 
-import { Client } from "@notionhq/client";
 import _ from "lodash";
+
 import { get_schema } from "~database/schema.js";
-import { sql_safe } from "utilities";
+import { sql_safe } from "~database/utils.js";
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN
@@ -97,11 +99,11 @@ async function get_linked_page(id, client) {
       .map((prop) => property_parser(prop, client))
   );
   const obj = {
-    id: id,
+    id: res.id,
     ...Object.fromEntries(props)
   };
-  const desc = await get_description(id, client);
-  obj.description = desc;
+  // const desc = await get_description(id, client);
+  // obj.description = desc;
   return obj;
 }
 

@@ -1,6 +1,8 @@
-import { get_tier } from "utilities";
+import _ from  "lodash";
+
+import { character } from "~db.models";
+
 import { db } from "~db/prisma.js";
-import _ from "lodash";
 
 async function create({ model, operation, args, query }) {
   const character = args;
@@ -48,9 +50,8 @@ async function upsert({ model, operation, args, query }) {
 
 async function update({ model, operation, args, query }) {
   const char = args;
-  _.find(char.HD, (f) => f.src == "default").max = get_tier(char);
+  _.find(char.HD, (f) => f.src == "default").max = character.tier(char);
   for (var kind of char.HD) {
-    console.log(kind)
     await db.hD.upsert({
       where: {
         id: {

@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
+
+import { db } from "~db/prisma.js";
+
 import { v4 } from "uuid";
-import { db, prisma } from "~db/prisma.js";
 
 async function make({ name, description, cls, owner }) {
   const self = Prisma.getExtensionContext(this);
@@ -44,22 +46,23 @@ async function def({ character }) {
 
 async function save(armor) {
   const self = Prisma.getExtensionContext(this);
-  return await prisma.$transaction([
-    self.update({
-      where: {
-        entryId: armor.id
+  await self.update({
+    where: {
+      entryId: armor.id
+    },
+    data: {
+      entry: {
+        update: {
+          title: armor.name
+        }
       },
-      data: {
-        entry: {
-          update: {
-            title: armor.name
-          }
-        },
-        class: armor.class
-      }
-    }),
-    db.description.save({ entryId: armor.id, description: armor.description })
-  ]);
+      class: armor.class
+    }
+  });
+  await db.description.save({
+    entryId: armor.id,
+    description: armor.description
+  });
 }
 
 export default { def, make, save };

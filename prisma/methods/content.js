@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-async function save({ src, block }) {
+function save({ src, block }) {
   const model = Prisma.getExtensionContext(this);
   const query = (block) => {
     const data = {
@@ -40,7 +40,7 @@ async function save({ src, block }) {
       });
     return data;
   };
-  await model.upsert({
+  return model.upsert({
     where: {
       id: {
         srcId: src,
@@ -48,8 +48,8 @@ async function save({ src, block }) {
       }
     },
     update: query(block),
-    create: query(block, false)
-  });
+    create: query(block)
+  })
 }
 
 export default { save };

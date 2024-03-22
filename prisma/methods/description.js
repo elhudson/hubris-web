@@ -1,18 +1,24 @@
+import { db, prisma } from "~db/prisma.js";
+
 import { Prisma } from "@prisma/client";
-import { db } from "~db/prisma.js";
 import { get_description } from "notion";
 
-async function sync({ client, entry }) {
-  const description = await get_description(entry.id, client);
+function sync({ client, entry }) {
   const self = Prisma.getExtensionContext(this);
-  await self.save({ entry, description });
+  return get_description(entry.id, client).then((res) =>
+    self.save({ entry, description: res })
+  );
 }
 
-async function save({ entry, entryId, description }) {
+
+
+function save({ entry, entryId, description }) {
   if (description) {
-    description.forEach(async (item) => {
-      await db.content.save({ src: entry?.id ?? entryId, block: item });
-    });
+    prisma.$transaction(
+      description.map((item) =>
+        db.content.save({ src: entry?.id ?? entryId, block: item })
+      )
+    );
   }
 }
 

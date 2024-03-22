@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
+
+import { db } from "~db/prisma.js";
+
 import { v4 } from "uuid";
-import { db, prisma } from "~db/prisma.js";
 
 async function make({ heavy, martial, uses, dtype, name, owner, description }) {
   const self = Prisma.getExtensionContext(this);
@@ -45,7 +47,7 @@ async function def({ character }) {
     heavy: false,
     name: "Dagger",
     dtype: {
-      entryId: dtype.id
+      entryId: dtype.id ?? dtype.entryId
     },
     owner: {
       id: character.id
@@ -65,35 +67,36 @@ async function def({ character }) {
 
 async function save(weapon) {
   const self = Prisma.getExtensionContext(this);
-  return await prisma.$transaction([
-    self.update({
-      where: {
-        entryId: weapon.id
+  await self.update({
+    where: {
+      entryId: weapon.id
+    },
+    data: {
+      entry: {
+        update: {
+          title: weapon.title
+        }
       },
-      data: {
-        entry: {
-          update: {
-            title: weapon.title
-          }
-        },
-        heavy: weapon.heavy,
-        martial: weapon.martial,
-        tags: {
-          connect: Array.isArray(weapon.tags)
-            ? weapon.tags.map((c) => ({ entryId: c.id }))
-            : {
-                entryId: weapon.tags.id
-              }
-        },
-        uses: {
-          connect: {
-            code: weapon.attrCode
-          }
+      heavy: weapon.heavy,
+      martial: weapon.martial,
+      tags: {
+        connect: Array.isArray(weapon.tags)
+          ? weapon.tags.map((c) => ({ entryId: c.id ?? c.entryId }))
+          : {
+              entryId: weapon.tags.entryId
+            }
+      },
+      uses: {
+        connect: {
+          code: weapon.attrCode
         }
       }
-    }),
-    db.description.save({ entryId: weapon.id, description: weapon.description })
-  ]);
+    }
+  });
+  await db.description.save({
+    entryId: weapon.id,
+    description: weapon.description
+  });
 }
 
 export default { def, make, save };

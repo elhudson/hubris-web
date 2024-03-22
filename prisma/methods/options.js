@@ -81,7 +81,9 @@ async function effects(character) {
       trees: true,
       tags: true,
       requires: true,
-      required_for: true
+      required_for: true,
+      range: true,
+      duration: true
     }
   });
 }

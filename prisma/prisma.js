@@ -1,31 +1,35 @@
+import { Client } from "@notionhq/client";
+
+import { Prisma, PrismaClient } from "@prisma/client";
+
 import "dotenv/config";
 
 import * as methods from "~db.methods";
+
 import * as views from "~db.views";
 
-import { Prisma, PrismaClient } from "@prisma/client";
-import { prisma_safe, sql_safe } from "utilities";
+import { prisma_safe, sql_safe } from "~db/utils.js";
 
-import { Client } from "@notionhq/client";
 import _ from "lodash";
+
 import { get_fields } from "notion";
 
 export const prisma = new PrismaClient().$extends({
   model: {
-    ...methods
+    ...methods,
   },
   query: {
     characters: views.characters,
     health: views.health,
     hD: views.hD,
-    inventories: views.inventories
+    inventories: views.inventories,
   },
   client: {
     config: {
       notion: {
         db: process.env.NOTION_CORE_RULES,
-        token: process.env.NOTION_TOKEN
-      }
+        token: process.env.NOTION_TOKEN,
+      },
     },
     table: function ({ name }) {
       return Prisma.getExtensionContext(this)[prisma_safe(sql_safe(name))];
@@ -39,16 +43,16 @@ export const prisma = new PrismaClient().$extends({
     sync: async function () {
       const self = Prisma.getExtensionContext(this);
       const client = new Client({ auth: self.config.notion.token });
-      await prisma.entry.sync({ client });
+      // await prisma.entry.sync({ client });
+      await self.rules.sync({ client });
       const tables = await self
         .srd()
         .then((s) => s.map(({ title }) => self.table({ name: title })));
-      tables.forEach(async (table) => {
+      for (var table of tables) {
         await table.sync({ client });
-      });
-    
-    }
-  }
+      }
+    },
+  },
 });
 
 const rule = (database) => ({
@@ -72,7 +76,7 @@ const rule = (database) => ({
   async save(data) {
     const fields = get_fields(database.$name);
     await database.write({ data, fields });
-  }
+  },
 });
 
 const rules = await prisma.srd().then((rules) =>
@@ -81,7 +85,7 @@ const rules = await prisma.srd().then((rules) =>
       const database = prisma.table({ name: title });
       return [
         prisma_safe(sql_safe(title)),
-        Object.assign(database, rule(database))
+        Object.assign(database, rule(database)),
       ];
     })
   )

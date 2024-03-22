@@ -87,8 +87,8 @@ model Effects {
   tier         Int
   requires     Effects[]    @relation("effects_prq")
   required_for Effects[]    @relation("effects_prq")
-  range        Ranges?      @relation(fields: [rangeId], references: [entryId])
-  duration     Durations?   @relation(fields: [durationId], references: [entryId])
+  range        Ranges?      @relation(fields: [rangeId], references: [entryId], onDelete: Cascade)
+  duration     Durations?   @relation(fields: [durationId], references: [entryId], onDelete: Cascade)
   tags         Tags[]
   trees        Trees?       @relation(fields: [treesId], references: [entryId])
   treesId      String?

@@ -4,7 +4,8 @@ import { Effects } from "@client/rules";
 import { Optionset } from "@client/options";
 import _ from "lodash";
 import { useLoaderData } from "react-router-dom";
-
+import { has_tree } from "utilities";
+import { current } from "immer";
 export default () => {
   return (
     <ruleContext.Provider
@@ -19,15 +20,14 @@ export default () => {
             if (e) {
               _.isUndefined(draft.ranges) && (draft.ranges = []);
               _.isUndefined(draft.durations) && (draft.durations = []);
-              if (
-                draft.ranges.map((f) => f.id).includes(feat.range.id) == false
-              ) {
+              if (!draft?.ranges?.map((f) => f.id).includes(feat.range.id)) {
+                draft.ranges = [...(draft?.ranges ?? [])];
                 draft.ranges.push(feat.range);
               }
               if (
-                draft.durations.map((f) => f.id).includes(feat.duration.id) ==
-                false
+                !draft?.durations?.map((f) => f.id).includes(feat.duration.id)
               ) {
+                draft.durations = [...(draft?.durations ?? [])];
                 draft.durations.push(feat.duration);
               }
             } else {

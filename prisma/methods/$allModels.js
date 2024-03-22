@@ -1,48 +1,85 @@
-import { get_fields, notion, parse_page } from "notion";
+import { collectPaginatedAPI, Client } from "@notionhq/client";
 
 import { Prisma } from "@prisma/client";
+
+import { get_fields, notion, parse_page } from "notion";
+
+import "dotenv/config";
+
 import _ from "lodash";
-import { collectPaginatedAPI } from "@notionhq/client";
+
 import { db, prisma } from "~db/prisma.js";
+
 import progress from "cli-progress";
+
 import rules from "~db/rules.json" with { type: "json" };
+import { prisma_safe, sql_safe } from "~db/utils.js";
 
-async function sync({ client = notion }) {
+import { DateTime } from "luxon";
+
+async function sync({ client = notion } = {}) {
   const model = Prisma.getExtensionContext(this);
-  const fields = get_fields(model.$name);
-  const notion_id = await client.databases
-    .query({
-      database_id: process.env.NOTION_CORE_RULES,
-      filter_properties: ["Page"],
-      filter: {
-        property: "Page",
-        title: {
-          equals: model.$name.replace("_", " ")
-        }
-      }
-    })
-    .then((r) => r.results.at(0).id);
+  const timestamp = await model.last_updated();
+  const cutoff = DateTime.now().minus({ hours: 12 });
+  if (timestamp < cutoff) {
+    const fields = get_fields(model.$name);
+    const notion_id = await client.databases
+      .query({
+        database_id: process.env.NOTION_CORE_RULES,
+        filter_properties: ["Page"],
+        filter: {
+          property: "Page",
+          title: {
+            equals: model.$name.replace("_", " "),
+          },
+        },
+      })
+      .then((r) => r.results.at(0).id);
 
-  const pages = await collectPaginatedAPI(client.databases.query, {
-    database_id: notion_id
-  });
+    const pages = await collectPaginatedAPI(client.databases.query, {
+      database_id: notion_id,
+    });
 
-  console.log(`Downloading entries from table ${model.$name}...`);
+    console.log(`Downloading entries from table ${model.$name}...`);
 
-  const bar = new progress.SingleBar({}, progress.Presets.shades_classic);
-  bar.start(pages.length, 0);
+    const bar = new progress.SingleBar({}, progress.Presets.shades_classic);
+    bar.start(pages.length, 0);
 
-  for (var page of pages.slice(47)) {
-    const data = await parse_page(page, client);
-    await model.write({ data, fields });
-    bar.update(pages.indexOf(page) + 1);
+    for (var page of pages) {
+      const data = await parse_page(page, client);
+      model.write({ data, fields });
+      bar.update(pages.indexOf(page) + 1);
+    }
+
+    bar.stop();
+
+    await db.rules.update({
+      where: {
+        title: model.$name.replace("_", " "),
+      },
+      data: {
+        last_updated: DateTime.now().toJSDate(),
+      },
+    });
   }
-  bar.stop();
 }
 
 function relations() {
   const model = Prisma.getExtensionContext(this);
   return db.rules.fields({ name: model.$name });
+}
+
+async function last_updated() {
+  const model = Prisma.getExtensionContext(this);
+  const { last_updated } = await db.rules.findFirst({
+    where: {
+      title: model.$name.replace("_", " "),
+    },
+    select: {
+      last_updated: true,
+    },
+  });
+  return DateTime.fromJSDate(last_updated);
 }
 
 function resurface(tbl, result) {
@@ -63,14 +100,14 @@ function resurface(tbl, result) {
                   src: _.find(
                     Object.keys(c.link.target),
                     (key) => rules.includes(key) && c.link.target[key] != null
-                  )
+                  ),
                 }
-              : null
-          })) ?? []
+              : null,
+          })) ?? [],
       },
       [
         "entry",
-        ...scalars.filter((s) => s.name.includes("Id")).map((s) => s.name)
+        ...scalars.filter((s) => s.name.includes("Id")).map((s) => s.name),
       ]
     );
   }
@@ -89,7 +126,7 @@ function resurface(tbl, result) {
 
 function nestInclude(query, desc = false) {
   const current = {
-    entry: true
+    entry: true,
   };
   if (desc) {
     current.entry = {
@@ -101,15 +138,15 @@ function nestInclude(query, desc = false) {
                 link: {
                   include: {
                     target: {
-                      include: Object.fromEntries(rules.map((r) => [r, true]))
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      include: Object.fromEntries(rules.map((r) => [r, true])),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     };
   }
   if (typeof query == "object") {
@@ -122,7 +159,7 @@ function nestInclude(query, desc = false) {
     });
   }
   return {
-    include: current
+    include: current,
   };
 }
 
@@ -143,8 +180,8 @@ function nestWhere(where) {
       where[key]?.title &&
         (where[key] = {
           entry: {
-            title
-          }
+            title,
+          },
         });
     }
   });
@@ -160,7 +197,7 @@ function parseWhere(query) {
 function parseInclude(query) {
   return {
     where: parseWhere(query),
-    ...nestInclude(query, true)
+    ...nestInclude(query, true),
   };
 }
 
@@ -175,7 +212,7 @@ async function all({ relations = true, query = {} } = {}) {
   if (relations) {
     query.include = {
       ...query?.include,
-      ...model.withRelations()
+      ...model.withRelations(),
     };
   }
   const res = await model.queryMany(query);
@@ -187,10 +224,10 @@ async function get({ id }) {
   return await model.queryOne({
     where: {
       entry: {
-        id: id
-      }
+        id: id,
+      },
     },
-    include: model.withRelations()
+    include: model.withRelations(),
   });
 }
 
@@ -205,9 +242,9 @@ async function write({ data, fields: { scalars, ones, manys } }) {
   const query = {
     entry: {
       connect: {
-        id: data.id
-      }
-    }
+        id: data.id,
+      },
+    },
   };
   scalars.forEach((field) => {
     query[field] = data[field];
@@ -218,23 +255,23 @@ async function write({ data, fields: { scalars, ones, manys } }) {
       (query[one] = {
         connectOrCreate: {
           where: {
-            entryId: data[one].id
+            entryId: data[one].id,
           },
           create: {
             ..._.omit(data[one], ["id", "description", "title"]),
             entry: {
               connectOrCreate: {
                 where: {
-                  id: data[one].id
+                  id: data[one].id,
                 },
                 create: {
                   id: data[one].id,
-                  title: data[one].title
-                }
-              }
-            }
-          }
-        }
+                  title: data[one].title,
+                },
+              },
+            },
+          },
+        },
       });
   });
   manys
@@ -243,31 +280,33 @@ async function write({ data, fields: { scalars, ones, manys } }) {
       query[many] = {
         connectOrCreate: data[many].map((d) => ({
           where: {
-            entryId: d.id
+            entryId: d.id,
           },
           create: {
             ..._.omit(d, ["id", "description", "title"]),
             entry: {
               connect: {
-                id: d.id
-              }
-            }
-          }
-        }))
+                id: d.id,
+              },
+            },
+          },
+        })),
       };
     });
-  await model.upsert({
-    where: {
-      entryId: data.id
-    },
-    create: query,
-    update: query
+  await prisma.$transaction(async (tx) => {
+    await tx[prisma_safe(sql_safe(model.$name))].upsert({
+      where: {
+        entryId: data.id,
+      },
+      create: query,
+      update: query,
+    });
+    data?.description &&
+      (await db.description.save({
+        entryId: data.id,
+        description: data.description,
+      }));
   });
-  data?.description &&
-    (await db.description.save({
-      entryId: data.id,
-      description: data.description
-    }));
 }
 
 async function purge({ client = notion }) {
@@ -279,27 +318,27 @@ async function purge({ client = notion }) {
       filter: {
         property: "Page",
         title: {
-          equals: model.$name.replace("_", " ")
-        }
-      }
+          equals: model.$name.replace("_", " "),
+        },
+      },
     })
     .then((r) => r.results.at(0).id);
   const items = await collectPaginatedAPI(client.databases.query, {
-    database_id: notion_id
+    database_id: notion_id,
   }).then((p) => p.map((i) => i.id));
   const tdl = await model
     .findMany({
       select: {
-        id: true
-      }
+        id: true,
+      },
     })
     .then((f) => f.filter((c) => !items.includes(c.id)));
   tdl.forEach(
     async (t) =>
       await model.delete({
         where: {
-          id: t.id
-        }
+          id: t.id,
+        },
       })
   );
 }
@@ -316,5 +355,6 @@ export default {
   parseWhere,
   nestInclude,
   parseInclude,
-  fields
+  last_updated,
+  fields,
 };
