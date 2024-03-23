@@ -1,18 +1,14 @@
-import { Client } from "@notionhq/client";
-
-import { Prisma, PrismaClient } from "@prisma/client";
-
 import "dotenv/config";
 
 import * as methods from "~db.methods";
-
 import * as views from "~db.views";
 
+import { Prisma, PrismaClient } from "@prisma/client";
 import { prisma_safe, sql_safe } from "~db/utils.js";
 
+import { Client } from "@notionhq/client";
 import _ from "lodash";
-
-import { get_fields } from "notion";
+import { get_fields } from "./notion";
 
 export const prisma = new PrismaClient().$extends({
   model: {

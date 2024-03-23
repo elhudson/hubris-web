@@ -2,7 +2,7 @@ import { collectPaginatedAPI, Client } from "@notionhq/client";
 
 import { Prisma } from "@prisma/client";
 
-import { get_fields, notion, parse_page } from "notion";
+import { get_fields, notion, parse_page } from "../notion";
 
 import "dotenv/config";
 

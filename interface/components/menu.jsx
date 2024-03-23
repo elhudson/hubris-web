@@ -3,7 +3,7 @@ import * as nav from "@radix-ui/react-navigation-menu";
 import { Actions, Login } from "@client/user";
 import { Link, NavLink, redirect, useNavigate } from "react-router-dom";
 import { css, useTheme } from "@emotion/react";
-import { sql_danger, sql_safe } from "utilities";
+import { sql_danger, sql_safe } from "utils";
 
 import { FaSwatchbook } from "react-icons/fa";
 import { GiBookCover } from "react-icons/gi";

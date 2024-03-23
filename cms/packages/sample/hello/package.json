@@ -1,15 +1,32 @@
 {
   "name": "hello",
   "version": "1.0.0",
-  "main": "hello.js",
+  "_moduleAliases": {
+    "notion": "./notion.js",
+    "~db": ".",
+    "~db.models": "./exports/models.js",
+    "~db.views": "./exports/views.js",
+    "~db.methods": "./exports/methods.js"
+  },
+  "main": "bundle.js",
+  "source": "hello.js",
   "scripts": {
+    "build": "npx link-module-alias && parcel build",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "targets": {
+    "main": {
+      "includeNodeModules": true
+    }
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "prisma": "https://gitpkg.now.sh/elhudson/hubris-web/prisma?refact/modules"
   },
-  "type": "module",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  
+  }
 }

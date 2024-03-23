@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { css, useTheme } from "@emotion/react";
-import { sql_danger, sql_safe } from "utilities";
+import { sql_danger, sql_safe } from "utils";
 
 import { FaDiceD20 } from "react-icons/fa6";
 

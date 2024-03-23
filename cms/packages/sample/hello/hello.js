@@ -1,7 +1,7 @@
-import prisma from 'prisma'
+const { db } = require("prisma");
 
 async function main(args) {
-    console.log(prisma)
-
-//   await db.sync();
+  await db.sync();
 }
+
+global.main=main

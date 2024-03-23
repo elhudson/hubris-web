@@ -8,7 +8,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import Roll from "roll";
 import _ from "lodash";
 import { css } from "@emotion/react";
-import { get_max_hp } from "utilities";
+import { get_max_hp } from "utils";
 import { useImmer } from "use-immer";
 
 export default () => {

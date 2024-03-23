@@ -5,7 +5,7 @@ import { Buttons } from "./menu";
 import { Link } from "@interface/components";
 import { Metadata } from "@interface/ui";
 import { Link as Route } from "react-router-dom";
-import { calc_xp } from "utilities";
+import { calc_xp } from "utils";
 import { useCharacter } from "contexts";
 
 export default ({ buttons = false }) => {

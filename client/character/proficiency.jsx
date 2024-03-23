@@ -1,7 +1,7 @@
 import { css, useTheme } from "@emotion/react";
 
 import { NumberBox } from "@interface/ui";
-import { get_proficiency } from "utilities";
+import { get_proficiency } from "utils";
 import { useCharacter } from "contexts";
 
 export default () => {

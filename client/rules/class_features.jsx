@@ -1,8 +1,9 @@
 import { Organizer, Tree } from "@interface/components";
+import { useOptions, useRule } from "contexts";
 
-import { groupBy } from "utilities";
+import { groupBy } from "utils";
 import { useLoaderData } from "react-router-dom";
-import { useRule, useOptions } from "contexts";
+
 export default () => {
   const data = useRule().location == "wiki" ? useLoaderData(): useOptions().data;
   const features = groupBy(data, (d) => d.classes, "class_features");

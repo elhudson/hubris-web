@@ -1,6 +1,6 @@
 import { Components, Menu, Tags } from "@client/power";
 import { css, useTheme } from "@emotion/react";
-import { generate_power_description, get_power_cost } from "utilities";
+import { generate_power_description, get_power_cost } from "utils";
 import { powerContext, useCharacter } from "contexts";
 
 import { Description } from "@interface/components";

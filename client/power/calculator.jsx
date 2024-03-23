@@ -5,7 +5,7 @@ import { useCharacter, usePower } from "contexts";
 
 import { Loading } from "@interface/ui";
 import _ from "lodash";
-import { get_power_cost } from "utilities";
+import { get_power_cost } from "utils";
 import { useImmer } from "use-immer";
 
 export default ({ filters = true }) => {

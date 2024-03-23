@@ -1,7 +1,7 @@
 import { css, useTheme } from "@emotion/react";
 
 import { Tables } from "@client/srd";
-import { sql_danger } from "utilities";
+import { sql_danger } from "utils";
 import { useParams } from "react-router-dom";
 
 export default () => {

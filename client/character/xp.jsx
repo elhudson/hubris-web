@@ -1,7 +1,7 @@
 import { NumberBox, Toggles } from "@interface/ui";
 import { css, useTheme } from "@emotion/react";
 
-import { calc_xp } from "utilities";
+import { calc_xp } from "utils";
 import { useCharacter } from "contexts";
 
 export default () => {

@@ -3,7 +3,7 @@ import { Hd, Injury } from "@client/character";
 import { css, useTheme } from "@emotion/react";
 
 import _ from "lodash";
-import { get_max_hp } from "utilities";
+import { get_max_hp } from "utils";
 import { useCharacter } from "contexts";
 
 const Health = () => {

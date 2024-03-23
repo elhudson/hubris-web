@@ -4,7 +4,7 @@ import { css, useTheme } from "@emotion/react";
 
 import { Parts } from "@client/character";
 import _ from "lodash";
-import { get_proficiency } from "utilities";
+import { get_proficiency } from "utils";
 import { useCharacter } from "contexts";
 
 const Powers = () => {

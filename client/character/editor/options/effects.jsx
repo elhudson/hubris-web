@@ -3,9 +3,10 @@ import { optionsContext, ruleContext, useCharacter } from "context";
 import { Effects } from "@client/rules";
 import { Optionset } from "@client/options";
 import _ from "lodash";
-import { useLoaderData } from "react-router-dom";
-import { has_tree } from "utilities";
 import { current } from "immer";
+import { has_tree } from "utils";
+import { useLoaderData } from "react-router-dom";
+
 export default () => {
   return (
     <ruleContext.Provider

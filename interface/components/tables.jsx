@@ -1,6 +1,7 @@
-import { sql_danger, sql_safe } from "utilities";
+import { sql_danger, sql_safe } from "utils";
 
 import { Loading } from "@interface/ui";
+
 export default () => {
   const tables = async () => await fetch("/data/tables").then((j) => j.json());
   return (

@@ -6,7 +6,7 @@ import {
 } from "react-icons/pi";
 
 import { Radio } from "@interface/ui";
-import { get_tier } from "utilities";
+import { get_tier } from "utils";
 import { useCharacter } from "contexts";
 
 export default () => {

@@ -1,5 +1,6 @@
+import { prisma_safe, sql_safe } from "utils";
+
 import { db } from "~db/prisma.js";
-import { prisma_safe, sql_safe } from "utilities";
 
 const tables = await db.rules.findMany();
 

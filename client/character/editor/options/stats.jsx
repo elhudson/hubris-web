@@ -1,5 +1,5 @@
 import { Counter, Loading } from "@interface/ui";
-import { boost, getCost, getPointsSpent } from "utilities";
+import { boost, getCost, getPointsSpent } from "utils";
 import { css, useTheme } from "@emotion/react";
 
 import _ from "lodash";

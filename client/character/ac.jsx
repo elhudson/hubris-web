@@ -2,7 +2,7 @@ import { css, useTheme } from "@emotion/react";
 
 import { NumberBox } from "@interface/ui";
 import _ from "lodash";
-import { get_ac } from "utilities";
+import { get_ac } from "utils";
 import { useCharacter } from "contexts";
 
 export default () => {

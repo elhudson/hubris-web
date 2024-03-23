@@ -7,11 +7,6 @@ model Rules {
   last_updated DateTime @default("1980-01-01T01:00:00-05:00")
 }
 
-model Index {
-  id    String @unique
-  table String
-}
-
 model Description {
   entryId String    @id @unique
   content Content[] @relation("source")

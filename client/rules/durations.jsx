@@ -1,6 +1,7 @@
 import { Organizer, Tree } from "@interface/components";
-import { useRule, useOptions } from "contexts";
-import { groupBy } from "utilities";
+import { useOptions, useRule } from "contexts";
+
+import { groupBy } from "utils";
 import { useLoaderData } from "react-router-dom";
 
 export default () => {

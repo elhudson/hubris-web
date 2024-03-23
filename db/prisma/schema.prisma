@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Thu Mar 21 2024 20:37:57 GMT-0400 (Eastern Daylight Time)✨
+//🧩Don't Edit this file.✨Generated in Sat Mar 23 2024 14:02:59 GMT-0400 (Eastern Daylight Time)✨
 
 datasource db {
   provider     = "mysql"
@@ -112,11 +112,6 @@ model Rules {
   config       Boolean  @default(true)
   src          String   @default("core-rules")
   last_updated DateTime @default("1980-01-01T01:00:00-05:00")
-}
-
-model Index {
-  id    String @unique
-  table String
 }
 
 model Description {

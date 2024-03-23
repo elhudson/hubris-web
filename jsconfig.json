@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@src": ["."],
-      "utilities": ["./utilities/index.js"],
+      "utilities": ["utils/index.js"],
       "contexts": ["./client/contexts.jsx"],
       "context": ["./client/contexts.jsx"],
       "@client/campaign": ["lib/client/campaign.js"],

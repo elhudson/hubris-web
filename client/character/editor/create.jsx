@@ -5,7 +5,7 @@ import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 
 import { Bio } from "@client/character";
 import _ from "lodash";
-import { cost } from "utilities";
+import { cost } from "utils";
 import { useImmer } from "use-immer";
 import { useTheme } from "@emotion/react";
 

@@ -1,4 +1,4 @@
-import { affordable, owned, satisfies_prereqs } from "utilities";
+import { affordable, owned, satisfies_prereqs } from "utils";
 import { useCharacter, useHandler, useRule } from "contexts";
 
 import { Checkbox } from "@interface/ui";

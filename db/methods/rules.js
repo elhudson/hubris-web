@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 
 import "dotenv/config";
 
-import { notion } from "notion";
+import { notion } from "../notion";
 
 import { get_schema } from "~db/schema.js";
 import rules from "~db/rules.json" with { type: "json" };

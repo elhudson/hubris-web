@@ -1,7 +1,7 @@
 import { db, prisma } from "~db/prisma.js";
 
 import { Prisma } from "@prisma/client";
-import { get_description } from "notion";
+import { get_description } from "../notion";
 
 function sync({ client, entry }) {
   const self = Prisma.getExtensionContext(this);

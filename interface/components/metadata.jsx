@@ -1,7 +1,7 @@
 import { Link } from "@interface/components";
 import { Metadata } from "@interface/ui";
 import { css } from "@emotion/react";
-import { sql_danger } from "utilities";
+import { sql_danger } from "utils";
 
 export default ({ feature, props = null }) => {
   const keys = props ?? Object.keys(feature);

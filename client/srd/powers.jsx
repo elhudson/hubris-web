@@ -1,7 +1,7 @@
 import { Create, Menu } from "@client/power";
 import { Description, Link } from "@interface/components";
 import { Dialog, Loading, Multi } from "@interface/ui";
-import { generate_power_description, get_power_cost } from "utilities";
+import { generate_power_description, get_power_cost } from "utils";
 import { powerContext, useUser } from "contexts";
 
 import _ from "lodash";

@@ -1,4 +1,4 @@
-import { get_bonus, is_proficient } from "utilities";
+import { get_bonus, is_proficient } from "utils";
 
 import { Checkbox } from "@interface/ui";
 import { css } from "@emotion/css";
